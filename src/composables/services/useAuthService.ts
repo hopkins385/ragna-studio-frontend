@@ -1,11 +1,13 @@
 // authService.ts
 import { $axios } from '@/axios/axiosInstance';
+import type { GoogleAuthCallbackQuery } from '@/interfaces/auth/google-auth-callback.interface';
 import { getRoute } from '@/utils/route.util';
 
 enum AuthRoute {
   LOGIN = 'auth/login', // POST
   LOGOUT = 'auth/logout', // POST
   REFRESH = 'auth/refresh', // POST
+  CALLBACK_GOOGLE = '/auth/google/callback', // POST
 }
 
 interface AuthCredentials {
@@ -60,6 +62,29 @@ export function useAuthService() {
     return response.data;
   }
 
+  const googleAuth = async (data: GoogleAuthCallbackQuery) => {
+    const body = {
+      code: data.code,
+      scope: data.scope,
+      authuser: data.authuser,
+      prompt: data.prompt,
+    };
+    try {
+      const route = getRoute(AuthRoute.CALLBACK_GOOGLE);
+      const response = await $axios.post(route, body, {
+        signal: ac.signal,
+      });
+
+      if (response.status !== 201) {
+        throw new Error('Failed to authenticate with Google');
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   // TODO: find alternative to onScopeDispose
   // onScopeDispose(() => {
   //   ac.abort();
@@ -69,5 +94,6 @@ export function useAuthService() {
     loginUser,
     logoutUser,
     refreshTokens,
+    googleAuth,
   };
 }

@@ -238,6 +238,16 @@ const accountRoutes = {
   ],
 };
 
+const socialAuthCallbackRoutes = {
+  path: '/auth/:provider/callback',
+  name: 'social-auth-callback',
+  component: () => import('../views/auth/SocialAuthCallbackView.vue'),
+  meta: {
+    requiresAuth: false,
+    layout: Layout.Login,
+  },
+};
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -250,6 +260,7 @@ const router = createRouter({
     mediaRoutes,
     textToImageRoutes,
     accountRoutes,
+    socialAuthCallbackRoutes,
     {
       path: '/login',
       name: 'login',

@@ -31,7 +31,7 @@ useEventListener(window, 'focus', handleVisibilityChange);
 
 useHead({
   titleTemplate: (title?: string) =>
-    !title ? 'RAGNA Cloud' : `${title} | RAGNA Cloud`,
+    !title ? 'RAGNA Studio' : `${title} | RAGNA Studio`,
 });
 </script>
 
