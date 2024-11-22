@@ -1,0 +1,23 @@
+name: ragna-frontend
+
+services:
+  app:
+    cpu_count: 1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'wget',
+          '--quiet',
+          '--tries=1',
+          '--spider',
+          'http://localhost:80',
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

@@ -1,0 +1,61 @@
+<script setup lang="ts">
+import { Button } from '@/components/ui/button';
+import { useChatService } from '@/composables/services/useChatService';
+import { EditIcon } from 'lucide-vue-next';
+
+const props = defineProps<{
+  assistant: any;
+}>();
+
+const router = useRouter();
+
+const { createChat } = useChatService();
+
+const onStartClick = async () => {
+  if (!props.assistant.id) {
+    throw new Error('Assistant ID is required');
+  }
+  try {
+    const { chat } = await createChat(props.assistant.id);
+    if (!chat || !chat.id) {
+      throw new Error('Failed to create chat');
+    }
+    router.push({ name: 'chat.show', params: { id: chat.id } });
+  } catch (error) {
+    console.error('Failed to create chat', error);
+  }
+};
+
+const onEditClick = (event: Event) => {
+  router.push({ name: 'assistant.edit', params: { id: props.assistant.id } });
+};
+</script>
+
+<template>
+  <div
+    class="group relative max-w-sm cursor-pointer rounded-lg border p-10 hover:border-slate-400"
+    @click="onStartClick"
+  >
+    <div class="group/icon absolute right-1 top-1 hidden group-hover:block">
+      <Button size="icon" variant="ghost" @click.stop="onEditClick">
+        <EditIcon
+          class="size-4 stroke-1.5 opacity-50 group-hover/icon:stroke-2"
+        />
+      </Button>
+    </div>
+    <div class="group absolute bottom-1 right-1 hidden group-hover:block">
+      <div
+        class="flex items-center justify-center space-x-2 rounded-xl border px-4 py-2"
+      >
+        <span class="text-sm">Chat</span>
+      </div>
+    </div>
+    <div class="truncate text-base font-semibold">{{ assistant.title }}</div>
+    <div class="mt-1 truncate text-sm text-muted-foreground">
+      {{ assistant.description }}
+    </div>
+    <div class="mt-4 truncate text-sm text-muted-foreground">
+      {{ assistant?.llm?.displayName }}
+    </div>
+  </div>
+</template>

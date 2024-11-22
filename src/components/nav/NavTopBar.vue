@@ -1,0 +1,57 @@
+<script setup lang="ts">
+import { Bell, Expand, Grip } from 'lucide-vue-next';
+import BrandLogo from '../brand/BrandLogo.vue';
+import NavUserMenu from './NavUserMenu.vue';
+import { useAuthStore } from '@/stores/auth.store';
+
+const authStore = useAuthStore();
+
+const userCredits = computed(() => {
+  return authStore.userCredits;
+});
+
+const onExpandClick = () => {
+  // window full screen
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  } else {
+    document.documentElement.requestFullscreen();
+  }
+};
+</script>
+
+<template>
+  <div class="flex h-14 border-b items-center justify-between bg-stone-100">
+    <div class="flex">
+      <div class="w-[4.5rem] border-0 flex items-center justify-center">
+        <Grip class="nav-icon stroke-1.5" />
+      </div>
+      <div class="pl-0">
+        <BrandLogo class="" :text-visible="true" />
+      </div>
+    </div>
+    <div class="flex h-full items-center space-x-5">
+      <div class="hidden">
+        <div class="py-1 px-2 border-0 rounded-sm bg-parent">
+          <span class="text-sm">{{ userCredits }}</span>
+        </div>
+      </div>
+      <button>
+        <Bell class="size-5 stroke-1 hover:stroke-1.5" />
+      </button>
+      <button @click="onExpandClick">
+        <Expand class="size-5 stroke-1 hover:stroke-1.5" />
+      </button>
+      <div class="pr-5">
+        <NavUserMenu :size-full="false" />
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.nav-icon {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+</style>

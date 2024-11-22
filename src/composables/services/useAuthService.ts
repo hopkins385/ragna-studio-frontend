@@ -1,0 +1,73 @@
+// authService.ts
+import { $axios } from '@/axios/axiosInstance';
+import { getRoute } from '@/utils/route.util';
+
+enum AuthRoute {
+  LOGIN = 'auth/login', // POST
+  LOGOUT = 'auth/logout', // POST
+  REFRESH = 'auth/refresh', // POST
+}
+
+interface AuthCredentials {
+  email: string;
+  password: string;
+}
+
+interface AuthUserResponse {
+  userData: AuthUserData;
+}
+
+interface AuthUserData {
+  id: number;
+  name: string;
+  email: string;
+}
+
+interface TokensResponse {
+  accessToken: string;
+  accessTokenExpiresAt: number;
+  refreshToken: string;
+  refreshTokenExpiresAt: number;
+}
+
+export function useAuthService() {
+  const ac = new AbortController();
+
+  async function loginUser(body: AuthCredentials): Promise<TokensResponse> {
+    const route = getRoute(AuthRoute.LOGIN);
+    const response = await $axios.post<TokensResponse>(route, body, {
+      signal: ac.signal,
+    });
+    if (response.status !== 200) throw new Error('Login failed');
+    return response.data;
+  }
+
+  async function logoutUser(): Promise<void> {
+    const body = {};
+    const route = getRoute(AuthRoute.LOGOUT);
+    await $axios.post(route, body, {
+      signal: ac.signal,
+    });
+  }
+
+  async function refreshTokens(): Promise<TokensResponse> {
+    const body = {};
+    const route = getRoute(AuthRoute.REFRESH);
+    const response = await $axios.post<TokensResponse>(route, body, {
+      signal: ac.signal,
+    });
+    if (response.status !== 201) throw new Error('Failed to refresh token');
+    return response.data;
+  }
+
+  // TODO: find alternative to onScopeDispose
+  // onScopeDispose(() => {
+  //   ac.abort();
+  // });
+
+  return {
+    loginUser,
+    logoutUser,
+    refreshTokens,
+  };
+}

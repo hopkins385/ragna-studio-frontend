@@ -1,0 +1,164 @@
+<script setup lang="ts">
+/**
+ * Component: ChatSettings
+ */
+import { Button } from '@ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover';
+import { useChatSettingsStore } from '@stores/chat-settings.store';
+import { SlidersHorizontalIcon, RotateCcwIcon } from 'lucide-vue-next';
+import { Separator } from '@ui/separator';
+import { Slider } from '@ui/slider';
+import { Switch } from '@ui/switch';
+import QuestionToolTip from '@components/question/QuestionToolTip.vue';
+import ChatModelSelector from '@components/chat/ChatModelSelector.vue';
+
+const props = defineProps<{
+  assistantId?: string | null;
+}>();
+
+const emits = defineEmits<{
+  deleteAllMessages: [void];
+}>();
+
+const router = useRouter();
+
+const show = ref(false);
+const settings = useChatSettingsStore();
+
+const presencePenalty = false;
+
+function onEditAssistantClick() {
+  if (!props.assistantId) return;
+  // navigateTo(`/assistants/${props.assistantId}/edit`);
+  router.push(`/assistant/${props.assistantId}/edit`);
+}
+
+function onDeleteChatMessages() {
+  emits('deleteAllMessages');
+}
+</script>
+
+<template>
+  <Popover v-model:open="show">
+    <PopoverTrigger as-child>
+      <Button variant="outline" size="icon" class="group">
+        <SlidersHorizontalIcon
+          class="size-4 stroke-1.5 text-primary/70 group-hover:stroke-2"
+        />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent align="end" class="mt-1 w-60 text-sm">
+      <div class="flex items-center justify-between">
+        <span>Chat Settings</span>
+        <button @click="settings.resetSettings()">
+          <RotateCcwIcon class="size-3 opacity-60" />
+        </button>
+      </div>
+      <Separator class="my-3" />
+      <!-- chat model selector -->
+      <div
+        class="pointer-events-auto flex items-center space-x-4 text-muted-foreground"
+      >
+        <ChatModelSelector />
+      </div>
+      <Separator class="my-3" />
+      <Button
+        variant="outline"
+        size="sm"
+        class="w-full"
+        @click="onEditAssistantClick"
+      >
+        Edit Assistant
+      </Button>
+      <Separator class="my-3" />
+      <Button
+        variant="outline"
+        size="sm"
+        class="w-full hover:text-destructive"
+        @click="onDeleteChatMessages"
+      >
+        Reset Chat
+      </Button>
+      <Separator class="my-3" />
+      <div class="my-5 flex flex-col space-y-4">
+        <div class="flex w-full justify-between">
+          <div>
+            Temperature
+            <QuestionToolTip
+              title="$t('chat.settings.temperature.title')"
+              content="$t('chat.settings.temperature.description')"
+            />
+          </div>
+          <div>{{ settings.getTemperature }}</div>
+        </div>
+        <Slider
+          v-model="settings.temperature"
+          :default-value="[20]"
+          :max="100"
+          :step="1"
+          class="slider"
+        />
+      </div>
+      <div v-if="presencePenalty" class="mb-5 flex flex-col space-y-4">
+        <div class="flex w-full justify-between">
+          <div>
+            Presence Penalty
+
+            <QuestionToolTip
+              title="$t('chat.settings.presencePenalty.title')"
+              content="$t('chat.settings.presencePenalty.description')"
+            />
+          </div>
+          <div>{{ settings.getPresencePenalty }}</div>
+        </div>
+        <Slider
+          v-model="settings.presencePenalty"
+          :default-value="[0]"
+          :min="-200"
+          :max="200"
+          :step="1"
+          class="slider"
+        />
+      </div>
+      <div class="mb-5 flex flex-col space-y-4">
+        <div class="flex w-full justify-between">
+          <div>
+            Max Tokens
+            <QuestionToolTip
+              title="$t('chat.settings.maxTokens.title')"
+              content="$t('chat.settings.maxTokens.description')"
+            />
+          </div>
+          <div>{{ settings.getMaxTokens }}</div>
+        </div>
+        <Slider
+          v-model="settings.maxTokens"
+          :default-value="[500]"
+          :max="4000"
+          :step="1"
+          class="slider"
+        />
+      </div>
+      <div class="flex flex-col">
+        <div>
+          On Enter Submit
+          <QuestionToolTip
+            title="$t('chat.settings.onEnterSubmit.title')"
+            content="$t('chat.settings.onEnterSubmit.description')"
+          />
+        </div>
+        <Switch
+          class="-ml-2 mt-1 scale-75"
+          :checked="settings.submitOnEnter"
+          @update:checked="val => (settings.submitOnEnter = val)"
+        />
+      </div>
+    </PopoverContent>
+  </Popover>
+</template>
+
+<style>
+.slider {
+  @apply [&_[role=slider]]:size-4 [&_[role=slider]]:border [&_[role=slider]]:hover:cursor-grab [&_[role=slider]]:active:cursor-grabbing;
+}
+</style>
