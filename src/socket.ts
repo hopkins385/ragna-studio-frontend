@@ -1,12 +1,9 @@
 import { io } from 'socket.io-client';
 import { $axios } from './axios/axiosInstance';
 
-const URL =
-  import.meta.env.NODE_ENV === 'production'
-    ? undefined
-    : 'http://localhost:3050';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
-export const socketClient = io(URL, {
+export const socketClient = io(SOCKET_URL, {
   autoConnect: true,
   transports: ['websocket'],
   auth: async cb => {

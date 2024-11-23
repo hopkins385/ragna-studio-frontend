@@ -30,6 +30,16 @@ export async function authMiddleware(to: RouteLocationNormalized) {
     }
   }
 
+  if (
+    to.meta.requiresAuth &&
+    authStore.isAuthenticated &&
+    !authStore.onboardingIsComplete &&
+    to.name !== 'onboarding.index'
+  ) {
+    console.log('onboarding not complete');
+    return { name: 'onboarding.index' };
+  }
+
   if (to.name === 'login' && authStore.isAuthenticated) {
     return { name: 'home' };
   }

@@ -12,7 +12,10 @@ interface Team {
 interface AuthUser {
   id: string;
   name: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  onboardedAt: string | null;
   credit: any;
   teams: Team[];
   roles: string[];
@@ -50,6 +53,9 @@ export const useAuthStore = defineStore('auth-store', {
       const amounts = state.user?.credit.map(c => c.amount) || [];
       // @ts-ignore
       return amounts.reduce((a, b) => a + b, 0);
+    },
+    onboardingIsComplete(state): boolean {
+      return !!state.user?.onboardedAt;
     },
     hasAccessToken(state): boolean {
       return !!state.accessToken;

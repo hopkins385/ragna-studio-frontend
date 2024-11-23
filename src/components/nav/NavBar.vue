@@ -6,19 +6,16 @@ import { useMousePressed } from '@vueuse/core';
 import {
   BotIcon,
   MessagesSquareIcon,
-  ArchiveIcon,
   HomeIcon,
   WorkflowIcon,
   DatabaseIcon,
   CloudUploadIcon,
-  ChevronRightIcon,
   SettingsIcon,
   Building2Icon,
   UsersIcon,
   FolderKanbanIcon,
   BriefcaseBusinessIcon,
   UserIcon,
-  SpeechIcon,
   ImageIcon,
   type LucideProps,
   PaintbrushVerticalIcon,
@@ -30,8 +27,6 @@ import {
 import type { FunctionalComponent } from 'vue';
 import NavLink from './NavLink.vue';
 import { Separator } from '@ui/separator';
-import NavUserMenu from './NavUserMenu.vue';
-import BrandLogo from '../brand/BrandLogo.vue';
 
 interface NavItem {
   icon: FunctionalComponent<LucideProps, {}, any, {}> | null;
@@ -52,7 +47,6 @@ const navBarResizerRef = ref(null);
 const route = useRoute();
 
 const navBar = useNavBarStore();
-const workspaceStore = useWorkspaceStore();
 const authStore = useAuthStore();
 
 const homeNavItem: NavItem = {
@@ -143,7 +137,7 @@ const workflowRoutes: NavItem[] = [
 const chatRoutes: NavItem[] = [
   {
     icon: PlusCircleIcon,
-    path: '/chat/new',
+    path: '/assistant',
     label: 'New',
     hidden: false,
     children: [],

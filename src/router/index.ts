@@ -248,9 +248,24 @@ const socialAuthCallbackRoutes = {
   },
 };
 
+const onboardingRoutes = {
+  path: '/onboarding',
+  component: () => import('../views/onboarding/OnboardingRootView.vue'),
+  meta: defaultAppMeta,
+  children: [
+    {
+      path: '',
+      name: 'onboarding.index',
+      component: () => import('../views/onboarding/OnboardingIndexView.vue'),
+      meta: defaultAppMeta,
+    },
+  ],
+};
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    onboardingRoutes,
     homeRoute,
     userRoutes,
     chatRoutes,
