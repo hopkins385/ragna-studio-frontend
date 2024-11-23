@@ -13,9 +13,10 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
-import IconRagna from '@assets/icons/ragna.svg?component';
 import { Checkbox } from '@/components/ui/checkbox';
 import LogosGoogleIcon from '~icons/logos/google-icon';
+import { useAuthService } from '@/composables/services/useAuthService';
+import BrandHeader from '@/components/brand/BrandHeader.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -57,23 +58,20 @@ const toggleShowForm = () => {
   // showForm.value = !showForm.value;
 };
 
+const { fetchSocialAuthUrl } = useAuthService();
+
 const google = ref(true);
-const onGoogleLogin = () => {
-  //
+const onGoogleLogin = async () => {
+  // get the google login url and redirect to it
+  const { url } = await fetchSocialAuthUrl('google');
+  window.location.href = url;
 };
 </script>
 
 <template>
   <section class="h-full">
     <div class="flex flex-col justify-center items-center h-full">
-      <div class="py-2 flex items-center space-x-3">
-        <span>
-          <IconRagna class="size-10 drop-shadow-sm" />
-        </span>
-        <h1 class="text-2xl font-bold text-center text-gray-800">
-          RAGNA Studio
-        </h1>
-      </div>
+      <BrandHeader />
       <div class="max-w-sm w-full p-10 border-0 rounded-lg">
         <div v-if="authError" class="text-red-500 text-sm text-center pb-8">
           {{ authError }}

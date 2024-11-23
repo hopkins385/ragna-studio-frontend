@@ -114,6 +114,28 @@ export const useAuthStore = defineStore('auth-store', {
         throw error;
       }
     },
+    async socialGoogleLogin(query: any): Promise<void> {
+      if (!query.code) {
+        throw new Error('No code provided');
+      }
+      const { googleAuth } = useAuthService();
+
+      try {
+        const data = await googleAuth({
+          code: query.code,
+          scope: query?.scope || undefined,
+          authuser: query?.authuser || undefined,
+          prompt: query?.prompt || undefined,
+        });
+
+        this.setAccessToken(data.accessToken, data.accessTokenExpiresAt);
+        this.setRefreshToken(data.refreshToken);
+        await this.fetchUser();
+      } catch (error) {
+        this.clearUser();
+        throw error;
+      }
+    },
     /**
      * Logs out the current user.
      */

@@ -7,6 +7,7 @@ enum AuthRoute {
   LOGIN = 'auth/login', // POST
   LOGOUT = 'auth/logout', // POST
   REFRESH = 'auth/refresh', // POST
+  SOCIAL_AUTH_URL = 'auth/:provider/url', // GET
   CALLBACK_GOOGLE = '/auth/google/callback', // POST
 }
 
@@ -30,6 +31,12 @@ interface TokensResponse {
   accessTokenExpiresAt: number;
   refreshToken: string;
   refreshTokenExpiresAt: number;
+}
+
+type AuthUrl = string;
+
+interface SocialAuthUrlResponse {
+  url: AuthUrl;
 }
 
 export function useAuthService() {
@@ -62,6 +69,19 @@ export function useAuthService() {
     return response.data;
   }
 
+  const fetchSocialAuthUrl = async (provider: string) => {
+    const route = AuthRoute.SOCIAL_AUTH_URL.replace(':provider', provider);
+    const response = await $axios.get<SocialAuthUrlResponse>(route, {
+      signal: ac.signal,
+    });
+
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch social auth url');
+    }
+
+    return response.data;
+  };
+
   const googleAuth = async (data: GoogleAuthCallbackQuery) => {
     const body = {
       code: data.code,
@@ -69,20 +89,17 @@ export function useAuthService() {
       authuser: data.authuser,
       prompt: data.prompt,
     };
-    try {
-      const route = getRoute(AuthRoute.CALLBACK_GOOGLE);
-      const response = await $axios.post(route, body, {
-        signal: ac.signal,
-      });
 
-      if (response.status !== 201) {
-        throw new Error('Failed to authenticate with Google');
-      }
+    const route = getRoute(AuthRoute.CALLBACK_GOOGLE);
+    const response = await $axios.post<TokensResponse>(route, body, {
+      signal: ac.signal,
+    });
 
-      return response.data;
-    } catch (error) {
-      console.error(error);
+    if (response.status !== 201) {
+      throw new Error('Failed to authenticate with Google');
     }
+
+    return response.data;
   };
 
   // TODO: find alternative to onScopeDispose
@@ -94,6 +111,7 @@ export function useAuthService() {
     loginUser,
     logoutUser,
     refreshTokens,
+    fetchSocialAuthUrl,
     googleAuth,
   };
 }
