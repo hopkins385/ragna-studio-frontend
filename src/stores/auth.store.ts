@@ -3,6 +3,11 @@ import { useAuthService } from '@/composables/services/useAuthService';
 import { defineStore } from 'pinia';
 import { useStorage } from '@vueuse/core';
 
+enum UserRoles {
+  ADMIN = 'admin',
+  // Additional roles...
+}
+
 interface Team {
   id: string;
   name: string;
@@ -44,6 +49,9 @@ export const useAuthStore = defineStore('auth-store', {
   getters: {
     isAuthenticated(state): boolean {
       return !!state.user && !!state.accessToken;
+    },
+    userHasAdminRole(state): boolean {
+      return !!state.user?.roles?.includes(UserRoles.ADMIN);
     },
     getUser(state): AuthUser | null {
       return state.user;

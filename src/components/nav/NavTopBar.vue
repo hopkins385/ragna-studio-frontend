@@ -3,6 +3,7 @@ import { Bell, Expand, Grip } from 'lucide-vue-next';
 import BrandLogo from '../brand/BrandLogo.vue';
 import NavUserMenu from './NavUserMenu.vue';
 import { useAuthStore } from '@/stores/auth.store';
+import NavTopPopover from './NavTopPopover.vue';
 
 const authStore = useAuthStore();
 
@@ -11,11 +12,11 @@ const userCredits = computed(() => {
 });
 
 const onExpandClick = () => {
-  // window full screen
+  const elem = document.documentElement;
   if (document.fullscreenElement) {
     document.exitFullscreen();
   } else {
-    document.documentElement.requestFullscreen();
+    elem.requestFullscreen();
   }
 };
 </script>
@@ -23,8 +24,8 @@ const onExpandClick = () => {
 <template>
   <div class="flex h-14 border-b items-center justify-between bg-stone-100">
     <div class="flex">
-      <div class="w-[4.5rem] border-0 flex items-center justify-center">
-        <Grip class="nav-icon stroke-1.5" />
+      <div class="px-6">
+        <NavTopPopover />
       </div>
       <div class="pl-0">
         <BrandLogo class="" :text-visible="true" />
