@@ -26,6 +26,8 @@ import WorkflowCellCard from './WorkflowCellCard.vue';
 import { useWorkflowStepService } from '@/composables/services/useWorkflowStepService';
 import useAssistantService from '@/composables/services/useAssistantService';
 import WorkflowSettingsSidebar from './WorkflowSettingsSidebar.vue';
+import useToast from '@/composables/useToast';
+import WorkflowNameEditable from './WorkflowNameEditable.vue';
 
 interface ICellCard {
   show: boolean;
@@ -42,9 +44,13 @@ const props = defineProps<{
   refreshData?: boolean;
 }>();
 
+const MAX_ROW_COUNT = 10;
+const MAX_COLUMN_COUNT = 10;
+
 const sideBarOpen = ref(false);
 const sheetRef = ref<HTMLElement | null>(null);
 
+const toast = useToast();
 const socket = useWebsocketGlobal();
 
 const stepCard = reactive({
@@ -84,14 +90,8 @@ const { fetchFullWorkflow, deleteWorkflowRows, executeWorkflow } =
   useWorkflowService();
 
 const workflow = ref<Workflow | null>(null);
-
-const initWorkflow = async () => {
-  const { workflow: data } = await fetchFullWorkflow(props.workflowId);
-  workflow.value = data;
-  nextTick(() => {
-    initSheetDimensions(props.workflowId);
-  });
-};
+const workflowId = computed(() => props.workflowId);
+const workflowName = computed(() => workflow.value?.name || '');
 
 const steps = computed(() => workflow.value?.steps || []);
 const rowCount = computed(
@@ -103,7 +103,20 @@ const workflowStepCardActive = computed(() => {
   return steps.value.find((step: any) => step.id === stepCard.workflowStepId);
 });
 
+const initWorkflow = async () => {
+  const { workflow: data } = await fetchFullWorkflow(props.workflowId);
+  workflow.value = data;
+  nextTick(() => {
+    initSheetDimensions(props.workflowId);
+  });
+};
+
 async function onAddWorkflowStep() {
+  const stepCount = steps.value.length;
+  if (stepCount >= MAX_COLUMN_COUNT) {
+    toast.info({ description: `Max ${MAX_COLUMN_COUNT} steps reached` });
+    return;
+  }
   const result = await fetchAllAssistants({ page: 1, limit: 1 });
   const assistant = result.assistants[0];
   if (!assistant || !assistant?.id) {
@@ -122,7 +135,11 @@ async function onAddWorkflowStep() {
 }
 
 async function onAddWorkflowRow() {
-  console.log('add new row');
+  const rowCount = steps.value[0]?.document.documentItems.length || 0;
+  if (rowCount >= MAX_ROW_COUNT) {
+    toast.info({ description: `Max ${MAX_ROW_COUNT} rows reached` });
+    return;
+  }
   const items = workflow.value?.steps.map((step: any) => {
     return {
       documentId: step.document.id,
@@ -255,6 +272,7 @@ const onRunFlow = async () => {
 };
 
 const onRefresh = async () => {
+  console.log('refresh');
   await initWorkflow();
 };
 
@@ -279,214 +297,234 @@ await initWorkflow();
 </script>
 
 <template>
-  <!-- Sheet-->
-  <div class="h-14 border-b flex items-center justify-between">
-    <div class="flex items-center">
-      <div class="px-4 flex items-center justify-center border-0">
-        <div class="rounded-lg p-2 bg-blue-50">
-          <WorkflowIcon class="size-5 stroke-1.5 text-blue-800" />
+  <div class="min-h-screen overflow-scroll">
+    <!-- Sheet Header -->
+    <div
+      class="h-14 border-b flex items-center justify-between sticky top-0 left-0 bg-white z-10"
+    >
+      <!-- Workflow Name -->
+      <div class="flex items-center">
+        <div class="px-4 flex items-center justify-center border-0">
+          <div class="rounded-lg p-2 bg-blue-50">
+            <WorkflowIcon class="size-5 stroke-1.5 text-blue-800" />
+          </div>
         </div>
-      </div>
-      <h1 class="text-base">
-        <span class="font-semibold">{{ workflow?.name }}</span>
-      </h1>
-    </div>
-    <!-- controls -->
-    <div class="pr-10 flex items-center space-x-2">
-      <WorkflowSettingsSidebar :workflow-id="props.workflowId" />
-      <Button variant="ghost" class="" @click="onRefresh"> Refresh </Button>
-      <Button variant="outline" class="" @click="onRunFlow"> Run Flow </Button>
-    </div>
-  </div>
-  <div v-if="!workflow" class="p-4 text-sm">
-    Ups something went wrong.<br />The Data you are looking for is not
-    available.
-  </div>
-  <div
-    id="workflowSheet"
-    ref="sheetRef"
-    v-on-click-outside="() => setCellActive(0, 0)"
-    class="no-scrollbar flex overflow-visible bg-white pb-10 border-t border-l text-xs"
-  >
-    <!-- Row Index -->
-    <div id="column_0" class="column">
-      <div
-        id="row_0_cell_x0_y1"
-        class="index relative flex items-center justify-center"
-      >
-        <Checkbox
-          :checked="hasSelectedRows"
-          class="size-3.5 border-stone-500"
-          @update:checked="toggleAllRowsSelected"
+        <WorkflowNameEditable
+          :workflow-id="workflowId"
+          :workflow-name="workflow?.name ?? ''"
+          @refresh="onRefresh"
         />
       </div>
-      <div
-        v-for="(count, rowIndex) in rowCount"
-        :id="`row_${rowIndex + 1}`"
-        :key="rowIndex"
-        class="relative"
-      >
+      <!-- controls -->
+      <div class="pr-10 flex items-center space-x-2">
+        <WorkflowSettingsSidebar
+          :workflow-id="props.workflowId"
+          :workflow-name="workflow?.name ?? ''"
+          :workflow-description="workflow?.description ?? ''"
+          @refresh="onRefresh"
+        />
+        <Button variant="ghost" class="" @click="onRefresh"> Refresh </Button>
+        <Button variant="outline" class="" @click="onRunFlow">
+          Run Flow
+        </Button>
+      </div>
+    </div>
+    <div v-if="!workflow" class="p-4 text-sm">
+      Ups something went wrong.<br />The Data you are looking for is not
+      available.
+    </div>
+    <!-- Sheet Content -->
+    <div
+      id="workflowSheet"
+      ref="sheetRef"
+      v-on-click-outside="() => setCellActive(0, 0)"
+      class="no-scrollbar flex overflow-visible bg-white pb-10 border-t border-l text-xs"
+    >
+      <!-- Row Index -->
+      <div id="column_0" class="column">
         <div
-          :id="`row_${rowIndex + 1}_cell_x0_y${rowIndex + 1}`"
-          class="index group flex flex-col items-center justify-between"
+          id="row_0_cell_x0_y1"
+          class="index relative flex items-center justify-center"
         >
-          <div class="flex h-full items-center justify-center opacity-60">
-            <div
-              class="pt-2 group-hover:hidden"
-              :class="{
-                hidden: selectedRows.includes(rowIndex),
-              }"
-            >
-              {{ rowIndex + 1 }}
+          <Checkbox
+            :checked="hasSelectedRows"
+            class="size-3.5 border-stone-500"
+            @update:checked="toggleAllRowsSelected"
+          />
+        </div>
+        <div
+          v-for="(count, rowIndex) in rowCount"
+          :id="`row_${rowIndex + 1}`"
+          :key="rowIndex"
+          class="relative"
+        >
+          <div
+            :id="`row_${rowIndex + 1}_cell_x0_y${rowIndex + 1}`"
+            class="index group flex flex-col items-center justify-between"
+          >
+            <div class="flex h-full items-center justify-center opacity-60">
+              <div
+                class="pt-2 group-hover:hidden"
+                :class="{
+                  hidden: selectedRows.includes(rowIndex),
+                }"
+              >
+                {{ rowIndex + 1 }}
+              </div>
+              <div
+                class="group-hover:block"
+                :class="{
+                  block: selectedRows.includes(rowIndex),
+                  hidden: !selectedRows.includes(rowIndex),
+                }"
+              >
+                <Checkbox
+                  :checked="selectedRows.includes(rowIndex)"
+                  class="mt-2 size-3.5"
+                  @update:checked="() => onRowSelected(rowIndex)"
+                />
+              </div>
             </div>
+            <!-- Resize Row -->
             <div
-              class="group-hover:block"
-              :class="{
-                block: selectedRows.includes(rowIndex),
-                hidden: !selectedRows.includes(rowIndex),
-              }"
+              class="group/icon flex h-3 w-full cursor-ns-resize items-center px-2"
+              @mousedown="
+                event => resizeRowListener(event, rowIndex + 1, workflowId)
+              "
             >
-              <Checkbox
-                :checked="selectedRows.includes(rowIndex)"
-                class="mt-2 size-3.5"
-                @update:checked="() => onRowSelected(rowIndex)"
-              />
+              <div
+                class="h-1 w-full shrink-0 rounded-lg group-hover/icon:bg-slate-400 group-hover:bg-slate-200"
+              ></div>
             </div>
           </div>
-          <!-- Resize Row -->
+        </div>
+        <!-- Add new Row -->
+        <div
+          id=""
+          class="index index-last plus-button"
+          @click="onAddWorkflowRow"
+        >
+          <PlusIcon class="size-3 stroke-1.5" />
+        </div>
+      </div>
+      <!-- WorkflowSteps as Columns -->
+      <div
+        v-for="(step, columnIndex) in steps"
+        :id="`column_${columnIndex}`"
+        :key="columnIndex"
+        class="column relative"
+      >
+        <!-- Teleport Anker -->
+        <div
+          :id="`step_teleport_anker_${columnIndex}`"
+          class="absolute left-0 top-8 z-10"
+        ></div>
+        <!-- Heading Column -->
+        <div
+          :id="`row_0_cell_${columnIndex}`"
+          class="cell group flex items-center justify-between px-2 py-1 hover:bg-slate-100"
+        >
+          <!-- Heading Text -->
           <div
-            class="group/icon flex h-3 w-full cursor-ns-resize items-center px-2"
-            @mousedown="
-              event => resizeRowListener(event, rowIndex + 1, workflowId)
-            "
+            class="flex w-full cursor-pointer overflow-hidden"
+            @click.stop="() => toggleStepCard(columnIndex, step.id)"
           >
+            <AlignLeftIcon class="mr-2 size-4 shrink-0 stroke-1.5" />
+            <span class="truncate">{{ step.name }}</span>
+          </div>
+          <!-- Resize Column -->
+          <div class="-mr-1 h-full opacity-0 group-hover:opacity-100">
             <div
-              class="h-1 w-full shrink-0 rounded-lg group-hover/icon:bg-slate-400 group-hover:bg-slate-200"
+              class="h-full w-1 shrink-0 cursor-ew-resize rounded-lg bg-slate-300 hover:bg-slate-400"
+              @mousedown="
+                event => resizeColumnListener(event, columnIndex, workflowId)
+              "
             ></div>
           </div>
         </div>
-      </div>
-      <!-- Add new Row -->
-      <div id="" class="index index-last plus-button" @click="onAddWorkflowRow">
-        <PlusIcon class="size-3 stroke-1.5" />
-      </div>
-    </div>
-    <!-- WorkflowSteps as Columns -->
-    <div
-      v-for="(step, columnIndex) in steps"
-      :id="`column_${columnIndex}`"
-      :key="columnIndex"
-      class="column relative"
-    >
-      <!-- Teleport Anker -->
-      <div
-        :id="`step_teleport_anker_${columnIndex}`"
-        class="absolute left-0 top-8 z-20 overflow-visible"
-      ></div>
-      <!-- Heading Column -->
-      <div
-        :id="`row_0_cell_${columnIndex}`"
-        class="cell group flex items-center justify-between px-2 py-1 hover:bg-slate-100"
-      >
-        <!-- Heading Text -->
+        <!-- DocumentItems as Rows -->
         <div
-          class="flex w-full cursor-pointer overflow-hidden"
-          @click.stop="() => toggleStepCard(columnIndex, step.id)"
+          v-for="(docItem, rowIndex) in step.document.documentItems"
+          :id="`row_${rowIndex + 1}_cell_${columnIndex}`"
+          :key="rowIndex"
+          class="cell group relative"
+          :class="{
+            'border border-black':
+              cellActive.x === columnIndex && cellActive.y === rowIndex + 1,
+          }"
+          @click="() => setCellActive(columnIndex, rowIndex + 1)"
+          @dblclick="
+            () =>
+              toggleCellCard(
+                columnIndex,
+                rowIndex + 1,
+                docItem.content,
+                docItem.id,
+              )
+          "
         >
-          <AlignLeftIcon class="mr-2 size-4 shrink-0 stroke-1.5" />
-          <span class="truncate">{{ step.name }}</span>
-        </div>
-        <!-- Resize Column -->
-        <div class="-mr-1 h-full opacity-0 group-hover:opacity-100">
+          <!-- Cell State -->
           <div
-            class="h-full w-1 shrink-0 cursor-ew-resize rounded-lg bg-slate-300 hover:bg-slate-400"
-            @mousedown="
-              event => resizeColumnListener(event, columnIndex, workflowId)
+            v-if="
+              docItem.processingStatus &&
+              docItem.processingStatus !== 'completed'
             "
+            class="absolute right-1 top-0 z-10 rounded-lg border shadow-sm"
+          >
+            <div
+              v-if="docItem.processingStatus === 'failed'"
+              class="rounded-lg bg-red-50 p-2 font-bold text-destructive"
+            >
+              <TriangleAlertIcon class="size-3 stroke-1.5" />
+            </div>
+            <div
+              v-if="docItem.processingStatus === 'pending'"
+              class="rounded-lg bg-green-100 p-2"
+            >
+              <LoaderIcon class="size-3 animate-spin stroke-1.5" />
+            </div>
+          </div>
+          <!-- Cell content -->
+          <div :id="`cell_content_${docItem.id}`" class="cell-content">
+            {{ docItem.content }}
+          </div>
+          <!-- Row Detail Link -->
+          <div
+            v-if="columnIndex === 0"
+            class="group/link absolute right-1 top-1 z-10 opacity-0 group-hover:opacity-100"
+            @click="e => e.stopPropagation()"
+          >
+            <RouterLink
+              :to="`/workflow/${workflow?.id}/detail?row=${rowIndex}`"
+              class="flex items-center justify-center rounded-lg border bg-white p-1 shadow-md group-hover/link:bg-slate-100"
+            >
+              <LayoutDashboard class="size-3 stroke-1" />
+            </RouterLink>
+          </div>
+          <!-- Cellcard teleport anker -->
+          <div
+            :id="`cellcard_teleport_anker_x${columnIndex}_y${rowIndex + 1}`"
+            class="absolute left-0 top-0 z-20"
           ></div>
         </div>
+        <!-- Last Cells -->
+        <div class="cell cell-last"></div>
       </div>
-      <!-- DocumentItems as Rows -->
-      <div
-        v-for="(docItem, rowIndex) in step.document.documentItems"
-        :id="`row_${rowIndex + 1}_cell_${columnIndex}`"
-        :key="rowIndex"
-        class="cell group relative"
-        :class="{
-          'border border-black':
-            cellActive.x === columnIndex && cellActive.y === rowIndex + 1,
-        }"
-        @click="() => setCellActive(columnIndex, rowIndex + 1)"
-        @dblclick="
-          () =>
-            toggleCellCard(
-              columnIndex,
-              rowIndex + 1,
-              docItem.content,
-              docItem.id,
-            )
-        "
-      >
-        <!-- Cell State -->
-        <div
-          v-if="
-            docItem.processingStatus && docItem.processingStatus !== 'completed'
-          "
-          class="absolute right-1 top-0 z-10 rounded-lg border shadow-sm"
-        >
-          <div
-            v-if="docItem.processingStatus === 'failed'"
-            class="rounded-lg bg-red-50 p-2 font-bold text-destructive"
-          >
-            <TriangleAlertIcon class="size-3 stroke-1.5" />
-          </div>
-          <div
-            v-if="docItem.processingStatus === 'pending'"
-            class="rounded-lg bg-green-100 p-2"
-          >
-            <LoaderIcon class="size-3 animate-spin stroke-1.5" />
-          </div>
+      <!-- Last Column -->
+      <div id="column_last" class="column">
+        <!-- Add Column -->
+        <div class="index plus-button" @click="onAddWorkflowStep">
+          <PlusIcon class="size-3 stroke-1.5" />
         </div>
-        <!-- Cell content -->
-        <div :id="`cell_content_${docItem.id}`" class="cell-content">
-          {{ docItem.content }}
-        </div>
-        <!-- Row Detail Link -->
         <div
-          v-if="columnIndex === 0"
-          class="group/link absolute right-1 top-1 z-10 opacity-0 group-hover:opacity-100"
-          @click="e => e.stopPropagation()"
-        >
-          <RouterLink
-            :to="`/workflow/${workflow?.id}/detail?row=${rowIndex}`"
-            class="flex items-center justify-center rounded-lg border bg-white p-1 shadow-md group-hover/link:bg-slate-100"
-          >
-            <LayoutDashboard class="size-3 stroke-1" />
-          </RouterLink>
-        </div>
-        <!-- Cellcard teleport anker -->
-        <div
-          :id="`cellcard_teleport_anker_x${columnIndex}_y${rowIndex + 1}`"
-          class="absolute left-0 top-0 z-20"
+          v-for="(count, index) in rowCount"
+          :id="`row_${index + 1}_cell_last`"
+          :key="index"
+          class="index"
         ></div>
-      </div>
-      <!-- Last Cells -->
-      <div class="cell cell-last"></div>
-    </div>
-    <!-- Last Column -->
-    <div id="column_last" class="column">
-      <!-- Add Column -->
-      <div class="index plus-button" @click="onAddWorkflowStep">
-        <PlusIcon class="size-3 stroke-1.5" />
-      </div>
-      <div
-        v-for="(count, index) in rowCount"
-        :id="`row_${index + 1}_cell_last`"
-        :key="index"
-        class="index"
-      ></div>
-      <div class="index index-last">
-        <!-- div @mousedown="(e) => resizeAllListener(e, workflowId)">h</!-->
+        <div class="index index-last">
+          <!-- div @mousedown="(e) => resizeAllListener(e, workflowId)">h</!-->
+        </div>
       </div>
     </div>
   </div>
@@ -498,7 +536,7 @@ await initWorkflow();
     <StepManagementCard
       :key="stepCard.teleportTo"
       v-on-click-outside.bubble="onCloseStepCard"
-      :workflow-id="workflow?.id"
+      :workflow-id="workflow?.id ?? ''"
       :all-workflow-steps="steps"
       :workflow-step="workflowStepCardActive"
       @refresh="onRefresh"
@@ -514,13 +552,13 @@ await initWorkflow();
   >
     <WorkflowCellCard
       :key="`x${cellCard.teleportTo.x}_y${cellCard.teleportTo.y}`"
-      :workflow-id="workflow?.id"
+      :workflow-id="workflow?.id ?? ''"
       :step-id="cellCard.stepId"
       :item-id="cellCard.itemId"
       :content="cellCard.content"
       :width="cellCard.width"
       :height="cellCard.heigth"
-      @close="() => onCloseCellCard()"
+      @close="onCloseCellCard"
       @refresh="onRefresh"
     />
   </Teleport>

@@ -78,7 +78,7 @@ async function resetCollections() {
 const { errors, handleSubmit, isSubmitting, isValidating } = useForm({
   validationSchema: assistantFormSchema,
   initialValues: {
-    teamId: authStore.user?.teams[0].team.id || '-1',
+    teamId: authStore.user?.firstTeamId || '-1',
     llmId: props.assistant?.llm.id || '',
     title: props.assistant?.title || '',
     description: props.assistant?.description || '',

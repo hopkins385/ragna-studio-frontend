@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // const homeImageSrc = '@/assets/images/home.jpg&q=100&format=webp&imagetools';
-import imageUrl from '@/assets/images/home2.jpg';
+import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
 
 const backgroundStyles = computed(() => {
   return {

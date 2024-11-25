@@ -109,6 +109,7 @@ onMounted(() => {
           v-model="workflowStepName"
           type="text"
           class="text-xs focus-visible:ring-transparent"
+          autocomplete="off"
         />
       </form>
       <hr class="-mx-4 mb-3 mt-1" />

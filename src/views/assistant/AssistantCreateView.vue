@@ -19,7 +19,6 @@ import { useAuthStore } from '@stores/auth.store';
 import { useForm } from 'vee-validate';
 import LlmSelectModal from '@components/llm/LlmSelectModal.vue';
 import { Textarea } from '@ui/textarea';
-import AssistantToolsFormField from '@components/assistant/AssistantToolsFormField.vue';
 import {
   useAssistantToolsService,
   type AssistantTool,
@@ -35,7 +34,7 @@ const toast = useToast();
 const { handleSubmit } = useForm({
   validationSchema: assistantFormSchema,
   initialValues: {
-    teamId: authStore.user?.teams?.[0].team.id || undefined,
+    teamId: authStore.user?.firstTeamId || undefined,
     llmId: '',
     title: '',
     description: '',

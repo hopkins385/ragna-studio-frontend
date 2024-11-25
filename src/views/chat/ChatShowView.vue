@@ -213,13 +213,13 @@ onBeforeUnmount(() => {
   >
     <!-- chat header -->
     <!-- left quick controls -->
-    <div class="absolute left-10 top-5 border-0 z-10">
+    <div class="absolute left-7 top-5 border-0 z-10">
       <div class="space-y-3 border-0 flex flex-col p-2 rounded-lg">
         <ChatButtonNewChat />
         <ChatHistorySidebar />
         <div class="border-0 flex justify-center items-center h-5">
           <div
-            class="rounded-full size-2"
+            class="rounded-full size-1"
             :class="{
               'bg-green-500/80': socket.isConnected.value === true,
               'bg-red-500/80': socket.isConnected.value === false,

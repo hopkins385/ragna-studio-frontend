@@ -29,8 +29,7 @@ interface IReCreateWorkflowFromMedia {
   mediaId: string;
 }
 
-interface IUpdateWorkflow {
-  workflowId: string;
+interface UpdateWorkflowDto {
   name: string;
   description: string;
 }
@@ -173,8 +172,27 @@ export function useWorkflowService() {
     throw new Error('Not implemented');
   };
 
-  const updateWorkflow = async (payload: IUpdateWorkflow) => {
-    throw new Error('Not implemented');
+  const updateWorkflow = async (
+    workflowId: string,
+    payload: Partial<UpdateWorkflowDto>,
+  ) => {
+    try {
+      const route = getRoute(WorkflowRoute.WORKFLOW, workflowId);
+      const response = await $axios.patch(route, payload, {
+        signal: ac.signal,
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Response not ok');
+      }
+
+      return response.data;
+    } catch (error: any) {
+      throw new WorkflowServiceError(
+        error.status ?? 500,
+        'Failed to update workflow',
+      );
+    }
   };
 
   const deleteWorkflow = async (workflowId: string) => {

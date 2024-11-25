@@ -11,20 +11,73 @@ import {
 } from '../ui/tooltip';
 import SheetTitle from '../ui/sheet/SheetTitle.vue';
 import SheetDescription from '../ui/sheet/SheetDescription.vue';
+import Separator from '../ui/separator/Separator.vue';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
+import { useWorkflowService } from '@/composables/services/useWorkflowService';
+import { toTypedSchema } from '@vee-validate/zod';
+import { workflowSettingsSchema } from '@/schemas/workflow-settings.schema';
+import useToast from '@/composables/useToast';
 
-defineProps<{
+const props = defineProps<{
   workflowId: string;
+  workflowName: string;
+  workflowDescription: string;
 }>();
 
+const emit = defineEmits<{
+  refresh: [void];
+}>();
+
+const toast = useToast();
+
 const sheetIsOpen = ref(false);
+
+const { updateWorkflow } = useWorkflowService();
+
+const { handleSubmit, resetForm } = useForm({
+  validationSchema: toTypedSchema(workflowSettingsSchema),
+  initialValues: {
+    name: props.workflowName,
+    description: props.workflowDescription,
+  },
+});
 
 const onClick = () => {
   sheetIsOpen.value = true;
 };
+
+const onSubmit = handleSubmit(async values => {
+  try {
+    await updateWorkflow(props.workflowId, {
+      name: values.name,
+      description: values.description,
+    });
+    toast.success({ description: 'Workflow settings updated' });
+  } catch (error) {
+    console.error(error);
+  } finally {
+    emit('refresh');
+  }
+});
+
+// watch open state and reset form when closed
+watch(sheetIsOpen, isOpen => {
+  if (isOpen) {
+    resetForm();
+  }
+});
 </script>
 
 <template>
-  <Sheet v-model:open="sheetIsOpen" :modal="false">
+  <Sheet v-model:open="sheetIsOpen" :modal="false" :destroy="false">
     <SheetTrigger as-child>
       <TooltipProvider :delay-duration="300">
         <Tooltip>
@@ -45,11 +98,46 @@ const onClick = () => {
       class=""
     >
       <SheetHeader class="">
-        <SheetTitle class="text-base"> Workflow Settings </SheetTitle>
+        <SheetTitle class="text-base flex items-center space-x-2">
+          <SettingsIcon class="size-5 stroke-1.5" />
+          <span>Workflow Settings</span>
+        </SheetTitle>
         <SheetDescription> </SheetDescription>
       </SheetHeader>
       <Separator />
-      <div class="px-4 pt-2"></div>
+      <div class="mt-10">
+        <form @submit.prevent="onSubmit" class="flex flex-col space-y-4">
+          <Button variant="outline" class="self-end"> Save Settings </Button>
+          <FormField v-slot="{ componentField }" name="name">
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input
+                  id="wfNameInput"
+                  type="text"
+                  placeholder="Name"
+                  autocomplete="off"
+                  v-bind="componentField"
+                />
+              </FormControl>
+              <FormMessage class="text-xs" />
+            </FormItem>
+          </FormField>
+          <FormField v-slot="{ componentField }" name="description">
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Description"
+                  autocomplete="off"
+                  v-bind="componentField"
+                />
+              </FormControl>
+              <FormMessage class="text-xs" />
+            </FormItem>
+          </FormField>
+        </form>
+      </div>
     </SheetContent>
   </Sheet>
 </template>

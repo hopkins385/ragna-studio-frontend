@@ -5,15 +5,13 @@ import { useOnboardingService } from '@/composables/services/useOnboardingServic
 import { useAuthStore } from '@/stores/auth.store';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@ui/dialog';
-import imageUrl from '@/assets/images/home2.jpg';
+import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
 
 /**
  * Onboarding

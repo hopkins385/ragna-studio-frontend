@@ -21,7 +21,8 @@ const status = ref('idle');
 const getTools = async () => {
   status.value = 'pending';
   try {
-    tools.value = await fetchAllTools();
+    const { tools: theTools } = await fetchAllTools();
+    tools.value = theTools;
     status.value = 'success';
   } catch (error) {
     console.error(error);

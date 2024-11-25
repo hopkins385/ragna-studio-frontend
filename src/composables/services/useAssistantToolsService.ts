@@ -6,6 +6,7 @@ enum AssistantToolRoute {
 }
 
 export interface AssistantTool {
+  toolId: string;
   name: string;
   description: string | null;
   id: string;

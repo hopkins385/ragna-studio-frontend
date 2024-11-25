@@ -37,11 +37,12 @@ const { handleSubmit } = useForm({
 });
 
 const onSubmit = handleSubmit(async values => {
-  const { updateWorkflowStepAssistant } = useWorkflowStepService();
+  /*const { updateWorkflowStepAssistant } = useWorkflowStepService();
   await updateWorkflowStepAssistant({
     workflowStepId: props.workflowStepId,
     assistantId: values.assistantId,
-  });
+  });*/
+  throw new Error('Not implemented');
   emit('refresh');
 });
 </script>

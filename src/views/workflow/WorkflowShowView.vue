@@ -9,8 +9,8 @@ console.log('workflowId', workflowId);
 </script>
 
 <template>
-  <div id="workflowContainer" class="size-full">
-    <div class="min-h-full bg-white">
+  <div id="workflowContainer" class="">
+    <div class="">
       <Suspense>
         <WorkflowSheet v-if="showTable" :workflow-id="workflowId" />
         <!--

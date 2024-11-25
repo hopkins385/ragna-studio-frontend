@@ -24,8 +24,16 @@ export default function useToast() {
     });
   }
 
+  function info(payload: IToast) {
+    toast.info('Info', {
+      description: payload.description,
+      duration: config.errorDuration,
+    });
+  }
+
   return {
     success,
     error,
+    info,
   };
 }

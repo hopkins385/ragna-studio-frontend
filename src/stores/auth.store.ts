@@ -24,6 +24,8 @@ interface AuthUser {
   credit: any;
   teams: Team[];
   roles: string[];
+  firstTeamId: string;
+  totalCredits: number;
 }
 
 interface IAuthState {

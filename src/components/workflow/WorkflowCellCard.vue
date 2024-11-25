@@ -40,14 +40,14 @@ async function updateItem(value: string) {
   }
 }
 
-function updateAndClose(event: KeyboardEvent) {
+async function updateAndClose(event: KeyboardEvent) {
   // event.preventDefault();
   // if key shift + enter
   if (event.shiftKey && event.key === 'Enter') {
     return;
   }
 
-  updateItem(text.value);
+  await updateItem(text.value);
   emits('close');
 }
 
