@@ -112,7 +112,7 @@ onMounted(() => {
         />
       </form>
       <hr class="-mx-4 mb-3 mt-1" />
-      <div v-if="workflowStep.orderColumn > 0">
+      <div>
         <div class="space-y-2 py-1">
           <div class="flex justify-between">
             <div>Assistant:</div>

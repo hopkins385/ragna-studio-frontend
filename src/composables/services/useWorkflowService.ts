@@ -16,6 +16,7 @@ enum WorkflowRoute {
   BASE = '/workflow',
   WORKFLOW = '/workflow/:id',
   WORKFLOW_FULL = '/workflow/:id/full',
+  EXECUTE = '/workflow/:id/execute',
 }
 
 interface ICreateWorkflow {
@@ -34,17 +35,18 @@ interface IUpdateWorkflow {
   description: string;
 }
 
-interface Workflow {
+export interface Workflow {
   id: string;
   name: string;
   description: string;
+  steps: any[];
 }
 
-interface WorkflowResponse {
+export interface WorkflowResponse {
   workflow: Workflow;
 }
 
-interface WorkflowsResponse {
+export interface WorkflowsResponse {
   workflows: Workflow[];
 }
 
@@ -194,6 +196,30 @@ export function useWorkflowService() {
     throw new Error('Not implemented');
   };
 
+  const executeWorkflow = async (workflowId: string) => {
+    try {
+      const route = getRoute(WorkflowRoute.EXECUTE, workflowId);
+      const response = await $axios.post(
+        route,
+        {},
+        {
+          signal: ac.signal,
+        },
+      );
+
+      if (response.status !== 200) {
+        throw new Error('Response not ok');
+      }
+
+      return response.data;
+    } catch (error: any) {
+      throw new WorkflowServiceError(
+        error.status ?? 500,
+        'Failed to execute workflow',
+      );
+    }
+  };
+
   return {
     createWorkflow,
     reCreateWorkflowFromMedia,
@@ -207,5 +233,6 @@ export function useWorkflowService() {
     deleteWorkflowRows,
     exportWorkflow,
     clearAllRows,
+    executeWorkflow,
   };
 }

@@ -77,7 +77,7 @@ const initChatHistory = async ({
         <SheetDescription> </SheetDescription>
       </SheetHeader>
       <Separator />
-      <div class="border-0s border-red-200 px-4 pt-2">
+      <div class="px-4 pt-2">
         <ul class="space-y-0">
           <li
             v-for="chat in chats"

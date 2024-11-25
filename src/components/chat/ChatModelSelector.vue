@@ -80,7 +80,7 @@ onMounted(() => {
         :aria-expanded="open"
         class="w-[210px] justify-between"
       >
-        {{ selectedModel }}
+        <span class="truncate">{{ selectedModel }}</span>
         <ChevronsDownUpIcon class="ml-2 size-4 shrink-0 opacity-50" />
       </Button>
     </PopoverTrigger>

@@ -8,22 +8,30 @@ import {
   LoaderIcon,
   TriangleAlertIcon,
   Trash2Icon,
-  Workflow,
+  WorkflowIcon,
+  Settings2Icon,
+  SettingsIcon,
 } from 'lucide-vue-next';
 import { Checkbox } from '@ui/checkbox';
 import { useWebsocketGlobal } from '@composables/websocket/useWebsocketGlobal';
 import StepManagementCard from './step/StepManagementCard.vue';
 import { useResizeSheet } from '@/composables/useResizeSheet';
-import { useWorkflowService } from '@/composables/services/useWorkflowService';
+import {
+  useWorkflowService,
+  type Workflow,
+  type WorkflowResponse,
+} from '@/composables/services/useWorkflowService';
 import { Button } from '@ui/button';
 import WorkflowCellCard from './WorkflowCellCard.vue';
 import { useWorkflowStepService } from '@/composables/services/useWorkflowStepService';
 import useAssistantService from '@/composables/services/useAssistantService';
+import WorkflowSettingsSidebar from './WorkflowSettingsSidebar.vue';
 
 interface ICellCard {
   show: boolean;
   teleportTo: { x: number; y: number };
-  contentId: string;
+  stepId: string;
+  itemId: string;
   content: string;
   width?: number;
   heigth?: number;
@@ -51,8 +59,9 @@ const cellCard = reactive<ICellCard>({
     x: 0,
     y: 0,
   },
-  contentId: '',
+  itemId: '',
   content: '',
+  stepId: '',
   width: undefined,
   heigth: undefined,
 });
@@ -71,19 +80,20 @@ const { createWorkflowStep, createWorkflowRow, updateInputSteps } =
 const { fetchAllAssistants } = useAssistantService();
 // const { createManyDocumentItems } = useManageDocumentItems();
 
-const { fetchFullWorkflow, deleteWorkflowRows } = useWorkflowService();
+const { fetchFullWorkflow, deleteWorkflowRows, executeWorkflow } =
+  useWorkflowService();
 
-const workflowData = ref<any | null>(null);
+const workflow = ref<Workflow | null>(null);
 
 const initWorkflow = async () => {
-  const { workflow } = await fetchFullWorkflow(props.workflowId);
-  workflowData.value = workflow;
+  const { workflow: data } = await fetchFullWorkflow(props.workflowId);
+  workflow.value = data;
   nextTick(() => {
     initSheetDimensions(props.workflowId);
   });
 };
 
-const steps = computed(() => workflowData.value?.steps || []);
+const steps = computed(() => workflow.value?.steps || []);
 const rowCount = computed(
   () => steps.value[0]?.document.documentItems.length || 0,
 );
@@ -92,10 +102,6 @@ const columnCount = computed(() => steps.value.length);
 const workflowStepCardActive = computed(() => {
   return steps.value.find((step: any) => step.id === stepCard.workflowStepId);
 });
-
-const onRefresh = async () => {
-  await initWorkflow();
-};
 
 async function onAddWorkflowStep() {
   const result = await fetchAllAssistants({ page: 1, limit: 1 });
@@ -117,7 +123,7 @@ async function onAddWorkflowStep() {
 
 async function onAddWorkflowRow() {
   console.log('add new row');
-  const items = workflowData.value.steps.map((step: any) => {
+  const items = workflow.value?.steps.map((step: any) => {
     return {
       documentId: step.document.id,
       orderColumn: step.document.documentItems.length,
@@ -167,8 +173,9 @@ function toggleCellCard(
     sheetRef.value?.querySelector(`#row_${y}`)?.clientHeight || 0;
   cellCard.teleportTo.x = Number(x);
   cellCard.teleportTo.y = Number(y);
+  cellCard.stepId = steps.value[x].id; // TODO: check if this is correct
+  cellCard.itemId = id;
   cellCard.content = content;
-  cellCard.contentId = id;
   cellCard.show = true;
   cellCard.width = width;
   cellCard.heigth = height || Number(rowHeight);
@@ -177,8 +184,11 @@ function toggleCellCard(
 function onCloseCellCard() {
   cellCard.show = false;
   cellCard.teleportTo = { x: 0, y: 0 };
-  cellCard.contentId = '';
+  cellCard.stepId = '';
+  cellCard.itemId = '';
   cellCard.content = '';
+  cellCard.width = undefined;
+  cellCard.heigth = undefined;
 }
 
 async function onInputStepsUpdated(payload: {
@@ -240,14 +250,13 @@ function setCellActive(columnIndex: number, rowIndex: number) {
   cellActive.value = { x: columnIndex, y: rowIndex, rowHeight: rowHeight || 0 };
 }
 
-watch(
-  () => props.refreshData,
-  async () => {
-    if (props.refreshData) {
-      // await refresh();
-    }
-  },
-);
+const onRunFlow = async () => {
+  await executeWorkflow(props.workflowId);
+};
+
+const onRefresh = async () => {
+  await initWorkflow();
+};
 
 useEventListener('keydown', event => {
   if (event.key === 'Escape') {
@@ -275,20 +284,21 @@ await initWorkflow();
     <div class="flex items-center">
       <div class="px-4 flex items-center justify-center border-0">
         <div class="rounded-lg p-2 bg-blue-50">
-          <Workflow class="size-5 stroke-1.5 text-blue-800" />
+          <WorkflowIcon class="size-5 stroke-1.5 text-blue-800" />
         </div>
       </div>
       <h1 class="text-base">
-        <span class="font-semibold">{{ workflowData?.name }}</span>
+        <span class="font-semibold">{{ workflow?.name }}</span>
       </h1>
     </div>
     <!-- controls -->
     <div class="pr-10 flex items-center space-x-2">
+      <WorkflowSettingsSidebar :workflow-id="props.workflowId" />
       <Button variant="ghost" class="" @click="onRefresh"> Refresh </Button>
-      <Button variant="outline" class="" @click="onRefresh"> Execute </Button>
+      <Button variant="outline" class="" @click="onRunFlow"> Run Flow </Button>
     </div>
   </div>
-  <div v-if="!workflowData" class="p-4 text-sm">
+  <div v-if="!workflow" class="p-4 text-sm">
     Ups something went wrong.<br />The Data you are looking for is not
     available.
   </div>
@@ -448,7 +458,7 @@ await initWorkflow();
           @click="e => e.stopPropagation()"
         >
           <RouterLink
-            :to="`/workflow/${workflowData.id}/detail?row=${rowIndex}`"
+            :to="`/workflow/${workflow?.id}/detail?row=${rowIndex}`"
             class="flex items-center justify-center rounded-lg border bg-white p-1 shadow-md group-hover/link:bg-slate-100"
           >
             <LayoutDashboard class="size-3 stroke-1" />
@@ -488,7 +498,7 @@ await initWorkflow();
     <StepManagementCard
       :key="stepCard.teleportTo"
       v-on-click-outside.bubble="onCloseStepCard"
-      :workflow-id="workflowData.id"
+      :workflow-id="workflow?.id"
       :all-workflow-steps="steps"
       :workflow-step="workflowStepCardActive"
       @refresh="onRefresh"
@@ -498,16 +508,15 @@ await initWorkflow();
     />
   </Teleport>
   <!-- CellCard -->
-  <!--
-  v-on-click-outside.bubble="onCloseCellCard"
-  -->
   <Teleport
     v-if="cellCard.show"
     :to="`#cellcard_teleport_anker_x${cellCard.teleportTo.x}_y${cellCard.teleportTo.y}`"
   >
     <WorkflowCellCard
       :key="`x${cellCard.teleportTo.x}_y${cellCard.teleportTo.y}`"
-      :item-id="cellCard.contentId"
+      :workflow-id="workflow?.id"
+      :step-id="cellCard.stepId"
+      :item-id="cellCard.itemId"
       :content="cellCard.content"
       :width="cellCard.width"
       :height="cellCard.heigth"
@@ -515,15 +524,6 @@ await initWorkflow();
       @refresh="onRefresh"
     />
   </Teleport>
-  <!-- Settings Slider -->
-  <!-- Sheet v-model:open="sideBarOpen">
-    <SheetContent>
-      <SheetHeader>
-        <SheetTitle>Settings</SheetTitle>
-        <SheetDescription> Under Construction </SheetDescription>
-      </SheetHeader>
-    </SheetContent>
-  </!-->
 
   <Teleport v-if="hasSelectedRows" to="body">
     <div class="absolute bottom-5 left-1/2 -translate-x-1/2">

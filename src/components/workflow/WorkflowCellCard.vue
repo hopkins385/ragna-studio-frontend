@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { useWorkflowStepService } from '@/composables/services/useWorkflowStepService';
 import { Textarea } from '@ui/textarea';
 import { onClickOutside, useDebounceFn } from '@vueuse/core';
 import { XIcon } from 'lucide-vue-next';
 
 const props = defineProps<{
-  itemId: string | null | undefined;
-  content: string | null | undefined;
+  workflowId: string;
+  stepId: string;
+  itemId: string;
+  content: string;
   width?: number;
   height?: number;
 }>();
@@ -19,24 +22,32 @@ const text = ref(props.content || '');
 const pending = ref(false);
 const cellCardRef = ref<HTMLDivElement | null>(null);
 
-// const { updateDocumentItem } = useManageDocumentItems();
+const { updateItemContent } = useWorkflowStepService();
 
 async function updateItem(value: string) {
-  // await updateDocumentItem({
-  //   documentItemId: props?.itemId || '',
-  //   content: value,
-  // });
-  emits('refresh');
+  if (!props.itemId) {
+    throw new Error('itemId is required');
+  }
+  try {
+    await updateItemContent({
+      stepId: props.stepId,
+      itemId: props.itemId,
+      content: value,
+    });
+  } catch (error) {
+  } finally {
+    emits('refresh');
+  }
 }
 
-async function updateAndClose(event: KeyboardEvent) {
+function updateAndClose(event: KeyboardEvent) {
   // event.preventDefault();
   // if key shift + enter
   if (event.shiftKey && event.key === 'Enter') {
     return;
   }
 
-  await updateItem(text.value);
+  updateItem(text.value);
   emits('close');
 }
 
@@ -46,7 +57,7 @@ function setPending(value: boolean) {
 }
 
 const onUpdate = useDebounceFn(async value => {
-  // await updateItem(value);
+  await updateItem(value);
   setPending(false);
 }, 250);
 

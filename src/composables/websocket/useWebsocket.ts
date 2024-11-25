@@ -1,8 +1,17 @@
 import { socketClient } from '@/socket';
 import { useAuthStore } from '@/stores/auth.store';
+import useToast from '../useToast';
 
 export default function useWebsocket() {
   const authStore = useAuthStore();
+  const toast = useToast();
+
+  const isConnected = ref(socketClient.connected);
+
+  function connect() {
+    if (socketClient.connected) return;
+    socketClient.connect();
+  }
 
   function emit(event: string, data: any) {
     socketClient.emit(event, data);
@@ -19,6 +28,7 @@ export default function useWebsocket() {
   onMounted(() => {
     // Register listeners for socket events
     socketClient.on('connect', () => {
+      isConnected.value = true;
       console.log('Socket connected:', socketClient.connected);
 
       // Emit 'join' event if user is authenticated
@@ -33,6 +43,7 @@ export default function useWebsocket() {
 
     // Handle socket disconnection event
     socketClient.on('disconnect', () => {
+      isConnected.value = false;
       console.log('Socket disconnected');
     });
   });
@@ -45,6 +56,9 @@ export default function useWebsocket() {
   });
 
   return {
+    socketClient,
+    isConnected,
+    connect,
     emit,
     on,
     off,

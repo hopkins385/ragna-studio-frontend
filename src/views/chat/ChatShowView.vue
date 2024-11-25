@@ -17,6 +17,7 @@ import ChatButtonNewChat from '@components/chat/ChatButtonNewChat.vue';
 import ChatImageInput from '@components/chat/ChatImageInput.vue';
 import ChatToolCallMessage from '@/components/chat/ChatToolCallMessage.vue';
 import ChatHistorySidebar from '@/components/chat/ChatHistorySidebar.vue';
+import useToast from '@/composables/useToast';
 
 useHead({
   title: 'Chat',
@@ -211,65 +212,38 @@ onBeforeUnmount(() => {
     }"
   >
     <!-- chat header -->
-    <div
-      id="chatHeader"
-      class="pointer-events-none absolute left-0 top-0 z-10 flex w-full justify-between border-b bg-transparent px-8 py-3"
-    >
-      <div class="pointer-events-auto space-x-3">
-        <ChatHistorySidebar />
+    <!-- left quick controls -->
+    <div class="absolute left-10 top-5 border-0 z-10">
+      <div class="space-y-3 border-0 flex flex-col p-2 rounded-lg">
         <ChatButtonNewChat />
-        <div class="max-w-xs">
-          <h1 class="text-2xl truncate font-semibold">
-            {{ chatTitle }}
-          </h1>
+        <ChatHistorySidebar />
+        <div class="border-0 flex justify-center items-center h-5">
+          <div
+            class="rounded-full size-2"
+            :class="{
+              'bg-green-500/80': socket.isConnected.value === true,
+              'bg-red-500/80': socket.isConnected.value === false,
+            }"
+          ></div>
         </div>
       </div>
-      <!-- active assistant -->
-      <!--
-      <div class="flex shrink items-center 2xl:pr-8">
-        <ChatWindowHeader
-          :key="assistant?.id"
-          :is-hidden="settings.sideBarOpen"
-          :chat-id="chatId"
-          :assistant-title="assistant?.title"
-          :chat-title="chatTitle"
-        />
-      </div>
-      -->
-      <!-- chat actions -->
-      <div
-        class="pointer-events-auto flex justify-center items-center shrink-0 space-x-5"
-      >
-        <div v-if="assistant" class="border rounded-full px-4 py-2 max-w-xs">
+    </div>
+    <!-- right quick controls -->
+    <div class="absolute right-10 top-5 border-0 z-10">
+      <div class="flex justify-center items-center shrink-0 space-x-5">
+        <div
+          v-if="assistant"
+          class="border rounded-full px-4 py-2 max-w-xs bg-white"
+        >
           <p class="text-sm truncate">{{ assistant?.title ?? 'Assistant' }}</p>
         </div>
         <ChatSettings
           :assistant-id="assistant?.id"
-          @delete-all-messages="async () => await clearChatMessages()"
+          @delete-all-messages="clearChatMessages"
         />
-        <!--
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger :as-child="true">
-              <Button
-                variant="outline"
-                size="icon"
-                class="group"
-                @click="() => settings.toggleSideBarOpen()"
-              >
-                <SquareSplitHorizontalIcon
-                  class="size-4 stroke-1.5 group-hover:stroke-2"
-                />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p class="text-sm">Split Screen</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        -->
       </div>
     </div>
+
     <!-- chat messages container -->
     <div
       id="chatMessagesContainer"

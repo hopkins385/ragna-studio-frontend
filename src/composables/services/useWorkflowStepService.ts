@@ -37,6 +37,7 @@ enum WorkflowStepRoute {
   BASE = '/workflow-step',
   ROW = '/workflow-step/row',
   STEP = '/workflow-step/:id',
+  ITEM = '/workflow-step/:stepId/item/:itemId',
 }
 
 export function useWorkflowStepService() {
@@ -153,11 +154,50 @@ export function useWorkflowStepService() {
     }
   };
 
+  const updateItemContent = async ({
+    stepId,
+    itemId,
+    content,
+  }: {
+    stepId: string;
+    itemId: string;
+    content: string;
+  }) => {
+    if (!stepId || !itemId) {
+      throw new Error('Invalid stepId or itemId');
+    }
+    const route = WorkflowStepRoute.ITEM.replace(':stepId', stepId).replace(
+      ':itemId',
+      itemId,
+    );
+    const body = {
+      itemContent: content,
+    };
+
+    try {
+      const response = await $axios.patch(route, body, {
+        // signal: ac.signal, // on cell card close this will be called, so no need to abort
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Failed to update item content');
+      }
+
+      return response.data;
+    } catch (error: any) {
+      throw new WorkflowStepServiceError(
+        error?.status || 500,
+        error?.data?.message || 'Failed to update item content',
+      );
+    }
+  };
+
   return {
     createWorkflowStep,
     createWorkflowRow,
     updateInputSteps,
     deleteWorkflowStep,
     updateWorkflowStep,
+    updateItemContent,
   };
 }

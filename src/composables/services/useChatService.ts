@@ -4,6 +4,7 @@ import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import { useChatStore } from '@stores/chat.store';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
+import { useChatSettingsStore } from '@/stores/chat-settings.store';
 
 enum ChatRoute {
   BASE = 'chat', // POST
@@ -110,11 +111,13 @@ export function useChatService() {
   const chatAssistant = computed(() => chat.value?.assistant);
 
   const chatStore = useChatStore();
+  const chatSettingsStore = useChatSettingsStore();
 
   const { getIterable } = useStreamResponse();
 
   const setError = (message: string) => {
     error.value = message;
+    errorMessage.value = message;
   };
 
   const clearError = () => {
@@ -208,6 +211,8 @@ export function useChatService() {
           provider: payload.provider || chatStore.provider,
           model: payload.model || chatStore.model,
           messages: chatMessages.value,
+          maxTokens: chatSettingsStore.maxTokens[0],
+          temperature: chatSettingsStore.temperature[0],
         },
         {
           signal: acStream.signal,
