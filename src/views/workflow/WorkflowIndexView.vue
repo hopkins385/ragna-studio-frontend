@@ -21,7 +21,7 @@ import { PlusIcon } from 'lucide-vue-next';
         <div class="flex w-full justify-between px-3 pb-2 pt-14">
           <div></div>
           <ButtonLink class="self-end" to="/workflow/create">
-            New Workflow
+            Create Workflow
             <PlusIcon class="ml-2 size-4 stroke-1.5" />
           </ButtonLink>
         </div>

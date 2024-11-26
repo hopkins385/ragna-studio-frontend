@@ -1,4 +1,15 @@
 <script setup lang="ts">
+import AssistantEditForm2 from '@/components/assistant/AssistantEditForm2.vue';
+import TabSidebar from '@/components/tab/TabSidebar.vue';
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { assistantFormSchema } from '@/schemas/assistant.form';
 import AssistantEditForm from '@components/assistant/AssistantEditForm.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import SectionHeading from '@components/section/SectionHeading.vue';
@@ -59,11 +70,11 @@ onMounted(() => {
 <template>
   <SectionContainer>
     <SectionHeading
-      title="Update Assistant"
-      subtitle="Updating an existing assistant does only affect new conversations and workflows."
+      title="Update Agent"
+      subtitle="Updating an existing agent does only affect new conversations and workflows."
     />
-    <div class="rounded-lg border bg-white p-10">
-      <AssistantEditForm
+    <div class="px-5">
+      <AssistantEditForm2
         v-if="assistant && assistantTools.length"
         :assistant="assistant"
         :assistantTools="assistantTools"

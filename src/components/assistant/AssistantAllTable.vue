@@ -177,6 +177,7 @@ await initAllAssistants({ page: props.page });
               />
             </Button>
             <ButtonLink
+              v-if="$ability.can('edit', 'Assistant')"
               :to="`/assistant/${assistant.id}/edit`"
               variant="outline"
               size="icon"
@@ -184,6 +185,7 @@ await initAllAssistants({ page: props.page });
               <SettingsIcon class="size-4 stroke-1.5 text-primary" />
             </ButtonLink>
             <Button
+              v-if="$ability.can('delete', 'Assistant')"
               variant="outline"
               size="icon"
               @click="onDelete(assistant.id)"

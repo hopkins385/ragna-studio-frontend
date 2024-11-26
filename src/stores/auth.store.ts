@@ -2,6 +2,7 @@ import { useAccountService } from '@/composables/services/useAccountService';
 import { useAuthService } from '@/composables/services/useAuthService';
 import { defineStore } from 'pinia';
 import { useStorage } from '@vueuse/core';
+import { defineAbilityFor } from '@/services/ability.service';
 
 enum UserRoles {
   ADMIN = 'admin',
@@ -200,6 +201,7 @@ export const useAuthStore = defineStore('auth-store', {
         const data = await fetchAccountData();
         // @ts-ignore
         this.user = data;
+        defineAbilityFor(this.user);
       } catch (error) {
         this.clearUser();
         throw error;

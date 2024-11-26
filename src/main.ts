@@ -16,6 +16,10 @@ import { createHead } from '@unhead/vue';
 // NProgress styles
 import 'nprogress/nprogress.css';
 
+// CASL
+import { abilitiesPlugin } from '@casl/vue';
+import { ability } from './services/ability.service';
+
 const app = createApp(App);
 
 const pinia = createPinia();
@@ -28,6 +32,9 @@ app.use(pinia);
 app.use(router);
 app.use(veeConfigPlugin);
 app.use(VueDOMPurifyHTML);
+app.use(abilitiesPlugin, ability, {
+  useGlobalProperties: true,
+});
 
 setupAxiosJwtInterceptor();
 

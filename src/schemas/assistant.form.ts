@@ -8,6 +8,7 @@ export const assistantSchema = z.object({
   title: z.string().min(3).max(255),
   description: z.string().min(3).max(255),
   systemPrompt: z.string().min(3).max(6000),
+  temperature: z.array(z.number().int().positive().min(0).max(100).default(80)),
   isShared: z.boolean().default(false),
   tools: z.array(cuidSchema),
 });

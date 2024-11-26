@@ -82,7 +82,7 @@ onMounted(() => getTools());
 
 <template>
   <SectionContainer>
-    <SectionHeading title="Create Assistant" />
+    <SectionHeading title="Create Agent" />
     <div class="rounded-lg border bg-white p-10">
       <form class="space-y-8" @submit="onSubmit">
         <FormField v-slot="{ componentField }" name="title">
@@ -195,7 +195,7 @@ onMounted(() => getTools());
           </FormItem>
         </FormField>
 
-        <Button type="submit">Create Assistant</Button>
+        <Button type="submit">Create Agent</Button>
       </form>
     </div>
   </SectionContainer>
