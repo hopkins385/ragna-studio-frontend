@@ -28,6 +28,7 @@ import useAssistantService from '@/composables/services/useAssistantService';
 import WorkflowSettingsSidebar from './WorkflowSettingsSidebar.vue';
 import useToast from '@/composables/useToast';
 import WorkflowNameEditable from './WorkflowNameEditable.vue';
+import WorkflowExportSidebar from './WorkflowExportSidebar.vue';
 
 interface ICellCard {
   show: boolean;
@@ -212,12 +213,12 @@ async function onInputStepsUpdated(payload: {
   inputSteps: string[];
   stepId: string;
 }) {
-  // await updateInputSteps(payload.stepId, payload.inputSteps);
-  // await refresh();
+  await updateInputSteps(payload.stepId, { inputStepIds: payload.inputSteps });
+  await initWorkflow();
 }
 
-const debouncedRefresh = useDebounceFn(() => {
-  initWorkflow();
+const debouncedRefresh = useDebounceFn(async () => {
+  await initWorkflow();
 }, 250);
 
 const selectedRows = ref<number[]>([]);
@@ -238,7 +239,6 @@ function onAllRowsSelected() {
 }
 
 async function onDeleteSelectedRows() {
-  console.log('delete selected rows', selectedRows.value);
   await deleteWorkflowRows(props.workflowId, selectedRows.value);
   deselectAllRows();
   await initWorkflow();
@@ -272,7 +272,6 @@ const onRunFlow = async () => {
 };
 
 const onRefresh = async () => {
-  console.log('refresh');
   await initWorkflow();
 };
 
@@ -286,11 +285,11 @@ useEventListener('keydown', event => {
 
 onMounted(() => {
   initSheetDimensions(props.workflowId);
-  socket.on(`workflow-${props.workflowId}-update`, debouncedRefresh);
+  socket.on(`workflow-update:${props.workflowId}`, debouncedRefresh);
 });
 
 onBeforeUnmount(() => {
-  socket.off(`workflow-${props.workflowId}-update`, debouncedRefresh);
+  socket.off(`workflow-update:${props.workflowId}`, debouncedRefresh);
 });
 
 await initWorkflow();
@@ -317,6 +316,7 @@ await initWorkflow();
       </div>
       <!-- controls -->
       <div class="pr-10 flex items-center space-x-2">
+        <WorkflowExportSidebar :workflow-id="props.workflowId" />
         <WorkflowSettingsSidebar
           :workflow-id="props.workflowId"
           :workflow-name="workflow?.name ?? ''"

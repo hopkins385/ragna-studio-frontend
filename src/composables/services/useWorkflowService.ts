@@ -17,6 +17,7 @@ enum WorkflowRoute {
   WORKFLOW = '/workflow/:id',
   WORKFLOW_FULL = '/workflow/:id/full',
   EXECUTE = '/workflow/:id/execute',
+  EXPORT = '/workflow/:id/export',
 }
 
 interface ICreateWorkflow {
@@ -206,8 +207,25 @@ export function useWorkflowService() {
     throw new Error('Not implemented');
   };
 
-  const exportWorkflow = async (workflowId: string) => {
-    throw new Error('Not implemented');
+  const exportWorkflow = async (workflowId: string, format: string) => {
+    try {
+      const route = getRoute(WorkflowRoute.EXPORT, workflowId);
+      const response = await $axios.get(route, {
+        signal: ac.signal,
+        responseType: 'blob',
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Response not ok');
+      }
+
+      return response.data;
+    } catch (error: any) {
+      throw new WorkflowServiceError(
+        error.status ?? 500,
+        'Failed to export workflow',
+      );
+    }
   };
 
   const clearAllRows = async (workflowId: string) => {
@@ -225,12 +243,13 @@ export function useWorkflowService() {
         },
       );
 
-      if (response.status !== 200) {
+      if (response.status !== 201) {
         throw new Error('Response not ok');
       }
 
       return response.data;
     } catch (error: any) {
+      console.log(error);
       throw new WorkflowServiceError(
         error.status ?? 500,
         'Failed to execute workflow',

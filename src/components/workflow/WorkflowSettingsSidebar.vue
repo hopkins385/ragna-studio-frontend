@@ -82,8 +82,10 @@ watch(sheetIsOpen, isOpen => {
       <TooltipProvider :delay-duration="300">
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" class="" @click="onClick">
-              <SettingsIcon class="stroke-1.5" />
+            <Button variant="ghost" size="icon" class="group" @click="onClick">
+              <SettingsIcon
+                class="stroke-1.5 opacity-75 group-hover:opacity-100"
+              />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
@@ -104,6 +106,7 @@ watch(sheetIsOpen, isOpen => {
         </SheetTitle>
         <SheetDescription> </SheetDescription>
       </SheetHeader>
+      <div class="h-1"></div>
       <Separator />
       <div class="mt-10">
         <form @submit.prevent="onSubmit" class="flex flex-col space-y-4">

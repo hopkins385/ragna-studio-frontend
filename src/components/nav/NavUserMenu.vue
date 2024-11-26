@@ -22,12 +22,14 @@ import {
 } from 'lucide-vue-next';
 import { ref, computed } from 'vue';
 import { useAuthStore } from '@stores/auth.store';
+import { useWebsocketGlobal } from '@/composables/websocket/useWebsocketGlobal';
 
 defineProps<{
   sizeFull: boolean;
 }>();
 
 const authStore = useAuthStore();
+// const socket = useWebsocketGlobal();
 
 const open = ref(false);
 
@@ -105,9 +107,18 @@ function onSelect(value: string) {
       <Command>
         <div class="flex items-center gap-3 p-4">
           <div
-            class="flex size-8 items-center justify-center rounded-full bg-muted"
+            class="flex size-8 items-center justify-center rounded-full bg-muted relative"
           >
             <span class="text-sm font-medium">{{ initials }}</span>
+            <!--
+            <div
+              class="absolute bottom-0 right-0 size-2 rounded-full"
+              :class="{
+                'bg-green-400': socket.isConnected.value,
+                'bg-red-400': !socket.isConnected.value,
+              }"
+            ></div>
+            -->
           </div>
           <div class="flex flex-col">
             <p class="text-sm font-medium leading-none truncate">

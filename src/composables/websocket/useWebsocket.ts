@@ -44,6 +44,10 @@ export default function useWebsocket() {
     // Handle socket disconnection event
     socketClient.on('disconnect', () => {
       isConnected.value = false;
+      toast.error({
+        description:
+          'Lost connection to the event server. Please refresh the page to reconnect.',
+      });
       console.log('Socket disconnected');
     });
   });

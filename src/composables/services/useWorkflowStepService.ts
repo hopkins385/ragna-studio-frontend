@@ -37,6 +37,8 @@ enum WorkflowStepRoute {
   BASE = '/workflow-step',
   ROW = '/workflow-step/row',
   STEP = '/workflow-step/:id',
+  INPUT_STEPS = '/workflow-step/:id/input-steps',
+  STEP_ASSISTANT = '/workflow-step/:id/assistant',
   ITEM = '/workflow-step/:stepId/item/:itemId',
 }
 
@@ -102,10 +104,29 @@ export function useWorkflowStepService() {
   };
 
   const updateInputSteps = async (
-    workflowId: string,
-    data: UpdateWorkflowStepDto,
+    workflowStepId: string,
+    payload: { inputStepIds: string[] },
   ) => {
-    throw new Error('Not implemented');
+    try {
+      const route = getRoute(WorkflowStepRoute.INPUT_STEPS, workflowStepId);
+      const body = {
+        ...payload,
+      };
+      const response = await $axios.patch(route, body, {
+        signal: ac.signal,
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Failed to update input steps');
+      }
+
+      return response.data;
+    } catch (error: any) {
+      throw new WorkflowStepServiceError(
+        error?.status || 500,
+        error?.data?.message || 'Failed to update input steps',
+      );
+    }
   };
 
   const updateWorkflowStep = async (
@@ -134,9 +155,30 @@ export function useWorkflowStepService() {
     }
   };
 
-  const deleteWorkflowStep = async (workflowId: string) => {
+  const updateWorkflowStepAssistant = async (
+    workflowStepId: string,
+    payload: { assistantId: string },
+  ) => {
     try {
-      const route = getRoute(WorkflowStepRoute.STEP, workflowId);
+      const route = getRoute(WorkflowStepRoute.STEP_ASSISTANT, workflowStepId);
+      const body = {
+        assistantId: payload.assistantId,
+      };
+      const response = await $axios.patch(route, body, {
+        signal: ac.signal,
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Failed to update workflow step assistant');
+      }
+
+      return response.data;
+    } catch (error: any) {}
+  };
+
+  const deleteWorkflowStep = async (workflowStepId: string) => {
+    try {
+      const route = getRoute(WorkflowStepRoute.STEP, workflowStepId);
       const response = await $axios.delete(route, {
         signal: ac.signal,
       });
@@ -199,5 +241,6 @@ export function useWorkflowStepService() {
     deleteWorkflowStep,
     updateWorkflowStep,
     updateItemContent,
+    updateWorkflowStepAssistant,
   };
 }

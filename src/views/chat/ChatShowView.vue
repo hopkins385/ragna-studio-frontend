@@ -217,15 +217,6 @@ onBeforeUnmount(() => {
       <div class="space-y-3 border-0 flex flex-col p-2 rounded-lg">
         <ChatButtonNewChat />
         <ChatHistorySidebar />
-        <div class="border-0 flex justify-center items-center h-5">
-          <div
-            class="rounded-full size-1"
-            :class="{
-              'bg-green-500/80': socket.isConnected.value === true,
-              'bg-red-500/80': socket.isConnected.value === false,
-            }"
-          ></div>
-        </div>
       </div>
     </div>
     <!-- right quick controls -->
