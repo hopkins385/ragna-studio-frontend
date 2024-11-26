@@ -2,22 +2,22 @@
 import useToast from '@/composables/useToast';
 import { FileIcon, LoaderIcon, Trash2Icon } from 'lucide-vue-next';
 import ConfirmDialog from '../confirm/ConfirmDialog.vue';
-import Table from '../ui/table/Table.vue';
-import TableCaption from '../ui/table/TableCaption.vue';
+import Table from '@ui/table/Table.vue';
+import TableCaption from '@ui/table/TableCaption.vue';
 import {
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from '../ui/table';
+} from '@ui/table';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../ui/tooltip';
-import { Button } from '../ui/button';
+} from '@ui/tooltip';
+import { Button } from '@ui/button';
 import PaginateControls from '../pagniate/PaginateControls.vue';
 import {
   useRecordService,

@@ -6,11 +6,11 @@ import { useImgGenSettingsStore } from '@/stores/image-gen-settings.store';
 import { SlidersHorizontalIcon, RotateCcwIcon } from 'lucide-vue-next';
 import InfoTooltip from '../info/InfoTooltip.vue';
 import QuestionToolTip from '../question/QuestionToolTip.vue';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Button } from '../ui/button';
-import { Separator } from '../ui/separator';
-import { Slider } from '../ui/slider';
-import { Switch } from '../ui/switch';
+import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover';
+import { Button } from '@ui/button';
+import { Separator } from '@ui/separator';
+import { Slider } from '@ui/slider';
+import { Switch } from '@ui/switch';
 
 const show = ref(false);
 const settings = useImgGenSettingsStore();

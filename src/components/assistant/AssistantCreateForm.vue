@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import type { AssistantTool } from '@/composables/services/useAssistantToolsService';
-import type { Collection } from '@/composables/services/useCollectionService';
-import type { Assistant } from '@/composables/services/useAssistantService';
-import { assistantFormSchema } from '@/schemas/assistant.form';
+import {
+  Book,
+  BriefcaseBusiness,
+  CircleUserRound,
+  Settings,
+  Stars,
+} from 'lucide-vue-next';
 import TabSidebar from '../tab/TabSidebar.vue';
 import {
   FormControl,
@@ -12,131 +15,107 @@ import {
   FormLabel,
   FormMessage,
 } from '@ui/form';
-import { useAuthStore } from '@/stores/auth.store';
 import { Input } from '@ui/input';
+import { Textarea } from '@ui/textarea';
 import LlmSelectModal from '../llm/LlmSelectModal.vue';
+import ErrorAlert from '../error/ErrorAlert.vue';
+import { assistantFormSchema } from '@/schemas/assistant.form';
+import { useAuthStore } from '@/stores/auth.store';
+import useToast from '@/composables/useToast';
+import ButtonLoading from '../button/ButtonLoading.vue';
 import {
-  Activity,
-  Book,
-  BriefcaseBusiness,
-  CircleUserRound,
-  Settings,
-  Settings2,
-  Stars,
-  UserRound,
-} from 'lucide-vue-next';
+  useAssistantToolsService,
+  type AssistantTool,
+} from '@/composables/services/useAssistantToolsService';
+import { Checkbox } from '@ui/checkbox';
 import { Button } from '@ui/button';
 import useAssistantService from '@/composables/services/useAssistantService';
-import useToast from '@/composables/useToast';
-import { Textarea } from '@ui/textarea';
-import ButtonLoading from '../button/ButtonLoading.vue';
-import CollectionSelectModal from '../collection/CollectionSelectModal.vue';
-import useCollectionAbleService from '@/composables/services/useCollectionAbleService';
-import Checkbox from '@ui/checkbox/Checkbox.vue';
-import { Slider } from '@ui/slider';
-
-const props = defineProps<{
-  assistant: Assistant;
-  assistantTools: AssistantTool[];
-  collections: Collection[];
-}>();
-
-const emits = defineEmits<{
-  refreshCollections: [void];
-}>();
-
-const authStore = useAuthStore();
-const toast = useToast();
 
 const currentTab = ref('tab1');
 const isLoading = ref(false);
+const assistantTools = ref<AssistantTool[] | null>(null);
 
-const initialAssistantName = computed(
-  () => props.assistant?.llm.displayName ?? 'Select AI Model',
-);
+const authStore = useAuthStore();
+const toast = useToast();
+const router = useRouter();
 
-const initialCollectionName = computed(
-  () => props.collections?.[0]?.name ?? 'Select Knowledge Collection',
-);
+const initialAssistantName = computed(() => 'Select AI Model');
+const initialCollectionName = computed(() => 'Select Knowledge Collection');
 
-const { updateAssistant } = useAssistantService();
+const { fetchAllTools } = useAssistantToolsService();
+const { createAssistant } = useAssistantService();
 
-// form
+const initAssistantTools = async () => {
+  const { tools } = await fetchAllTools();
+  assistantTools.value = tools;
+};
 
-const { errors, handleSubmit, isSubmitting, isValidating } = useForm({
-  validationSchema: assistantFormSchema,
-  initialValues: {
-    teamId: authStore.user?.firstTeamId || '-1',
-    llmId: props.assistant?.llm.id || '',
-    title: props.assistant?.title || '',
-    description: props.assistant?.description || '',
-    systemPrompt: props.assistant?.systemPrompt || '',
-    temperature: [80], // props.assistant?.temperature ||
-    isShared: props.assistant?.isShared || false,
-    tools: props.assistant?.tools.map(tool => tool?.toolId) || [],
+const { errors, handleSubmit, isSubmitting, isValidating, resetForm } = useForm(
+  {
+    validationSchema: assistantFormSchema,
+    initialValues: {
+      teamId: authStore.user?.firstTeamId || '-1',
+      llmId: '',
+      title: '',
+      description: '',
+      systemPrompt: '',
+      temperature: [80],
+      isShared: false,
+      tools: [],
+    },
   },
-});
+);
 
 const onSubmit = handleSubmit(async values => {
-  if (!props.assistant) {
-    throw new Error('Assistant not found');
-  }
   isLoading.value = true;
   try {
-    await updateAssistant(props.assistant.id, {
+    await createAssistant({
       ...values,
-      systemPromptTokenCount: 1, // TODO: calculate token count
+      systemPromptTokenCount: 1,
     });
     toast.success({
-      description: 'Agent updated',
+      description: 'Agent created',
     });
-    // router.back();
+    resetForm();
+    router.back();
   } catch (error: any) {
     console.error(error);
     toast.error({
-      description: 'Failed to update agent',
+      description: 'Failed to create agent',
     });
   } finally {
     isLoading.value = false;
   }
 });
 
-// collections
+const showErrorAlert = ref(false);
+const errorAlertMessage = ref('');
 
-const { replaceCollectionTo, detachAllCollectionsFrom } =
-  useCollectionAbleService();
+watch(
+  () => errors.value,
+  errors => {
+    if (Object.keys(errors).length > 0) {
+      showErrorAlert.value = true;
+      errorAlertMessage.value = 'Please fill out all required fields.'; //errors[Object.keys(errors)[0]];
+    } else {
+      showErrorAlert.value = false;
+      errorAlertMessage.value = '';
+    }
+  },
+);
 
-async function updateCollection(collectionId: string) {
-  const model = {
-    type: 'assistant',
-    id: props.assistant.id,
-  };
-  await replaceCollectionTo(collectionId, { model });
-  emits('refreshCollections');
-  toast.success({
-    description: 'Collection updated successfully',
-  });
-}
-
-async function resetCollections() {
-  const model = {
-    type: 'assistant',
-    id: props.assistant.id,
-  };
-  await detachAllCollectionsFrom({ model });
-  emits('refreshCollections');
-  toast.success({
-    description: 'Collection updated successfully',
-  });
-}
+onMounted(() => {
+  initAssistantTools();
+});
 </script>
 
 <template>
+  <ErrorAlert v-model="showErrorAlert" :message="errorAlertMessage" />
   <div class="w-full flex justify-end">
     <div class="flex items-center space-x-4">
       <Button @click="$router.back()" variant="outline"> Cancel </Button>
       <ButtonLoading :loading="isLoading" @click="onSubmit">
-        Update Agent
+        Create Agent
       </ButtonLoading>
     </div>
   </div>
@@ -233,6 +212,7 @@ async function resetCollections() {
             These are the knowledge collections that can be used by the agent.
           </FormDescription>
           <FormControl>
+            <!--
             <CollectionSelectModal
               :id="value"
               :initial-display-name="initialCollectionName"
@@ -243,6 +223,7 @@ async function resetCollections() {
               "
               @reset="resetCollections"
             />
+            -->
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -279,33 +260,6 @@ async function resetCollections() {
             </FormItem>
           </FormField>
           <FormMessage />
-        </FormItem>
-      </FormField>
-    </template>
-    <template #tab6>
-      <FormField v-slot="{ componentField, value }" name="temperature">
-        <FormItem>
-          <FormLabel> Creativity </FormLabel>
-          <FormDescription>
-            A higher creativity typically makes the output of the agent more
-            diverse and creative.<br />We recommend a value between 0.7 and 0.9
-          </FormDescription>
-          <FormControl>
-            <div clasS=" max-w-sm">
-              <Slider
-                v-bind="componentField"
-                :default-value="[80]"
-                :max="100"
-                :step="1"
-                class="slider"
-                :disabled="true"
-              />
-            </div>
-          </FormControl>
-          <FormMessage />
-          <FormDescription>
-            {{ value[0] / 100 }}
-          </FormDescription>
         </FormItem>
       </FormField>
     </template>

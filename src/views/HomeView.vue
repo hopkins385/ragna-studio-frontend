@@ -21,9 +21,7 @@ const backgroundStyles = computed(() => {
         </h1>
       </div>
     </div>
-    <div class="custom-shadow p-5 min-h-full">
-      <div v-if="$ability.can('create', 'Assistant')">Yes u can</div>
-    </div>
+    <div class="custom-shadow p-5 min-h-full"></div>
   </div>
 </template>
 

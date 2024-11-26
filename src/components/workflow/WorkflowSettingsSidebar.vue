@@ -1,26 +1,26 @@
 <script setup lang="ts">
 import { SettingsIcon } from 'lucide-vue-next';
-import { Button } from '../ui/button';
-import Sheet from '../ui/sheet/Sheet.vue';
-import { SheetContent, SheetHeader, SheetTrigger } from '../ui/sheet';
+import { Button } from '@ui/button';
+import Sheet from '@ui/sheet/Sheet.vue';
+import { SheetContent, SheetHeader, SheetTrigger } from '@ui/sheet';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../ui/tooltip';
-import SheetTitle from '../ui/sheet/SheetTitle.vue';
-import SheetDescription from '../ui/sheet/SheetDescription.vue';
-import Separator from '../ui/separator/Separator.vue';
+} from '@ui/tooltip';
+import SheetTitle from '@ui/sheet/SheetTitle.vue';
+import SheetDescription from '@ui/sheet/SheetDescription.vue';
+import Separator from '@ui/separator/Separator.vue';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
-import { Textarea } from '../ui/textarea';
+} from '@ui/form';
+import { Input } from '@ui/input';
+import { Textarea } from '@ui/textarea';
 import { useWorkflowService } from '@/composables/services/useWorkflowService';
 import { toTypedSchema } from '@vee-validate/zod';
 import { workflowSettingsSchema } from '@/schemas/workflow-settings.schema';
