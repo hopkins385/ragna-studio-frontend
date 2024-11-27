@@ -205,6 +205,10 @@ onMounted(() => {
       <!-- END TAB 3-->
     </template>
     <template #tab4>
+      <div class="text-sm border rounded-lg p-4 mt-4">
+        This property can only be set after the agent is created
+      </div>
+      <!--
       <FormField v-slot="{ handleChange, value }" name="collectionId">
         <FormItem>
           <FormLabel>Knowledge Collections (optional)</FormLabel>
@@ -212,7 +216,6 @@ onMounted(() => {
             These are the knowledge collections that can be used by the agent.
           </FormDescription>
           <FormControl>
-            <!--
             <CollectionSelectModal
               :id="value"
               :initial-display-name="initialCollectionName"
@@ -223,14 +226,18 @@ onMounted(() => {
               "
               @reset="resetCollections"
             />
-            -->
           </FormControl>
           <FormMessage />
         </FormItem>
       </FormField>
+      -->
     </template>
     <template #tab5>
       <!-- Tools -->
+      <div class="text-sm border rounded-lg p-4 mt-4">
+        This property can only be set after the agent is created
+      </div>
+      <!--
       <FormField name="tools">
         <FormItem>
           <div class="mb-4 space-y-2">
@@ -262,6 +269,7 @@ onMounted(() => {
           <FormMessage />
         </FormItem>
       </FormField>
+      -->
     </template>
   </TabSidebar>
 </template>

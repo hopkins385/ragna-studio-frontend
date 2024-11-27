@@ -11,6 +11,7 @@ import {
 } from '@ui/dialog';
 import { Button } from '@ui/button';
 import DialogContent from '@ui/dialog/DialogContent.vue';
+import { useProviderIcons } from '@/composables/useProviderIcons';
 
 const props = defineProps<{
   initialDisplayName: string;
@@ -25,10 +26,7 @@ const open = ref(false);
 const models = ref<any[] | null>(null);
 
 const { getAllModels } = useLlmService();
-const initModels = async () => {
-  const { models: allModels } = await getAllModels();
-  models.value = allModels;
-};
+const { getProviderIcon } = useProviderIcons();
 
 const selectedModel = computed(() => {
   return (
@@ -38,10 +36,15 @@ const selectedModel = computed(() => {
   );
 });
 
-function onModelClick(id: string) {
+const initModels = async () => {
+  const { models: allModels } = await getAllModels();
+  models.value = allModels;
+};
+
+const onModelClick = (id: string) => {
   emits('update:id', id);
   open.value = false;
-}
+};
 
 watch(open, () => {
   if (open.value === true && !models.value) {
@@ -78,10 +81,12 @@ watch(open, () => {
               :key="model.id"
               @click="() => onModelClick(model.id)"
             >
-              <Button
-                :variant="model.id !== props.id ? 'outline' : 'default'"
-                size="sm"
-              >
+              <Button :variant="model.id !== props.id ? 'ghost' : 'secondary'">
+                <component
+                  :is="getProviderIcon(model.provider)"
+                  class="stroke-1.5 size-4"
+                  :class="model.id === props.id ? 'text-white' : 'text-black'"
+                />
                 {{ model.displayName }}
               </Button>
             </div>

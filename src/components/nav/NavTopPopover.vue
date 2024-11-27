@@ -7,11 +7,15 @@ import {
 import { Grip } from 'lucide-vue-next';
 import { useNavBarItems } from '@/composables/nav/useNavBarItems';
 
+const open = ref(false);
+
 const { getDefaultItems } = useNavBarItems();
+
+const setClose = () => (open.value = false);
 </script>
 
 <template>
-  <Popover>
+  <Popover v-model:open="open">
     <PopoverTrigger class="h-full">
       <Grip class="nav-icon stroke-1.5" />
     </PopoverTrigger>
@@ -22,6 +26,7 @@ const { getDefaultItems } = useNavBarItems();
           :to="item.path"
           :key="item.path"
           class="size-20 border-0 flex flex-col items-center justify-center space-y-2"
+          @click="setClose"
         >
           <div
             class="size-12 border rounded-sm flex flex-col items-center justify-center"

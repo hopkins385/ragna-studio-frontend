@@ -2,16 +2,6 @@
 import ButtonLink from '@/components/button/ButtonLink.vue';
 import { Button } from '@/components/ui/button';
 import {
-  Pagination,
-  PaginationEllipsis,
-  PaginationFirst,
-  PaginationLast,
-  PaginationList,
-  PaginationListItem,
-  PaginationNext,
-  PaginationPrev,
-} from '@/components/ui/pagination';
-import {
   Table,
   TableBody,
   TableCaption,
@@ -28,6 +18,7 @@ import { SettingsIcon, Trash2Icon, MessageSquareIcon } from 'lucide-vue-next';
 import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import ConfirmDialog from '@/components/confirm/ConfirmDialog.vue';
 import PaginateControls from '../pagniate/PaginateControls.vue';
+import { useProviderIcons } from '@/composables/useProviderIcons';
 
 const props = defineProps<{
   page: number;
@@ -55,11 +46,6 @@ const errorAlert = reactive({
   message: '',
 });
 const deleteAssistantId = ref('');
-const { fetchAllAssistants, deleteAssistant } = useAssistantService();
-
-const initAllAssistants = async ({ page }: { page: number }) => {
-  data.value = await fetchAllAssistants({ page });
-};
 
 const assistants = computed(() => data.value?.assistants || []);
 const meta = computed(() => {
@@ -68,6 +54,13 @@ const meta = computed(() => {
     currentPage: data.value?.meta?.currentPage || 0,
   };
 });
+
+const { fetchAllAssistants, deleteAssistant } = useAssistantService();
+const { getProviderIcon } = useProviderIcons();
+
+const initAllAssistants = async ({ page }: { page: number }) => {
+  data.value = await fetchAllAssistants({ page });
+};
 
 const handleDelete = async () => {
   const assistantId = deleteAssistantId.value;
@@ -100,10 +93,10 @@ const onStart = async (assistantId: string) => {
   router.push({ name: 'chat.show', params: { id: chat.id } });
 };
 
-function onDelete(id: string) {
+const onDelete = (id: string) => {
   deleteAssistantId.value = id;
   showConfirmDialog.value = true;
-}
+};
 
 const onUpdatePage = async (page: number) => {
   emit('update:page', page);
@@ -143,7 +136,6 @@ await initAllAssistants({ page: props.page });
         <TableRow>
           <TableHead> Avatar </TableHead>
           <TableHead> Title </TableHead>
-          <TableHead> Shared </TableHead>
           <TableHead class="whitespace-nowrap"> Ai Model </TableHead>
           <TableHead class="text-right"> Actions </TableHead>
         </TableRow>
@@ -162,10 +154,13 @@ await initAllAssistants({ page: props.page });
             </div>
           </TableCell>
           <TableCell class="whitespace-nowrap">
-            {{ assistant.isShared ? 'Organisation' : 'Team' }}
-          </TableCell>
-          <TableCell class="whitespace-nowrap">
-            {{ assistant.llm.displayName }}
+            <div class="flex space-x-2 items-center">
+              <component
+                :is="getProviderIcon(assistant.llm.provider)"
+                class="stroke-1.5 size-4"
+              />
+              <span>{{ assistant.llm.displayName }}</span>
+            </div>
           </TableCell>
           <TableCell
             class="flex justify-end space-x-2 whitespace-nowrap text-right"

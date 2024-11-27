@@ -369,7 +369,7 @@ onBeforeUnmount(() => {
     <!-- Notification -->
     <div class="absolute bottom-2 left-0 w-full text-center">
       <p class="text-slate-500" style="font-size: 0.65rem">
-        Conversation with artifical intelligence. It may make mistakes. Please
+        Conversation with artifical intelligence. It can make mistakes. Please
         verify important information.
       </p>
     </div>
