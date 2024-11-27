@@ -81,16 +81,12 @@ const onOpenAutoFocus = (event: Event) => {
     @update:open="() => $emit('update:show', false)"
   >
     <DialogContent
-      class="flex max-w-6xl flex-col"
+      class="flex max-w-6xl flex-col bg-stone-100"
       @open-auto-focus="onOpenAutoFocus"
     >
       <DialogHeader
         class="flex w-full flex-row items-center justify-between border-0"
       >
-        <div>
-          <DialogTitle>Image</DialogTitle>
-          <DialogDescription> </DialogDescription>
-        </div>
       </DialogHeader>
       <div class="flex space-x-8">
         <div class="flex-grow overflow-hidden shrink-0">
@@ -105,8 +101,10 @@ const onOpenAutoFocus = (event: Event) => {
             />
           </div>
         </div>
-        <div class="">
-          <p class="text-sm opacity-75">{{ prompt }}</p>
+        <div class="w-full">
+          <div class="max-h-96 overflow-x-scroll">
+            <p class="text-sm opacity-75">{{ prompt }}</p>
+          </div>
           <div class="pt-4 space-x-2">
             <TooltipProvider :delayDuration="300">
               <Tooltip>

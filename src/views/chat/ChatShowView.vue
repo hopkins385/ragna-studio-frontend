@@ -152,6 +152,11 @@ const adjustTextareaHeight = () => {
   }
 };
 
+const focusInput = () => {
+  const textarea = chatInputFormRef.value?.querySelector('textarea');
+  if (textarea) textarea.focus();
+};
+
 const { arrivedState } = useScroll(chatMessagesContainerRef);
 
 // observer
@@ -195,6 +200,7 @@ watch(
 onMounted(async () => {
   await initChat(chatId);
   scrollToBottom({ instant: true });
+  focusInput();
 });
 
 onMounted(() => {

@@ -19,7 +19,7 @@ export const useImgGenSettingsStore = defineStore('img-gen.store', {
     imageWidth: [1024],
     imageHeight: [1024],
     imageGuidance: [2.5],
-    imageExtension: 'jpeg',
+    imageExtension: 'png',
     promptUpsampling: false,
     submitOnEnter: false,
     showHidden: false,
