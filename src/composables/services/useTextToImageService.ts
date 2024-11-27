@@ -64,8 +64,6 @@ export function useTextToImageService() {
   const ac = new AbortController();
   let acGen: AbortController | null = null;
 
-  const settings = useImgGenSettingsStore();
-
   const generateImages = async (payload: {
     folderId: string;
     prompt: string;
@@ -74,8 +72,11 @@ export function useTextToImageService() {
     height: number;
     guidance: number;
     prompt_upsampling: boolean;
+    output_format: string;
   }) => {
     acGen = new AbortController();
+
+    // remove output_format from payload
 
     const body = {
       ...payload,

@@ -4,13 +4,19 @@
  */
 import { useImgGenSettingsStore } from '@/stores/image-gen-settings.store';
 import { SlidersHorizontalIcon, RotateCcwIcon } from 'lucide-vue-next';
-import InfoTooltip from '../info/InfoTooltip.vue';
-import QuestionToolTip from '../question/QuestionToolTip.vue';
+import QuestionToolTip from '@components/question/QuestionToolTip.vue';
 import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover';
 import { Button } from '@ui/button';
 import { Separator } from '@ui/separator';
 import { Slider } from '@ui/slider';
 import { Switch } from '@ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@ui/select';
 
 const show = ref(false);
 const settings = useImgGenSettingsStore();
@@ -95,12 +101,25 @@ const settings = useImgGenSettingsStore();
           class="slider"
         />
       </div>
+      <div class="flex flex-col pb-2">
+        <div>Extension</div>
+        <!-- File Extension [jpeg, png]-->
+        <Select v-model="settings.imageExtension">
+          <SelectTrigger>
+            <SelectValue placeholder="Select an extension" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="jpeg"> JPEG </SelectItem>
+            <SelectItem value="png"> PNG </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       <div class="flex flex-col">
         <div>
           Prompt Upsampling
           <QuestionToolTip
             title="Prompt Upsampling"
-            content="Whether to perform upsampling on the prompt. If active, automatically modifies the prompt for more creative generation."
+            content="If active, automatically modifies the prompt for more creative generation."
           />
         </div>
         <Switch
@@ -111,10 +130,10 @@ const settings = useImgGenSettingsStore();
       </div>
       <div class="flex flex-col">
         <div>
-          chat.settings.onEnterSubmit.title
+          On Enter Submit
           <QuestionToolTip
-            title="$t('chat.settings.onEnterSubmit.title')"
-            content="$t('chat.settings.onEnterSubmit.description')"
+            title="On Enter Submit"
+            content="If active, pressing Enter will submit the prompt."
           />
         </div>
         <Switch

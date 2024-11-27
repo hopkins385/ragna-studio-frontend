@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { DownloadIcon, Loader2Icon } from 'lucide-vue-next';
+import {
+  ClipboardCheckIcon,
+  ClipboardIcon,
+  CopyCheckIcon,
+  CopyIcon,
+  DownloadIcon,
+  Loader2Icon,
+} from 'lucide-vue-next';
 import { Button } from '@ui/button';
 import {
   Dialog,
@@ -9,6 +16,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@ui/dialog';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../ui/tooltip';
 
 const props = defineProps<{
   show: boolean;
@@ -45,6 +58,20 @@ function openImage(url: string): void {
   link.click();
   document.body.removeChild(link);
 }
+
+const {
+  copy: copyToClipboard,
+  copied: copiedToClipboard,
+  isSupported: copyToClipboardSupported,
+} = useClipboard({ source: props.prompt });
+
+const onOpenAutoFocus = (event: Event) => {
+  const dialog = event.target as HTMLElement;
+  const firstFocusableElement = dialog.querySelector('button');
+  if (firstFocusableElement) {
+    firstFocusableElement.focus();
+  }
+};
 </script>
 
 <template>
@@ -53,37 +80,69 @@ function openImage(url: string): void {
     :modal="true"
     @update:open="() => $emit('update:show', false)"
   >
-    <DialogContent class="flex h-[90dvh] max-w-4xl flex-col">
+    <DialogContent
+      class="flex max-w-6xl flex-col"
+      @open-auto-focus="onOpenAutoFocus"
+    >
       <DialogHeader
         class="flex w-full flex-row items-center justify-between border-0"
       >
         <div>
           <DialogTitle>Image</DialogTitle>
-          <DialogDescription> {{ prompt }} </DialogDescription>
-        </div>
-        <div class="my-2 ml-4 mr-2 shrink-0">
-          <Button
-            size="icon"
-            variant="default"
-            class="p-2"
-            @click="() => openImage(imgUrl)"
-          >
-            <DownloadIcon v-if="!isLoading" class="size-5" />
-            <Loader2Icon v-else class="size-5 animate-spin" />
-          </Button>
+          <DialogDescription> </DialogDescription>
         </div>
       </DialogHeader>
-
-      <div class="flex-grow overflow-hidden">
-        <div
-          class="relative flex h-full w-full items-center justify-center hover:cursor-pointer"
-          @click="() => openImage(imgUrl)"
-        >
-          <img
-            :src="imgUrl"
-            alt="Generated Image"
-            class="max-h-full max-w-full rounded-md object-contain"
-          />
+      <div class="flex space-x-8">
+        <div class="flex-grow overflow-hidden shrink-0">
+          <div
+            class="relative flex items-center justify-center hover:cursor-pointer"
+            @click="() => openImage(imgUrl)"
+          >
+            <img
+              :src="imgUrl"
+              alt="Generated Image"
+              class="w-[700px] rounded-md object-contain"
+            />
+          </div>
+        </div>
+        <div class="">
+          <p class="text-sm opacity-75">{{ prompt }}</p>
+          <div class="pt-4 space-x-2">
+            <TooltipProvider :delayDuration="300">
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button
+                    variant="default"
+                    size="icon"
+                    @click="() => copyToClipboard(props.prompt)"
+                  >
+                    <ClipboardIcon v-if="!copiedToClipboard" class="size-5" />
+                    <ClipboardCheckIcon v-else class="size-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Copy Prompt</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider :delayDuration="300">
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button
+                    variant="default"
+                    size="icon"
+                    @click="() => openImage(imgUrl)"
+                  >
+                    <DownloadIcon v-if="!isLoading" class="size-5" />
+                    <Loader2Icon v-else class="size-5 animate-spin" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Download Image</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
       </div>
 

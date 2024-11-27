@@ -1,10 +1,13 @@
 import { defineStore } from 'pinia';
 
+export type ImageGenExtension = 'jpeg' | 'png';
+
 interface ImgGenSettings {
   imageCount: number[];
   imageWidth: number[];
   imageHeight: number[];
   imageGuidance: number[];
+  imageExtension: ImageGenExtension;
   promptUpsampling: boolean;
   submitOnEnter: boolean;
   showHidden: boolean;
@@ -16,6 +19,7 @@ export const useImgGenSettingsStore = defineStore('img-gen.store', {
     imageWidth: [1024],
     imageHeight: [1024],
     imageGuidance: [2.5],
+    imageExtension: 'jpeg',
     promptUpsampling: false,
     submitOnEnter: false,
     showHidden: false,
@@ -43,6 +47,9 @@ export const useImgGenSettingsStore = defineStore('img-gen.store', {
     },
     getShowHidden(state) {
       return state.showHidden;
+    },
+    getImageExtension(state) {
+      return state.imageExtension;
     },
   },
   actions: {

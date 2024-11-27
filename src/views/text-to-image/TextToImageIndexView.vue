@@ -39,6 +39,7 @@ async function generateImage(submitPrompt: string) {
       height: settings.getImageHeight,
       guidance: settings.getImageGuidance,
       prompt_upsampling: settings.getPromptUpsampling,
+      output_format: settings.getImageExtension,
     });
     if (!result || !result.imageUrls.length) {
       throw new Error('No image generated');
