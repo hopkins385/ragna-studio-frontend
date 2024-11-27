@@ -18,6 +18,7 @@ import ChatImageInput from '@components/chat/ChatImageInput.vue';
 import ChatToolCallMessage from '@/components/chat/ChatToolCallMessage.vue';
 import ChatHistorySidebar from '@/components/chat/ChatHistorySidebar.vue';
 import useToast from '@/composables/useToast';
+import ChatAssistantDetails from './ChatAssistantDetails.vue';
 
 useHead({
   title: 'Chat',
@@ -76,10 +77,15 @@ const clearVisionContent = () => {
   inputImages.value = [];
 };
 
+// SUBMIT
 const onSubmit = async () => {
   if (!inputMessage.value.trim()) return;
   const userMessageContent = inputMessage.value;
   inputMessage.value = '';
+
+  nextTick(() => {
+    adjustTextareaHeight();
+  });
 
   const hasImages = inputImages.value.some(image => image.status === 'loaded');
   const msgType = hasImages ? 'image' : 'text';
@@ -222,12 +228,10 @@ onBeforeUnmount(() => {
     <!-- right quick controls -->
     <div class="absolute right-10 top-5 border-0 z-10">
       <div class="flex justify-center items-center shrink-0 space-x-5">
-        <div
-          v-if="assistant"
-          class="border rounded-full px-4 py-2 max-w-xs bg-white"
-        >
-          <p class="text-sm truncate">{{ assistant?.title ?? 'Assistant' }}</p>
-        </div>
+        <ChatAssistantDetails
+          :provider="assistant?.llm.provider"
+          :title="assistant?.title"
+        />
         <ChatSettings
           :assistant-id="assistant?.id"
           @delete-all-messages="clearChatMessages"

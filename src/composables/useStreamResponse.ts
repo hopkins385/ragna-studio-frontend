@@ -4,8 +4,9 @@
       throw new Error('Response is not a readable stream');
     }
 
-    const reader = readableStream.getReader();
-    const decoder = new TextDecoder('utf-8');
+    const reader = readableStream
+      .pipeThrough(new TextDecoderStream())
+      .getReader();
 
     let done = false;
 
@@ -14,18 +15,11 @@
         return {
           async next() {
             while (!done) {
-              const { value, done: _done } = await reader.read();
+              const { value: chunk, done: _done } = await reader.read();
               done = _done;
-              const chunk = decoder.decode(value, {
-                stream: true,
-              });
               return {
                 done: false,
-                value: chunk,
-                // .split('\n')
-                // .map((line) => line.trim())
-                // .filter((line) => line.startsWith('data: '))
-                // .map((line) => JSON.parse(line.slice(6).trim())),
+                value: chunk?.trim(),
               };
             }
 
@@ -42,7 +36,6 @@
 }*/
 
 export default function useStreamResponse() {
-  const decoder = new TextDecoder('utf-8');
   let buffer = '';
   const messageQueue: string[] = [];
   let isPending = false;
@@ -68,7 +61,9 @@ export default function useStreamResponse() {
       throw new Error('Response is not a readable stream');
     }
 
-    const reader = readableStream.getReader();
+    const reader = readableStream
+      .pipeThrough(new TextDecoderStream())
+      .getReader();
     let reading = true;
 
     return {
@@ -78,7 +73,7 @@ export default function useStreamResponse() {
             try {
               if (!reading) {
                 // Flush any remaining buffer when stream ends
-                const finalChunk = decoder.decode();
+                const finalChunk = buffer.length > 0;
                 if (finalChunk) {
                   buffer += finalChunk;
                   const lines = buffer.split('\n');
@@ -109,7 +104,7 @@ export default function useStreamResponse() {
                 return this.next();
               }
 
-              buffer += decoder.decode(value, { stream: true });
+              buffer += value; // decoder.decode(value, { stream: true });
               const lines = buffer.split('\n');
               buffer = lines.pop() || '';
 

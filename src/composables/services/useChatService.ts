@@ -1,5 +1,4 @@
 import { $axios } from '@/axios/axiosInstance';
-import useStreamResponse from '@composables/useStreamResponse';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import { useChatStore } from '@stores/chat.store';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
@@ -101,19 +100,20 @@ export function useChatService() {
 
   const isPending = ref(false);
   const isStreaming = ref(false);
-  const isThinking = ref(false);
 
   const chat = ref<Chat | null>(null);
   const chatMessages = ref<ChatMessage[]>([]);
   const chatTextChunks = ref<string[]>([]);
+
+  const isThinking = computed(
+    () => chatTextChunks.value.length === 0 && isStreaming.value,
+  );
 
   const hasChatMessages = computed(() => chatMessages.value.length > 0);
   const chatAssistant = computed(() => chat.value?.assistant);
 
   const chatStore = useChatStore();
   const chatSettingsStore = useChatSettingsStore();
-
-  const { getIterable } = useStreamResponse();
 
   const setError = (message: string) => {
     error.value = message;
@@ -201,8 +201,6 @@ export function useChatService() {
       );
     }
 
-    isThinking.value = true;
-
     try {
       const streamRoute = getRoute(ChatRoute.CHAT_STREAM, chatId);
       const response = await $axios.post<ReadableStream<Uint8Array>>(
@@ -228,14 +226,43 @@ export function useChatService() {
         throw new Error(`Response not ok: ${response.statusText}`);
       }
 
+      if (!(response.data instanceof ReadableStream)) {
+        throw new Error('Response is not a readable stream');
+      }
+
       isStreaming.value = true;
 
-      for await (const messageContent of getIterable(response.data)) {
-        if (!messageContent) continue;
-        if (chatTextChunks.value.length === 0) {
-          isThinking.value = false;
+      const reader = response.data
+        .pipeThrough(new TextDecoderStream())
+        .getReader();
+
+      let done = false;
+      let buffer = '';
+
+      while (!done) {
+        const { value, done: _done } = await reader.read();
+        if (done) {
+          break;
         }
-        chatTextChunks.value.push(messageContent);
+        done = _done;
+        buffer += value;
+
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          try {
+            if (line.trim().startsWith('data: ')) {
+              const { message } = JSON.parse(line.slice(6).trim());
+              if (message) {
+                chatTextChunks.value.push(message);
+              }
+              await nextTick();
+            }
+          } catch (e) {
+            console.error('Error parsing JSON:', e);
+          }
+        }
       }
     } catch (error: any) {
       if (error instanceof Error && error.name === 'AbortError') {
@@ -246,14 +273,13 @@ export function useChatService() {
         'Failed to send chat message',
       );
     } finally {
+      isStreaming.value = false;
       finalizeStream();
     }
   };
 
   const finalizeStream = () => {
     const assistantContent = chatTextChunks.value.join('');
-
-    isStreaming.value = false;
     chatTextChunks.value = [];
 
     addChatMessage({
@@ -401,7 +427,6 @@ export function useChatService() {
 
   const abortChatRequest = () => {
     acStream.abort();
-    isThinking.value = false;
     isStreaming.value = false;
     isPending.value = false;
   };

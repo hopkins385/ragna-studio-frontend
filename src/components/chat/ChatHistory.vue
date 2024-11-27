@@ -20,6 +20,7 @@ import ButtonLink from '@components/button/ButtonLink.vue';
 import { Button } from '@ui/button';
 import useToast from '@/composables/useToast';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
+import { useProviderIcons } from '@/composables/useProviderIcons';
 
 const props = defineProps<{
   page: number;
@@ -36,6 +37,7 @@ const data = ref<ChatsPaginated | null>(null);
 const { success } = useToast();
 const { getDateTimeForHumans } = useForHumans();
 const { fetchAllChatsPaginated, deleteChat } = useChatService();
+const { getProviderIcon } = useProviderIcons();
 
 const queryPage = computed(() => props.page || 1);
 
@@ -128,9 +130,19 @@ await initChatHistory({ page: queryPage.value });
           <TableRow v-for="chat in data?.chats || []" :key="chat.id">
             <TableCell class="min-w-[20rem]">{{ chat.title }}</TableCell>
             <TableCell class="max-w-[10rem] truncate">
-              {{ chat.assistant.title }}
+              {{ chat.assistant?.title }}
             </TableCell>
-            <TableCell>{{ chat.assistant.llm.displayName }}</TableCell>
+            <TableCell>
+              <div class="flex items-center space-x-2">
+                <div class="" v-if="chat.assistant?.llm.provider">
+                  <component
+                    :is="getProviderIcon(chat.assistant?.llm.provider)"
+                    class="size-4 text-slate-500"
+                  />
+                </div>
+                <span>{{ chat.assistant?.llm.displayName }}</span>
+              </div>
+            </TableCell>
             <TableCell>
               {{ getDateTimeForHumans(chat.updatedAt) }}
             </TableCell>

@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
-import { Checkbox } from '@/components/ui/checkbox';
 import LogosGoogleIcon from '~icons/logos/google-icon';
 import { useAuthService } from '@/composables/services/useAuthService';
 import BrandHeader from '@/components/brand/BrandHeader.vue';
@@ -121,21 +120,6 @@ const onGoogleLogin = async () => {
                     v-bind="componentField"
                   />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            </FormField>
-            <FormField
-              v-slot="{ value, handleChange }"
-              type="checkbox"
-              name="keep"
-            >
-              <FormItem class="flex items-center gap-x-2 space-y-0 pt-2">
-                <FormControl>
-                  <Checkbox :checked="value" @update:checked="handleChange" />
-                </FormControl>
-                <div class="">
-                  <FormLabel>Remember this device</FormLabel>
-                </div>
                 <FormMessage />
               </FormItem>
             </FormField>
