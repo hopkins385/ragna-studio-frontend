@@ -165,6 +165,34 @@ const mediaRoutes = {
       component: () => import('../views/media/MediaUploadView.vue'),
       meta: defaultAppMeta,
     },
+    {
+      path: 'google-drive',
+      name: 'media.google-drive.index',
+      // beforeEnter: [hasValidRouteQuery],
+      component: () => import('../views/media/google/MediaGoogleIndexView.vue'),
+      meta: defaultAppMeta,
+    },
+    {
+      path: 'google-drive/callback',
+      name: 'media.google-drive.callback',
+      component: () =>
+        import('../views/media/google/MediaGoogleCallbackView.vue'),
+      meta: defaultAppMeta,
+    },
+    {
+      path: 'google-drive/:id',
+      name: 'media.google-drive.show',
+      beforeEnter: [hasValidRouteId],
+      component: () => import('../views/media/google/MediaGoogleShowView.vue'),
+      meta: defaultAppMeta,
+    },
+    {
+      path: 'one-drive',
+      name: 'media.one-drive',
+      beforeEnter: [hasValidRouteQuery],
+      component: () => import('../views/media/onedrive/MediaOneDriveView.vue'),
+      meta: defaultAppMeta,
+    },
   ],
 };
 

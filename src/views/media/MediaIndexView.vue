@@ -30,7 +30,7 @@ const onAddOneDrive = async () => {
       <ul class="max-w-sm space-y-5">
         <li class="">
           <RouterLink
-            to="/media/onedrive"
+            to="/media/one-drive"
             class="group flex cursor-pointer items-center space-x-10 rounded-lg"
           >
             <div class="size-20 rounded-lg border p-5 group-hover:shadow-md">
