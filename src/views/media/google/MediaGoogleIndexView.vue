@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BoxContainer from '@/components/box/BoxContainer.vue';
+import GoogleDriveTable from '@/components/google/GoogleDriveTable.vue';
 import SectionContainer from '@/components/section/SectionContainer.vue';
 import SectionHeading from '@/components/section/SectionHeading.vue';
 import TableSkeleton from '@/components/table/TableSkeleton.vue';
@@ -22,7 +23,7 @@ const init = async () => {
   }
 };
 
-async function onConnect() {
+async function onConnectClick() {
   const { url } = await fetchConsentURL('google');
   if (!url) return;
   window.open(url, '_self');
@@ -45,7 +46,7 @@ onBeforeMount(init);
     </BoxContainer>
     <BoxContainer v-else>
       <div class="flex">
-        <Button @click="onConnect"> Connect Google Drive </Button>
+        <Button @click="onConnectClick"> Connect Google Drive </Button>
       </div>
     </BoxContainer>
   </SectionContainer>

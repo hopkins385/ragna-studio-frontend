@@ -75,7 +75,7 @@ export const defaultRoutes = [
   {
     icon: CloudUploadIcon,
     path: '/media',
-    label: 'Uploads',
+    label: 'Files',
     hidden: false,
     children: [],
   },

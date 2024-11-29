@@ -113,7 +113,7 @@ watch(sheetIsOpen, isOpen => {
           <Button variant="outline" class="self-end"> Save Settings </Button>
           <FormField v-slot="{ componentField }" name="name">
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Workflow Name</FormLabel>
               <FormControl>
                 <Input
                   id="wfNameInput"
@@ -128,7 +128,7 @@ watch(sheetIsOpen, isOpen => {
           </FormField>
           <FormField v-slot="{ componentField }" name="description">
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Workflow Description</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Description"

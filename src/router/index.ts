@@ -182,7 +182,7 @@ const mediaRoutes = {
     {
       path: 'google-drive/:id',
       name: 'media.google-drive.show',
-      beforeEnter: [hasValidRouteId],
+      // beforeEnter: [hasValidRouteId],
       component: () => import('../views/media/google/MediaGoogleShowView.vue'),
       meta: defaultAppMeta,
     },

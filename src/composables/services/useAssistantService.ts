@@ -1,7 +1,6 @@
-import { $axios } from '@/axios/axiosInstance';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
-import { useDebounceFn } from '@vueuse/core';
 import type { AssistantTool } from './useAssistantToolsService';
+import { $axios } from '@/axios/axiosInstance';
 import { getRoute } from '@/utils/route.util';
 
 enum AssistantRoute {
