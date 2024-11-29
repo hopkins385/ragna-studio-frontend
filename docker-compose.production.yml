@@ -25,5 +25,3 @@ services:
 networks:
   traefik_net:
     external: true
-  wgnet:
-    external: true
