@@ -1,11 +1,9 @@
-name: ragna-frontend
+name: ragna-studio-frontend
 
 services:
-  app:
+  web:
     cpu_count: 1
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/hopkins385/ragna-studio-frontend:latest
     restart: unless-stopped
     healthcheck:
       test:

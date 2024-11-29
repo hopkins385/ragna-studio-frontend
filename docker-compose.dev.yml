@@ -1,5 +1,5 @@
 services:
-  app:
+  web:
     restart: no
     ports:
       - '3001:80'

@@ -1,5 +1,5 @@
 # Build stage
-FROM node:20-slim AS build
+FROM node:22-slim AS build
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN npm ci
 COPY . .
 
 # Build the app
-RUN npm run build
+RUN npm run build-only
 
 # Production stage
 FROM nginx:alpine
