@@ -1,0 +1,33 @@
+services:
+  app:
+    deploy:
+      replicas: 1
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=traefik_net'
+      # Common
+      - 'traefik.http.services.studio-webapp.loadbalancer.server.port=80'
+      - 'traefik.http.services.studio-webapp.loadbalancer.sticky=true'
+      - 'traefik.http.services.studio-webapp.loadbalancer.sticky.cookie.name=studioapp'
+      - 'traefik.http.services.studio-webapp.loadbalancer.sticky.cookie.secure=true'
+      - 'traefik.http.services.studio-webapp.loadbalancer.sticky.cookie.httpOnly=true'
+      - 'traefik.http.services.studio-webapp.loadbalancer.sticky.cookie.samesite=Strict'
+      # HTTP Routers
+      - 'traefik.http.routers.studio-webapp.rule=Host(`studio.ragna.app`)'
+      - 'traefik.http.routers.studio-webapp.entrypoints=https'
+      - 'traefik.http.routers.studio-webapp.service=studio-webapp'
+      - 'traefik.http.routers.studio-webapp.middlewares=crowdsec-bouncer@file,default@file' #,gzip@file
+      - 'traefik.http.routers.studio-webapp.tls=true'
+      - 'traefik.http.routers.studio-webapp.tls.certresolver=http'
+    networks:
+      traefik_net:
+
+  postgres:
+    networks:
+      - wgnet
+
+networks:
+  traefik_net:
+    external: true
+  wgnet:
+    external: true
