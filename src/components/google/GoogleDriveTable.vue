@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import useForHumans from '@/composables/useForHumans';
-import { refDebounced } from '@vueuse/core';
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
   CopyPlusIcon,
-  DownloadIcon,
   LoaderIcon,
 } from 'lucide-vue-next';
 import {
@@ -26,6 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@ui/tooltip';
+import GoogleSearchFileBar from './GoogleSearchFileBar.vue';
 
 interface File {
   id: string;
@@ -41,10 +40,18 @@ interface Data {
   nextPageToken: string | null;
 }
 
+const indexableMimeTypes = [
+  'text/plain',
+  'application/pdf',
+  'application/vnd.google-apps.document',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/msword',
+];
+
 const router = useRouter();
 const route = useRoute();
 
-const search = ref('');
+const searchFileName = ref('');
 const pageTokenHistory = ref<string[]>([]);
 const fileDonwloadPending = ref<string | null>(null);
 const nextPageToken = ref<string | null>(null);
@@ -57,8 +64,6 @@ const showPageControls = computed(
     data.nextPageToken,
 );
 
-const debouncedSearch = refDebounced(search, 500);
-
 const dataIsLoading = ref(true);
 const data = reactive<Data>({
   files: [],
@@ -69,22 +74,39 @@ const { fetchDriveData } = useGoogleDriveService();
 
 const init = async () => {
   dataIsLoading.value = true;
-  const result = await fetchDriveData({
-    // search: debouncedSearch,
-    folderId: folderId.value,
-    pageToken: nextPageToken.value,
-  });
-  if (result) {
-    data.files = result.files;
-    data.nextPageToken = result.nextPageToken;
+  try {
+    const result = await fetchDriveData({
+      fileName: searchFileName.value,
+      folderId: folderId.value,
+      pageToken: nextPageToken.value,
+    });
+    if (result) {
+      data.files = result.files;
+      data.nextPageToken = result.nextPageToken;
+    }
+  } catch (error) {
+    // TODO: show error?
+  } finally {
+    dataIsLoading.value = false;
   }
-  dataIsLoading.value = false;
 };
 
-watch([folderId, debouncedSearch, nextPageToken], init, { immediate: true });
+watch(
+  [folderId, nextPageToken],
+  () => {
+    if (dataIsLoading.value) return;
+    init();
+  },
+  { immediate: true },
+);
+
+watch(searchFileName, value => {
+  if (value !== '') return;
+  init();
+});
 
 const submitDisabled = computed(
-  () => search.value === '' || dataIsLoading.value,
+  () => searchFileName.value === '' || dataIsLoading.value,
 );
 
 const onRowClick = (file: any) => {
@@ -121,9 +143,9 @@ async function downloadFile(id: string | undefined | null) {
   fileDonwloadPending.value = null;
 }
 
-const onSubmit = async () => {
+const onSubmitSearch = async () => {
   if (submitDisabled.value) return;
-  // await refresh();
+  await init();
 };
 
 const { fileIcon } = useGoogleDriveIcons();
@@ -137,12 +159,13 @@ onMounted(init);
     <TableSkeleton />
   </div>
   <div v-else>
-    <div>
-      <SearchFileBar
-        v-model="search"
+    <div v-if="!folderId">
+      <!-- TODO:  && pageTokenHistory.length === 0" -->
+      <GoogleSearchFileBar
+        v-model="searchFileName"
         :pending="dataIsLoading"
         :submit-disabled="submitDisabled"
-        @submit="onSubmit"
+        @submit="onSubmitSearch"
       />
     </div>
     <Table>
@@ -198,11 +221,13 @@ onMounted(init);
           </TableCell>
           <TableCell>{{ file?.owner }}</TableCell>
           <TableCell>{{ getDateTimeForHumans(file?.modifiedTime) }}</TableCell>
-          <TableCell
-            >{{ file?.size ? getFileSizeForHumans(file?.size) : '-' }}
+          <TableCell>
+            {{ file?.size ? getFileSizeForHumans(file?.size) : '-' }}
           </TableCell>
           <TableCell>
-            <div v-if="file?.size">
+            <div
+              v-if="file?.size && indexableMimeTypes.includes(file?.mimeType)"
+            >
               <TooltipProvider :delay-duration="300">
                 <Tooltip>
                   <TooltipTrigger as-child>

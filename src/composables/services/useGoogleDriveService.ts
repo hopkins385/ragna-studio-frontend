@@ -21,11 +21,13 @@ export function useGoogleDriveService() {
 
   const fetchDriveData = async (payload: {
     folderId: string | null;
+    fileName?: string | null;
     pageToken?: string | null;
   }) => {
     try {
       const route = getRoute(GoogleDriveRoute.BASE);
       const params = {
+        searchFileName: payload.fileName,
         searchFolderId: payload.folderId,
         pageToken: payload.pageToken,
       };
