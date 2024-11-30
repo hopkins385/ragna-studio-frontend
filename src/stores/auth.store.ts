@@ -83,11 +83,11 @@ export const useAuthStore = defineStore('auth-store', {
       );
     },
     hasRefreshToken(): boolean {
-      const token = useStorage('refreshToken', null, sessionStorage);
+      const token = useStorage('refreshToken', null, localStorage);
       return !!token.value;
     },
     getRefreshToken(): string | null {
-      return sessionStorage.getItem('refreshToken');
+      return localStorage.getItem('refreshToken');
     },
   },
   actions: {
@@ -102,7 +102,7 @@ export const useAuthStore = defineStore('auth-store', {
      * Clears the refresh token.
      */
     clearRefreshToken(): void {
-      sessionStorage.removeItem('refreshToken');
+      localStorage.removeItem('refreshToken');
     },
     /**
      * Logs in the user with provided credentials.
@@ -222,7 +222,7 @@ export const useAuthStore = defineStore('auth-store', {
      * @param refreshToken Refresh token to set.
      */
     setRefreshToken(refreshToken: string): void {
-      sessionStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('refreshToken', refreshToken);
     },
   },
 });
