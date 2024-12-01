@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { assistantFormSchema } from '@schemas/assistant.form';
+import AssistantCreateForm from '@components/assistant/AssistantCreateForm.vue';
+import SectionContainer from '@components/section/SectionContainer.vue';
+import SectionHeading from '@components/section/SectionHeading.vue';
 import useAssistantService from '@composables/services/useAssistantService';
 import type { AssistantTool } from '@composables/services/useAssistantToolsService';
 import { useAssistantToolsService } from '@composables/services/useAssistantToolsService';
 import useToast from '@composables/useToast';
+import { assistantFormSchema } from '@schemas/assistant.form';
 import { useAuthStore } from '@stores/auth.store';
-import AssistantCreateForm from '@components/assistant/AssistantCreateForm.vue';
-import SectionContainer from '@components/section/SectionContainer.vue';
-import SectionHeading from '@components/section/SectionHeading.vue';
 import { useForm } from 'vee-validate';
 
 const router = useRouter();

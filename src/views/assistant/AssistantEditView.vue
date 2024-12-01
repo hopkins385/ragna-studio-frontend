@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import AssistantEditForm2 from '@components/assistant/AssistantEditForm2.vue';
+import SectionContainer from '@components/section/SectionContainer.vue';
+import SectionHeading from '@components/section/SectionHeading.vue';
 import type { Assistant } from '@composables/services/useAssistantService';
 import useAssistantService from '@composables/services/useAssistantService';
 import type { AssistantTool } from '@composables/services/useAssistantToolsService';
 import { useAssistantToolsService } from '@composables/services/useAssistantToolsService';
 import type { Collection } from '@composables/services/useCollectionService';
 import useCollectionService from '@composables/services/useCollectionService';
-import AssistantEditForm2 from '@components/assistant/AssistantEditForm2.vue';
-import SectionContainer from '@components/section/SectionContainer.vue';
-import SectionHeading from '@components/section/SectionHeading.vue';
 
 const assistant = ref<Assistant | null>(null);
 const assistantTools = ref<AssistantTool[]>([]);

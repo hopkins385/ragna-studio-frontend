@@ -1,26 +1,16 @@
 <script setup lang="ts">
-import { socialAuthGoogleCallbackSchema } from '@schemas/social-auth-google-callback.schema';
-import { useAuthStore } from '@stores/auth.store';
 import AuthProcessing from '@components/auth/AuthProcessing.vue';
+import { useAuthStore } from '@stores/auth.store';
 
 const router = useRouter();
 const route = useRoute();
 
 const authStore = useAuthStore();
 
-const validateQuery = (query: any) => {
-  const result = socialAuthGoogleCallbackSchema.safeParse(query);
-  if (!result.success) {
-    console.error('[social auth login]', result.error);
-    throw new Error('Invalid query params');
-  }
-  return result.data;
-};
-
 onMounted(async () => {
+  const code = route.query.code?.toString();
   try {
-    const validatedQuery = validateQuery(route.query);
-    await authStore.socialGoogleLogin(validatedQuery);
+    await authStore.socialGoogleLogin({ code });
     if (!authStore.isAuthenticated) {
       throw new Error('Failed to login');
     }

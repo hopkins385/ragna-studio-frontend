@@ -1,12 +1,4 @@
 <script setup lang="ts">
-import { useChatImages, type ChatImage } from '@composables/chat/useChatImages';
-import { useChatService } from '@composables/services/useChatService';
-import { useChatTools } from '@composables/useChatTools';
-import { useWebsocketGlobal } from '@composables/websocket/useWebsocketGlobal';
-import { useChatSettingsStore } from '@stores/chat-settings.store';
-import { useChatStore } from '@stores/chat.store';
-import { Button } from '@ui/button';
-import { Textarea } from '@ui/textarea';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import ChatButtonNewChat from '@components/chat/ChatButtonNewChat.vue';
 import ChatHistorySidebar from '@components/chat/ChatHistorySidebar.vue';
@@ -16,6 +8,14 @@ import ChatMessageChunk from '@components/chat/ChatMessageChunk.vue';
 import ChatPresets from '@components/chat/ChatPresets.vue';
 import ChatSettings from '@components/chat/ChatSettings.vue';
 import ChatToolCallMessage from '@components/chat/ChatToolCallMessage.vue';
+import { useChatImages, type ChatImage } from '@composables/chat/useChatImages';
+import { useChatService } from '@composables/services/useChatService';
+import { useChatTools } from '@composables/useChatTools';
+import { useWebsocketGlobal } from '@composables/websocket/useWebsocketGlobal';
+import { useChatSettingsStore } from '@stores/chat-settings.store';
+import { useChatStore } from '@stores/chat.store';
+import { Button } from '@ui/button';
+import { Textarea } from '@ui/textarea';
 import { PaperclipIcon, SendIcon, SquareIcon } from 'lucide-vue-next';
 import ChatAssistantDetails from './ChatAssistantDetails.vue';
 

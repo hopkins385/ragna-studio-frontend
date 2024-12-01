@@ -1,8 +1,8 @@
+import { defineAbilityFor } from '@/services/ability.service';
 import { useAccountService } from '@/composables/services/useAccountService';
 import { useAuthService } from '@/composables/services/useAuthService';
-import { defineStore } from 'pinia';
 import { useStorage } from '@vueuse/core';
-import { defineAbilityFor } from '@/services/ability.service';
+import { defineStore } from 'pinia';
 
 enum UserRoles {
   ADMIN = 'admin',
@@ -131,7 +131,9 @@ export const useAuthStore = defineStore('auth-store', {
         throw error;
       }
     },
-    async socialGoogleLogin(query: any): Promise<void> {
+    async socialGoogleLogin(query: {
+      code: string | undefined;
+    }): Promise<void> {
       if (!query.code) {
         throw new Error('No code provided');
       }
@@ -140,9 +142,9 @@ export const useAuthStore = defineStore('auth-store', {
       try {
         const data = await googleAuth({
           code: query.code,
-          scope: query?.scope || undefined,
-          authuser: query?.authuser || undefined,
-          prompt: query?.prompt || undefined,
+          scope: undefined,
+          authuser: undefined,
+          prompt: undefined,
         });
 
         this.setAccessToken(data.accessToken, data.accessTokenExpiresAt);

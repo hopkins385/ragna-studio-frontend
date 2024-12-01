@@ -4,20 +4,5 @@
   "singleQuote": true,
   "tabWidth": 2,
   "vueIndentScriptAndStyle": false,
-  "arrowParens": "avoid",
-  "plugins": ["@trivago/prettier-plugin-sort-imports"],
-  "importOrder": [
-    "<TYPES>^.*",
-    "^@schemas/(.*)$",
-    "^@composables/(.*)$",
-    "^@stores/(.*)$",
-    "^@ui/(.*)$",
-    "^@components/(.*)$",
-    "^[^.]+$",
-    "lucide-vue-next",
-    "^[./]"
-  ],
-  "importOrderSeparation": false,
-  "importOrderSortSpecifiers": false,
-  "importOrderCaseInsensitive": true
+  "arrowParens": "avoid"
 }

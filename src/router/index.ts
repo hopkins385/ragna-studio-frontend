@@ -1,11 +1,12 @@
+import {
+  hasValidRouteId,
+  hasValidRouteQuery,
+  hasValidGoogleCallbackQuery,
+} from '@/utils/route-validation.util';
 import { createRouter, createWebHistory } from 'vue-router';
 import { authMiddleware } from './middlewares/auth.middleware';
 import { csrfMiddleware } from './middlewares/csrf.middleware';
 import { layoutMiddleware, Layout } from './middlewares/layout.middleware';
-import {
-  hasValidRouteId,
-  hasValidRouteQuery,
-} from '@/utils/route-validation.util';
 import { NProgressPlugin } from './plugins/nprogress.router.plugin';
 
 const progressPlugin = new NProgressPlugin();
@@ -269,6 +270,7 @@ const accountRoutes = {
 const socialAuthCallbackRoutes = {
   path: '/auth/:provider/callback',
   name: 'social-auth-callback',
+  beforeEnter: [hasValidGoogleCallbackQuery],
   component: () => import('../views/auth/SocialAuthCallbackView.vue'),
   meta: {
     requiresAuth: false,

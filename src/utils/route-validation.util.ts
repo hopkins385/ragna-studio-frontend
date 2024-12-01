@@ -1,6 +1,7 @@
+import { cuidSchema } from '@/schemas/cuid.schema';
+import { socialAuthGoogleCallbackSchema } from '@/schemas/social-auth-google-callback.schema';
 import type { RouteLocationNormalized } from 'vue-router';
 import { z } from 'zod';
-import { cuidSchema } from '@/schemas/cuid.schema';
 
 const idSchema = z.object({
   id: cuidSchema,
@@ -22,6 +23,14 @@ export function hasValidRouteId(to: RouteLocationNormalized) {
 
 export function hasValidRouteQuery(to: RouteLocationNormalized) {
   const res = querySchema.safeParse(to.query);
+  if (!res.success) {
+    return { name: 'not-found' };
+  }
+  return true;
+}
+
+export function hasValidGoogleCallbackQuery(to: RouteLocationNormalized) {
+  const res = socialAuthGoogleCallbackSchema.safeParse(to.query);
   if (!res.success) {
     return { name: 'not-found' };
   }
