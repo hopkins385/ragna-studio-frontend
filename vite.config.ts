@@ -1,18 +1,14 @@
-import { fileURLToPath, URL } from 'node:url';
-
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-
-import vueDevTools from 'vite-plugin-vue-devtools';
-import AutoImport from 'unplugin-auto-import/vite';
-import Components from 'unplugin-vue-components/vite';
-
-import { imagetools } from 'vite-imagetools';
-import svgLoader from 'vite-svg-loader';
-import Icons from 'unplugin-icons/vite';
-
 import UnheadVite from '@unhead/addons/vite';
 import { unheadVueComposablesImports } from '@unhead/vue';
+import vue from '@vitejs/plugin-vue';
+import { fileURLToPath, URL } from 'node:url';
+import AutoImport from 'unplugin-auto-import/vite';
+import Icons from 'unplugin-icons/vite';
+import Components from 'unplugin-vue-components/vite';
+import { defineConfig } from 'vite';
+import { imagetools } from 'vite-imagetools';
+import vueDevTools from 'vite-plugin-vue-devtools';
+import svgLoader from 'vite-svg-loader';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -58,6 +54,7 @@ export default defineConfig({
         new URL('./src/composables', import.meta.url),
       ),
       '@stores': fileURLToPath(new URL('./src/stores', import.meta.url)),
+      '@schemas': fileURLToPath(new URL('./src/schemas', import.meta.url)),
     },
   },
 });

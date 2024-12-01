@@ -1,23 +1,22 @@
 <script setup lang="ts">
-import BoxContainer from '@components/box/BoxContainer.vue';
-import ChatMessageBox from '@components/chat/ChatMessageBox.vue';
-import ChatMessageChunk from '@components/chat/ChatMessageChunk.vue';
+import { useChatImages, type ChatImage } from '@composables/chat/useChatImages';
 import { useChatService } from '@composables/services/useChatService';
 import { useChatTools } from '@composables/useChatTools';
 import { useWebsocketGlobal } from '@composables/websocket/useWebsocketGlobal';
 import { useChatSettingsStore } from '@stores/chat-settings.store';
 import { useChatStore } from '@stores/chat.store';
-import { useChatImages, type ChatImage } from '@composables/chat/useChatImages';
-import { Button } from '@components/ui/button';
-import { PaperclipIcon, SendIcon, SquareIcon } from 'lucide-vue-next';
-import { Textarea } from '@components/ui/textarea';
+import { Button } from '@ui/button';
+import { Textarea } from '@ui/textarea';
+import BoxContainer from '@components/box/BoxContainer.vue';
+import ChatButtonNewChat from '@components/chat/ChatButtonNewChat.vue';
+import ChatHistorySidebar from '@components/chat/ChatHistorySidebar.vue';
+import ChatImageInput from '@components/chat/ChatImageInput.vue';
+import ChatMessageBox from '@components/chat/ChatMessageBox.vue';
+import ChatMessageChunk from '@components/chat/ChatMessageChunk.vue';
 import ChatPresets from '@components/chat/ChatPresets.vue';
 import ChatSettings from '@components/chat/ChatSettings.vue';
-import ChatButtonNewChat from '@components/chat/ChatButtonNewChat.vue';
-import ChatImageInput from '@components/chat/ChatImageInput.vue';
-import ChatToolCallMessage from '@/components/chat/ChatToolCallMessage.vue';
-import ChatHistorySidebar from '@/components/chat/ChatHistorySidebar.vue';
-import useToast from '@/composables/useToast';
+import ChatToolCallMessage from '@components/chat/ChatToolCallMessage.vue';
+import { PaperclipIcon, SendIcon, SquareIcon } from 'lucide-vue-next';
 import ChatAssistantDetails from './ChatAssistantDetails.vue';
 
 useHead({

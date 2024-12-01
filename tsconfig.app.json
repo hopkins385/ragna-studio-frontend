@@ -15,6 +15,7 @@
       "@ui/*": ["./src/components/ui/*"],
       "@composables/*": ["./src/composables/*"],
       "@stores/*": ["./src/stores/*"],
+      "@schemas/*": ["./src/schemas/*"],
     }
   }
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import AuthProcessing from '@/components/auth/AuthProcessing.vue';
-import { socialAuthGoogleCallbackSchema } from '@/schemas/social-auth-google-callback.schema';
-import { useAuthStore } from '@/stores/auth.store';
+import { socialAuthGoogleCallbackSchema } from '@schemas/social-auth-google-callback.schema';
+import { useAuthStore } from '@stores/auth.store';
+import AuthProcessing from '@components/auth/AuthProcessing.vue';
 
 const router = useRouter();
 const route = useRoute();

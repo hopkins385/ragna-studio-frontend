@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import TableSkeleton from '@components/table/TableSkeleton.vue';
+import { Input } from '@ui/input';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import ChatHistory from '@components/chat/ChatHistory.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import SectionHeading from '@components/section/SectionHeading.vue';
-import Input from '@ui/input/Input.vue';
+import TableSkeleton from '@components/table/TableSkeleton.vue';
 
 const router = useRouter();
 const route = useRoute();

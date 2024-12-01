@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useChatService } from '@/composables/services/useChatService';
+import { useChatService } from '@composables/services/useChatService';
 
 const router = useRouter();
 const { fetchLatestChat } = useChatService();

@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import AssistantAllTable from '@/components/assistant/AssistantAllTable.vue';
-import BoxContainer from '@/components/box/BoxContainer.vue';
-import ButtonLink from '@/components/button/ButtonLink.vue';
-import TableSkeleton from '@/components/table/TableSkeleton.vue';
+import AssistantAllTable from '@components/assistant/AssistantAllTable.vue';
+import BoxContainer from '@components/box/BoxContainer.vue';
+import ButtonLink from '@components/button/ButtonLink.vue';
 import Heading from '@components/heading/Heading.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import SectionHeading from '@components/section/SectionHeading.vue';
-import { Input } from '@components/ui/input';
+import TableSkeleton from '@components/table/TableSkeleton.vue';
 import { PlusIcon } from 'lucide-vue-next';
 
 const route = useRoute();

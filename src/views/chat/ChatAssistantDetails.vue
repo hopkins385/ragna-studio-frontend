@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useProviderIcons } from '@/composables/useProviderIcons';
+import { useProviderIcons } from '@composables/useProviderIcons';
 
 defineProps<{
   provider?: string;

@@ -1,30 +1,14 @@
 <script setup lang="ts">
+import { assistantFormSchema } from '@schemas/assistant.form';
+import useAssistantService from '@composables/services/useAssistantService';
+import type { AssistantTool } from '@composables/services/useAssistantToolsService';
+import { useAssistantToolsService } from '@composables/services/useAssistantToolsService';
+import useToast from '@composables/useToast';
+import { useAuthStore } from '@stores/auth.store';
+import AssistantCreateForm from '@components/assistant/AssistantCreateForm.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import SectionHeading from '@components/section/SectionHeading.vue';
-import { Button } from '@ui/button';
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@ui/form';
-import { Input } from '@ui/input';
-import { Switch } from '@ui/switch';
-import useAssistantService from '@composables/services/useAssistantService';
-import useToast from '@composables/useToast';
-import { assistantFormSchema } from '@/schemas/assistant.form';
-import { useAuthStore } from '@stores/auth.store';
 import { useForm } from 'vee-validate';
-import LlmSelectModal from '@components/llm/LlmSelectModal.vue';
-import { Textarea } from '@ui/textarea';
-import {
-  useAssistantToolsService,
-  type AssistantTool,
-} from '@/composables/services/useAssistantToolsService';
-import { Checkbox } from '@/components/ui/checkbox';
-import AssistantCreateForm from '@/components/assistant/AssistantCreateForm.vue';
 
 const router = useRouter();
 
