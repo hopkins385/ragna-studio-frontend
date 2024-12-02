@@ -2,15 +2,14 @@
 /**
  * Component: ChatSettings
  */
+import QuestionToolTip from '@components/question/QuestionToolTip.vue';
+import { useChatSettingsStore } from '@stores/chat-settings.store';
 import { Button } from '@ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover';
-import { useChatSettingsStore } from '@stores/chat-settings.store';
-import { SlidersHorizontalIcon, RotateCcwIcon } from 'lucide-vue-next';
 import { Separator } from '@ui/separator';
 import { Slider } from '@ui/slider';
 import { Switch } from '@ui/switch';
-import QuestionToolTip from '@components/question/QuestionToolTip.vue';
-import ChatModelSelector from '@components/chat/ChatModelSelector.vue';
+import { RotateCcwIcon, SlidersHorizontalIcon } from 'lucide-vue-next';
 
 const props = defineProps<{
   assistantId?: string | null;
@@ -56,12 +55,14 @@ function onDeleteChatMessages() {
       </div>
       <Separator class="my-3" />
       <!-- chat model selector -->
+      <!--
       <div
         class="pointer-events-auto flex items-center space-x-4 text-muted-foreground"
       >
         <ChatModelSelector />
       </div>
       <Separator class="my-3" />
+      -->
       <Button
         variant="outline"
         size="sm"

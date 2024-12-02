@@ -1,9 +1,18 @@
 <script setup lang="ts">
-import type { AssistantTool } from '@/composables/services/useAssistantToolsService';
-import type { Collection } from '@/composables/services/useCollectionService';
-import type { Assistant } from '@/composables/services/useAssistantService';
-import { assistantFormSchema } from '@/schemas/assistant.form';
-import TabSidebar from '../tab/TabSidebar.vue';
+import ButtonLoading from '@components/button/ButtonLoading.vue';
+import CollectionSelectModal from '@components/collection/CollectionSelectModal.vue';
+import LlmSelectModal from '@components/llm/LlmSelectModal.vue';
+import TabSidebar from '@components/tab/TabSidebar.vue';
+import type { Assistant } from '@composables/services/useAssistantService';
+import useAssistantService from '@composables/services/useAssistantService';
+import type { AssistantTool } from '@composables/services/useAssistantToolsService';
+import useCollectionAbleService from '@composables/services/useCollectionAbleService';
+import type { Collection } from '@composables/services/useCollectionService';
+import useToast from '@composables/useToast';
+import { assistantFormSchema } from '@schemas/assistant.form';
+import { useAuthStore } from '@stores/auth.store';
+import { Button } from '@ui/button';
+import Checkbox from '@ui/checkbox/Checkbox.vue';
 import {
   FormControl,
   FormDescription,
@@ -12,28 +21,16 @@ import {
   FormLabel,
   FormMessage,
 } from '@ui/form';
-import { useAuthStore } from '@/stores/auth.store';
 import { Input } from '@ui/input';
-import LlmSelectModal from '../llm/LlmSelectModal.vue';
+import { Slider } from '@ui/slider';
+import { Textarea } from '@ui/textarea';
 import {
-  Activity,
   Book,
   BriefcaseBusiness,
   CircleUserRound,
   Settings,
-  Settings2,
   Stars,
-  UserRound,
 } from 'lucide-vue-next';
-import { Button } from '@ui/button';
-import useAssistantService from '@/composables/services/useAssistantService';
-import useToast from '@/composables/useToast';
-import { Textarea } from '@ui/textarea';
-import ButtonLoading from '../button/ButtonLoading.vue';
-import CollectionSelectModal from '../collection/CollectionSelectModal.vue';
-import useCollectionAbleService from '@/composables/services/useCollectionAbleService';
-import Checkbox from '@ui/checkbox/Checkbox.vue';
-import { Slider } from '@ui/slider';
 
 const props = defineProps<{
   assistant: Assistant;
@@ -63,7 +60,7 @@ const { updateAssistant } = useAssistantService();
 
 // form
 
-const { errors, handleSubmit, isSubmitting, isValidating } = useForm({
+const { handleSubmit } = useForm({
   validationSchema: assistantFormSchema,
   initialValues: {
     teamId: authStore.user?.firstTeamId || '-1',
@@ -79,7 +76,7 @@ const { errors, handleSubmit, isSubmitting, isValidating } = useForm({
 
 const onSubmit = handleSubmit(async values => {
   if (!props.assistant) {
-    throw new Error('Assistant not found');
+    throw new Error('Agent not found');
   }
   isLoading.value = true;
   try {
@@ -144,7 +141,7 @@ async function resetCollections() {
     v-model="currentTab"
     :tabs="[
       { id: 'tab1', icon: Settings, label: 'Agent Details' },
-      { id: 'tab2', icon: Stars, label: 'Generative AI' },
+      { id: 'tab2', icon: Stars, label: 'Generative Ai' },
       { id: 'tab3', icon: CircleUserRound, label: 'Behaviour' },
       { id: 'tab4', icon: Book, label: 'Knowledge' },
       { id: 'tab5', icon: BriefcaseBusiness, label: 'Capabilities' },
@@ -253,7 +250,7 @@ async function resetCollections() {
       <FormField name="tools">
         <FormItem>
           <div class="mb-4 space-y-2">
-            <FormLabel> Tools (optional)</FormLabel>
+            <FormLabel> Tool Use</FormLabel>
             <FormDescription>
               Select the tools the agent can use.
             </FormDescription>

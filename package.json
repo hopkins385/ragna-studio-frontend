@@ -50,6 +50,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@iconify-json/circle-flags": "^1.2.1",
     "@iconify-json/fluent-emoji-flat": "^1.2.1",
     "@iconify-json/logos": "^1.2.3",
     "@iconify-json/vscode-icons": "^1.2.2",

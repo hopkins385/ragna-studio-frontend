@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import type { LargeLangModel } from '@/composables/services/interfaces/large-lang-model.interface';
 import { useLlmService } from '@composables/services/useLlmService';
-import { SettingsIcon } from 'lucide-vue-next';
+import { Button } from '@ui/button';
 import {
   Dialog,
   DialogDescription,
@@ -9,9 +10,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@ui/dialog';
-import { Button } from '@ui/button';
 import DialogContent from '@ui/dialog/DialogContent.vue';
-import { useProviderIcons } from '@/composables/useProviderIcons';
+import { SettingsIcon } from 'lucide-vue-next';
+import LlmInfoBox from './LlmInfoBox.vue';
 
 const props = defineProps<{
   initialDisplayName: string;
@@ -23,22 +24,25 @@ const emits = defineEmits<{
 }>();
 
 const open = ref(false);
-const models = ref<any[] | null>(null);
+const models = ref<LargeLangModel[] | null>(null);
 
 const { getAllModels } = useLlmService();
-const { getProviderIcon } = useProviderIcons();
 
-const selectedModel = computed(() => {
-  return (
-    models.value?.find((model: any) => model.id === props.id) || {
-      displayName: props.initialDisplayName,
-    }
-  );
-});
+const selectedModel = computed<LargeLangModel>(
+  // TODO: Fix this type error
+  //@ts-expect-error
+  () => {
+    return (
+      models.value?.find(model => model.id === props.id) || {
+        displayName: props.initialDisplayName,
+      }
+    );
+  },
+);
 
 const initModels = async () => {
-  const { models: allModels } = await getAllModels();
-  models.value = allModels;
+  const { llms } = await getAllModels();
+  models.value = llms;
 };
 
 const onModelClick = (id: string) => {
@@ -67,29 +71,25 @@ watch(open, () => {
           <SettingsIcon class="size-4 stroke-1.5" />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent class="min-w-[1000px]">
         <DialogHeader>
-          <DialogTitle>AI Model</DialogTitle>
+          <DialogTitle>Ai Model</DialogTitle>
           <DialogDescription>
             This is a list of all available Large Language Models.
           </DialogDescription>
         </DialogHeader>
         <Suspense>
-          <div class="space-y-2">
-            <div
-              v-for="model in models"
-              :key="model.id"
-              @click="() => onModelClick(model.id)"
-            >
-              <Button :variant="model.id !== props.id ? 'ghost' : 'secondary'">
-                <component
-                  :is="getProviderIcon(model.provider)"
-                  class="stroke-1.5 size-4"
-                  :class="model.id === props.id ? 'text-white' : 'text-black'"
-                />
-                {{ model.displayName }}
-              </Button>
-            </div>
+          <div class="grid grid-cols-3 gap-4">
+            <template v-for="model in models" :key="model.id">
+              <LlmInfoBox
+                :display-name="model.displayName"
+                :provider-name="model.provider.name"
+                :host-region="model.host.region"
+                :infos="model.infos"
+                :capability="model.capability"
+                @click="() => onModelClick(model.id)"
+              />
+            </template>
           </div>
         </Suspense>
         <DialogFooter>

@@ -1,9 +1,9 @@
 import { $axios } from '@/axios/axiosInstance';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
-import { useChatStore } from '@stores/chat.store';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
-import { getRoute } from '@/utils/route.util';
 import { useChatSettingsStore } from '@/stores/chat-settings.store';
+import { getRoute } from '@/utils/route.util';
+import { useChatStore } from '@stores/chat.store';
 
 enum ChatRoute {
   BASE = 'chat', // POST
@@ -23,6 +23,15 @@ export interface AssistantLLM {
   displayName: string;
   apiName: string;
   multiModal: boolean;
+  capabilities: {
+    imageInput: boolean;
+    audioInput: boolean;
+    videoInput: boolean;
+    textOutput: boolean;
+    imageOutput: boolean;
+    audioOutput: boolean;
+    videoOutput: boolean;
+  };
 }
 
 export interface Assistant {
@@ -30,7 +39,7 @@ export interface Assistant {
   name: string;
   title: string;
   description: string;
-  llm: AssistantLLM;
+  llm: AssistantLLM; // TODO: change interface to LargeLangModel interface
   createdAt: string;
   updatedAt: string;
 }
@@ -402,7 +411,7 @@ export function useChatService() {
       chatStore.setModel({
         model: chat.value.assistant?.llm.apiName || '',
         provider: chat.value.assistant?.llm.provider || '',
-        hasVision: chat.value.assistant?.llm.multiModal || false,
+        hasVision: chat.value.assistant?.llm?.capabilities?.imageInput || false,
       });
       initChatMessages(chat.value?.messages || []);
     } catch (error: any) {

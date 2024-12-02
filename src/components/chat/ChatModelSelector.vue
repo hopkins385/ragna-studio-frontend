@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ChevronsDownUpIcon, CheckIcon } from 'lucide-vue-next';
+import { CheckIcon, ChevronsDownUpIcon } from 'lucide-vue-next';
 
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -16,27 +15,28 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { useChatStore } from '@/stores/chat.store';
+import type { LargeLangModel } from '@/composables/services/interfaces/large-lang-model.interface';
 import { useLlmService } from '@/composables/services/useLlmService';
-
-const data = ref<any>(null);
+import { cn } from '@/lib/utils';
+import { useChatStore } from '@/stores/chat.store';
 
 const { getAllModels } = useLlmService();
 
-const models = computed(() => data.value?.models);
+const models = ref<LargeLangModel[]>([]);
 
 const open = ref(false);
 const chatStore = useChatStore();
 
 const selectedModel = computed(() =>
   chatStore.model
-    ? models.value?.find((model: any) => model?.apiName === chatStore.model)
+    ? models.value?.find(model => model?.apiName === chatStore.model)
         ?.displayName
     : 'Select Model...',
 );
 
 const initModels = async () => {
-  data.value = await getAllModels();
+  const { llms } = await getAllModels();
+  models.value = llms;
 };
 
 function onSelect(event: any, model: any) {
