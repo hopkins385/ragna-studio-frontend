@@ -26,22 +26,30 @@ const initCollections = async () => {
     type: 'assistant',
     id: assistantId,
   };
-  const response = await fetchAllFor({ model });
-  collections.value = response.collections;
+  try {
+    const { collections: rCol } = await fetchAllFor({ model });
+    collections.value = rCol;
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const initAssistant = async () => {
   try {
-    const response = await fetchAssistant(assistantId);
-    assistant.value = response.assistant;
+    const { assistant: rAss } = await fetchAssistant(assistantId);
+    assistant.value = rAss;
   } catch (error) {
     console.error(error);
   }
 };
 
 const initAssistantTools = async () => {
-  const { tools } = await fetchAllTools();
-  assistantTools.value = tools;
+  try {
+    const { tools } = await fetchAllTools();
+    assistantTools.value = tools;
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 // noasync = Non-blocking, allows component to render before data is fetched

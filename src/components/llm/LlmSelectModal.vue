@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { LargeLangModel } from '@/composables/services/interfaces/large-lang-model.interface';
+import type { LargeLangModel } from '@composables/services/interfaces/large-lang-model.interface';
 import { useLlmService } from '@composables/services/useLlmService';
 import { Button } from '@ui/button';
 import {
@@ -80,16 +80,16 @@ watch(open, () => {
         </DialogHeader>
         <Suspense>
           <div class="grid grid-cols-3 gap-4">
-            <template v-for="model in models" :key="model.id">
-              <LlmInfoBox
-                :display-name="model.displayName"
-                :provider-name="model.provider.name"
-                :host-region="model.host.region"
-                :infos="model.infos"
-                :capability="model.capability"
-                @click="() => onModelClick(model.id)"
-              />
-            </template>
+            <LlmInfoBox
+              v-for="model in models"
+              :key="model.id"
+              :display-name="model.displayName"
+              :provider-name="model.provider.name"
+              :host-region="model.host.region"
+              :infos="model.infos"
+              :capability="model.capability"
+              @click="() => onModelClick(model.id)"
+            />
           </div>
         </Suspense>
         <DialogFooter>
