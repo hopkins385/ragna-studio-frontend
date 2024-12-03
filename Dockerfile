@@ -13,7 +13,7 @@ RUN npm ci
 COPY . .
 
 # Build the app
-RUN npm run build-only
+RUN npm run build-prod
 
 # Production stage
 FROM nginx:alpine
