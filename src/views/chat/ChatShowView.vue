@@ -59,7 +59,9 @@ const chatInputFormRef = ref<HTMLFormElement | null>(null);
 const chatBoxContainerRef = ref<HTMLElement | null>(null);
 const chatMessagesContainerRef = ref<HTMLElement | null>(null);
 
-const showAbortButton = computed(() => isStreaming.value);
+const showAbortButton = computed(
+  () => isThinking.value === true || isStreaming.value === true,
+);
 const streamText = computed(() => chatTextChunks.value.join(''));
 
 function getVisionContent(images: ChatImage[]): any {

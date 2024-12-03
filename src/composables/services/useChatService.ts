@@ -114,9 +114,7 @@ export function useChatService() {
   const chatMessages = ref<ChatMessage[]>([]);
   const chatTextChunks = ref<string[]>([]);
 
-  const isThinking = computed(
-    () => chatTextChunks.value.length === 0 && isStreaming.value,
-  );
+  const isThinking = ref(false);
 
   const hasChatMessages = computed(() => chatMessages.value.length > 0);
   const chatAssistant = computed(() => chat.value?.assistant);
@@ -210,6 +208,8 @@ export function useChatService() {
       );
     }
 
+    isThinking.value = true;
+
     try {
       const streamRoute = getRoute(ChatRoute.CHAT_STREAM, chatId);
       const response = await $axios.post<ReadableStream<Uint8Array>>(
@@ -239,6 +239,7 @@ export function useChatService() {
         throw new Error('Response is not a readable stream');
       }
 
+      isThinking.value = false;
       isStreaming.value = true;
 
       const reader = response.data
