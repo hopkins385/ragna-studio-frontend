@@ -3,6 +3,7 @@ import { getRoute } from '@/utils/route.util';
 
 enum AccountRoute {
   BASE = 'account', // GET
+  NAME = 'account/name', // PATCH
 }
 
 export interface AccountData {
@@ -33,13 +34,22 @@ export function useAccountService() {
     return response.data;
   }
 
-  async function updateAccountData(data: {
-    name: string;
-    email: string;
-    age: number;
-  }) {
-    // This is a placeholder for the actual implementation
-    console.log('Updating account data:', data);
+  async function updateName(data: { firstName: string; lastName: string }) {
+    try {
+      const route = getRoute(AccountRoute.NAME);
+      const payload = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+      };
+      console.log(payload);
+      const response = await $axios.patch(route, payload);
+      // if (response.status !== 200) {
+      //   throw new Error('Failed to update name');
+      // }
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to update name');
+    }
   }
 
   // TODO: find alternative to onScopeDispose
@@ -49,6 +59,6 @@ export function useAccountService() {
 
   return {
     fetchAccountData,
-    updateAccountData,
+    updateName,
   };
 }

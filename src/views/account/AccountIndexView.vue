@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import BoxContainer from '@/components/box/BoxContainer.vue';
-import ButtonLink from '@/components/button/ButtonLink.vue';
-import SectionContainer from '@/components/section/SectionContainer.vue';
-import SectionHeading from '@/components/section/SectionHeading.vue';
+import ButtonLoading from '@/components/button/ButtonLoading.vue';
+import AccountProfileForm from '@components/account/AccountProfileForm.vue';
+import BoxContainer from '@components/box/BoxContainer.vue';
+import ButtonLink from '@components/button/ButtonLink.vue';
+import SectionContainer from '@components/section/SectionContainer.vue';
+import SectionHeading from '@components/section/SectionHeading.vue';
 import {
   useAccountService,
   type AccountData,
-} from '@/composables/services/useAccountService';
+} from '@composables/services/useAccountService';
 
 const isLoading = ref(false);
 const account = ref<AccountData | null>(null);
@@ -15,21 +17,14 @@ const { fetchAccountData } = useAccountService();
 const org = computed(() => account.value?.organisation ?? null);
 const team = computed(() => account.value?.team ?? null);
 
-const initAccountData = () => {
-  fetchAccountData()
-    .then(data => {
-      account.value = data;
-    })
-    .catch(err => {
-      console.error(err);
-    });
+const initAccountData = async () => {
+  const data = await fetchAccountData();
+  account.value = data;
 };
 
 const onManageSubscriptionClick = () => {
-  isLoading.value = true;
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 2000);
+  // isLoading.value = true;
+  throw new Error('Not implemented');
 };
 
 const onRefresh = () => {
@@ -44,7 +39,7 @@ onBeforeMount(() => {
 <template>
   <SectionContainer>
     <SectionHeading
-      :title="`${account?.firstName ?? ''}'s Profile`"
+      title="My Profile"
       subtitle="On this page you can edit your personal profile settings"
     >
       <template #button>
@@ -53,7 +48,7 @@ onBeforeMount(() => {
     </SectionHeading>
     <div class="grid grid-cols-4 gap-5">
       <BoxContainer class="col-span-3">
-        <UserProfileForm
+        <AccountProfileForm
           :user="{
             id: account?.id ?? '',
             name: account?.name ?? '',
@@ -97,13 +92,13 @@ onBeforeMount(() => {
     </div>
     <BoxContainer class="mt-5">
       <h2 class="pb-5">Subscription</h2>
-      <LoadingButton
-        :is-loading="isLoading"
+      <ButtonLoading
+        :loading="isLoading"
         variant="outline"
         @click="onManageSubscriptionClick"
       >
         Manage Subscription
-      </LoadingButton>
+      </ButtonLoading>
     </BoxContainer>
     <!--
     <BoxContainer class="mt-5">

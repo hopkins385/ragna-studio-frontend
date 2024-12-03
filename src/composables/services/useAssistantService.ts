@@ -1,7 +1,7 @@
-import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
-import type { AssistantTool } from './useAssistantToolsService';
 import { $axios } from '@/axios/axiosInstance';
+import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import { getRoute } from '@/utils/route.util';
+import type { AssistantTool } from './useAssistantToolsService';
 
 enum AssistantRoute {
   BASE = 'assistant', // GET, POST
@@ -107,25 +107,6 @@ export default function useAssistantService() {
     }
 
     return response.data;
-    /*return useAsyncData(
-      'allAssistants',
-      async () => {
-        const [assistants, meta] = await $client.assistant.all.query(
-          {
-            page: page.value,
-            searchQuery: searchQuery.value,
-          },
-          {
-            signal: ac.signal,
-          },
-        );
-        return { assistants, meta };
-      },
-      {
-        watch: [page, searchQuery],
-        ...options,
-      },
-    );*/
   };
 
   const updateAssistant = async (
@@ -142,12 +123,6 @@ export default function useAssistantService() {
     }
 
     return response.data;
-    /*return $client.assistant.update.mutate(
-      { ...payload },
-      {
-        signal: ac.signal,
-      },
-    );*/
   };
 
   const deleteAssistant = async (id: string, teamId: string) => {
@@ -161,12 +136,6 @@ export default function useAssistantService() {
     }
 
     return response.data;
-    /*return $client.assistant.delete.mutate(
-      { id, teamId },
-      {
-        signal: ac.signal,
-      },
-    );*/
   };
 
   onScopeDispose(() => {
