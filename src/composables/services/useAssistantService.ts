@@ -125,13 +125,13 @@ export default function useAssistantService() {
     return response.data;
   };
 
-  const deleteAssistant = async (id: string, teamId: string) => {
-    const route = getRoute(AssistantRoute.ASSISTANT, id);
+  const deleteAssistant = async (assistantId: string) => {
+    const route = getRoute(AssistantRoute.ASSISTANT, assistantId);
     const response = await $axios.delete(route, {
       signal: ac.signal,
     });
 
-    if (response.status !== 204) {
+    if (response.status !== 200) {
       throw new Error('Failed to delete assistant');
     }
 

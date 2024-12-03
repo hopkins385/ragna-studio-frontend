@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import ButtonLink from '@/components/button/ButtonLink.vue';
+import ConfirmDialog from '@/components/confirm/ConfirmDialog.vue';
+import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -12,13 +14,11 @@ import {
 } from '@/components/ui/table';
 import useAssistantService from '@/composables/services/useAssistantService';
 import { useChatService } from '@/composables/services/useChatService';
+import { useProviderIcons } from '@/composables/useProviderIcons';
 import useToast from '@/composables/useToast';
 import { useAuthStore } from '@/stores/auth.store';
-import { SettingsIcon, Trash2Icon, MessageSquareIcon } from 'lucide-vue-next';
-import ErrorAlert from '@/components/error/ErrorAlert.vue';
-import ConfirmDialog from '@/components/confirm/ConfirmDialog.vue';
+import { MessageSquareIcon, SettingsIcon, Trash2Icon } from 'lucide-vue-next';
 import PaginateControls from '../pagniate/PaginateControls.vue';
-import { useProviderIcons } from '@/composables/useProviderIcons';
 
 const props = defineProps<{
   page: number;
@@ -64,15 +64,14 @@ const initAllAssistants = async ({ page }: { page: number }) => {
 
 const handleDelete = async () => {
   const assistantId = deleteAssistantId.value;
-  const teamId = authStore.user?.teams?.[0].id;
-  if (!assistantId || !teamId) {
-    throw new Error('Assistant ID or Team ID is missing');
+  if (!assistantId) {
+    throw new Error('Assistant ID missing');
   }
   try {
-    await deleteAssistant(assistantId, teamId);
+    await deleteAssistant(assistantId);
     deleteAssistantId.value = '';
     toast.success({
-      description: 'Assistant has been deleted successfully.',
+      description: 'Assistant has been deleted.',
     });
     await initAllAssistants({ page: props.page });
   } catch (error: any) {
