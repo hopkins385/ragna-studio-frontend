@@ -1,9 +1,7 @@
 import { socketClient } from '@/socket';
-import { useAuthStore } from '@/stores/auth.store';
 import useToast from '../useToast';
 
 export default function useWebsocket() {
-  const authStore = useAuthStore();
   const toast = useToast();
 
   const isConnected = ref(socketClient.connected);
@@ -30,11 +28,6 @@ export default function useWebsocket() {
     socketClient.on('connect', () => {
       isConnected.value = true;
       console.log('Socket connected:', socketClient.connected);
-
-      // Emit 'join' event if user is authenticated
-      if (authStore.isAuthenticated) {
-        socketClient.emit('join', `user:${authStore.user?.id}`);
-      }
     });
 
     socketClient.onAny((event, ...args) => {

@@ -365,7 +365,7 @@ onBeforeUnmount(() => {
             v-if="showAbortButton"
             variant="outline"
             size="icon"
-            class="group absolute bottom-2 right-3 z-20 mr-1 size-9 rounded-full bg-slate-100"
+            class="group absolute bottom-3 right-3 z-20 mr-1 size-8 rounded-full bg-slate-100"
             @click="() => abortChatRequest()"
           >
             <SquareIcon
@@ -374,7 +374,7 @@ onBeforeUnmount(() => {
           </Button>
           <Button
             v-else
-            class="absolute bottom-[0.4rem] right-2 z-10 size-9"
+            class="absolute bottom-2 right-2 z-10 size-9"
             type="submit"
             size="icon"
             variant="ghost"

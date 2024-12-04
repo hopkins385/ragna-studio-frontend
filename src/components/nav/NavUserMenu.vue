@@ -12,24 +12,22 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@components/ui/popover';
+import { useAuthStore } from '@stores/auth.store';
 import {
+  Bell,
+  ChevronsUpDown,
+  CreditCard,
+  LogOut,
   Sparkles,
   User,
-  CreditCard,
-  Bell,
-  LogOut,
-  ChevronsUpDown,
 } from 'lucide-vue-next';
-import { ref, computed } from 'vue';
-import { useAuthStore } from '@stores/auth.store';
-import { useWebsocketGlobal } from '@/composables/websocket/useWebsocketGlobal';
+import { computed, ref } from 'vue';
 
 defineProps<{
   sizeFull: boolean;
 }>();
 
 const authStore = useAuthStore();
-// const socket = useWebsocketGlobal();
 
 const open = ref(false);
 
@@ -54,6 +52,10 @@ function onSelect(value: string) {
   open.value = false;
   router.push({ name: value });
 }
+
+onMounted(() => {});
+
+onUnmounted(() => {});
 </script>
 
 <template>

@@ -4,7 +4,7 @@ import { $axios } from './axios/axiosInstance';
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 export const socketClient = io(SOCKET_URL, {
-  autoConnect: true,
+  autoConnect: false,
   transports: ['websocket'],
   auth: async cb => {
     try {

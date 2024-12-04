@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import NavTopBar from '@/components/nav/NavTopBar.vue';
+import { useWebsocketGlobal } from '@/composables/websocket/useWebsocketGlobal';
 import { useAuthStore } from '@/stores/auth.store';
 import NavBar from '@components/nav/NavBar.vue';
 import { Toaster } from '@components/ui/sonner';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const socket = useWebsocketGlobal();
 
 // Token refresh logic
 const refreshTokens = async () => {
@@ -32,6 +34,31 @@ useEventListener(window, 'focus', handleVisibilityChange);
 useHead({
   titleTemplate: (title?: string) =>
     !title ? 'RAGNA Studio' : `${title} | RAGNA Studio`,
+});
+
+const joinUserRoom = () => {
+  if (authStore.isAuthenticated && authStore.user) {
+    socket.emit('join', `user:${authStore.user.id}`);
+  }
+};
+
+const leaveUserRoom = () => {
+  if (authStore.isAuthenticated && authStore.user) {
+    socket.emit('leave', `user:${authStore.user.id}`);
+  }
+};
+
+// Websocket connection
+onMounted(() => {
+  socket.socketClient.on('connect', joinUserRoom);
+  socket.socketClient.on('disconnect', leaveUserRoom);
+  socket.connect();
+});
+
+onUnmounted(() => {
+  socket.socketClient.disconnect();
+  socket.socketClient.off('connect', joinUserRoom);
+  socket.socketClient.off('disconnect', leaveUserRoom);
 });
 </script>
 
