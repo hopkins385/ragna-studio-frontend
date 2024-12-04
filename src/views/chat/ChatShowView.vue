@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { chatInputTextSchema } from '@/schemas/chat-input-text.schema';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import ChatButtonNewChat from '@components/chat/ChatButtonNewChat.vue';
 import ChatHistorySidebar from '@components/chat/ChatHistorySidebar.vue';
@@ -83,6 +84,13 @@ const onSubmit = async () => {
   if (!inputMessage.value.trim()) return;
   const userMessageContent = inputMessage.value;
   inputMessage.value = '';
+
+  // validate input
+  const result = chatInputTextSchema.safeParse({ input: userMessageContent });
+  if (!result.success) {
+    setError(result.error.errors[0].message);
+    return;
+  }
 
   nextTick(() => {
     adjustTextareaHeight();
@@ -236,7 +244,8 @@ onBeforeUnmount(() => {
     <div class="absolute right-10 top-5 border-0 z-10">
       <div class="flex justify-center items-center shrink-0 space-x-5">
         <ChatAssistantDetails
-          :provider="assistant?.llm.provider"
+          :llm-provider="assistant?.llm.provider"
+          :llm-name="assistant?.llm.displayName"
           :title="assistant?.title"
         />
         <ChatSettings
