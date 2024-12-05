@@ -132,8 +132,11 @@ const onAddFavorite = async (assistantId: string) => {
 };
 
 const onDeleteFavorite = async (assistantId: string) => {
+  const entityId = assistantFavorites.value.find(
+    (f: any) => f.favoriteId === assistantId,
+  ).id;
   try {
-    await deleteFavorite({ id: assistantId, type: 'assistant' });
+    await deleteFavorite({ entityId, favoriteType: 'assistant' });
     toast.success({
       description: 'Assistant has been removed from favorites.',
     });
@@ -196,7 +199,7 @@ await initAssistantFavorites();
                 @click="() => onDeleteFavorite(assistant.id)"
               >
                 <StarIcon
-                  class="!size-6 stroke-1.5 stroke-none fill-yellow-400"
+                  class="!size-6 stroke-1.5 stroke-none fill-yellow-400/90"
                 />
               </Button>
               <Button

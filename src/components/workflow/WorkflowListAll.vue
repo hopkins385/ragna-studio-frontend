@@ -76,8 +76,11 @@ const onAddFavorite = async (workflowId: string) => {
 };
 
 const onDeleteFavorite = async (workflowId: string) => {
+  const entityId = workflowFavorites.value.find(
+    (f: any) => f.favoriteId === workflowId,
+  ).id;
   try {
-    await deleteFavorite({ id: workflowId, type: 'workflow' });
+    await deleteFavorite({ entityId, favoriteType: 'workflow' });
     toast.success({
       description: 'Workflow has been removed from favorites.',
     });
@@ -135,7 +138,7 @@ onMounted(() => {
               @click="onDeleteFavorite(workflow.id)"
             >
               <StarIcon
-                class="!size-6 stroke-1.5 stroke-none fill-yellow-400"
+                class="!size-6 stroke-1.5 stroke-none fill-yellow-400/90"
               />
             </Button>
             <Button

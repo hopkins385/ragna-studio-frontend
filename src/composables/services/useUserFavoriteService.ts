@@ -4,6 +4,10 @@ import { getRoute } from '@/utils/route.util';
 export interface UserFavorite {
   favoriteId: string;
   favoriteType: string;
+  detail?: {
+    title?: string;
+    name?: string;
+  };
 }
 
 export interface UserFavoriteDto {
@@ -89,15 +93,18 @@ export function useUserFavoriteService() {
     }
   };
 
-  const deleteFavorite = async (payload: UserFavoriteDto) => {
-    if (!payload.id) {
-      throw new Error('FavoriteID missing');
+  const deleteFavorite = async (payload: {
+    entityId: string;
+    favoriteType: string;
+  }) => {
+    if (!payload.entityId) {
+      throw new Error('id missing');
     }
     const body = {
-      favoriteType: payload.type,
+      favoriteType: payload.favoriteType,
     };
     try {
-      const route = getRoute(UserFavoriteRoute.DELETE, payload.id);
+      const route = getRoute(UserFavoriteRoute.DELETE, payload.entityId);
       const response = await $axios.delete<UserFavoriteResponse>(route, {
         data: body,
         signal: ac.signal,
