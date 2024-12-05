@@ -105,7 +105,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg-white">
+  <div class="">
     <TextToImagePreviewDialog
       v-model:show="showImagePreview"
       :img-url="imgPreviewUrl"

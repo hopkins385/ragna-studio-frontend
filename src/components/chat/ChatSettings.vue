@@ -16,7 +16,7 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits<{
-  deleteAllMessages: [void];
+  resetChat: [void];
 }>();
 
 const router = useRouter();
@@ -33,7 +33,7 @@ function onEditAssistantClick() {
 }
 
 function onDeleteChatMessages() {
-  emits('deleteAllMessages');
+  emits('resetChat');
 }
 </script>
 

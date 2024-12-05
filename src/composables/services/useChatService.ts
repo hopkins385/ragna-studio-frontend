@@ -414,6 +414,9 @@ export function useChatService() {
         provider: chat.value.assistant?.llm.provider || '',
         hasVision: chat.value.assistant?.llm?.capabilities?.imageInput || false,
       });
+      isThinking.value = false;
+      isPending.value = false;
+      isStreaming.value = false;
       initChatMessages(chat.value?.messages || []);
     } catch (error: any) {
       throw new ChatServiceError(

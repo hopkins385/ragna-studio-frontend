@@ -200,15 +200,15 @@ onUnmounted(() => {
             <Textarea
               v-model="prompt"
               type="text"
-              placeholder="Enter a prompt"
+              placeholder="Describe the image you want to generate"
               rows="1"
               resize="none"
-              class="no-scrollbar min-h-[48px] resize-none rounded-2xl bg-white py-4 pl-4 pr-8 shadow-sm focus:shadow-lg"
+              class="no-scrollbar min-h-[48px] resize-none rounded-2xl bg-white py-4 pl-4 pr-16 shadow-sm focus:shadow-lg"
               @input="adjustTextareaHeight"
               @paste="handlePaste"
               @keydown.enter="onEnter"
             />
-            <div class="absolute bottom-1/2 translate-y-1/2 right-0 p-1">
+            <div class="absolute bottom-1/2 translate-y-1/2 right-10 p-1">
               <Button
                 class="z-10"
                 type="submit"
@@ -224,14 +224,17 @@ onUnmounted(() => {
                 <SendIcon v-else class="!size-5 stroke-1.5 opacity-75" />
               </Button>
             </div>
+            <div
+              id="settings"
+              class="absolute bottom-1/2 translate-y-1/2 right-2"
+            >
+              <TextToImageSettings />
+            </div>
           </form>
-          <div id="settings" class="pt-2">
-            <TextToImageSettings />
-          </div>
         </div>
       </div>
     </SectionContainer>
-    <SectionContainer class="bg-white">
+    <SectionContainer class="">
       <div v-if="isLoading" class="flex">
         <div class="grid shrink-0 grid-cols-4">
           <div

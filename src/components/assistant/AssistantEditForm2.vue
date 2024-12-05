@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useToolIcons } from '@/composables/useToolIcons';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import CollectionSelectModal from '@components/collection/CollectionSelectModal.vue';
 import LlmSelectModal from '@components/llm/LlmSelectModal.vue';
@@ -126,6 +127,9 @@ async function resetCollections() {
     description: 'Collection updated successfully',
   });
 }
+
+// tool icons
+const { getToolIcon } = useToolIcons();
 </script>
 
 <template>
@@ -250,7 +254,7 @@ async function resetCollections() {
       <FormField name="tools">
         <FormItem>
           <div class="mb-4 space-y-2">
-            <FormLabel> Tool Use</FormLabel>
+            <FormLabel> Tools</FormLabel>
             <FormDescription>
               Select the tools the agent can use.
             </FormDescription>
@@ -265,14 +269,27 @@ async function resetCollections() {
             :unchecked-value="false"
             name="tools"
           >
-            <FormItem class="flex flex-row items-start space-x-3 space-y-0">
+            <FormItem
+              class="flex flex-row items-center space-x-3 border border-transparent space-y-4 w-fit"
+            >
               <FormControl>
                 <Checkbox
                   :checked="value?.includes(tool.id)"
                   @update:checked="handleChange"
                 />
               </FormControl>
-              <FormLabel class="font-normal"> {{ tool.name }} </FormLabel>
+              <FormLabel class="font-normal flex space-x-3">
+                <div class="size-8 flex justify-center">
+                  <component
+                    :is="getToolIcon(tool?.iconName)"
+                    class="size-5 stroke-1.5 text-gray-500"
+                  />
+                </div>
+                <div class="space-y-1">
+                  <h2 class="text-sm">{{ tool.name }}</h2>
+                  <p class="opacity-75 text-xs">{{ tool.description }}</p>
+                </div>
+              </FormLabel>
             </FormItem>
           </FormField>
           <FormMessage />

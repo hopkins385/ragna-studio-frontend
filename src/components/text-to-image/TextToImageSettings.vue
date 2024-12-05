@@ -3,13 +3,9 @@
  * Component: ImageGenSettings
  */
 import { useImgGenSettingsStore } from '@/stores/image-gen-settings.store';
-import { SlidersHorizontalIcon, RotateCcwIcon } from 'lucide-vue-next';
 import QuestionToolTip from '@components/question/QuestionToolTip.vue';
-import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover';
 import { Button } from '@ui/button';
-import { Separator } from '@ui/separator';
-import { Slider } from '@ui/slider';
-import { Switch } from '@ui/switch';
+import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover';
 import {
   Select,
   SelectContent,
@@ -17,6 +13,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@ui/select';
+import { Separator } from '@ui/separator';
+import { Slider } from '@ui/slider';
+import { Switch } from '@ui/switch';
+import { RotateCcwIcon, SlidersHorizontalIcon } from 'lucide-vue-next';
 
 const show = ref(false);
 const settings = useImgGenSettingsStore();
@@ -25,7 +25,7 @@ const settings = useImgGenSettingsStore();
 <template>
   <Popover v-model:open="show">
     <PopoverTrigger as-child>
-      <Button variant="outline" size="icon" class="group !size-10">
+      <Button variant="ghost" size="icon" class="group !size-10">
         <SlidersHorizontalIcon
           class="!size-5 stroke-1.5 text-primary/70 group-hover:stroke-2"
         />

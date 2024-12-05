@@ -126,6 +126,12 @@ const onPresetClick = (value: string) => {
   onSubmit();
 };
 
+const onResetChat = async () => {
+  await clearChatMessages();
+  activeTools.value = [];
+  await initChat(chatId);
+};
+
 const scrollToBottom = (options: { instant: boolean } = { instant: false }) => {
   nextTick(() => {
     chatMessagesContainerRef.value?.scrollTo({
@@ -248,10 +254,7 @@ onBeforeUnmount(() => {
           :llm-name="assistant?.llm.displayName"
           :title="assistant?.title"
         />
-        <ChatSettings
-          :assistant-id="assistant?.id"
-          @delete-all-messages="clearChatMessages"
-        />
+        <ChatSettings :assistant-id="assistant?.id" @reset-chat="onResetChat" />
       </div>
     </div>
 

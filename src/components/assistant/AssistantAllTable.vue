@@ -14,10 +14,15 @@ import {
 } from '@/components/ui/table';
 import useAssistantService from '@/composables/services/useAssistantService';
 import { useChatService } from '@/composables/services/useChatService';
+import { useUserFavoriteService } from '@/composables/services/useUserFavoriteService';
 import { useProviderIcons } from '@/composables/useProviderIcons';
 import useToast from '@/composables/useToast';
-import { useAuthStore } from '@/stores/auth.store';
-import { MessageSquareIcon, SettingsIcon, Trash2Icon } from 'lucide-vue-next';
+import {
+  MessageSquareIcon,
+  SettingsIcon,
+  StarIcon,
+  Trash2Icon,
+} from 'lucide-vue-next';
 import PaginateControls from '../pagniate/PaginateControls.vue';
 
 const props = defineProps<{
@@ -32,11 +37,10 @@ const emit = defineEmits<{
 }>();
 
 const router = useRouter();
-
 const toast = useToast();
-const authStore = useAuthStore();
 
 const data = ref();
+const assistantFavorites = ref<any>([]); // TODO: type
 
 const { createChat } = useChatService();
 
@@ -110,7 +114,43 @@ watch(
   },
 );
 
+// favorite
+const { addFavorite, deleteFavorite, fetchAllFavoritesByType } =
+  useUserFavoriteService();
+
+const onAddFavorite = async (assistantId: string) => {
+  try {
+    await addFavorite({ id: assistantId, type: 'assistant' });
+    toast.success({
+      description: 'Assistant has been added to favorites.',
+    });
+    await initAssistantFavorites();
+  } catch (error: any) {
+    errorAlert.show = true;
+    errorAlert.message = error?.message;
+  }
+};
+
+const onDeleteFavorite = async (assistantId: string) => {
+  try {
+    await deleteFavorite({ id: assistantId, type: 'assistant' });
+    toast.success({
+      description: 'Assistant has been removed from favorites.',
+    });
+    await initAssistantFavorites();
+  } catch (error: any) {
+    errorAlert.show = true;
+    errorAlert.message = error?.message;
+  }
+};
+
+const initAssistantFavorites = async () => {
+  const { favorites: all } = await fetchAllFavoritesByType('assistant');
+  assistantFavorites.value = all;
+};
+
 await initAllAssistants({ page: props.page });
+await initAssistantFavorites();
 </script>
 
 <template>
@@ -133,6 +173,7 @@ await initAllAssistants({ page: props.page });
       </TableCaption>
       <TableHeader>
         <TableRow>
+          <TableHead> Favorite </TableHead>
           <TableHead> Avatar </TableHead>
           <TableHead> Title </TableHead>
           <TableHead class="whitespace-nowrap"> Ai Model </TableHead>
@@ -144,6 +185,30 @@ await initAllAssistants({ page: props.page });
           v-for="assistant in data?.assistants || []"
           :key="assistant.id"
         >
+          <TableCell>
+            <div class="border-0">
+              <Button
+                v-if="
+                  assistantFavorites.some(f => f.favoriteId === assistant.id)
+                "
+                variant="ghost"
+                size="icon"
+                @click="() => onDeleteFavorite(assistant.id)"
+              >
+                <StarIcon
+                  class="!size-6 stroke-1.5 stroke-none fill-yellow-400"
+                />
+              </Button>
+              <Button
+                v-else
+                variant="ghost"
+                size="icon"
+                @click="() => onAddFavorite(assistant.id)"
+              >
+                <StarIcon class="!size-5 stroke-1.5 stroke-stone-400" />
+              </Button>
+            </div>
+          </TableCell>
           <TableCell>
             <div class="size-8 rounded-full bg-slate-200"></div>
           </TableCell>

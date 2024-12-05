@@ -63,7 +63,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <body class="bg-stone-50">
+  <body class="bg-red-200">
     <NavTopBar />
     <div class="flex overflow-hidden" style="height: calc(100vh - 3.5rem)">
       <!-- Toast -->

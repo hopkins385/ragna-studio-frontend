@@ -13,17 +13,17 @@ const backgroundStyles = computed(() => {
 </script>
 
 <template>
-  <div class="bg-muted/50 rounded-2xl h-full">
+  <div class="">
     <div class="h-60 bg-blue-200 p-5 bg-center" :style="backgroundStyles">
       <!-- -->
     </div>
-    <div class="custom-shadow p-5 min-h-full">
+    <div class="custom-shadow p-5 from-blue-50/90 to-white bg-gradient-to-b">
       <div class="">
         <div class="p-4">
           <div class="pb-3">
             <h2 class="text-sm font-semibold">My Favorites</h2>
           </div>
-          <div class="border h-40 rounded-lg"></div>
+          <div class="border h-40 rounded-lg bg-white"></div>
         </div>
         <div class="p-4 w-full">
           <div class="pb-3">
@@ -34,15 +34,33 @@ const backgroundStyles = computed(() => {
             </p>
           </div>
           <div class="grid grid-cols-3 gap-5">
-            <div class="border w-full h-20 rounded-lg hover:shadow-md"></div>
-            <div class="border w-full h-20 rounded-lg hover:shadow-md"></div>
-            <div class="border w-full h-20 rounded-lg hover:shadow-md"></div>
-            <div class="border w-full h-20 rounded-lg hover:shadow-md"></div>
-            <div class="border w-full h-20 rounded-lg hover:shadow-md"></div>
-            <div class="border w-full h-20 rounded-lg hover:shadow-md"></div>
-            <div class="border w-full h-20 rounded-lg hover:shadow-md"></div>
-            <div class="border w-full h-20 rounded-lg hover:shadow-md"></div>
-            <div class="border w-full h-20 rounded-lg hover:shadow-md"></div>
+            <div
+              class="border w-full bg-white h-20 rounded-lg hover:shadow-md"
+            ></div>
+            <div
+              class="border w-full bg-white h-20 rounded-lg hover:shadow-md"
+            ></div>
+            <div
+              class="border w-full bg-white h-20 rounded-lg hover:shadow-md"
+            ></div>
+            <div
+              class="border w-full bg-white h-20 rounded-lg hover:shadow-md"
+            ></div>
+            <div
+              class="border w-full bg-white h-20 rounded-lg hover:shadow-md"
+            ></div>
+            <div
+              class="border w-full bg-white h-20 rounded-lg hover:shadow-md"
+            ></div>
+            <div
+              class="border w-full bg-white h-20 rounded-lg hover:shadow-md"
+            ></div>
+            <div
+              class="border w-full bg-white h-20 rounded-lg hover:shadow-md"
+            ></div>
+            <div
+              class="border w-full bg-white h-20 rounded-lg hover:shadow-md"
+            ></div>
           </div>
         </div>
       </div>
