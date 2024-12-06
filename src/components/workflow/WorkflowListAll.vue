@@ -137,9 +137,7 @@ onMounted(() => {
               size="icon"
               @click="onDeleteFavorite(workflow.id)"
             >
-              <StarIcon
-                class="!size-6 stroke-1.5 stroke-none fill-yellow-400/90"
-              />
+              <StarIcon class="!size-6 stroke-1.5 stroke-none fill-blue-500" />
             </Button>
             <Button
               v-else

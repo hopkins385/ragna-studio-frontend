@@ -16,8 +16,8 @@ import { useAuthStore } from '@stores/auth.store';
 import {
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
+  Settings,
   Sparkles,
   User,
 } from 'lucide-vue-next';
@@ -139,7 +139,7 @@ onUnmounted(() => {});
               value="upgrade"
               @select="() => {}"
             >
-              <Sparkles class="mr-2 size-4" />
+              <Sparkles class="mr-2 size-4 stroke-1.5" />
               <span>Upgrade to Pro</span>
             </CommandItem>
             <CommandSeparator />
@@ -148,23 +148,23 @@ onUnmounted(() => {});
               value="account"
               @select="() => onSelect('account.index')"
             >
-              <User class="mr-2 size-4" />
+              <User class="mr-2 size-4 stroke-1.5" />
               <span>Account</span>
             </CommandItem>
             <CommandItem
               class="px-4 py-2 hover:cursor-pointer"
-              value="billing"
-              @select="() => onSelect('billing')"
+              value="settings"
+              @select="() => onSelect('account.settings')"
             >
-              <CreditCard class="mr-2 size-4" />
-              <span>Billing</span>
+              <Settings class="mr-2 size-4 stroke-1.5" />
+              <span>Settings</span>
             </CommandItem>
             <CommandItem
               class="px-4 py-2 hover:cursor-pointer"
               value="notifications"
               @select="() => onSelect('notifications')"
             >
-              <Bell class="mr-2 size-4" />
+              <Bell class="mr-2 size-4 stroke-1.5" />
               <span>Notifications</span>
             </CommandItem>
             <CommandSeparator />
@@ -173,7 +173,7 @@ onUnmounted(() => {});
               value="logout"
               @select="() => onSelect('logout')"
             >
-              <LogOut class="mr-2 size-4" />
+              <LogOut class="mr-2 size-4 stroke-1.5" />
               <span>Log out</span>
             </CommandItem>
           </CommandGroup>

@@ -5,8 +5,10 @@ export interface UserFavorite {
   favoriteId: string;
   favoriteType: string;
   detail?: {
+    id?: string;
     title?: string;
     name?: string;
+    description?: string;
   };
 }
 

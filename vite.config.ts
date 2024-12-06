@@ -1,18 +1,26 @@
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 import UnheadVite from '@unhead/addons/vite';
 import { unheadVueComposablesImports } from '@unhead/vue';
 import vue from '@vitejs/plugin-vue';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
 import AutoImport from 'unplugin-auto-import/vite';
 import Icons from 'unplugin-icons/vite';
-import Components from 'unplugin-vue-components/vite';
 import { defineConfig } from 'vite';
 import { imagetools } from 'vite-imagetools';
-import vueDevTools from 'vite-plugin-vue-devtools';
 import svgLoader from 'vite-svg-loader';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
+    VueI18nPlugin({
+      /* options */
+      // locale messages resource pre-compile option
+      include: resolve(
+        dirname(fileURLToPath(import.meta.url)),
+        './src/locales/**',
+      ),
+    }),
     imagetools({}),
     svgLoader(),
     Icons({

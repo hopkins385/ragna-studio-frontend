@@ -2,6 +2,7 @@
 // const homeImageSrc = '@/assets/images/home.jpg&q=100&format=webp&imagetools';
 import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
 import HomeFavorites from '@/components/home/HomeFavorites.vue';
+import { Bot, Workflow } from 'lucide-vue-next';
 
 const backgroundStyles = computed(() => {
   return {
@@ -21,14 +22,17 @@ const backgroundStyles = computed(() => {
     <div class="custom-shadow p-5 from-blue-50/90 to-white bg-gradient-to-b">
       <div class="">
         <HomeFavorites />
-
         <div class="p-4 w-full">
-          <div class="pb-3">
-            <h2 class="text-sm font-semibold">Start Workflow from template</h2>
-            <p class="text-xs opacity-75">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Soluta,
-              similique eius. Sapiente illum illo .
-            </p>
+          <div class="pb-3 flex space-x-2">
+            <Workflow class="size-4 stroke-1.5 mt-1" />
+            <div>
+              <h2 class="text-sm font-semibold">
+                {{ $t('workflows.template.title') }}
+              </h2>
+              <p class="text-xs opacity-75">
+                {{ $t('workflows.template.description') }}
+              </p>
+            </div>
           </div>
           <div class="grid grid-cols-3 gap-5">
             <div
@@ -55,12 +59,16 @@ const backgroundStyles = computed(() => {
           </div>
         </div>
         <div class="p-4 w-full">
-          <div class="pb-3">
-            <h2 class="text-sm font-semibold">Start Agent from template</h2>
-            <p class="text-xs opacity-75">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Soluta,
-              similique eius. Sapiente illum illo .
-            </p>
+          <div class="pb-3 flex space-x-2">
+            <Bot class="size-4 stroke-1.5 mt-1" />
+            <div>
+              <h2 class="text-sm font-semibold">
+                {{ $t('agents.template.title') }}
+              </h2>
+              <p class="text-xs opacity-75">
+                {{ $t('agents.template.description') }}
+              </p>
+            </div>
           </div>
           <div class="grid grid-cols-3 gap-5">
             <div

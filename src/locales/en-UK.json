@@ -1,0 +1,19 @@
+{
+  "favorites": {
+    "title": "My Favorites"
+  },
+  "workflows": {
+    "title": "Workflows",
+    "template": {
+      "title": "Start Workflow from template",
+      "description": "Select a template to start a new workflow."
+    }
+  },
+  "agents": {
+    "title": "Agents",
+    "template": {
+      "title": "Start Agent from template",
+      "description": "Select a template to start a new agent."
+    }
+  }
+}

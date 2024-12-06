@@ -1,0 +1,19 @@
+{
+  "favorites": {
+    "title": "Meine Favoriten"
+  },
+  "workflows": {
+    "title": "Workflows",
+    "template": {
+      "title": "Workflow aus Vorlage starten",
+      "description": "Wähle eine Vorlage aus, um einen neuen Workflow zu starten."
+    }
+  },
+  "agents": {
+    "title": "Agents",
+    "template": {
+      "title": "Agent aus Vorlage starten",
+      "description": "Wähle eine Vorlage aus, um einen neuen Agent zu starten."
+    }
+  }
+}

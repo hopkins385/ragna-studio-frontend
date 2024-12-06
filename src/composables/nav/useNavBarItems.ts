@@ -1,4 +1,6 @@
 import type { NavItem } from '@/interfaces/nav/nav-item.interface';
+import { useAuthStore } from '@/stores/auth.store';
+import { useI18n } from 'vue-i18n';
 import {
   adminRoutes,
   assistantRoutes,
@@ -11,14 +13,14 @@ import {
   settingsRoutes,
   workflowRoutes,
 } from './nav-bar-items';
-import { useAuthStore } from '@/stores/auth.store';
 
 export function useNavBarItems() {
   const route = useRoute();
   const authStore = useAuthStore();
+  const { t } = useI18n();
 
   const getDefaultItems = (): NavItem[] => {
-    return defaultRoutes;
+    return defaultRoutes.value;
   };
 
   const dynamicNavItems: Ref<NavItem[]> = computed((): NavItem[] => {
@@ -52,7 +54,7 @@ export function useNavBarItems() {
         items.push(...imageGenRoutes);
         break;
       default:
-        items.push(...defaultRoutes);
+        items.push(...defaultRoutes.value);
 
         if (authStore.userHasAdminRole) {
           items.push(...adminRoutes);

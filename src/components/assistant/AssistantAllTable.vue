@@ -85,7 +85,6 @@ const handleDelete = async () => {
 };
 
 const onStart = async (assistantId: string) => {
-  console.log('Starting chat with assistant:', assistantId);
   const { chat } = await createChat(assistantId);
   if (!chat) {
     errorAlert.message = 'Failed to create chat';
@@ -199,7 +198,7 @@ await initAssistantFavorites();
                 @click="() => onDeleteFavorite(assistant.id)"
               >
                 <StarIcon
-                  class="!size-6 stroke-1.5 stroke-none fill-yellow-400/90"
+                  class="!size-6 stroke-1.5 stroke-none fill-blue-500"
                 />
               </Button>
               <Button

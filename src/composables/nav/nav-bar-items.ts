@@ -36,7 +36,7 @@ export const spacerNavItem: NavItem = {
   children: [],
 };
 
-export const defaultRoutes = [
+export const defaultRoutes = computed(() => [
   {
     icon: WorkflowIcon,
     path: '/workflow',
@@ -86,7 +86,7 @@ export const defaultRoutes = [
     hidden: false,
     children: [],
   },*/
-];
+]);
 
 export const workflowRoutes: NavItem[] = [
   {
