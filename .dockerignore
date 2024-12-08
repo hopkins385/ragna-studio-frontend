@@ -6,8 +6,9 @@
 **/.gitignore
 
 # Environment
-**/.env
-**/.env.*
+# **/.env
+# **/.env.*
+# Env is actually required for build
 
 # IDE
 **/.vscode

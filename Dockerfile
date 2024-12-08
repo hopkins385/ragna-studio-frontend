@@ -16,6 +16,8 @@ COPY . .
 RUN npm run build-prod
 
 # Production stage
+#
+#
 FROM nginx:alpine
 
 # Install build dependencies
@@ -49,11 +51,25 @@ RUN git clone https://github.com/GetPageSpeed/ngx_security_headers && \
 # Clean up build dependencies
 RUN apk del gcc libc-dev make openssl-dev pcre-dev zlib-dev linux-headers curl gnupg git
 
-# Copy built assets from build stage
-COPY --from=build /app/dist /usr/share/nginx/html
+# Create www-data user and group if they don't exist
+RUN getent group www-data || addgroup -S www-data && \
+    getent passwd www-data || adduser -D -H -u 1000 -s /bin/sh -G www-data www-data
+
+# Ensure nginx directories have proper ownership
+RUN mkdir -p /var/cache/nginx && \
+    mkdir -p /var/run/nginx && \
+    chown -R www-data:www-data /var/cache/nginx /var/run/nginx /usr/share/nginx
+
+# Copy built assets from build stage and set www-data as owner
+COPY --from=build --chown=www-data:www-data app/dist /usr/share/nginx/html
 
 # Copy nginx config
-COPY --from=build /app/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build --chown=root:root /app/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --from=build --chown=root:root /app/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build --chown=root:root /app/nginx/security.conf /etc/nginx/security/security.conf
+
+# set user to www-data
+# USER www-data
 
 # Expose port
 EXPOSE 80
