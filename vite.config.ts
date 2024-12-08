@@ -33,6 +33,7 @@ export default defineConfig({
         'vue-router',
         '@vueuse/core',
         'vee-validate',
+        'vue-i18n',
         unheadVueComposablesImports,
       ],
       dirs: ['./composables/**'],

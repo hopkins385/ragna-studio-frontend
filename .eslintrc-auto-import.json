@@ -327,6 +327,7 @@
     "useSeoMeta": true,
     "useServerHead": true,
     "useServerHeadSafe": true,
-    "useServerSeoMeta": true
+    "useServerSeoMeta": true,
+    "useI18n": true
   }
 }

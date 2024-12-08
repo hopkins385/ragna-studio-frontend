@@ -1,4 +1,11 @@
 {
+  "settings": {
+    "label": {
+      "default": "Standards",
+      "language": "Sprache",
+      "theme": "Farben"
+    }
+  },
   "favorites": {
     "title": "Meine Favoriten"
   },

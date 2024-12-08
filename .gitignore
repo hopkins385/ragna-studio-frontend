@@ -41,4 +41,3 @@ src/assets/images/*
 # Env
 .env
 .env.*
-# env is actually required for build
