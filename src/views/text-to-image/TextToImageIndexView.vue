@@ -187,11 +187,9 @@ onUnmounted(() => {
 <template>
   <div id="sectionContainer" class="min-h-full bg-white">
     <SectionContainer class="sticky inset-0 z-10 !py-0">
-      <div class="h-8 bg-white/95 backdrop-blur-sm"></div>
+      <div class="h-8 bg-white/95"></div>
       <div class="w-full">
-        <div
-          class="flex h-fit w-full space-x-4 rounded-b-lg bg-white/95 pb-1 backdrop-blur-sm"
-        >
+        <div class="flex h-fit w-full space-x-4 rounded-b-lg bg-white/95 pb-1">
           <form
             ref="promptFormRef"
             class="relative grow space-y-2"

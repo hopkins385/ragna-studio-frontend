@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Bell, Expand, Grip } from 'lucide-vue-next';
-import BrandLogo from '../brand/BrandLogo.vue';
-import NavUserMenu from './NavUserMenu.vue';
 import { useAuthStore } from '@/stores/auth.store';
+import { Bell, Expand } from 'lucide-vue-next';
+import BrandLogo from '../brand/BrandLogo.vue';
 import NavTopPopover from './NavTopPopover.vue';
+import NavUserMenu from './NavUserMenu.vue';
 
 const authStore = useAuthStore();
 
@@ -22,9 +22,9 @@ const onExpandClick = () => {
 </script>
 
 <template>
-  <div class="flex h-14 border-b items-center justify-between bg-stone-100">
+  <div class="flex h-14 items-center justify-between bg-stone-100">
     <div class="flex">
-      <div class="px-6">
+      <div class="px-6 mt-1">
         <NavTopPopover />
       </div>
       <div class="pl-0">

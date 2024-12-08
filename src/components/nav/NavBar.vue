@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { useNavBarItems } from '@/composables/nav/useNavBarItems';
 import { useNavBarStore } from '@/stores/nav-bar.store';
+import { Separator } from '@ui/separator';
 import { useMousePressed } from '@vueuse/core';
 import NavLink from './NavLink.vue';
-import { Separator } from '@ui/separator';
-import { useNavBarItems } from '@/composables/nav/useNavBarItems';
 
 const navBarRef = ref(null);
 const navBarResizerRef = ref(null);
@@ -26,7 +26,7 @@ watch(pressed, isPressed => {
 <template>
   <div
     ref="navBarRef"
-    class="relative flex shrink-0 flex-col justify-between border-r bg-stone-100 transition-all duration-300 ease-out"
+    class="relative flex shrink-0 flex-col justify-between bg-stone-100 transition-all duration-300 ease-out"
     :style="{ width: navBar.isFullClosed ? 0 : `${navBar.width}rem` }"
   >
     <div
@@ -44,7 +44,7 @@ watch(pressed, isPressed => {
         'opacity-0': navBar.isFullClosed,
       }"
     >
-      <div id="spacer" class="h-4"></div>
+      <div id="spacer" class="h-1"></div>
       <div class="flex h-full flex-col">
         <ul class="space-y-2">
           <template v-for="item in dynamicNavItems" :key="item.path">

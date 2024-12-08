@@ -1,34 +1,31 @@
 <script setup lang="ts">
+import useAssistantService from '@/composables/services/useAssistantService';
+import {
+  useWorkflowService,
+  type Workflow,
+} from '@/composables/services/useWorkflowService';
+import { useWorkflowStepService } from '@/composables/services/useWorkflowStepService';
+import { useResizeSheet } from '@/composables/useResizeSheet';
+import useToast from '@/composables/useToast';
+import { useWebsocketGlobal } from '@composables/websocket/useWebsocketGlobal';
+import { Button } from '@ui/button';
+import { Checkbox } from '@ui/checkbox';
 import { vOnClickOutside } from '@vueuse/components';
 import { useDebounceFn, useEventListener } from '@vueuse/core';
 import {
   AlignLeftIcon,
-  PlusIcon,
   LayoutDashboard,
   LoaderIcon,
-  TriangleAlertIcon,
+  PlusIcon,
   Trash2Icon,
+  TriangleAlertIcon,
   WorkflowIcon,
-  Settings2Icon,
-  SettingsIcon,
 } from 'lucide-vue-next';
-import { Checkbox } from '@ui/checkbox';
-import { useWebsocketGlobal } from '@composables/websocket/useWebsocketGlobal';
 import StepManagementCard from './step/StepManagementCard.vue';
-import { useResizeSheet } from '@/composables/useResizeSheet';
-import {
-  useWorkflowService,
-  type Workflow,
-  type WorkflowResponse,
-} from '@/composables/services/useWorkflowService';
-import { Button } from '@ui/button';
 import WorkflowCellCard from './WorkflowCellCard.vue';
-import { useWorkflowStepService } from '@/composables/services/useWorkflowStepService';
-import useAssistantService from '@/composables/services/useAssistantService';
-import WorkflowSettingsSidebar from './WorkflowSettingsSidebar.vue';
-import useToast from '@/composables/useToast';
-import WorkflowNameEditable from './WorkflowNameEditable.vue';
 import WorkflowExportSidebar from './WorkflowExportSidebar.vue';
+import WorkflowNameEditable from './WorkflowNameEditable.vue';
+import WorkflowSettingsSidebar from './WorkflowSettingsSidebar.vue';
 
 interface ICellCard {
   show: boolean;
@@ -90,15 +87,21 @@ const { fetchAllAssistants } = useAssistantService();
 const { fetchFullWorkflow, deleteWorkflowRows, executeWorkflow } =
   useWorkflowService();
 
+const flowProgress = reactive({
+  show: false,
+  completed: 0,
+  total: 0,
+});
+
 const workflow = ref<Workflow | null>(null);
 const workflowId = computed(() => props.workflowId);
-const workflowName = computed(() => workflow.value?.name || '');
 
 const steps = computed(() => workflow.value?.steps || []);
 const rowCount = computed(
   () => steps.value[0]?.document.documentItems.length || 0,
 );
 const columnCount = computed(() => steps.value.length);
+const totalCellCount = computed(() => rowCount.value * columnCount.value);
 
 const workflowStepCardActive = computed(() => {
   return steps.value.find((step: any) => step.id === stepCard.workflowStepId);
@@ -150,7 +153,7 @@ async function onAddWorkflowRow() {
       type: 'text',
     };
   });
-  await createWorkflowRow(props.workflowId, { items });
+  await createWorkflowRow(props.workflowId, { items: items ?? [] });
   await initWorkflow();
 }
 
@@ -268,12 +271,38 @@ function setCellActive(columnIndex: number, rowIndex: number) {
 }
 
 const onRunFlow = async () => {
+  flowProgress.show = true;
+  flowProgress.completed = 0;
+  flowProgress.total = totalCellCount.value;
   await executeWorkflow(props.workflowId);
 };
 
 const onRefresh = async () => {
   await initWorkflow();
 };
+
+const onWorkflowUpdateEvent = async (data: any) => {
+  if (data?.cellCompleted == true) {
+    flowProgress.completed++;
+  }
+  if (data?.rowCompleted == true) {
+    flowProgress.completed++;
+  }
+  debouncedRefresh();
+};
+
+watch(
+  () => flowProgress.completed,
+  (completedCount, prevCount) => {
+    if (completedCount === totalCellCount.value) {
+      setTimeout(() => {
+        flowProgress.show = false;
+        flowProgress.completed = 0;
+        flowProgress.total = 0;
+      }, 500);
+    }
+  },
+);
 
 useEventListener('keydown', event => {
   if (event.key === 'Escape') {
@@ -285,11 +314,11 @@ useEventListener('keydown', event => {
 
 onMounted(() => {
   initSheetDimensions(props.workflowId);
-  socket.on(`workflow-update:${props.workflowId}`, debouncedRefresh);
+  socket.on(`workflow-update:${props.workflowId}`, onWorkflowUpdateEvent);
 });
 
 onBeforeUnmount(() => {
-  socket.off(`workflow-update:${props.workflowId}`, debouncedRefresh);
+  socket.off(`workflow-update:${props.workflowId}`, onWorkflowUpdateEvent);
 });
 
 await initWorkflow();
@@ -313,6 +342,20 @@ await initWorkflow();
           :workflow-name="workflow?.name ?? ''"
           @refresh="onRefresh"
         />
+        <div class="pl-5" v-if="flowProgress.show">
+          <div class="flex items-center space-x-2">
+            <LoaderIcon class="size-3 animate-spin stroke-1.5" />
+            <!-- Loading ProgressBar -->
+            <div class="w-40 h-2 bg-neutral-100 rounded-lg">
+              <div
+                class="h-full bg-blue-500 rounded-lg"
+                :style="{
+                  width: `${(flowProgress.completed / flowProgress.total) * 100}%`,
+                }"
+              ></div>
+            </div>
+          </div>
+        </div>
       </div>
       <!-- controls -->
       <div class="pr-10 flex items-center space-x-2">

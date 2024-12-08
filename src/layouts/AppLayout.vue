@@ -63,7 +63,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <body class="bg-red-200">
+  <body class="bg-stone-100">
     <NavTopBar />
     <div class="flex overflow-hidden" style="height: calc(100vh - 3.5rem)">
       <!-- Toast -->
@@ -73,7 +73,7 @@ onUnmounted(() => {
       <!-- Main -->
       <div
         id="main"
-        class="relative grow overflow-y-scroll overflow-x-hidden text-slate-800 bg-white shadow-lg border-0"
+        class="relative grow overflow-y-scroll overflow-x-hidden text-slate-800 bg-white shadow-lg border-l border-t rounded-xl"
         style="max-width: calc(100vw - 4.5rem)"
       >
         <slot />

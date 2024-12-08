@@ -30,7 +30,9 @@ import {
   BriefcaseBusiness,
   CircleUserRound,
   Settings,
+  ShieldCheck,
   Stars,
+  Workflow,
 } from 'lucide-vue-next';
 
 const props = defineProps<{
@@ -146,10 +148,11 @@ const { getToolIcon } = useToolIcons();
     :tabs="[
       { id: 'tab1', icon: Settings, label: 'Agent Details' },
       { id: 'tab2', icon: Stars, label: 'Generative Ai' },
-      { id: 'tab3', icon: CircleUserRound, label: 'Behaviour' },
+      { id: 'tab3', icon: CircleUserRound, label: 'Behavior' },
       { id: 'tab4', icon: Book, label: 'Knowledge' },
       { id: 'tab5', icon: BriefcaseBusiness, label: 'Capabilities' },
-      // { id: 'tab6', icon: Settings2, label: 'Advanced' },
+      { id: 'tab6', icon: Workflow, label: 'Workflow' },
+      { id: 'tab7', icon: ShieldCheck, label: 'Privacy' },
     ]"
   >
     <template #tab1>
@@ -213,7 +216,7 @@ const { getToolIcon } = useToolIcons();
       <div class="space-y-8">
         <FormField v-slot="{ componentField }" name="systemPrompt">
           <FormItem>
-            <FormLabel> Behaviour </FormLabel>
+            <FormLabel> Behavior </FormLabel>
             <FormDescription>
               Describe how the assistant should behave.
             </FormDescription>
@@ -297,6 +300,35 @@ const { getToolIcon } = useToolIcons();
       </FormField>
     </template>
     <template #tab6>
+      <FormField v-slot="{ componentField, value }" name="temperature">
+        <FormItem>
+          <FormLabel> Workflow </FormLabel>
+          <FormDescription>
+            Attached Workflow that can be executed by the agent.
+          </FormDescription>
+          <FormControl>
+            <div class="text-sm opacity-75">Feature coming soon</div>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </template>
+    <template #tab7>
+      <FormField v-slot="{ componentField, value }" name="temperature">
+        <FormItem>
+          <FormLabel> Data Protection Add-On </FormLabel>
+          <FormDescription>
+            Removal of Personal Identifiable Information (PII) before the data
+            is used by the agent.
+          </FormDescription>
+          <FormControl>
+            <div clasS=" max-w-sm"></div>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </template>
+    <template #tab8>
       <FormField v-slot="{ componentField, value }" name="temperature">
         <FormItem>
           <FormLabel> Creativity </FormLabel>

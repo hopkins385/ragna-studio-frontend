@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import useAssistantService from '@/composables/services/useAssistantService';
 import {
-  Book,
-  BriefcaseBusiness,
-  CircleUserRound,
-  Settings,
-  Stars,
-} from 'lucide-vue-next';
-import TabSidebar from '../tab/TabSidebar.vue';
+  useAssistantToolsService,
+  type AssistantTool,
+} from '@/composables/services/useAssistantToolsService';
+import useToast from '@/composables/useToast';
+import { assistantFormSchema } from '@/schemas/assistant.form';
+import { useAuthStore } from '@/stores/auth.store';
+import { Button } from '@ui/button';
 import {
   FormControl,
   FormDescription,
@@ -17,19 +18,17 @@ import {
 } from '@ui/form';
 import { Input } from '@ui/input';
 import { Textarea } from '@ui/textarea';
-import LlmSelectModal from '../llm/LlmSelectModal.vue';
-import ErrorAlert from '../error/ErrorAlert.vue';
-import { assistantFormSchema } from '@/schemas/assistant.form';
-import { useAuthStore } from '@/stores/auth.store';
-import useToast from '@/composables/useToast';
-import ButtonLoading from '../button/ButtonLoading.vue';
 import {
-  useAssistantToolsService,
-  type AssistantTool,
-} from '@/composables/services/useAssistantToolsService';
-import { Checkbox } from '@ui/checkbox';
-import { Button } from '@ui/button';
-import useAssistantService from '@/composables/services/useAssistantService';
+  Book,
+  BriefcaseBusiness,
+  CircleUserRound,
+  Settings,
+  Stars,
+} from 'lucide-vue-next';
+import ButtonLoading from '../button/ButtonLoading.vue';
+import ErrorAlert from '../error/ErrorAlert.vue';
+import LlmSelectModal from '../llm/LlmSelectModal.vue';
+import TabSidebar from '../tab/TabSidebar.vue';
 
 const currentTab = ref('tab1');
 const isLoading = ref(false);
@@ -60,6 +59,8 @@ const { errors, handleSubmit, isSubmitting, isValidating, resetForm } = useForm(
       description: '',
       systemPrompt: '',
       temperature: [80],
+      hasKnowledgeBase: false,
+      hasWorkflow: false,
       isShared: false,
       tools: [],
     },
@@ -124,7 +125,7 @@ onMounted(() => {
     :tabs="[
       { id: 'tab1', icon: Settings, label: 'Agent Details' },
       { id: 'tab2', icon: Stars, label: 'Generative AI' },
-      { id: 'tab3', icon: CircleUserRound, label: 'Behaviour' },
+      { id: 'tab3', icon: CircleUserRound, label: 'Behavior' },
       { id: 'tab4', icon: Book, label: 'Knowledge' },
       { id: 'tab5', icon: BriefcaseBusiness, label: 'Capabilities' },
       // { id: 'tab6', icon: Settings2, label: 'Advanced' },
@@ -191,7 +192,7 @@ onMounted(() => {
       <div class="space-y-8">
         <FormField v-slot="{ componentField }" name="systemPrompt">
           <FormItem>
-            <FormLabel> Behaviour </FormLabel>
+            <FormLabel> Behavior </FormLabel>
             <FormDescription>
               Describe how the assistant should behave.
             </FormDescription>

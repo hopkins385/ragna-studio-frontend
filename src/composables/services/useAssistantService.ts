@@ -15,6 +15,8 @@ export class AssistantDto {
   description: string = '';
   systemPrompt: string = '';
   isShared: boolean = false;
+  hasKnowledgeBase: boolean = false;
+  hasWorkflow: boolean = false;
   systemPromptTokenCount: number = 0;
   tools: string[] = [];
 }
@@ -27,6 +29,8 @@ export interface Assistant {
   description: string;
   systemPrompt: string;
   isShared: boolean;
+  hasKnowledgeBase: boolean;
+  hasWorkflow: boolean;
   systemPromptTokenCount: number;
   tools: AssistantTool[];
   llm: any;
