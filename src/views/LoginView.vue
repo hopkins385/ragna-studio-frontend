@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import { useForm } from 'vee-validate';
-import { toTypedSchema } from '@vee-validate/zod';
-import { useAuthStore } from '@/stores/auth.store';
-import { AxiosError } from 'axios';
-import { loginFormSchema } from '@/schemas/loginForm.schema';
+import BrandHeader from '@/components/brand/BrandHeader.vue';
+import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import {
   FormControl,
   FormField,
@@ -12,10 +9,13 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import ButtonLoading from '@/components/button/ButtonLoading.vue';
-import LogosGoogleIcon from '~icons/logos/google-icon';
 import { useAuthService } from '@/composables/services/useAuthService';
-import BrandHeader from '@/components/brand/BrandHeader.vue';
+import { loginFormSchema } from '@/schemas/loginForm.schema';
+import { useAuthStore } from '@/stores/auth.store';
+import { toTypedSchema } from '@vee-validate/zod';
+import { AxiosError } from 'axios';
+import { useForm } from 'vee-validate';
+import LogosGoogleIcon from '~icons/logos/google-icon';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -84,12 +84,16 @@ const onGoogleLogin = async () => {
             <div class="bg-white m-1 p-2">
               <LogosGoogleIcon class="size-5" />
             </div>
-            <div class="flex-1 font-semibold -ml-6">Continue with Google</div>
+            <div class="flex-1 font-semibold -ml-6">
+              {{ $t('auth.social.google') }}
+            </div>
           </button>
           <div class="h-2"></div>
           <div class="flex w-full items-center justify-center px-10 py-2">
             <hr class="w-full" />
-            <span class="px-5 text-sm text-slate-500">OR</span>
+            <span class="px-5 text-sm text-slate-500 uppercase">{{
+              $t('auth.or')
+            }}</span>
             <hr class="w-full" />
           </div>
         </div>
@@ -97,12 +101,12 @@ const onGoogleLogin = async () => {
           <form @submit="onSubmit" class="space-y-2 w-full">
             <FormField v-slot="{ componentField }" name="email">
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{{ $t('auth.email') }}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
                     autocomplete="email"
-                    placeholder="Email"
+                    :placeholder="$t('auth.email')"
                     v-bind="componentField"
                   />
                 </FormControl>
@@ -111,12 +115,12 @@ const onGoogleLogin = async () => {
             </FormField>
             <FormField v-slot="{ componentField }" name="password">
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{{ $t('auth.password') }}</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
                     autocomplete="current-password"
-                    placeholder="Password"
+                    :placeholder="$t('auth.password')"
                     v-bind="componentField"
                   />
                 </FormControl>
@@ -129,7 +133,7 @@ const onGoogleLogin = async () => {
                 type="submit"
                 class="w-full"
               >
-                Login
+                {{ $t('auth.login') }}
               </ButtonLoading>
             </div>
           </form>
@@ -140,9 +144,9 @@ const onGoogleLogin = async () => {
       </div>
       <div>
         <div class="text-sm text-gray-500">
-          Don't have an account?
+          {{ $t('auth.no_account') }}
           <RouterLink to="/register" class="text-blue-500 hover:underline">
-            Sign up here
+            {{ $t('auth.register') }}
           </RouterLink>
         </div>
       </div>

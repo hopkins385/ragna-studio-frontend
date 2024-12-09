@@ -1,6 +1,6 @@
 import { useAuthStore } from '@/stores/auth.store';
-import { $axios } from './axiosInstance';
 import type { AxiosError, AxiosRequestConfig } from 'axios';
+import { $axios } from './axiosInstance';
 
 const MAX_REFRESH_RETRIES = 3;
 
@@ -62,15 +62,16 @@ export function setupAxiosJwtInterceptor() {
           return Promise.reject(error);
         }
         console.log('Refreshing token...');
+        console.log('Route', originalRequest.url);
 
-        /*if (isRefreshing) {
+        if (isRefreshing) {
           console.log('Token is being refreshed, adding to queue...');
           return new Promise(function (resolve, reject) {
             failedQueue.push({ resolve, reject });
           })
             .then(() => $axios.request(originalRequest))
             .catch(err => Promise.reject(err));
-        }*/
+        }
 
         originalRequest._retry = 1;
         isRefreshing = true;

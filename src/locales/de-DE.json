@@ -59,5 +59,18 @@
     "cancel": "Abbrechen",
     "delete": "Löschen",
     "update": "Aktualisieren"
+  },
+  "auth": {
+    "or": "oder",
+    "email": "Email",
+    "password": "Passwort",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "forgot_password": "Passwort vergessen?",
+    "reset_password": "Passwort zurücksetzen",
+    "no_account": "Noch keinen Account?",
+    "social": {
+      "google": "Mit Google anmelden"
+    }
   }
 }
