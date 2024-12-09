@@ -7,8 +7,8 @@ import SectionHeading from '@/components/section/SectionHeading.vue';
 <template>
   <SectionContainer>
     <SectionHeading
-      title="Account Settings"
-      subtitle="On this page you can edit your personal settings"
+      :title="$t('account.settings.title')"
+      :subtitle="$t('account.settings.subtitle')"
     >
     </SectionHeading>
     <AccountSettingsForm />

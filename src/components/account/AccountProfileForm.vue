@@ -73,7 +73,9 @@ const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
       :model-value="user?.name ?? ''"
     >
       <FormItem>
-        <FormLabel>Full Name</FormLabel>
+        <FormLabel>
+          {{ $t('account.form.name') }}
+        </FormLabel>
         <FormControl>
           <Input
             type="text"
@@ -92,7 +94,9 @@ const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
       :model-value="user?.firstName ?? ''"
     >
       <FormItem>
-        <FormLabel>First Name</FormLabel>
+        <FormLabel>
+          {{ $t('account.form.firstName') }}
+        </FormLabel>
         <FormControl>
           <Input type="text" placeholder="First name" v-bind="componentField" />
         </FormControl>
@@ -106,7 +110,9 @@ const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
       :model-value="user?.lastName ?? ''"
     >
       <FormItem>
-        <FormLabel>Last Name</FormLabel>
+        <FormLabel>
+          {{ $t('account.form.lastName') }}
+        </FormLabel>
         <FormControl>
           <Input type="text" placeholder="Last name" v-bind="componentField" />
         </FormControl>
@@ -115,7 +121,7 @@ const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
     </FormField>
 
     <ButtonLoading variant="outline" :loading="isLoading" type="submit">
-      Update Profile
+      {{ $t('form.save') }}
     </ButtonLoading>
   </form>
 </template>

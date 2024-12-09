@@ -140,7 +140,9 @@ onUnmounted(() => {});
               @select="() => {}"
             >
               <Sparkles class="mr-2 size-4 stroke-1.5" />
-              <span>Upgrade to Pro</span>
+              <span>
+                {{ $t('subscription.upgrade') }}
+              </span>
             </CommandItem>
             <CommandSeparator />
             <CommandItem
@@ -149,7 +151,7 @@ onUnmounted(() => {});
               @select="() => onSelect('account.index')"
             >
               <User class="mr-2 size-4 stroke-1.5" />
-              <span>Account</span>
+              <span>{{ $t('nav.account') }}</span>
             </CommandItem>
             <CommandItem
               class="px-4 py-2 hover:cursor-pointer"
@@ -157,7 +159,9 @@ onUnmounted(() => {});
               @select="() => onSelect('account.settings')"
             >
               <Settings class="mr-2 size-4 stroke-1.5" />
-              <span>Settings</span>
+              <span>
+                {{ $t('nav.settings') }}
+              </span>
             </CommandItem>
             <CommandItem
               class="px-4 py-2 hover:cursor-pointer"
@@ -165,7 +169,9 @@ onUnmounted(() => {});
               @select="() => onSelect('notifications')"
             >
               <Bell class="mr-2 size-4 stroke-1.5" />
-              <span>Notifications</span>
+              <span>
+                {{ $t('nav.notifications') }}
+              </span>
             </CommandItem>
             <CommandSeparator />
             <CommandItem
@@ -174,7 +180,9 @@ onUnmounted(() => {});
               @select="() => onSelect('logout')"
             >
               <LogOut class="mr-2 size-4 stroke-1.5" />
-              <span>Log out</span>
+              <span>
+                {{ $t('nav.logout') }}
+              </span>
             </CommandItem>
           </CommandGroup>
         </CommandList>

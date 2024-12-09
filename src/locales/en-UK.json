@@ -1,4 +1,18 @@
 {
+  "settings": {
+    "title": "Settings",
+    "label": {
+      "standards": "Standards",
+      "language": "Language",
+      "theme": "Theme"
+    }
+  },
+  "account": {
+    "settings": {
+      "title": "Account Settings",
+      "subtitle": "On this page you can edit your account settings"
+    }
+  },
   "favorites": {
     "title": "My Favorites"
   },

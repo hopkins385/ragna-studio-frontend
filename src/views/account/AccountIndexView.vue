@@ -39,8 +39,8 @@ onBeforeMount(() => {
 <template>
   <SectionContainer>
     <SectionHeading
-      title="My Profile"
-      subtitle="On this page you can edit your personal profile settings"
+      :title="$t('account.title')"
+      :subtitle="$t('account.subtitle')"
     >
       <template #button>
         <ButtonLink to="/logout" variant="outline">Logout</ButtonLink>

@@ -26,7 +26,7 @@ watch(pressed, isPressed => {
 <template>
   <div
     ref="navBarRef"
-    class="relative flex shrink-0 flex-col justify-between bg-stone-100 transition-all duration-300 ease-out"
+    class="relative flex shrink-0 flex-col justify-between transition-all duration-300 ease-out"
     :style="{ width: navBar.isFullClosed ? 0 : `${navBar.width}rem` }"
   >
     <div

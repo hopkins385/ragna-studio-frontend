@@ -1,9 +1,39 @@
 {
+  "nav": {
+    "home": "Startseite",
+    "account": "Account",
+    "settings": "Einstellungen",
+    "notifications": "Benachrichtigungen",
+    "logout": "Abmelden"
+  },
+  "subscription": {
+    "title": "Abonnement",
+    "upgrade": "Upgrade auf Pro"
+  },
   "settings": {
     "label": {
-      "default": "Standards",
+      "standards": "Standards",
       "language": "Sprache",
       "theme": "Farben"
+    }
+  },
+  "account": {
+    "title": "Account",
+    "subtitle": "Auf dieser Seite kannst du deinen Account verwalten",
+    "settings": {
+      "title": "Account Einstellungen",
+      "subtitle": "Auf dieser Seite kannst du deine Account Einstellungen bearbeiten"
+    },
+    "form": {
+      "name": "Name",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "submit": "Speichern",
+      "cancel": "Abbrechen",
+      "delete": "Account löschen"
     }
   },
   "favorites": {
@@ -22,5 +52,12 @@
       "title": "Agent aus Vorlage starten",
       "description": "Wähle eine Vorlage aus, um einen neuen Agent zu starten."
     }
+  },
+  "form": {
+    "save": "Speichern",
+    "submit": "Absenden",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "update": "Aktualisieren"
   }
 }

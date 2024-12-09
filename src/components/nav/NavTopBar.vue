@@ -22,7 +22,7 @@ const onExpandClick = () => {
 </script>
 
 <template>
-  <div class="flex h-14 items-center justify-between bg-stone-100">
+  <div class="flex h-14 items-center justify-between">
     <div class="flex">
       <div class="px-6 mt-1">
         <NavTopPopover />
