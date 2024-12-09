@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import SectionContainer from '@/components/section/SectionContainer.vue';
-import TextToImageAssetsList from '@/components/text-to-image/TextToImageAssetsList.vue';
-import TextToImageSettings from '@/components/text-to-image/TextToImageSettings.vue';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { useTextToImageService } from '@/composables/services/useTextToImageService';
-import { useImgGenSettingsStore } from '@/stores/image-gen-settings.store';
+import SectionContainer from '@components/section/SectionContainer.vue';
+import TextToImageAssetsList from '@components/text-to-image/TextToImageAssetsList.vue';
+import TextToImageCountPopover from '@components/text-to-image/TextToImageCountPopover.vue';
+import TextToImageMimeTypePopover from '@components/text-to-image/TextToImageMimeTypePopover.vue';
+import TextToImageSettings from '@components/text-to-image/TextToImageSettings.vue';
+import TextToImageSizePopover from '@components/text-to-image/TextToImageSizePopover.vue';
+import { useTextToImageService } from '@composables/services/useTextToImageService';
+import { useImgGenSettingsStore } from '@stores/image-gen-settings.store';
+import { Button } from '@ui/button';
+import { Textarea } from '@ui/textarea';
 import { Loader2Icon, SendIcon } from 'lucide-vue-next';
 
 const isLoading = ref(false);
@@ -189,7 +192,9 @@ onUnmounted(() => {
     <SectionContainer class="sticky inset-0 z-10 !py-0">
       <div class="h-8 bg-white/95"></div>
       <div class="w-full">
-        <div class="flex h-fit w-full space-x-4 rounded-b-lg bg-white/95 pb-1">
+        <div
+          class="flex flex-col h-fit w-full space-x-4 rounded-b-lg bg-white/95 pb-1"
+        >
           <form
             ref="promptFormRef"
             class="relative grow space-y-2"
@@ -229,6 +234,11 @@ onUnmounted(() => {
               <TextToImageSettings />
             </div>
           </form>
+          <div class="bg-white py-2 space-x-2">
+            <TextToImageCountPopover />
+            <TextToImageSizePopover />
+            <TextToImageMimeTypePopover />
+          </div>
         </div>
       </div>
     </SectionContainer>

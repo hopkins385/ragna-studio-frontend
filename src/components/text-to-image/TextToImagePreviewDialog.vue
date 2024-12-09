@@ -1,21 +1,12 @@
 <script setup lang="ts">
+import { Button } from '@ui/button';
+import { Dialog, DialogContent, DialogFooter, DialogHeader } from '@ui/dialog';
 import {
   ClipboardCheckIcon,
   ClipboardIcon,
-  CopyCheckIcon,
-  CopyIcon,
   DownloadIcon,
   Loader2Icon,
 } from 'lucide-vue-next';
-import { Button } from '@ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@ui/dialog';
 import {
   Tooltip,
   TooltipContent,
@@ -81,7 +72,7 @@ const onOpenAutoFocus = (event: Event) => {
     @update:open="() => $emit('update:show', false)"
   >
     <DialogContent
-      class="flex max-w-6xl flex-col bg-stone-100"
+      class="flex max-w-6xl flex-col bg-stone-100 max-h-screen overflow-hidden"
       @open-auto-focus="onOpenAutoFocus"
     >
       <DialogHeader
@@ -98,6 +89,7 @@ const onOpenAutoFocus = (event: Event) => {
               :src="imgUrl"
               alt="Generated Image"
               class="w-[700px] rounded-md object-contain"
+              :style="{ 'max-height': 'calc(100vh - 6rem)' }"
             />
           </div>
         </div>

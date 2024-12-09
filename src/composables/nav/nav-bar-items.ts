@@ -4,7 +4,6 @@ import {
   BriefcaseBusinessIcon,
   Building2Icon,
   CloudUploadIcon,
-  CompassIcon,
   DatabaseIcon,
   FolderIcon,
   FolderKanbanIcon,
@@ -313,9 +312,9 @@ export const imageGenRoutes: NavItem[] = [
   },
   // Explore
   {
-    icon: CompassIcon,
-    path: '/text-to-image/explore',
-    label: 'Explore',
+    icon: FolderIcon,
+    path: '/text-to-image/folders',
+    label: 'Folders',
     hidden: false,
     children: [],
   },
