@@ -44,7 +44,7 @@ watch(pressed, isPressed => {
         'opacity-0': navBar.isFullClosed,
       }"
     >
-      <div id="spacer" class="h-1"></div>
+      <div id="spacer" class="h-2"></div>
       <div class="flex h-full flex-col">
         <ul class="space-y-2">
           <template v-for="item in dynamicNavItems" :key="item.path">

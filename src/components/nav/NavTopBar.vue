@@ -27,7 +27,7 @@ const onExpandClick = () => {
       <div class="px-6 mt-1">
         <NavTopPopover />
       </div>
-      <div class="pl-0">
+      <div class="pl-2">
         <BrandLogo class="" :text-visible="true" />
       </div>
     </div>

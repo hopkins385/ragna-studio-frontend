@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import TextToImagePricingPopover from '@/components/text-to-image/TextToImagePricingPopover.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import TextToImageAssetsList from '@components/text-to-image/TextToImageAssetsList.vue';
 import TextToImageCountPopover from '@components/text-to-image/TextToImageCountPopover.vue';
@@ -238,6 +239,7 @@ onUnmounted(() => {
             <TextToImageCountPopover />
             <TextToImageSizePopover />
             <TextToImageMimeTypePopover />
+            <TextToImagePricingPopover />
           </div>
         </div>
       </div>

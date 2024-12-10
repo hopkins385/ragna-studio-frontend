@@ -64,14 +64,15 @@ export function setupAxiosJwtInterceptor() {
         console.log('Refreshing token...');
         console.log('Route', originalRequest.url);
 
-        if (isRefreshing) {
+        // TODO: doesnt work, is it needed?
+        /*if (isRefreshing) {
           console.log('Token is being refreshed, adding to queue...');
           return new Promise(function (resolve, reject) {
             failedQueue.push({ resolve, reject });
           })
             .then(() => $axios.request(originalRequest))
             .catch(err => Promise.reject(err));
-        }
+        }*/
 
         originalRequest._retry = 1;
         isRefreshing = true;

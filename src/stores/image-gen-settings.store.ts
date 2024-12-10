@@ -8,6 +8,7 @@ interface ImgGenSettings {
   imageHeight: number[];
   imageGuidance: number[];
   imageExtension: ImageGenExtension;
+  imagePricing: number;
   promptUpsampling: boolean;
   submitOnEnter: boolean;
   showHidden: boolean;
@@ -20,6 +21,7 @@ export const useImgGenSettingsStore = defineStore('img-gen.store', {
     imageHeight: [1024],
     imageGuidance: [2.5],
     imageExtension: 'png',
+    imagePricing: 4,
     promptUpsampling: false,
     submitOnEnter: false,
     showHidden: false,
@@ -50,6 +52,9 @@ export const useImgGenSettingsStore = defineStore('img-gen.store', {
     },
     getImageExtension(state) {
       return state.imageExtension;
+    },
+    getImagePricing(state) {
+      return state.imagePricing;
     },
   },
   actions: {

@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@ui/select';
+import { File } from 'lucide-vue-next';
 
 const open = ref(true);
 
@@ -19,11 +20,20 @@ const settings = useImgGenSettingsStore();
     <PopoverTrigger
       class="border rounded-full px-4 text-xs py-1 shadow-sm text-slate-600"
     >
-      {{ settings.getImageExtension }}
+      <div class="flex items-center space-x-1">
+        <span><File class="stroke-1.5 size-3" /></span>
+        <span>{{ settings.getImageExtension }}</span>
+      </div>
     </PopoverTrigger>
     <PopoverContent class="w-40">
       <div class="flex flex-col pb-2 text-xs">
-        <div class="pb-2">Extension</div>
+        <div class="pb-3">
+          <div class="flex items-center space-x-1">
+            <span><File class="stroke-1.5 size-3" /></span>
+            <span>Extension</span>
+          </div>
+        </div>
+
         <!-- File Extension [jpeg, png]-->
         <Select v-model="settings.imageExtension">
           <SelectTrigger>

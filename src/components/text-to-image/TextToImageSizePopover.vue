@@ -2,6 +2,7 @@
 import { Slider } from '@/components/ui/slider';
 import { useImgGenSettingsStore } from '@/stores/image-gen-settings.store';
 import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover';
+import { Ratio } from 'lucide-vue-next';
 
 const open = ref(true);
 
@@ -13,10 +14,21 @@ const settings = useImgGenSettingsStore();
     <PopoverTrigger
       class="border rounded-full px-4 text-xs py-1 shadow-sm text-slate-600"
     >
-      {{ settings.getImageWidth }} x {{ settings.getImageHeight }}
+      <div class="flex items-center space-x-1">
+        <span><Ratio class="stroke-1.5 size-3" /></span>
+        <span>
+          {{ settings.getImageWidth }} x {{ settings.getImageHeight }}
+        </span>
+      </div>
     </PopoverTrigger>
     <PopoverContent class="w-40">
       <div class="mb-5 flex flex-col space-y-4 text-xs">
+        <div class="pb-0">
+          <div class="flex items-center space-x-1">
+            <span><Ratio class="stroke-1.5 size-3" /></span>
+            <span>Dimensions</span>
+          </div>
+        </div>
         <div class="flex w-full justify-between">
           <div>Width: {{ settings.getImageWidth }}</div>
         </div>
