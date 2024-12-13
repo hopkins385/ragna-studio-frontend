@@ -4,12 +4,14 @@ import {
   useUserFavoriteService,
   type UserFavorite,
 } from '@/composables/services/useUserFavoriteService';
-import { MessageCircle, Star } from 'lucide-vue-next';
-import { Button } from '../ui/button';
+import { Star } from 'lucide-vue-next';
+import AssistantFavoritesTable from '../assistant/AssistantFavoritesTable.vue';
 
 const myFavorites = ref<UserFavorite[]>();
 const favoriteAssistants = computed(() => {
-  return myFavorites.value?.filter(fav => fav.favoriteType === 'assistant');
+  return (
+    myFavorites.value?.filter(fav => fav.favoriteType === 'assistant') ?? []
+  );
 });
 const favoriteWorkflows = computed(() => {
   return myFavorites.value?.filter(fav => fav.favoriteType === 'workflow');
@@ -35,11 +37,29 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="p-4">
-    <div class="pb-3 flex items-center space-x-2">
-      <Star class="size-4 stroke-1.5" />
-      <h2 class="text-sm font-semibold">{{ $t('favorites.title') }}</h2>
+  <div class="flex space-x-4">
+    <div class="rounded-xl bg-white h-96 w-full border p-6">
+      <div class="pb-3 flex items-center space-x-2">
+        <Star class="size-4 stroke-1.5" />
+        <h2 class="text-sm font-semibold">
+          {{ $t('favorites.title') }}
+        </h2>
+      </div>
+      <div>
+        <AssistantFavoritesTable
+          :assistants="favoriteAssistants"
+          @startChat="onStartChat"
+        />
+      </div>
     </div>
+    <div class="grid grid-cols-2 gap-3 shrink-0">
+      <div class="bg-white rounded-2xl size-52 border"></div>
+      <div class="bg-white rounded-2xl size-52 border"></div>
+      <div class="bg-white rounded-2xl size-52 border"></div>
+      <div class="bg-white rounded-2xl size-52 border"></div>
+    </div>
+  </div>
+  <!--
     <div class="border-0 min-h-40 rounded-lg grid grid-cols-3 gap-4">
       <ul class="w-full space-y-3">
         <li
@@ -78,5 +98,5 @@ onMounted(async () => {
         </li>
       </ul>
     </div>
-  </div>
+    -->
 </template>

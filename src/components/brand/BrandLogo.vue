@@ -13,7 +13,7 @@ defineProps<{
         <IconRagna class="size-7 drop-shadow-sm" />
       </div>
       <div v-if="textVisible" class="whitespace-nowrap text-sm opacity-95">
-        <span class="font-semibold tracking-wide">RAGNA</span>
+        <span class="font-semibold tracking-wide">RAGNA</span> Studio
       </div>
     </div>
   </RouterLink>

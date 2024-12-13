@@ -1,8 +1,8 @@
-import type { Options } from 'markdown-it';
-import type { Options as LinkifyOptions } from 'linkify-it';
-import MarkdownIt from 'markdown-it';
-import hljs from 'highlight.js';
 import mk from '@vscode/markdown-it-katex';
+import hljs from 'highlight.js';
+import type { Options as LinkifyOptions } from 'linkify-it';
+import type { Options } from 'markdown-it';
+import MarkdownIt from 'markdown-it';
 
 const linkifyOptions: LinkifyOptions = {
   fuzzyLink: false,
@@ -34,7 +34,8 @@ export default function useMarkdown() {
         try {
           return (
             `<pre><code class="hljs language-${lang}">` +
-            hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+            hljs.highlight(str, { language: lang, ignoreIllegals: true })
+              .value +
             '</code></pre>'
           );
         } catch (__) {
@@ -42,13 +43,16 @@ export default function useMarkdown() {
         }
       }
 
-      return '<pre><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>';
+      return (
+        '<pre><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>'
+      );
     },
   };
 
   const md = new MarkdownIt(mdOptions);
   md.disable(disable);
   md.linkify.set(linkifyOptions);
+
   md.use(mk, katexOptions);
 
   // Add a renderer rule to make links external

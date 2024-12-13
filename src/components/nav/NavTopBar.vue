@@ -12,17 +12,17 @@ const userCredits = computed(() => {
 });
 
 const onExpandClick = () => {
-  const elem = document.documentElement;
+  const rootNode = document.documentElement;
   if (document.fullscreenElement) {
     document.exitFullscreen();
   } else {
-    elem.requestFullscreen();
+    rootNode.requestFullscreen();
   }
 };
 </script>
 
 <template>
-  <div class="flex h-14 items-center justify-between">
+  <div class="flex h-14 items-center justify-between border-0">
     <div class="flex">
       <div class="px-6 mt-1">
         <NavTopPopover />

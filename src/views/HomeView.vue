@@ -1,13 +1,13 @@
 <script setup lang="ts">
 // const homeImageSrc = '@/assets/images/home.jpg&q=100&format=webp&imagetools';
-import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
+import imageUrl from '@/assets/images/bg_1.jpeg?q=100&format=webp&imagetools';
 import HomeFavorites from '@/components/home/HomeFavorites.vue';
 import { Bot, Workflow } from 'lucide-vue-next';
 
 const backgroundStyles = computed(() => {
   return {
-    // backgroundImage: `linear-gradient(rgba(0,0,0,.20),rgba(0,0,0,.20)), url('${imageUrl}')`,
-    backgroundImage: `linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)), url('${imageUrl}')`,
+    backgroundImage: `linear-gradient(rgba(0,0,0,.20),rgba(0,0,0,.20)), url('${imageUrl}')`,
+    // backgroundImage: `linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0.2)), url('${imageUrl}')`,
     backgroundSize: 'cover',
     // opacity: 0.4,
   };
@@ -16,21 +16,30 @@ const backgroundStyles = computed(() => {
 
 <template>
   <div class="">
-    <div class="h-60 bg-blue-200 p-5 bg-center" :style="backgroundStyles">
-      <!-- -->
+    <div class="p-3 overflow-hidden">
+      <div
+        class="bg-blue-200 p-5 bg-center flex items-center h-60 rounded-xl overflow-hidde"
+        :style="backgroundStyles"
+      >
+        <!-- -->
+        <div
+          class="hidden h-40 border w-96 bg-white/60 rounded-lg backdrop-blur-xs"
+        ></div>
+      </div>
     </div>
-    <div class="custom-shadow p-5 from-blue-50/90 to-white bg-gradient-to-b">
-      <div class="">
+    <!-- custom-shadow  -->
+    <div class="p-3 pt-1">
+      <div class="space-y-4">
         <HomeFavorites />
-        <div class="p-4 w-full">
+        <div class="w-full border p-5 rounded-xl bg-white">
           <div class="pb-3 flex space-x-2">
-            <Workflow class="size-4 stroke-1.5 mt-1" />
+            <Bot class="size-4 stroke-1.5 mt-1" />
             <div>
               <h2 class="text-sm font-semibold">
-                {{ $t('workflows.template.title') }}
+                {{ $t('agents.template.title') }}
               </h2>
               <p class="text-xs opacity-75">
-                {{ $t('workflows.template.description') }}
+                {{ $t('agents.template.description') }}
               </p>
             </div>
           </div>
@@ -58,15 +67,15 @@ const backgroundStyles = computed(() => {
             ></div>
           </div>
         </div>
-        <div class="p-4 w-full">
+        <div class="w-full border p-5 rounded-2xl bg-white">
           <div class="pb-3 flex space-x-2">
-            <Bot class="size-4 stroke-1.5 mt-1" />
+            <Workflow class="size-4 stroke-1.5 mt-1" />
             <div>
               <h2 class="text-sm font-semibold">
-                {{ $t('agents.template.title') }}
+                {{ $t('workflows.template.title') }}
               </h2>
               <p class="text-xs opacity-75">
-                {{ $t('agents.template.description') }}
+                {{ $t('workflows.template.description') }}
               </p>
             </div>
           </div>
