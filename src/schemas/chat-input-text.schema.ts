@@ -1,5 +1,5 @@
 import { z } from 'zod';
 
 export const chatInputTextSchema = z.object({
-  input: z.string().min(1).max(4000),
+  input: z.string().min(1),
 });
