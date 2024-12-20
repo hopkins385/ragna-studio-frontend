@@ -13,7 +13,7 @@ import useAssistantService, {
   type AssistantsPaginatedResponse,
 } from '@/composables/services/useAssistantService';
 import { useWorkflowStepService } from '@/composables/services/useWorkflowStepService';
-import { SettingsIcon, Trash2Icon } from 'lucide-vue-next';
+import { Trash2Icon } from 'lucide-vue-next';
 
 const props = defineProps<{
   workflowId: string;
@@ -38,6 +38,7 @@ const availableSteps = computed(() => {
   );
 });
 const hasActiveSteps = computed(() => availableSteps.value.length > 0);
+const isFirstStep = computed(() => props.workflowStep.orderColumn === 0);
 
 const { deleteWorkflowStep, updateWorkflowStep } = useWorkflowStepService();
 const { fetchAllAssistants } = useAssistantService();
@@ -113,10 +114,10 @@ onMounted(() => {
         />
       </form>
       <hr class="-mx-4 mb-3 mt-1" />
-      <div>
+      <div v-if="!isFirstStep">
         <div class="space-y-2 py-1">
           <div class="flex justify-between">
-            <div>Assistant:</div>
+            <div>Agent:</div>
             <span class="hidden">{{ workflowStep?.assistant?.title }}</span>
             <div class="w-40">
               <!-- Assistant Select Form -->

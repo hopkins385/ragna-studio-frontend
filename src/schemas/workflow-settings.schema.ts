@@ -6,5 +6,5 @@ export const workflowSettingsSchema = z.object({
 });
 
 export const workflowNameSchema = z.object({
-  name: z.string().min(3).max(20),
+  name: z.string().min(3).max(255),
 });

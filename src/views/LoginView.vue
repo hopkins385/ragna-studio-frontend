@@ -59,12 +59,14 @@ const toggleShowForm = () => {
 
 const { fetchSocialAuthUrl } = useAuthService();
 
-const google = ref(true);
+const google = ref(false);
 const onGoogleLogin = async () => {
   // get the google login url and redirect to it
   const { url } = await fetchSocialAuthUrl('google');
   window.location.href = url;
 };
+
+const showRegister = false;
 </script>
 
 <template>
@@ -142,7 +144,7 @@ const onGoogleLogin = async () => {
           <div class="border p-4">Email and Password</div>
         </div>
       </div>
-      <div>
+      <div v-if="showRegister">
         <div class="text-sm text-gray-500">
           {{ $t('auth.no_account') }}
           <RouterLink to="/register" class="text-blue-500 hover:underline">
