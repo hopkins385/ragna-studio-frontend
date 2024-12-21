@@ -144,6 +144,13 @@ const collectionRoutes = {
       component: () => import('../views/collection/CollectionShowView.vue'),
       meta: defaultAppMeta,
     },
+    {
+      path: ':id/media',
+      name: 'collection.media',
+      beforeEnter: [hasValidRouteId],
+      component: () => import('../views/collection/CollectionMediaView.vue'),
+      meta: defaultAppMeta,
+    },
   ],
 };
 

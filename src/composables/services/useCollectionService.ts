@@ -1,8 +1,8 @@
 import { $axios } from '@/axios/axiosInstance';
-import type { CollectionAbleModel } from './useCollectionAbleService';
-import type { PaginateDto } from '@/interfaces/paginate.interface';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
+import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
+import type { CollectionAbleModel } from './useCollectionAbleService';
 
 enum CollectionRoute {
   BASE = 'collection',
@@ -102,7 +102,9 @@ export default function useCollectionService() {
     return response.data;
   };
 
-  const fetchAllFor = async (payload: { model: CollectionAbleModel }) => {
+  const fetchAllCollectionsFor = async (payload: {
+    model: CollectionAbleModel;
+  }) => {
     const body = payload;
     const route = getRoute(CollectionRoute.FOR);
     const response = await $axios.post<CollectionsResponse>(route, body, {
@@ -139,7 +141,7 @@ export default function useCollectionService() {
     fetchFirst,
     fetchAll,
     fetchAllPaginated,
-    fetchAllFor,
+    fetchAllCollectionsFor,
     deleteCollection,
   };
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AssistantEditForm2 from '@components/assistant/AssistantEditForm2.vue';
+import AssistantEditForm from '@components/assistant/AssistantEditForm.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import SectionHeading from '@components/section/SectionHeading.vue';
 import type { Assistant } from '@composables/services/useAssistantService';
@@ -19,7 +19,7 @@ const assistantId = route.params.id.toString();
 
 const { fetchAssistant } = useAssistantService();
 const { fetchAllTools } = useAssistantToolsService();
-const { fetchAllFor } = useCollectionService();
+const { fetchAllCollectionsFor } = useCollectionService();
 
 const initCollections = async () => {
   const model = {
@@ -27,8 +27,10 @@ const initCollections = async () => {
     id: assistantId,
   };
   try {
-    const { collections: rCol } = await fetchAllFor({ model });
-    collections.value = rCol;
+    const { collections: resultCollections } = await fetchAllCollectionsFor({
+      model,
+    });
+    collections.value = resultCollections;
   } catch (error) {
     console.error(error);
   }
@@ -67,7 +69,7 @@ onMounted(() => {
       subtitle="Updating an existing agent does only affect new conversations and workflows."
     />
     <div class="px-5">
-      <AssistantEditForm2
+      <AssistantEditForm
         v-if="assistant && assistantTools.length"
         :assistant="assistant"
         :assistantTools="assistantTools"
