@@ -7,13 +7,13 @@ import { useChatStore } from '@stores/chat.store';
 
 enum ChatRoute {
   BASE = 'chat', // POST
-  CHAT = 'chat/:id', // GET, PATCH, DELETE
+  CHAT = 'chat/:chatId', // GET, PATCH, DELETE
   CHAT_ALL = 'chat/all', // GET
-  CHAT_STREAM = 'chat-stream/:id', // POST
+  CHAT_STREAM = 'chat-stream/:chatId', // POST
   CHAT_HISTORY = 'chat/history', // GET
   CHAT_LATEST = 'chat/latest', // GET
-  CHAT_MESSAGE = 'chat/:id/message', // POST
-  CHAT_MESSAGES = 'chat/:id/messages', // DELETE
+  CHAT_MESSAGE = 'chat/:chatId/message', // POST
+  CHAT_MESSAGES = 'chat/:chatId/messages', // DELETE
 }
 
 export type InputChatId = string | null | undefined;
@@ -158,7 +158,7 @@ export function useChatService() {
     }
 
     try {
-      const route = getRoute(ChatRoute.CHAT_MESSAGE, chatId);
+      const route = getRoute(ChatRoute.CHAT_MESSAGE, { ':chatId': chatId });
       const response = await $axios.post<ChatMessage>(
         route,
         { message },
@@ -211,7 +211,9 @@ export function useChatService() {
     isThinking.value = true;
 
     try {
-      const streamRoute = getRoute(ChatRoute.CHAT_STREAM, chatId);
+      const streamRoute = getRoute(ChatRoute.CHAT_STREAM, {
+        ':chatId': chatId,
+      });
       const response = await $axios.post<ReadableStream<Uint8Array>>(
         streamRoute,
         {
@@ -350,7 +352,7 @@ export function useChatService() {
     }
 
     try {
-      const route = getRoute(ChatRoute.CHAT_MESSAGES, chatId);
+      const route = getRoute(ChatRoute.CHAT_MESSAGES, { ':chatId': chatId });
       const response = await $axios.delete(route, {
         signal: ac.signal,
       });
@@ -370,7 +372,7 @@ export function useChatService() {
       throw new Error('Chat ID is required');
     }
     try {
-      const route = getRoute(ChatRoute.CHAT, chatId);
+      const route = getRoute(ChatRoute.CHAT, { ':chatId': chatId });
       const response = await $axios.delete(route, {
         signal: ac.signal,
       });
@@ -401,7 +403,7 @@ export function useChatService() {
     }
 
     try {
-      const route = getRoute(ChatRoute.CHAT, chatId);
+      const route = getRoute(ChatRoute.CHAT, { ':chatId': chatId });
       const response = await $axios.get<ChatResponse>(route, {
         signal: ac.signal,
       });

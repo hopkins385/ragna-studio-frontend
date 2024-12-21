@@ -36,9 +36,9 @@ class WorkflowStepServiceError extends Error {
 enum WorkflowStepRoute {
   BASE = '/workflow-step',
   ROW = '/workflow-step/row',
-  STEP = '/workflow-step/:id',
-  INPUT_STEPS = '/workflow-step/:id/input-steps',
-  STEP_ASSISTANT = '/workflow-step/:id/assistant',
+  STEP = '/workflow-step/:workflowStepId',
+  INPUT_STEPS = '/workflow-step/:workflowStepId/input-steps',
+  STEP_ASSISTANT = '/workflow-step/:workflowStepId/assistant',
   ITEM = '/workflow-step/:stepId/item/:itemId',
 }
 
@@ -108,7 +108,9 @@ export function useWorkflowStepService() {
     payload: { inputStepIds: string[] },
   ) => {
     try {
-      const route = getRoute(WorkflowStepRoute.INPUT_STEPS, workflowStepId);
+      const route = getRoute(WorkflowStepRoute.INPUT_STEPS, {
+        ':workflowStepId': workflowStepId,
+      });
       const body = {
         ...payload,
       };
@@ -134,7 +136,9 @@ export function useWorkflowStepService() {
     data: { name?: string },
   ) => {
     try {
-      const route = getRoute(WorkflowStepRoute.STEP, workflowId);
+      const route = getRoute(WorkflowStepRoute.STEP, {
+        ':workflowStepId': workflowId,
+      });
       const body = {
         name: data.name,
       };
@@ -160,7 +164,9 @@ export function useWorkflowStepService() {
     payload: { assistantId: string },
   ) => {
     try {
-      const route = getRoute(WorkflowStepRoute.STEP_ASSISTANT, workflowStepId);
+      const route = getRoute(WorkflowStepRoute.STEP_ASSISTANT, {
+        ':workflowStepId': workflowStepId,
+      });
       const body = {
         assistantId: payload.assistantId,
       };
@@ -178,7 +184,9 @@ export function useWorkflowStepService() {
 
   const deleteWorkflowStep = async (workflowStepId: string) => {
     try {
-      const route = getRoute(WorkflowStepRoute.STEP, workflowStepId);
+      const route = getRoute(WorkflowStepRoute.STEP, {
+        ':workflowStepId': workflowStepId,
+      });
       const response = await $axios.delete(route, {
         signal: ac.signal,
       });
@@ -208,10 +216,10 @@ export function useWorkflowStepService() {
     if (!stepId || !itemId) {
       throw new Error('Invalid stepId or itemId');
     }
-    const route = WorkflowStepRoute.ITEM.replace(':stepId', stepId).replace(
-      ':itemId',
-      itemId,
-    );
+    const route = getRoute(WorkflowStepRoute.ITEM, {
+      ':stepId': stepId,
+      ':itemId': itemId,
+    });
     const body = {
       itemContent: content,
     };

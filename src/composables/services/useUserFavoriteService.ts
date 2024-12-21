@@ -29,7 +29,7 @@ export enum UserFavoriteType {}
 
 export enum UserFavoriteRoute {
   BASE = '/user-favorite', // GET, POST
-  DELETE = '/user-favorite/:id', // DELETE
+  DELETE = '/user-favorite/:entityId', // DELETE
   TYPE = '/user-favorite/type/:favoriteType', // GET
 }
 
@@ -106,7 +106,9 @@ export function useUserFavoriteService() {
       favoriteType: payload.favoriteType,
     };
     try {
-      const route = getRoute(UserFavoriteRoute.DELETE, payload.entityId);
+      const route = getRoute(UserFavoriteRoute.DELETE, {
+        ':entityId': payload.entityId,
+      });
       const response = await $axios.delete<UserFavoriteResponse>(route, {
         data: body,
         signal: ac.signal,

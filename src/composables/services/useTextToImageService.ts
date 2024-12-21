@@ -1,7 +1,6 @@
 import { $axios } from '@/axios/axiosInstance';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
-import { useImgGenSettingsStore } from '@/stores/image-gen-settings.store';
 import { getRoute } from '@/utils/route.util';
 
 enum ImageGenStatus {
@@ -15,7 +14,8 @@ enum ImageGenRoute {
   GENERATE = '/text-to-image', // POST
   FOLDERS = '/text-to-image/folders', // GET
   FOLDER_RUNS = '/text-to-image/:id', // GET
-  FOLDER_RUNS_PAGINATED = '/text-to-image/:id/paginated', // GET
+  FOLDER_RUNS_PAGINATED = '/text-to-image/:folderId/paginated', // GET
+  TOGGLE_HIDE = '/text-to-image/:runId/toggle-hide', // POST
 }
 
 type ImageUrl = string;
@@ -60,9 +60,23 @@ export interface ImageGenPaginatedResponse {
   meta: PaginateMeta;
 }
 
+class ImageGenError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ImageGenError';
+  }
+}
+
 export function useTextToImageService() {
   const ac = new AbortController();
   let acGen: AbortController | null = null;
+
+  const handleError = (err: unknown, customMessage?: string) => {
+    if (err instanceof Error) {
+    }
+    console.error(err);
+    throw new ImageGenError(customMessage || 'Failed to fetch data');
+  };
 
   const generateImages = async (payload: {
     folderId: string;
@@ -89,11 +103,18 @@ export function useTextToImageService() {
         signal: acGen.signal,
       });
       return response.data;
-    } catch (error) {}
+    } catch (error: unknown) {
+      return handleError(error, 'Failed to generate images');
+    }
   };
 
   const toggleHideRun = async ({ runId }: { runId: string }) => {
-    throw new Error('Not implemented');
+    try {
+      const route = getRoute(ImageGenRoute.TOGGLE_HIDE, { ':runId': runId });
+      await $axios.patch(route);
+    } catch (error: unknown) {
+      return handleError(error, 'Failed to toggle hide run');
+    }
   };
 
   const fetchFolders = async () => {
@@ -103,21 +124,27 @@ export function useTextToImageService() {
         signal: ac.signal,
       });
       return response.data;
-    } catch (error) {}
+    } catch (error: unknown) {
+      return handleError(error, 'Failed to fetch folders');
+    }
   };
 
   const fetchRunsPaginated = async (
     { folderId }: { folderId: string },
-    params: PaginateDto,
+    params: PaginateDto & { showHiddenRuns?: boolean },
   ) => {
     try {
-      const route = getRoute(ImageGenRoute.FOLDER_RUNS_PAGINATED, folderId);
+      const route = getRoute(ImageGenRoute.FOLDER_RUNS_PAGINATED, {
+        ':folderId': folderId,
+      });
       const response = await $axios.get<ImageGenPaginatedResponse>(route, {
         params,
         signal: ac.signal,
       });
       return response.data;
-    } catch (error) {}
+    } catch (error: unknown) {
+      return handleError(error, 'Failed to fetch runs');
+    }
   };
 
   return {

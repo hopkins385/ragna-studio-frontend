@@ -5,7 +5,7 @@ import { getRoute } from '@/utils/route.util';
 enum MediaRoute {
   UPLOAD = 'upload',
   BASE = 'media', // POST
-  MEDIA = 'media/:id', // GET, PATCH, DELETE
+  MEDIA = 'media/:mediaId', // GET, PATCH, DELETE
   FOR = 'media/for', // POST
   FOR_PAGINATE = 'media/for/paginate', // POST
 }
@@ -75,8 +75,8 @@ export function useMediaService() {
     return response.data;
   };
 
-  const deleteMedia = async (id: string) => {
-    const route = getRoute(MediaRoute.MEDIA, id);
+  const deleteMedia = async (mediaId: string) => {
+    const route = getRoute(MediaRoute.MEDIA, { ':mediaId': mediaId });
     const response = await $axios.delete(route, {
       signal: ac.signal,
     });

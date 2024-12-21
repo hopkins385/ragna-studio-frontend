@@ -70,7 +70,9 @@ export function useAuthService() {
   }
 
   const fetchSocialAuthUrl = async (provider: string) => {
-    const route = AuthRoute.SOCIAL_AUTH_URL.replace(':provider', provider);
+    const route = getRoute(AuthRoute.SOCIAL_AUTH_URL, {
+      ':provider': provider,
+    });
     const response = await $axios.get<SocialAuthUrlResponse>(route, {
       signal: ac.signal,
     });

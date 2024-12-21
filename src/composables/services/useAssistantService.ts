@@ -5,7 +5,7 @@ import type { AssistantTool } from './useAssistantToolsService';
 
 enum AssistantRoute {
   BASE = 'assistant', // GET, POST
-  ASSISTANT = 'assistant/:id', // GET, PATCH, DELETE
+  ASSISTANT = 'assistant/:assistantId', // GET, PATCH, DELETE
 }
 
 export class AssistantDto {
@@ -68,12 +68,16 @@ export default function useAssistantService() {
     return response.data;
   };
 
-  const fetchAssistant = async (id: string | string[] | undefined | null) => {
-    if (!id) {
+  const fetchAssistant = async (
+    assistantId: string | string[] | undefined | null,
+  ) => {
+    if (!assistantId) {
       throw new Error('Assistant ID is required');
     }
 
-    const route = getRoute(AssistantRoute.ASSISTANT, id.toString());
+    const route = getRoute(AssistantRoute.ASSISTANT, {
+      ':assistantId': assistantId.toString(),
+    });
 
     const response = await $axios.get<AssistantResponse>(route, {
       signal: ac.signal,
@@ -114,10 +118,12 @@ export default function useAssistantService() {
   };
 
   const updateAssistant = async (
-    id: string,
+    assistantId: string,
     payload: Partial<AssistantDto>,
   ) => {
-    const route = getRoute(AssistantRoute.ASSISTANT, id);
+    const route = getRoute(AssistantRoute.ASSISTANT, {
+      ':assistantId': assistantId,
+    });
     const response = await $axios.patch(route, payload, {
       signal: ac.signal,
     });
@@ -130,7 +136,9 @@ export default function useAssistantService() {
   };
 
   const deleteAssistant = async (assistantId: string) => {
-    const route = getRoute(AssistantRoute.ASSISTANT, assistantId);
+    const route = getRoute(AssistantRoute.ASSISTANT, {
+      ':assistantId': assistantId,
+    });
     const response = await $axios.delete(route, {
       signal: ac.signal,
     });

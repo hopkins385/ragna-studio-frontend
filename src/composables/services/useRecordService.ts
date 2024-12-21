@@ -1,10 +1,10 @@
-import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { $axios } from '@/axios/axiosInstance';
+import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
 
 enum RecordRoute {
   BASE = 'record',
-  RECORD = 'record/:id',
+  RECORD = 'record/:recordId',
 }
 
 export interface Record {
@@ -28,11 +28,8 @@ export interface CreateRecordDto {
 export function useRecordService() {
   const ac = new AbortController();
 
-  const fetchAllPaginated = async (
-    collectionId: string,
-    params: PaginateDto,
-  ) => {
-    const route = getRoute(RecordRoute.RECORD, collectionId);
+  const fetchAllPaginated = async (recordId: string, params: PaginateDto) => {
+    const route = getRoute(RecordRoute.RECORD, { ':recordId': recordId });
     const response = await $axios.get<RecordsPaginatedResponse>(route, {
       params,
       signal: ac.signal,
@@ -61,8 +58,8 @@ export function useRecordService() {
     return response.data;
   };
 
-  const deleteRecord = async (id: string) => {
-    const route = getRoute(RecordRoute.RECORD, id);
+  const deleteRecord = async (recordId: string) => {
+    const route = getRoute(RecordRoute.RECORD, { ':recordId': recordId });
     const response = await $axios.delete(route, {
       signal: ac.signal,
     });

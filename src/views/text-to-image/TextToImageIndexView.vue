@@ -100,7 +100,7 @@ function usePrompt(value: string) {
   promptFormRef.value?.querySelector('textarea')?.focus();
 }
 
-function onToggleHideRun(runId: string) {
+function handleToggleHideRun(runId: string) {
   toggleHideRun({ runId })
     .then(() => {
       refreshData();
@@ -268,7 +268,7 @@ onUnmounted(() => {
           :refresh-data="refresh"
           @re-run="reRun"
           @use-prompt="usePrompt"
-          @toggle-hide="onToggleHideRun"
+          @toggle-hide="handleToggleHideRun"
         />
         <template #fallback>
           <p class="animate-pulse text-center text-sm opacity-50">

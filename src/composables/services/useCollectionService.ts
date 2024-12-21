@@ -6,7 +6,7 @@ import type { CollectionAbleModel } from './useCollectionAbleService';
 
 enum CollectionRoute {
   BASE = 'collection',
-  COLLECTION = 'collection/:id',
+  COLLECTION = 'collection/:collectionId',
   ALL = 'collection/all',
   FOR = 'collection/for',
 }
@@ -62,7 +62,9 @@ export default function useCollectionService() {
       throw new Error('Collection ID is required');
     }
     try {
-      const route = getRoute(CollectionRoute.COLLECTION, collectionId);
+      const route = getRoute(CollectionRoute.COLLECTION, {
+        ':collectionId': collectionId,
+      });
       const response = await $axios.get<CollectionResponse>(route, {
         signal: ac.signal,
       });
@@ -123,7 +125,9 @@ export default function useCollectionService() {
       throw new Error('Collection ID is required');
     }
     try {
-      const route = getRoute(CollectionRoute.COLLECTION, collectionId);
+      const route = getRoute(CollectionRoute.COLLECTION, {
+        ':collectionId': collectionId,
+      });
       const response = await $axios.delete<CollectionResponse>(route, {
         signal: ac.signal,
       });

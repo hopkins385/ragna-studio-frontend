@@ -4,7 +4,7 @@ import { getRoute } from '@/utils/route.util';
 
 enum UserRoute {
   BASE = 'user', // GET, POST
-  USER = 'user/:id', // GET, PATCH, DELETE
+  USER = 'user/:userId', // GET, PATCH, DELETE
 }
 
 // Custom error class
@@ -69,7 +69,7 @@ export function useUserService() {
     if (!userId) throw new Error('User ID is required');
 
     try {
-      const route = getRoute(UserRoute.USER, userId);
+      const route = getRoute(UserRoute.USER, { ':userId': userId });
       const response = await $axios.get<User>(route, {
         signal: ac.signal,
       });
@@ -116,7 +116,7 @@ export function useUserService() {
     if (!userId) throw new Error('User ID is required');
 
     try {
-      const route = getRoute(UserRoute.USER, userId);
+      const route = getRoute(UserRoute.USER, { ':userId': userId });
       const response = await $axios.patch<User>(route, data, {
         signal: ac.signal,
       });
@@ -139,7 +139,7 @@ export function useUserService() {
     if (!userId) throw new Error('User ID is required');
 
     try {
-      const route = getRoute(UserRoute.USER, userId);
+      const route = getRoute(UserRoute.USER, { ':userId': userId });
       await $axios.delete(route, {
         signal: ac.signal,
       });

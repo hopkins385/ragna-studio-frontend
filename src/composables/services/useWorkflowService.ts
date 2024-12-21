@@ -14,10 +14,10 @@ class WorkflowServiceError extends Error {
 
 enum WorkflowRoute {
   BASE = '/workflow',
-  WORKFLOW = '/workflow/:id',
-  WORKFLOW_FULL = '/workflow/:id/full',
-  EXECUTE = '/workflow/:id/execute',
-  EXPORT = '/workflow/:id/export',
+  WORKFLOW = '/workflow/:workflowId',
+  WORKFLOW_FULL = '/workflow/:workflowId/full',
+  EXECUTE = '/workflow/:workflowId/execute',
+  EXPORT = '/workflow/:workflowId/export',
 }
 
 interface ICreateWorkflow {
@@ -90,7 +90,9 @@ export function useWorkflowService() {
 
   const fetchWorkflow = async (workflowId: string) => {
     try {
-      const route = getRoute(WorkflowRoute.WORKFLOW, workflowId);
+      const route = getRoute(WorkflowRoute.WORKFLOW, {
+        ':workflowId': workflowId,
+      });
       const response = await $axios.get<WorkflowResponse>(route, {
         signal: ac.signal,
       });
@@ -110,7 +112,9 @@ export function useWorkflowService() {
 
   const fetchFullWorkflow = async (workflowId: string) => {
     try {
-      const route = getRoute(WorkflowRoute.WORKFLOW_FULL, workflowId);
+      const route = getRoute(WorkflowRoute.WORKFLOW_FULL, {
+        ':workflowId': workflowId,
+      });
       const response = await $axios.get<WorkflowResponse>(route, {
         signal: ac.signal,
       });
@@ -178,7 +182,9 @@ export function useWorkflowService() {
     payload: Partial<UpdateWorkflowDto>,
   ) => {
     try {
-      const route = getRoute(WorkflowRoute.WORKFLOW, workflowId);
+      const route = getRoute(WorkflowRoute.WORKFLOW, {
+        ':workflowId': workflowId,
+      });
       const response = await $axios.patch(route, payload, {
         signal: ac.signal,
       });
@@ -209,7 +215,9 @@ export function useWorkflowService() {
 
   const exportWorkflow = async (workflowId: string, format: string) => {
     try {
-      const route = getRoute(WorkflowRoute.EXPORT, workflowId);
+      const route = getRoute(WorkflowRoute.EXPORT, {
+        ':workflowId': workflowId,
+      });
       const response = await $axios.get(route, {
         signal: ac.signal,
         responseType: 'blob',
@@ -234,7 +242,9 @@ export function useWorkflowService() {
 
   const executeWorkflow = async (workflowId: string) => {
     try {
-      const route = getRoute(WorkflowRoute.EXECUTE, workflowId);
+      const route = getRoute(WorkflowRoute.EXECUTE, {
+        ':workflowId': workflowId,
+      });
       const response = await $axios.post(
         route,
         {},
