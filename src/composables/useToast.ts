@@ -5,31 +5,32 @@ interface IToast {
 }
 
 export default function useToast() {
+  const { t } = useI18n();
   const config = {
     successDuration: 2000,
     errorDuration: 4000,
   };
 
-  function success(payload: IToast) {
-    toast.success('Success', {
+  const success = (payload: IToast) => {
+    toast.success(t('toast.success.title'), {
       description: payload.description,
       duration: config.successDuration,
     });
-  }
+  };
 
-  function error(payload: IToast) {
-    toast.error('Error', {
+  const error = (payload: IToast) => {
+    toast.error(t('toast.error.title'), {
       description: payload.description,
       duration: config.errorDuration,
     });
-  }
+  };
 
-  function info(payload: IToast) {
-    toast.info('Info', {
+  const info = (payload: IToast) => {
+    toast.info(t('toast.info.title'), {
       description: payload.description,
       duration: config.errorDuration,
     });
-  }
+  };
 
   return {
     success,

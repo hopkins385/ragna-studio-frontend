@@ -28,6 +28,7 @@ const emits = defineEmits<{
 }>();
 
 const toast = useToast();
+const { t } = useI18n();
 const { updateName } = useAccountService();
 
 const userFormSchema = toTypedSchema(
@@ -52,12 +53,12 @@ const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
       lastName,
     });
     toast.success({
-      description: 'Your profile has been updated', // TODO: translate
+      description: t('account.toast.name_updated'),
     });
     emits('refresh');
   } catch (error) {
     toast.error({
-      description: 'Ups, something went wrong.', // TODO: translate
+      description: t('account.toast.error'),
     });
   } finally {
     isLoading.value = false;
@@ -77,12 +78,7 @@ const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
           {{ $t('account.form.name') }}
         </FormLabel>
         <FormControl>
-          <Input
-            type="text"
-            placeholder="Full name"
-            v-bind="componentField"
-            disabled
-          />
+          <Input type="text" placeholder="" v-bind="componentField" disabled />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -98,7 +94,7 @@ const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
           {{ $t('account.form.firstName') }}
         </FormLabel>
         <FormControl>
-          <Input type="text" placeholder="First name" v-bind="componentField" />
+          <Input type="text" placeholder="" v-bind="componentField" />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -114,14 +110,15 @@ const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
           {{ $t('account.form.lastName') }}
         </FormLabel>
         <FormControl>
-          <Input type="text" placeholder="Last name" v-bind="componentField" />
+          <Input type="text" placeholder="" v-bind="componentField" />
         </FormControl>
         <FormMessage />
       </FormItem>
     </FormField>
-
-    <ButtonLoading variant="outline" :loading="isLoading" type="submit">
-      {{ $t('form.save') }}
-    </ButtonLoading>
+    <div class="flex w-full justify-end">
+      <ButtonLoading variant="outline" :loading="isLoading" type="submit">
+        {{ $t('form.button.save') }}
+      </ButtonLoading>
+    </div>
   </form>
 </template>

@@ -1,14 +1,15 @@
 <script setup lang="ts">
+import AccountDeleteDialog from '@/components/account/AccountDeleteDialog.vue';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import AccountProfileForm from '@components/account/AccountProfileForm.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
-import ButtonLink from '@components/button/ButtonLink.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import SectionHeading from '@components/section/SectionHeading.vue';
 import {
   useAccountService,
   type AccountData,
 } from '@composables/services/useAccountService';
+import AccountEditLoginForm from './AccountEditLoginForm.vue';
 
 const isLoading = ref(false);
 const account = ref<AccountData | null>(null);
@@ -42,9 +43,6 @@ onBeforeMount(() => {
       :title="$t('account.title')"
       :subtitle="$t('account.subtitle')"
     >
-      <template #button>
-        <ButtonLink to="/logout" variant="outline">Logout</ButtonLink>
-      </template>
     </SectionHeading>
     <div class="grid grid-cols-4 gap-5">
       <BoxContainer class="col-span-3">
@@ -72,7 +70,7 @@ onBeforeMount(() => {
       </div>
     </div>
     <BoxContainer class="mt-5">
-      <UserEditLoginForm
+      <AccountEditLoginForm
         :user="{
           id: account?.id ?? '',
           email: account?.email ?? '',
@@ -112,7 +110,7 @@ onBeforeMount(() => {
     -->
     <BoxContainer class="mt-5">
       <h2 class="pb-5">Danger Zone</h2>
-      <UserDeleteAccount :user-id="account?.id" />
+      <AccountDeleteDialog :user-id="account?.id ?? '-1'" />
     </BoxContainer>
   </SectionContainer>
 </template>

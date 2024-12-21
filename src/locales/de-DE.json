@@ -6,6 +6,29 @@
     "notifications": "Benachrichtigungen",
     "logout": "Abmelden"
   },
+  "toast": {
+    "error": {
+      "title": "Fehler",
+      "message": "Es ist ein Fehler aufgetreten"
+    },
+    "success": {
+      "title": "Erfolgreich",
+      "message": "Erfolgreich gespeichert"
+    },
+    "warning": {
+      "title": "Warnung",
+      "message": "Etwas ist schiefgelaufen"
+    }
+  },
+  "form": {
+    "button": {
+      "save": "Speichern",
+      "submit": "Absenden",
+      "cancel": "Abbrechen",
+      "delete": "Löschen",
+      "update": "Aktualisieren"
+    }
+  },
   "subscription": {
     "title": "Abonnement",
     "upgrade": "Upgrade auf Pro"
@@ -30,10 +53,33 @@
       "lastName": "Nachname",
       "email": "E-Mail",
       "password": "Passwort",
-      "confirmPassword": "Passwort bestätigen",
       "submit": "Speichern",
+      "cancel": "Abbrechen"
+    },
+    "new_password": {
+      "title": "Passwort ändern",
+      "subtitle": "Dein Passwort muss mindestens 8 Zeichen lang sein und mindestens eine Zahl enthalten.",
+      "change": "Passwort ändern",
+      "submit": "Passwort speichern",
+      "current": "Aktuelles Passwort",
+      "new": "Neues Passwort",
+      "confirm": "Neues Passwort bestätigen"
+    },
+    "delete": {
+      "title": "Account löschen",
+      "description": "Bist du sicher, dass du deinen Account löschen möchtest? Dein Account wird unwiderruflich gelöscht. Alle Daten gehen verloren.",
+      "confirm": "Account löschen",
       "cancel": "Abbrechen",
-      "delete": "Account löschen"
+      "enter_password": "Bitte gib dein Passwort ein, um fortzufahren",
+      "button": "Account löschen"
+    },
+    "toast": {
+      "error": "Ups, es ist etwas schiefgelaufen",
+      "password_updated": "Passwort erfolgreich aktualisiert",
+      "name_updated": "Name erfolgreich aktualisiert"
+    },
+    "tooltip": {
+      "email_info": "Mit deiner E-Mail-Adresse kannst du dich anmelden. Deine E-Mail Adresse kannst du nicht ändern."
     }
   },
   "favorites": {
@@ -52,13 +98,6 @@
       "title": "Agent aus Vorlage starten",
       "description": "Wähle eine Vorlage aus, um einen neuen Agent zu starten."
     }
-  },
-  "form": {
-    "save": "Speichern",
-    "submit": "Absenden",
-    "cancel": "Abbrechen",
-    "delete": "Löschen",
-    "update": "Aktualisieren"
   },
   "auth": {
     "or": "oder",
