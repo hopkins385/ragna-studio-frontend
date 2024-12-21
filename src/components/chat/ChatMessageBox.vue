@@ -25,7 +25,7 @@ const { parseMarkdown } = useMarkdown();
         <img
           v-if="visionContent.type === 'image'"
           :src="visionContent.url"
-          class="size-full rounded-lg object-cover"
+          class="rounded-lg max-w-xl max-h-96 object-contain"
           crossorigin=""
         />
       </div>
