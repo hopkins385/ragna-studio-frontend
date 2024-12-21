@@ -2,9 +2,10 @@ import { $axios } from '@/axios/axiosInstance';
 import { getRoute } from '@/utils/route.util';
 
 enum AccountRoute {
-  BASE = 'account', // GET, DELETE
+  BASE = 'account', // GET
   NAME = 'account/name', // PATCH
   PASSWORD = 'account/password', // PATCH
+  DELETE = 'account/delete', // DELETE
 }
 
 export interface AccountData {
@@ -93,10 +94,9 @@ export function useAccountService() {
     const body = {
       password,
     };
-    // TODO: check for valid password
     try {
-      const route = getRoute(AccountRoute.BASE);
-      const response = await $axios.delete(route);
+      const route = getRoute(AccountRoute.DELETE);
+      const response = await $axios.post(route, body);
       if (response.status !== 200) {
         throw new Error('Failed to delete account');
       }

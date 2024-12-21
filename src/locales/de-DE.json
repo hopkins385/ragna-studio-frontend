@@ -71,6 +71,7 @@
       "confirm": "Account löschen",
       "cancel": "Abbrechen",
       "enter_password": "Bitte gib dein Passwort ein, um fortzufahren",
+      "error": "Ungültiges Passwort",
       "button": "Account löschen"
     },
     "toast": {

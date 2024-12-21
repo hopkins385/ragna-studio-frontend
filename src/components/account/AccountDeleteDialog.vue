@@ -48,6 +48,7 @@ const { handleSubmit, setErrors } = useForm({
 });
 
 const router = useRouter();
+const { t } = useI18n();
 
 const { deleteAccount } = useAccountService();
 
@@ -56,14 +57,14 @@ const onSubmit = handleSubmit(async ({ password }, { resetForm }) => {
 
   try {
     const result = await deleteAccount({
-      password, // TODO: password validation, confirm password // not yet implemented!!!
+      password,
     });
     if (result.success !== true) {
       throw new Error('Failed to delete account');
     }
     router.push('/logout');
   } catch (error) {
-    setErrors({ password: 'Invalid password' });
+    setErrors({ password: t('account.delete.error') });
     return;
   } finally {
     isLoading.value = false;
