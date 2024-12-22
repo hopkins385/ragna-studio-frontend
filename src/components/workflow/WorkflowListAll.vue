@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { useUserFavoriteService } from '@/composables/services/useUserFavoriteService';
 import useToast from '@/composables/useToast';
+import ButtonLink from '@components/button/ButtonLink.vue';
+import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
+import ErrorAlert from '@components/error/ErrorAlert.vue';
+import PaginateControls from '@components/pagniate/PaginateControls.vue';
+import TableMetaCaption from '@components/table/TableMetaCaption.vue';
 import {
   useWorkflowService,
   type WorkflowsPaginatedResponse,
@@ -8,7 +13,6 @@ import {
 import Button from '@ui/button/Button.vue';
 import Table from '@ui/table/Table.vue';
 import TableBody from '@ui/table/TableBody.vue';
-import TableCaption from '@ui/table/TableCaption.vue';
 import TableCell from '@ui/table/TableCell.vue';
 import TableHead from '@ui/table/TableHead.vue';
 import TableHeader from '@ui/table/TableHeader.vue';
@@ -18,10 +22,6 @@ import {
   StarIcon,
   Trash2Icon,
 } from 'lucide-vue-next';
-import ButtonLink from '../button/ButtonLink.vue';
-import ConfirmDialog from '../confirm/ConfirmDialog.vue';
-import ErrorAlert from '../error/ErrorAlert.vue';
-import PaginateControls from '../pagniate/PaginateControls.vue';
 
 const toast = useToast();
 
@@ -30,6 +30,7 @@ const data = ref<WorkflowsPaginatedResponse | null>(null);
 const workflowFavorites = ref<any>([]); // TODO: type
 
 const workflows = computed(() => data.value?.workflows || []);
+const workflowsLength = computed(() => workflows.value.length);
 const meta = computed(() => {
   return {
     totalCount: data.value?.meta?.totalCount || 0,
@@ -108,24 +109,11 @@ onMounted(() => {
     <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
 
     <Table>
-      <!-- TODO: fix total count (meta on multi projects and flatMap) -->
-      <TableCaption class="hidden">
-        Showing from
-        {{ meta.totalCount > 10 ? meta.currentPage * 10 - 10 + 1 : 1 }}
-        to
-        {{
-          meta.totalCount > 10
-            ? meta.currentPage * 10 - 10 + workflows.length
-            : meta.totalCount
-        }}
-        of total
-        {{ meta.totalCount }}
-      </TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead> Favorite </TableHead>
-          <TableHead> Name </TableHead>
-          <TableHead class="text-right"> Action </TableHead>
+          <TableHead>{{ $t('table.favorites') }}</TableHead>
+          <TableHead>{{ $t('table.name') }}</TableHead>
+          <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -172,8 +160,10 @@ onMounted(() => {
           </TableCell>
         </TableRow>
       </TableBody>
+      <!-- Meta Caption -->
+      <TableMetaCaption :itemsLength="workflowsLength" :meta="meta" />
     </Table>
-
+    <!-- Pagination Controls -->
     <PaginateControls :page="page" :meta="meta" @update:page="setPage" />
   </div>
 </template>

@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import useToast from '@/composables/useToast';
-import { FolderClosedIcon, Trash2Icon } from 'lucide-vue-next';
-import ErrorAlert from '@components/error/ErrorAlert.vue';
+import ButtonLink from '@components/button/ButtonLink.vue';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
+import ErrorAlert from '@components/error/ErrorAlert.vue';
+import PaginateControls from '@components/pagniate/PaginateControls.vue';
+import TableMetaCaption from '@components/table/TableMetaCaption.vue';
+import useCollectionService, {
+  type CollectionsPaginatedResponse,
+} from '@composables/services/useCollectionService';
+import useToast from '@composables/useToast';
+import { Button } from '@ui/button';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -18,12 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@ui/tooltip';
-import ButtonLink from '@components/button/ButtonLink.vue';
-import { Button } from '@ui/button';
-import PaginateControls from '@components/pagniate/PaginateControls.vue';
-import useCollectionService, {
-  type CollectionsPaginatedResponse,
-} from '@/composables/services/useCollectionService';
+import { FolderClosedIcon, Trash2Icon } from 'lucide-vue-next';
 
 const route = useRoute();
 const router = useRouter();
@@ -49,6 +49,7 @@ const toast = useToast();
 const { fetchAllPaginated, deleteCollection } = useCollectionService();
 
 const collections = computed(() => allCollections.value?.collections || []);
+const collectionsLength = computed(() => collections.value.length);
 const meta = computed(() => {
   return {
     totalCount: allCollections.value?.meta?.totalCount || 0,
@@ -93,29 +94,17 @@ await initCollections();
 </script>
 
 <template>
-  <div v-if="collections.length > 0">
+  <div v-if="collectionsLength > 0">
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
     <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
 
     <Table>
-      <TableCaption>
-        Showing from
-        {{ meta.totalCount > 10 ? meta.currentPage * 10 - 10 + 1 : 1 }}
-        to
-        {{
-          meta.totalCount > 10
-            ? meta.currentPage * 10 - 10 + collections.length
-            : meta.totalCount
-        }}
-        of total
-        {{ meta.totalCount }}
-      </TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead> Name </TableHead>
-          <TableHead> Description </TableHead>
-          <TableHead> Records </TableHead>
-          <TableHead class="text-right"> Actions </TableHead>
+          <TableHead>{{ $t('table.name') }}</TableHead>
+          <TableHead>{{ $t('table.description') }}</TableHead>
+          <TableHead>{{ $t('table.records') }}</TableHead>
+          <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -171,8 +160,10 @@ await initCollections();
           </TableCell>
         </TableRow>
       </TableBody>
+      <!-- Meta Caption -->
+      <TableMetaCaption :itemsLength="collectionsLength" :meta="meta" />
     </Table>
-
+    <!-- Pagination Controls -->
     <PaginateControls
       v-if="meta.totalCount > 10"
       :page="page"

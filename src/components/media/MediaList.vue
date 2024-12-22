@@ -1,22 +1,22 @@
 <script setup lang="ts">
+import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
+import ErrorAlert from '@components/error/ErrorAlert.vue';
+import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import { useMediaService } from '@composables/services/useMediaService';
 import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
 import { useAuthStore } from '@stores/auth.store';
-import { FileIcon, Trash2Icon } from 'lucide-vue-next';
-import PaginateControls from '@components/pagniate/PaginateControls.vue';
-import ErrorAlert from '@components/error/ErrorAlert.vue';
-import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
+import { Button } from '@ui/button';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@ui/table';
-import { Button } from '@ui/button';
+import { FileIcon, Trash2Icon } from 'lucide-vue-next';
+import TableMetaCaption from '../table/TableMetaCaption.vue';
 
 const props = defineProps<{
   refresh: boolean;
@@ -51,6 +51,7 @@ const initMedia = async () => {
 };
 
 const medias = computed(() => mediaData.value?.medias || []);
+const mediasLength = computed(() => medias.value.length);
 const meta = computed(() => {
   return {
     totalCount: mediaData.value?.meta?.totalCount || 0,
@@ -121,24 +122,12 @@ onMounted(() => {
     <RecordAddFileDialog v-model="showAddToCollectionDialog" />
 
     <Table>
-      <TableCaption>
-        Showing from
-        {{ meta.totalCount > 10 ? meta.currentPage * 10 - 10 + 1 : 1 }}
-        to
-        {{
-          meta.totalCount > 10
-            ? meta.currentPage * 10 - 10 + medias.length
-            : meta.totalCount
-        }}
-        of total
-        {{ meta.totalCount }}
-      </TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead> File </TableHead>
-          <TableHead> Name </TableHead>
-          <TableHead> File Size </TableHead>
-          <TableHead class="text-right"> Action </TableHead>
+          <TableHead>{{ $t('table.file') }}</TableHead>
+          <TableHead>{{ $t('table.name') }}</TableHead>
+          <TableHead>{{ $t('table.file_size') }}</TableHead>
+          <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -164,8 +153,10 @@ onMounted(() => {
           </TableCell>
         </TableRow>
       </TableBody>
+      <!-- Meta Caption -->
+      <TableMetaCaption :itemsLength="mediasLength" :meta="meta" />
     </Table>
-
+    <!-- Pagination Controls -->
     <PaginateControls
       :page="page"
       :meta="meta"

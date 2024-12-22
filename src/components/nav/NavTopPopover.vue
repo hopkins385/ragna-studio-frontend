@@ -4,8 +4,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Grip } from 'lucide-vue-next';
 import { useNavBarItems } from '@/composables/nav/useNavBarItems';
+import { Grip } from 'lucide-vue-next';
 
 const open = ref(false);
 
@@ -34,7 +34,7 @@ const setClose = () => (open.value = false);
             <component :is="item.icon" class="stroke-1.5 size-5" />
           </div>
           <span class="text-xs">
-            {{ item.label }}
+            {{ $t(item.label) }}
           </span>
         </RouterLink>
       </div>

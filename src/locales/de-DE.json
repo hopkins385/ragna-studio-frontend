@@ -1,6 +1,17 @@
 {
   "nav": {
     "home": "Startseite",
+    "workflows": "Workflows",
+    "agents": "Agenten",
+    "chat": "Chat",
+    "textToImage": "KI Bilder",
+    "collections": "Wissen",
+    "media": "Dateien",
+    "new": "Neu",
+    "history": "Historie",
+    "create": "Erstellen",
+    "folders": "Ordner",
+    "uploads": "Uploads",
     "account": "Account",
     "settings": "Einstellungen",
     "notifications": "Benachrichtigungen",
@@ -27,6 +38,25 @@
       "cancel": "Abbrechen",
       "delete": "Löschen",
       "update": "Aktualisieren"
+    }
+  },
+  "table": {
+    "name": "Name",
+    "title": "Titel",
+    "description": "Beschreibung",
+    "actions": "Aktionen",
+    "favorites": "Favoriten",
+    "avatar": "Avatar",
+    "assistant": "Agent",
+    "records": "Einträge",
+    "ai_model": "KI Modell",
+    "created_at": "Erstellt am",
+    "updated_at": "Aktualisiert am",
+    "file": "Datei",
+    "file_size": "Dateigröße",
+    "chunks": "Teile",
+    "meta": {
+      "showing": "Zeige {from} bis {to} von {total} Einträgen"
     }
   },
   "subscription": {

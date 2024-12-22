@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import ButtonLink from '@/components/button/ButtonLink.vue';
-import ConfirmDialog from '@/components/confirm/ConfirmDialog.vue';
-import ErrorAlert from '@/components/error/ErrorAlert.vue';
-import { Button } from '@/components/ui/button';
+import ButtonLink from '@components/button/ButtonLink.vue';
+import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
+import ErrorAlert from '@components/error/ErrorAlert.vue';
+import PaginateControls from '@components/pagniate/PaginateControls.vue';
+import TableMetaCaption from '@components/table/TableMetaCaption.vue';
+import useAssistantService from '@composables/services/useAssistantService';
+import { useChatService } from '@composables/services/useChatService';
+import { useUserFavoriteService } from '@composables/services/useUserFavoriteService';
+import { useProviderIcons } from '@composables/useProviderIcons';
+import useToast from '@composables/useToast';
+import { Button } from '@ui/button';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import useAssistantService from '@/composables/services/useAssistantService';
-import { useChatService } from '@/composables/services/useChatService';
-import { useUserFavoriteService } from '@/composables/services/useUserFavoriteService';
-import { useProviderIcons } from '@/composables/useProviderIcons';
-import useToast from '@/composables/useToast';
+} from '@ui/table';
 import {
   MessageSquareIcon,
   SettingsIcon,
   StarIcon,
   Trash2Icon,
 } from 'lucide-vue-next';
-import PaginateControls from '../pagniate/PaginateControls.vue';
 
 const props = defineProps<{
   page: number;
@@ -52,6 +52,7 @@ const errorAlert = reactive({
 const deleteAssistantId = ref('');
 
 const assistants = computed(() => data.value?.assistants || []);
+const assistantsLength = computed(() => assistants.value.length);
 const meta = computed(() => {
   return {
     totalCount: data.value?.meta?.totalCount || 0,
@@ -161,25 +162,15 @@ await initAssistantFavorites();
     <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
 
     <Table>
-      <TableCaption>
-        Showing from
-        {{ meta.totalCount > 10 ? meta.currentPage * 10 - 10 + 1 : 1 }}
-        to
-        {{
-          meta.totalCount > 10
-            ? meta.currentPage * 10 - 10 + assistants.length
-            : meta.totalCount
-        }}
-        of total
-        {{ meta.totalCount }}
-      </TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead> Favorite </TableHead>
-          <TableHead> Avatar </TableHead>
-          <TableHead> Title </TableHead>
-          <TableHead class="whitespace-nowrap"> Ai Model </TableHead>
-          <TableHead class="text-right"> Actions </TableHead>
+          <TableHead>{{ $t('table.favorites') }}</TableHead>
+          <TableHead>{{ $t('table.avatar') }}</TableHead>
+          <TableHead>{{ $t('table.title') }}</TableHead>
+          <TableHead class="whitespace-nowrap">
+            {{ $t('table.ai_model') }}
+          </TableHead>
+          <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -256,8 +247,10 @@ await initAssistantFavorites();
           </TableCell>
         </TableRow>
       </TableBody>
+      <!-- Meta Caption -->
+      <TableMetaCaption :itemsLength="assistantsLength" :meta="meta" />
     </Table>
-
+    <!-- Pagination Controls -->
     <PaginateControls
       v-if="meta.totalCount > 10"
       :page="page"

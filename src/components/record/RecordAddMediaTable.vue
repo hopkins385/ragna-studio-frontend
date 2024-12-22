@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import ErrorAlert from '@components/error/ErrorAlert.vue';
+import PaginateControls from '@components/pagniate/PaginateControls.vue';
+import TableMetaCaption from '@components/table/TableMetaCaption.vue';
 import { useMediaService } from '@composables/services/useMediaService';
 import {
   useRecordService,
@@ -7,19 +10,16 @@ import {
 import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
 import { useAuthStore } from '@stores/auth.store';
-import { FileIcon, PlusIcon, Loader2Icon, CheckIcon } from 'lucide-vue-next';
-import PaginateControls from '@components/pagniate/PaginateControls.vue';
-import ErrorAlert from '@components/error/ErrorAlert.vue';
+import { Button } from '@ui/button';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@ui/table';
-import { Button } from '@ui/button';
+import { CheckIcon, FileIcon, Loader2Icon, PlusIcon } from 'lucide-vue-next';
 
 const props = defineProps<{
   collectionId: string | undefined;
@@ -54,6 +54,7 @@ const meta = computed(() => {
 const recordData = ref<RecordsPaginatedResponse | null>(null);
 
 const records = computed(() => recordData.value?.records || []);
+const recordsLength = computed(() => records.value.length);
 const recordsMeta = computed(() => {
   return {
     totalCount: recordData.value?.meta?.totalCount || 0,
@@ -124,24 +125,12 @@ onMounted(() => {
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
 
     <Table class="rounded-lg border bg-white">
-      <TableCaption>
-        Showing from
-        {{ meta.totalCount > 10 ? meta.currentPage * 10 - 10 + 1 : 1 }}
-        to
-        {{
-          meta.totalCount > 10
-            ? meta.currentPage * 10 - 10 + medias.length
-            : meta.totalCount
-        }}
-        of total
-        {{ meta.totalCount }}
-      </TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead> File </TableHead>
-          <TableHead> Name </TableHead>
-          <TableHead> File Size </TableHead>
-          <TableHead class="text-right"> Action </TableHead>
+          <TableHead>{{ $t('table.file') }}</TableHead>
+          <TableHead>{{ $t('table.name') }}</TableHead>
+          <TableHead>{{ $t('table.file_size') }}</TableHead>
+          <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -177,8 +166,10 @@ onMounted(() => {
           </TableCell>
         </TableRow>
       </TableBody>
+      <!-- Meta Caption -->
+      <TableMetaCaption :itemsLength="recordsLength" :meta="meta" />
     </Table>
-
+    <!-- Pagination Controls -->
     <PaginateControls :page="page" :meta="meta" @update:page="setPage" />
   </div>
 </template>

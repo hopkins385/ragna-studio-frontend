@@ -1,26 +1,26 @@
 <script setup lang="ts">
+import { useProviderIcons } from '@/composables/useProviderIcons';
+import useToast from '@/composables/useToast';
+import ButtonLink from '@components/button/ButtonLink.vue';
+import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
+import ErrorAlert from '@components/error/ErrorAlert.vue';
+import PaginateControls from '@components/pagniate/PaginateControls.vue';
+import TableMetaCaption from '@components/table/TableMetaCaption.vue';
 import {
   useChatService,
   type ChatsPaginated,
 } from '@composables/services/useChatService';
 import useForHumans from '@composables/useForHumans';
-import { MessageCircleMoreIcon, Trash2Icon } from 'lucide-vue-next';
-import ErrorAlert from '@components/error/ErrorAlert.vue';
-import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
+import { Button } from '@ui/button';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@ui/table';
-import ButtonLink from '@components/button/ButtonLink.vue';
-import { Button } from '@ui/button';
-import useToast from '@/composables/useToast';
-import PaginateControls from '@components/pagniate/PaginateControls.vue';
-import { useProviderIcons } from '@/composables/useProviderIcons';
+import { MessageCircleMoreIcon, Trash2Icon } from 'lucide-vue-next';
 
 const props = defineProps<{
   page: number;
@@ -42,6 +42,7 @@ const { getProviderIcon } = useProviderIcons();
 const queryPage = computed(() => props.page || 1);
 
 const chats = computed(() => data.value?.chats || []);
+const chatsLength = computed(() => chats.value.length);
 const meta = computed(() => {
   return {
     totalCount: data.value?.meta?.totalCount || 0,
@@ -105,25 +106,13 @@ await initChatHistory({ page: queryPage.value });
     <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
     <div class="mb-4 rounded-xl border bg-white p-10">
       <Table>
-        <TableCaption>
-          Showing from
-          {{ meta.totalCount > 10 ? meta.currentPage * 10 - 10 + 1 : 1 }}
-          to
-          {{
-            meta.totalCount > 10
-              ? meta.currentPage * 10 - 10 + chats.length
-              : meta.totalCount
-          }}
-          of total
-          {{ meta.totalCount }}
-        </TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead> Title </TableHead>
-            <TableHead> Assistant </TableHead>
-            <TableHead> Ai Model </TableHead>
-            <TableHead> Updated At </TableHead>
-            <TableHead class="text-right"> Actions </TableHead>
+            <TableHead>{{ $t('table.title') }}</TableHead>
+            <TableHead>{{ $t('table.assistant') }}</TableHead>
+            <TableHead>{{ $t('table.ai_model') }}</TableHead>
+            <TableHead>{{ $t('table.updated_at') }}</TableHead>
+            <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -168,9 +157,11 @@ await initChatHistory({ page: queryPage.value });
             </TableCell>
           </TableRow>
         </TableBody>
+        <!-- Meta Caption -->
+        <TableMetaCaption :itemsLength="chatsLength" :meta="meta" />
       </Table>
     </div>
-
+    <!-- Pagination Controls -->
     <PaginateControls :page="page" :meta="meta" @update:page="updatePage" />
   </div>
   <div v-else class="w-full rounded-lg border p-10">

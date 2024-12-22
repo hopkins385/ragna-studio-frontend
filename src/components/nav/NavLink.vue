@@ -22,7 +22,7 @@ defineProps<{
       :class="{ '!stroke': active }"
     />
     <span class="truncate px-4 pt-1 text-foreground nav-icon-text">
-      {{ label }}
+      {{ $t(label) }}
     </span>
   </RouterLink>
 </template>

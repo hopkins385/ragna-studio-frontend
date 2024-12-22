@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import {
+  useRecordService,
+  type RecordsPaginatedResponse,
+} from '@/composables/services/useRecordService';
 import useToast from '@/composables/useToast';
-import { FileIcon, LoaderIcon, Trash2Icon } from 'lucide-vue-next';
-import ConfirmDialog from '../confirm/ConfirmDialog.vue';
-import Table from '@ui/table/Table.vue';
-import TableCaption from '@ui/table/TableCaption.vue';
+import { Button } from '@ui/button';
 import {
   TableBody,
   TableCell,
@@ -11,18 +12,17 @@ import {
   TableHeader,
   TableRow,
 } from '@ui/table';
+import Table from '@ui/table/Table.vue';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@ui/tooltip';
-import { Button } from '@ui/button';
+import { FileIcon, LoaderIcon, Trash2Icon } from 'lucide-vue-next';
+import ConfirmDialog from '../confirm/ConfirmDialog.vue';
 import PaginateControls from '../pagniate/PaginateControls.vue';
-import {
-  useRecordService,
-  type RecordsPaginatedResponse,
-} from '@/composables/services/useRecordService';
+import TableMetaCaption from '../table/TableMetaCaption.vue';
 
 const props = defineProps<{
   collectionId: string | undefined;
@@ -45,6 +45,9 @@ const initRecords = async () => {
 
 const records = computed(() => {
   return data.value?.records || [];
+});
+const recordsLength = computed(() => {
+  return records.value.length;
 });
 
 const meta = computed(() => {
@@ -109,24 +112,12 @@ onMounted(() => {
 <template>
   <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
   <Table>
-    <TableCaption>
-      Showing from
-      {{ meta.totalCount > 10 ? meta.currentPage * 10 - 10 + 1 : 1 }}
-      to
-      {{
-        meta.totalCount > 10
-          ? meta.currentPage * 10 - 10 + records.length
-          : meta.totalCount
-      }}
-      of total
-      {{ meta.totalCount }}
-    </TableCaption>
     <TableHeader>
       <TableRow>
-        <TableHead> File </TableHead>
-        <TableHead> Name </TableHead>
-        <TableHead> Chunks </TableHead>
-        <TableHead class="text-right"> Action </TableHead>
+        <TableHead>{{ $t('table.file') }}</TableHead>
+        <TableHead>{{ $t('table.name') }}</TableHead>
+        <TableHead>{{ $t('table.chunks') }} </TableHead>
+        <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
@@ -168,7 +159,9 @@ onMounted(() => {
         </TableCell>
       </TableRow>
     </TableBody>
+    <!-- Meta Caption -->
+    <TableMetaCaption :itemsLength="recordsLength" :meta="meta" />
   </Table>
-
+  <!-- Paginate Controls -->
   <PaginateControls :page="page" :meta="meta" @update:page="setPage" />
 </template>

@@ -31,9 +31,9 @@ defineProps<{
     <TableHeader>
       <TableRow>
         <TableHead class="w-[100px]">Agent</TableHead>
-        <TableHead class="w-[200px]">Title</TableHead>
-        <TableHead class="">Description</TableHead>
-        <TableHead class="text-right"> Actions </TableHead>
+        <TableHead class="w-[200px]">{{ $t('table.title') }}</TableHead>
+        <TableHead class="">{{ $t('table.description') }}</TableHead>
+        <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
