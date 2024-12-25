@@ -133,44 +133,43 @@ async function resetCollections() {
 
 // tool icons
 const { getToolIcon } = useToolIcons();
+
+const { t } = useI18n();
+
+const siderBarTabs = [
+  { id: 'tab1', icon: Settings, label: t('assistant.settings.label') },
+  { id: 'tab2', icon: Stars, label: t('assistant.genai.label') },
+  { id: 'tab3', icon: CircleUserRound, label: t('assistant.behavior.label') },
+  { id: 'tab5', icon: BriefcaseBusiness, label: t('assistant.tools.label') },
+  { id: 'tab4', icon: Book, label: t('assistant.knowledge.label') },
+  { id: 'tab6', icon: Workflow, label: t('assistant.workflow.label') },
+  { id: 'tab7', icon: ShieldCheck, label: t('assistant.privacy.label') },
+];
 </script>
 
 <template>
   <div class="w-full flex justify-end">
     <div class="flex items-center space-x-4">
-      <Button @click="$router.back()" variant="outline"> Cancel </Button>
+      <Button @click="$router.back()" variant="outline">{{
+        $t('form.button.cancel')
+      }}</Button>
       <ButtonLoading :loading="isLoading" @click="onSubmit">
-        Update Agent
+        {{ $t('assistant.edit.button') }}
       </ButtonLoading>
     </div>
   </div>
-  <TabSidebar
-    v-model="currentTab"
-    :tabs="[
-      { id: 'tab1', icon: Settings, label: 'Agent Details' },
-      { id: 'tab2', icon: Stars, label: 'Generative Ai' },
-      { id: 'tab3', icon: CircleUserRound, label: 'Behavior' },
-      { id: 'tab4', icon: Book, label: 'Knowledge' },
-      { id: 'tab5', icon: BriefcaseBusiness, label: 'Capabilities' },
-      { id: 'tab6', icon: Workflow, label: 'Workflow' },
-      { id: 'tab7', icon: ShieldCheck, label: 'Privacy' },
-    ]"
-  >
+  <TabSidebar v-model="currentTab" :tabs="siderBarTabs">
     <template #tab1>
       <!-- TAB 1-->
       <div class="space-y-8">
         <FormField v-slot="{ componentField }" name="title">
           <FormItem>
-            <FormLabel> Title </FormLabel>
+            <FormLabel>{{ $t('assistant.form.name_label') }}</FormLabel>
             <FormDescription>
-              This is the title of the agent that will be displayed.
+              {{ $t('assistant.form.name_description') }}
             </FormDescription>
             <FormControl>
-              <Input
-                type="text"
-                placeholder="A very short Title (max 3 words)"
-                v-bind="componentField"
-              />
+              <Input type="text" placeholder="" v-bind="componentField" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -178,16 +177,12 @@ const { getToolIcon } = useToolIcons();
 
         <FormField v-slot="{ componentField }" name="description">
           <FormItem>
-            <FormLabel> Description </FormLabel>
+            <FormLabel>{{ $t('assistant.form.description_label') }}</FormLabel>
             <FormDescription>
-              This is the description of the agent.
+              {{ $t('assistant.form.description_description') }}
             </FormDescription>
             <FormControl>
-              <Textarea
-                type="text"
-                placeholder="A very short description"
-                v-bind="componentField"
-              />
+              <Textarea type="text" placeholder="" v-bind="componentField" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -199,7 +194,7 @@ const { getToolIcon } = useToolIcons();
       <!-- TAB 2-->
       <FormField v-slot="{ handleChange, value }" name="llmId">
         <FormItem>
-          <FormLabel> Ai Model </FormLabel>
+          <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
           <FormControl>
             <LlmSelectModal
               :id="props.collections?.[0]?.id ?? ''"
@@ -217,9 +212,9 @@ const { getToolIcon } = useToolIcons();
       <div class="space-y-8">
         <FormField v-slot="{ componentField }" name="systemPrompt">
           <FormItem>
-            <FormLabel> Behavior </FormLabel>
+            <FormLabel>{{ $t('assistant.behavior.label') }}</FormLabel>
             <FormDescription>
-              Describe how the assistant should behave.
+              {{ $t('assistant.behavior.description') }}
             </FormDescription>
             <FormControl>
               <Textarea rows="10" v-bind="componentField" />
@@ -233,9 +228,9 @@ const { getToolIcon } = useToolIcons();
     <template #tab4>
       <FormField v-slot="{ handleChange, value }" name="collectionId">
         <FormItem>
-          <FormLabel>Knowledge Collections (optional)</FormLabel>
+          <FormLabel>{{ $t('assistant.knowledge.label') }}</FormLabel>
           <FormDescription>
-            These are the knowledge collections that can be used by the agent.
+            {{ $t('assistant.knowledge.description') }}
           </FormDescription>
           <FormControl>
             <CollectionSelectModal
@@ -258,9 +253,9 @@ const { getToolIcon } = useToolIcons();
       <FormField name="tools">
         <FormItem>
           <div class="mb-4 space-y-2">
-            <FormLabel> Tools</FormLabel>
+            <FormLabel>{{ $t('assistant.tools.label') }}</FormLabel>
             <FormDescription>
-              Select the tools the agent can use.
+              {{ $t('assistant.tools.description') }}
             </FormDescription>
           </div>
 
@@ -303,12 +298,14 @@ const { getToolIcon } = useToolIcons();
     <template #tab6>
       <FormField v-slot="{ componentField, value }" name="temperature">
         <FormItem>
-          <FormLabel> Workflow </FormLabel>
+          <FormLabel>{{ $t('assistant.workflow.label') }}</FormLabel>
           <FormDescription>
-            Attached Workflow that can be executed by the agent.
+            {{ $t('assistant.workflow.description') }}
           </FormDescription>
           <FormControl>
-            <div class="text-sm opacity-75">Feature coming soon</div>
+            <div class="text-sm border px-5 py-3 rounded-xl w-fit">
+              Under Construction
+            </div>
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -317,13 +314,14 @@ const { getToolIcon } = useToolIcons();
     <template #tab7>
       <FormField v-slot="{ componentField, value }" name="temperature">
         <FormItem>
-          <FormLabel> Data Protection Add-On </FormLabel>
+          <FormLabel>{{ $t('assistant.privacy.label') }}</FormLabel>
           <FormDescription>
-            Removal of Personal Identifiable Information (PII) before the data
-            is used by the agent.
+            {{ $t('assistant.privacy.description') }}
           </FormDescription>
           <FormControl>
-            <div clasS=" max-w-sm"></div>
+            <div class="text-sm border px-5 py-3 rounded-xl w-fit">
+              Under Construction
+            </div>
           </FormControl>
           <FormMessage />
         </FormItem>

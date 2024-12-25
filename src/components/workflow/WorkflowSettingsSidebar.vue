@@ -1,17 +1,8 @@
 <script setup lang="ts">
-import { SettingsIcon } from 'lucide-vue-next';
+import { useWorkflowService } from '@/composables/services/useWorkflowService';
+import useToast from '@/composables/useToast';
+import { workflowSettingsSchema } from '@/schemas/workflow-settings.schema';
 import { Button } from '@ui/button';
-import Sheet from '@ui/sheet/Sheet.vue';
-import { SheetContent, SheetHeader, SheetTrigger } from '@ui/sheet';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@ui/tooltip';
-import SheetTitle from '@ui/sheet/SheetTitle.vue';
-import SheetDescription from '@ui/sheet/SheetDescription.vue';
-import Separator from '@ui/separator/Separator.vue';
 import {
   FormControl,
   FormField,
@@ -20,11 +11,20 @@ import {
   FormMessage,
 } from '@ui/form';
 import { Input } from '@ui/input';
+import Separator from '@ui/separator/Separator.vue';
+import { SheetContent, SheetHeader, SheetTrigger } from '@ui/sheet';
+import Sheet from '@ui/sheet/Sheet.vue';
+import SheetDescription from '@ui/sheet/SheetDescription.vue';
+import SheetTitle from '@ui/sheet/SheetTitle.vue';
 import { Textarea } from '@ui/textarea';
-import { useWorkflowService } from '@/composables/services/useWorkflowService';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@ui/tooltip';
 import { toTypedSchema } from '@vee-validate/zod';
-import { workflowSettingsSchema } from '@/schemas/workflow-settings.schema';
-import useToast from '@/composables/useToast';
+import { SettingsIcon } from 'lucide-vue-next';
 
 const props = defineProps<{
   workflowId: string;
@@ -89,7 +89,7 @@ watch(sheetIsOpen, isOpen => {
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p class="text-sm">Settings</p>
+            <p class="text-sm">{{ $t('workflow.settings.tooltip') }}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -102,7 +102,7 @@ watch(sheetIsOpen, isOpen => {
       <SheetHeader class="">
         <SheetTitle class="text-base flex items-center space-x-2">
           <SettingsIcon class="size-5 stroke-1.5" />
-          <span>Workflow Settings</span>
+          <span>{{ $t('workflow.settings.title') }}</span>
         </SheetTitle>
         <SheetDescription> </SheetDescription>
       </SheetHeader>
@@ -110,10 +110,12 @@ watch(sheetIsOpen, isOpen => {
       <Separator />
       <div class="mt-10">
         <form @submit.prevent="onSubmit" class="flex flex-col space-y-4">
-          <Button variant="outline" class="self-end"> Save Settings </Button>
+          <Button variant="outline" class="self-end">{{
+            $t('workflow.settings.button.save')
+          }}</Button>
           <FormField v-slot="{ componentField }" name="name">
             <FormItem>
-              <FormLabel>Workflow Name</FormLabel>
+              <FormLabel>{{ $t('workflow.settings.form.name') }}</FormLabel>
               <FormControl>
                 <Input
                   id="wfNameInput"
@@ -128,7 +130,9 @@ watch(sheetIsOpen, isOpen => {
           </FormField>
           <FormField v-slot="{ componentField }" name="description">
             <FormItem>
-              <FormLabel>Workflow Description</FormLabel>
+              <FormLabel>{{
+                $t('workflow.settings.form.description')
+              }}</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Description"

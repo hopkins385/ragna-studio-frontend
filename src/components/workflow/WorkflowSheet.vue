@@ -50,6 +50,7 @@ const sheetRef = ref<HTMLElement | null>(null);
 
 const toast = useToast();
 const socket = useWebsocketGlobal();
+const { t } = useI18n();
 
 const stepCard = reactive({
   show: false,
@@ -129,8 +130,8 @@ async function onAddWorkflowStep() {
   }
   await createWorkflowStep(props.workflowId, {
     assistantId: assistant.id,
-    name: 'New Step',
-    description: 'New Step Description',
+    name: t('workflow.create.new_step_name'),
+    description: t('workflow.create.new_step_description'),
     orderColumn: columnCount.value,
     rowCount: rowCount.value,
   });
@@ -141,7 +142,7 @@ async function onAddWorkflowStep() {
 async function onAddWorkflowRow() {
   const rowCount = steps.value[0]?.document.documentItems.length || 0;
   if (rowCount >= MAX_ROW_COUNT) {
-    toast.info({ description: `Max ${MAX_ROW_COUNT} rows reached` });
+    toast.info({ description: t('workflow.toast.error_max_rows') });
     return;
   }
   const items = workflow.value?.steps.map((step: any) => {
@@ -366,9 +367,11 @@ await initWorkflow();
           :workflow-description="workflow?.description ?? ''"
           @refresh="onRefresh"
         />
-        <Button variant="ghost" class="" @click="onRefresh"> Refresh </Button>
+        <Button variant="ghost" class="" @click="onRefresh">
+          {{ $t('workflow.button.refresh') }}
+        </Button>
         <Button variant="outline" class="" @click="onRunFlow">
-          Run Flow
+          {{ $t('workflow.button.run') }}
         </Button>
       </div>
     </div>

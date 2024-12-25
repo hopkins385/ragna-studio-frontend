@@ -65,8 +65,8 @@ onMounted(() => {
 <template>
   <SectionContainer>
     <SectionHeading
-      title="Update Agent"
-      subtitle="Updating an existing agent does only affect new conversations and workflows."
+      :title="$t('assistant.edit.title')"
+      :subtitle="$t('assistant.edit.subtitle')"
     />
     <div class="px-5">
       <AssistantEditForm

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { XIcon, AlertCircleIcon } from 'lucide-vue-next';
+import { AlertCircleIcon, XIcon } from 'lucide-vue-next';
 
 defineProps<{
   modelValue: boolean;
@@ -22,7 +22,7 @@ defineEmits<{
         <XIcon class="size-4" />
       </button>
       <AlertCircleIcon class="size-4" />
-      <AlertTitle>Error</AlertTitle>
+      <AlertTitle>{{ $t('alert.error.title') }}</AlertTitle>
       <AlertDescription>
         {{ message }}
       </AlertDescription>

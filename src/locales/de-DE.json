@@ -29,15 +29,34 @@
     "warning": {
       "title": "Warnung",
       "message": "Etwas ist schiefgelaufen"
+    },
+    "info": {
+      "title": "Info",
+      "message": "Info"
+    }
+  },
+  "alert": {
+    "error": {
+      "title": "Fehler",
+      "message": "Es ist ein Fehler aufgetreten",
+      "all_form_fields": "Bitte fülle alle Formularfelder aus"
     }
   },
   "form": {
+    "name": "Name",
+    "description": "Beschreibung",
+    "supported_file_types": "Unterstützte Dateitypen",
     "button": {
       "save": "Speichern",
       "submit": "Absenden",
       "cancel": "Abbrechen",
       "delete": "Löschen",
       "update": "Aktualisieren"
+    },
+    "file_input": {
+      "label": "Eine Datei auswählen",
+      "placeholder": "Eine Datei wählen",
+      "button": "Hochladen"
     }
   },
   "table": {
@@ -49,7 +68,7 @@
     "avatar": "Avatar",
     "assistant": "Agent",
     "records": "Einträge",
-    "ai_model": "KI Modell",
+    "ai_model": "Ki Modell",
     "created_at": "Erstellt am",
     "updated_at": "Aktualisiert am",
     "file": "Datei",
@@ -118,16 +137,109 @@
   },
   "workflows": {
     "title": "Workflows",
+    "subtitle": "Hier kannst du Workflows erstellen und verwalten.",
     "template": {
       "title": "Workflow aus Vorlage starten",
       "description": "Wähle eine Vorlage aus, um einen neuen Workflow zu starten."
     }
   },
-  "agents": {
-    "title": "Agents",
+  "workflow": {
+    "create": {
+      "title": "Workflow erstellen",
+      "description_hint": "Die Beschreibung ist insbesondere hilfreich für Agenten, die den Workflow verwenden.",
+      "from_file": "Von Datei erstellen",
+      "button": "Workflow erstellen",
+      "new_step_name": "Neuer Schritt",
+      "new_step_description": "Beschreibung"
+    },
+    "toast": {
+      "created": "Workflow erfolgreich erstellt",
+      "updated": "Workflow erfolgreich aktualisiert",
+      "deleted": "Workflow erfolgreich gelöscht",
+      "error": "Ups, es ist etwas schiefgelaufen",
+      "error_max_steps": "Maximale Anzahl an Schritten erreicht",
+      "error_max_rows": "Maximale Anzahl an Zeilen erreicht"
+    },
+    "button": {
+      "refresh": "Aktualisieren",
+      "run": "Flow Starten"
+    },
+    "step": {
+      "agent": "Agent",
+      "ai_model": "Ki Modell",
+      "inputs": "Eingaben",
+      "system_prompt": "Agent Instruktionen",
+      "run": "Schritt ausführen"
+    },
+    "export": {
+      "title": "Workflow exportieren",
+      "tooltip": "Exportieren"
+    },
+    "settings": {
+      "title": "Workflow Einstellungen",
+      "tooltip": "Einstellungen",
+      "form": {
+        "name": "Workflow Name",
+        "description": "Workflow Beschreibung"
+      },
+      "button": {
+        "save": "Speichern"
+      }
+    }
+  },
+  "assistants": {
+    "title": "Agenten",
+    "subtitle": "Hier kannst du Agenten erstellen und verwalten",
     "template": {
       "title": "Agent aus Vorlage starten",
-      "description": "Wähle eine Vorlage aus, um einen neuen Agent zu starten."
+      "description": "Wähle eine Vorlage aus, um einen neuen Agent zu starten"
+    }
+  },
+  "assistant": {
+    "create": {
+      "title": "Agent erstellen",
+      "subtitle": "Hier kannst du einen neuen Agenten erstellen",
+      "button": "Agent erstellen"
+    },
+    "edit": {
+      "title": "Agent bearbeiten",
+      "subtitle": "Hier kannst du den Agenten bearbeiten",
+      "button": "Agent aktualisieren"
+    },
+    "form": {
+      "name_label": "Name",
+      "name_description": "Dies ist der Anzeigename des Agenten",
+      "description_label": "Beschreibung",
+      "description_description": "Die Beschreibung ist insbesondere hilfreich für andere Agenten, die diesen Agenten verwenden oder für Workflows"
+    },
+    "alert": {
+      "create_first": "Bitte erstelle zuerst den Agenten, um diese Funktion zu konfigurieren zu können"
+    },
+    "settings": {
+      "label": "Generell"
+    },
+    "genai": {
+      "label": "KI Modell"
+    },
+    "behavior": {
+      "label": "Verhalten",
+      "description": "Beschreibe in deinen eigenen Worten, wie der Agent sich verhalten soll"
+    },
+    "knowledge": {
+      "label": "Wissen",
+      "description": "Dies ist die Wissenssammlung, die vom Agenten verwendet werden kann"
+    },
+    "tools": {
+      "label": "Werkzeuge",
+      "description": "Wähle die Werkzeuge aus, die der Agent verwenden kann"
+    },
+    "workflow": {
+      "label": "Workflow",
+      "description": "Wähle einen Workflow aus, den der Agent verwenden soll"
+    },
+    "privacy": {
+      "label": "Privatsphäre",
+      "description": "Wähle die Privatsphäre Einstellungen für den Agenten"
     }
   },
   "auth": {

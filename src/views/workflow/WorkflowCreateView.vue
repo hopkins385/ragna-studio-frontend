@@ -1,8 +1,19 @@
 <script setup lang="ts">
-import ErrorAlert from '@/components/error/ErrorAlert.vue';
-import SectionContainer from '@/components/section/SectionContainer.vue';
-import SectionHeading from '@/components/section/SectionHeading.vue';
-import { Input } from '@ui/input';
+import {
+  allowedMimeTypes,
+  createWorkflowSchema,
+  maxFileSize,
+} from '@/schemas/create-workflow.schema';
+import ButtonLoading from '@components/button/ButtonLoading.vue';
+import ErrorAlert from '@components/error/ErrorAlert.vue';
+import SectionContainer from '@components/section/SectionContainer.vue';
+import SectionHeading from '@components/section/SectionHeading.vue';
+import { Textarea } from '@components/ui/textarea';
+import { useMediaAbleService } from '@composables/services/useMediaAbleService';
+import { useMediaService } from '@composables/services/useMediaService';
+import { useWorkflowService } from '@composables/services/useWorkflowService';
+import useForHumans from '@composables/useForHumans';
+import useToast from '@composables/useToast';
 import {
   FormControl,
   FormDescription,
@@ -11,22 +22,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@ui/form';
-import ButtonLoading from '@/components/button/ButtonLoading.vue';
-import useForHumans from '@/composables/useForHumans';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  allowedMimeTypes,
-  createWorkflowSchema,
-  maxFileSize,
-} from '@/schemas/create-workflow.schema';
+import { Input } from '@ui/input';
 import { toTypedSchema } from '@vee-validate/zod';
-import useToast from '@/composables/useToast';
-import { useWorkflowService } from '@/composables/services/useWorkflowService';
-import { useMediaService } from '@/composables/services/useMediaService';
-import { useMediaAbleService } from '@/composables/services/useMediaAbleService';
 
 const router = useRouter();
 const toast = useToast();
+const { t } = useI18n();
 
 const isLoading = ref(false);
 
@@ -75,7 +76,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     }
 
     toast.success({
-      description: 'Workflow created successfully',
+      description: t('workflow.toast.created'),
     });
     resetForm();
 
@@ -95,13 +96,16 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
 
 <template>
   <SectionContainer>
+    <!-- Alerts -->
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
-    <SectionHeading title="Create Workflow" />
+    <!-- Heading -->
+    <SectionHeading :title="$t('workflow.create.title')" />
     <div class="rounded-lg border bg-white p-10">
+      <!-- Form -->
       <form class="space-y-8" @submit="onSubmit">
         <FormField v-slot="{ componentField }" name="name">
           <FormItem>
-            <FormLabel> Name </FormLabel>
+            <FormLabel>{{ $t('form.name') }}</FormLabel>
             <FormControl>
               <Input type="text" v-bind="componentField" autocomplete="off" />
             </FormControl>
@@ -111,12 +115,12 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
 
         <FormField v-slot="{ componentField }" name="description">
           <FormItem>
-            <FormLabel> Description </FormLabel>
+            <FormLabel>{{ $t('form.description') }}</FormLabel>
             <FormControl>
               <Textarea v-bind="componentField" />
             </FormControl>
             <FormDescription>
-              This is the description of the workflow.
+              {{ $t('workflow.create.description_hint') }}
             </FormDescription>
             <FormMessage />
           </FormItem>
@@ -125,7 +129,7 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
         <!-- upload/attach file -->
         <FormField v-slot="{ handleChange }" name="file">
           <FormItem>
-            <FormLabel> Create from File </FormLabel>
+            <FormLabel>{{ $t('workflow.create.from_file') }}</FormLabel>
             <FormControl>
               <Input
                 type="file"
@@ -137,7 +141,7 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
               />
             </FormControl>
             <FormDescription>
-              Supported file types .csv, .xls, .xlsx. Max
+              {{ $t('form.supported_file_types') }} .csv, .xls, .xlsx. Max
               {{ getFileSizeForHumans(maxFileSize) }}
             </FormDescription>
             <FormMessage />
@@ -145,7 +149,7 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
         </FormField>
         <div class="pt-5">
           <ButtonLoading :loading="isLoading" type="submit">
-            Create Workflow
+            {{ $t('workflow.create.button') }}
           </ButtonLoading>
         </div>
       </form>

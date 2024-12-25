@@ -23,7 +23,9 @@ import {
   BriefcaseBusiness,
   CircleUserRound,
   Settings,
+  ShieldCheck,
   Stars,
+  Workflow,
 } from 'lucide-vue-next';
 import ButtonLoading from '../button/ButtonLoading.vue';
 import ErrorAlert from '../error/ErrorAlert.vue';
@@ -97,13 +99,25 @@ watch(
   errors => {
     if (Object.keys(errors).length > 0) {
       showErrorAlert.value = true;
-      errorAlertMessage.value = 'Please fill out all required fields.'; //errors[Object.keys(errors)[0]];
+      errorAlertMessage.value = t('alert.error.all_form_fields'); //errors[Object.keys(errors)[0]];
     } else {
       showErrorAlert.value = false;
       errorAlertMessage.value = '';
     }
   },
 );
+
+const { t } = useI18n();
+
+const siderBarTabs = [
+  { id: 'tab1', icon: Settings, label: t('assistant.settings.label') },
+  { id: 'tab2', icon: Stars, label: t('assistant.genai.label') },
+  { id: 'tab3', icon: CircleUserRound, label: t('assistant.behavior.label') },
+  { id: 'tab5', icon: BriefcaseBusiness, label: t('assistant.tools.label') },
+  { id: 'tab4', icon: Book, label: t('assistant.knowledge.label') },
+  { id: 'tab6', icon: Workflow, label: t('assistant.workflow.label') },
+  { id: 'tab7', icon: ShieldCheck, label: t('assistant.privacy.label') },
+];
 
 onMounted(() => {
   initAssistantTools();
@@ -114,38 +128,26 @@ onMounted(() => {
   <ErrorAlert v-model="showErrorAlert" :message="errorAlertMessage" />
   <div class="w-full flex justify-end">
     <div class="flex items-center space-x-4">
-      <Button @click="$router.back()" variant="outline"> Cancel </Button>
+      <Button @click="$router.back()" variant="outline">
+        {{ $t('form.button.cancel') }}
+      </Button>
       <ButtonLoading :loading="isLoading" @click="onSubmit">
-        Create Agent
+        {{ $t('assistant.create.button') }}
       </ButtonLoading>
     </div>
   </div>
-  <TabSidebar
-    v-model="currentTab"
-    :tabs="[
-      { id: 'tab1', icon: Settings, label: 'Agent Details' },
-      { id: 'tab2', icon: Stars, label: 'Generative AI' },
-      { id: 'tab3', icon: CircleUserRound, label: 'Behavior' },
-      { id: 'tab4', icon: Book, label: 'Knowledge' },
-      { id: 'tab5', icon: BriefcaseBusiness, label: 'Capabilities' },
-      // { id: 'tab6', icon: Settings2, label: 'Advanced' },
-    ]"
-  >
+  <TabSidebar v-model="currentTab" :tabs="siderBarTabs">
     <template #tab1>
       <!-- TAB 1-->
       <div class="space-y-8">
         <FormField v-slot="{ componentField }" name="title">
           <FormItem>
-            <FormLabel> Title </FormLabel>
+            <FormLabel>{{ $t('assistant.form.name_label') }}</FormLabel>
             <FormDescription>
-              This is the title of the agent that will be displayed.
+              {{ $t('assistant.form.name_description') }}
             </FormDescription>
             <FormControl>
-              <Input
-                type="text"
-                placeholder="A very short Title (max 3 words)"
-                v-bind="componentField"
-              />
+              <Input type="text" placeholder="" v-bind="componentField" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -153,16 +155,14 @@ onMounted(() => {
 
         <FormField v-slot="{ componentField }" name="description">
           <FormItem>
-            <FormLabel> Description </FormLabel>
+            <FormLabel>
+              {{ $t('assistant.form.description_label') }}
+            </FormLabel>
             <FormDescription>
-              This is the description of the agent.
+              {{ $t('assistant.form.description_description') }}
             </FormDescription>
             <FormControl>
-              <Textarea
-                type="text"
-                placeholder="A very short description"
-                v-bind="componentField"
-              />
+              <Textarea type="text" placeholder="" v-bind="componentField" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -174,7 +174,7 @@ onMounted(() => {
       <!-- TAB 2-->
       <FormField v-slot="{ handleChange, value }" name="llmId">
         <FormItem>
-          <FormLabel> Ai Model </FormLabel>
+          <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
           <FormControl>
             <LlmSelectModal
               :id="value"
@@ -192,9 +192,9 @@ onMounted(() => {
       <div class="space-y-8">
         <FormField v-slot="{ componentField }" name="systemPrompt">
           <FormItem>
-            <FormLabel> Behavior </FormLabel>
+            <FormLabel>{{ $t('assistant.behavior.label') }}</FormLabel>
             <FormDescription>
-              Describe how the assistant should behave.
+              {{ $t('assistant.behavior.description') }}
             </FormDescription>
             <FormControl>
               <Textarea rows="10" v-bind="componentField" />
@@ -207,14 +207,14 @@ onMounted(() => {
     </template>
     <template #tab4>
       <div class="text-sm border rounded-lg p-4 mt-4">
-        This property can only be set after the agent is created
+        {{ $t('assistant.alert.create_first') }}
       </div>
       <!--
       <FormField v-slot="{ handleChange, value }" name="collectionId">
         <FormItem>
           <FormLabel>Knowledge Collections (optional)</FormLabel>
           <FormDescription>
-            These are the knowledge collections that can be used by the agent.
+            These are the knowledge collections that can be used by the assistant.
           </FormDescription>
           <FormControl>
             <CollectionSelectModal
@@ -236,7 +236,7 @@ onMounted(() => {
     <template #tab5>
       <!-- Tools -->
       <div class="text-sm border rounded-lg p-4 mt-4">
-        This property can only be set after the agent is created
+        {{ $t('assistant.alert.create_first') }}
       </div>
       <!--
       <FormField name="tools">
@@ -271,6 +271,18 @@ onMounted(() => {
         </FormItem>
       </FormField>
       -->
+    </template>
+    <template #tab6>
+      <!--  -->
+      <div class="text-sm border rounded-lg p-4 mt-4">
+        {{ $t('assistant.alert.create_first') }}
+      </div>
+    </template>
+    <template #tab7>
+      <!--  -->
+      <div class="text-sm border rounded-lg p-4 mt-4">
+        {{ $t('assistant.alert.create_first') }}
+      </div>
     </template>
   </TabSidebar>
 </template>

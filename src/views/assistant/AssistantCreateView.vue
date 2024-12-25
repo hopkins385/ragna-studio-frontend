@@ -67,7 +67,10 @@ onMounted(() => getTools());
 
 <template>
   <SectionContainer>
-    <SectionHeading title="Create Agent" />
+    <SectionHeading
+      :title="$t('assistant.create.title')"
+      :subtitle="$t('assistant.create.subtitle')"
+    />
     <div class="px-5">
       <AssistantCreateForm />
     </div>

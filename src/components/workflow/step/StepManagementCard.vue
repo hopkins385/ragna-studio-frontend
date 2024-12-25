@@ -55,11 +55,6 @@ const fetchData = async () => {
   data.value = await fetchAllAssistants({ page: 1, limit: 100 });
 };
 
-function onSettingsClick() {
-  emits('show-settings');
-  emits('close');
-}
-
 async function onDeleteClick() {
   await deleteWorkflowStep(props.workflowStep.id);
   emits('close');
@@ -117,7 +112,7 @@ onMounted(() => {
       <div v-if="!isFirstStep">
         <div class="space-y-2 py-1">
           <div class="flex justify-between">
-            <div>Agent:</div>
+            <div>{{ $t('workflow.step.agent') }}:</div>
             <span class="hidden">{{ workflowStep?.assistant?.title }}</span>
             <div class="w-40">
               <!-- Assistant Select Form -->
@@ -130,14 +125,14 @@ onMounted(() => {
             </div>
           </div>
           <div class="flex justify-between">
-            <span>Ai Model:</span>
+            <span>{{ $t('workflow.step.ai_model') }}:</span>
             <span>{{ workflowStep?.assistant?.llm?.displayName }}</span>
           </div>
           <!-- div class="flex justify-between">
           <span>Document:</span> <span>{{ workflowStep?.document?.name }}</span>
         </div -->
           <div v-if="hasActiveSteps">
-            <h3 class="pb-1 underline">Inputs:</h3>
+            <h3 class="pb-1 underline">{{ $t('workflow.step.inputs') }}:</h3>
             <ul>
               <li v-for="step in availableSteps" :key="step.id">
                 <input
@@ -158,7 +153,9 @@ onMounted(() => {
             name="bio"
           >
             <FormItem>
-              <FormLabel class="text-xs">System Prompt</FormLabel>
+              <FormLabel class="text-xs">
+                {{ $t('workflow.step.system_prompt') }}
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Please set an assistant"
@@ -176,7 +173,7 @@ onMounted(() => {
           class="w-full rounded-lg border bg-stone-50 px-4 py-2 font-semibold hover:cursor-not-allowed hover:bg-stone-100"
           :disabled="true"
         >
-          Run Step
+          {{ $t('workflow.step.run') }}
         </button>
       </div>
       <hr class="-mx-4 mb-2 mt-3" />
@@ -199,7 +196,9 @@ onMounted(() => {
           <Trash2Icon
             class="mr-1 size-4 stroke-1.5 text-red-500 group-hover:stroke-2"
           />
-          <span class="group-hover:font-semibold">Delete</span>
+          <span class="group-hover:font-semibold">
+            {{ $t('form.button.delete') }}
+          </span>
         </button>
       </div>
     </div>

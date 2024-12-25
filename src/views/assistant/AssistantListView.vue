@@ -26,8 +26,8 @@ function setRoutePage(value: number) {
 <template>
   <SectionContainer>
     <SectionHeading
-      title="Agents"
-      subtitle="Start a new chat, change behavior, or delete an agent"
+      :title="$t('assistants.title')"
+      :subtitle="$t('assistants.subtitle')"
     />
     <Heading>
       <template #top> </template>
@@ -44,7 +44,7 @@ function setRoutePage(value: number) {
               v-if="$ability.can('create', 'Assistant')"
               to="/assistant/create"
             >
-              Create Agent
+              {{ $t('assistant.create.button') }}
               <PlusIcon class="ml-2 size-4 stroke-2" />
             </ButtonLink>
           </div>
