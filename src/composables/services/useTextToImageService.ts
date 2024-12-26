@@ -131,7 +131,7 @@ export function useTextToImageService() {
 
   const fetchRunsPaginated = async (
     { folderId }: { folderId: string },
-    params: PaginateDto & { showHiddenRuns?: boolean },
+    params: PaginateDto & { showHidden?: boolean },
   ) => {
     try {
       const route = getRoute(ImageGenRoute.FOLDER_RUNS_PAGINATED, {

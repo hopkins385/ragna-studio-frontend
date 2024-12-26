@@ -40,7 +40,7 @@ const initRuns = async () => {
     {
       folderId: response.folders[0].id,
     },
-    { page: page.value },
+    { page: page.value, showHidden: settings.getShowHidden },
   );
 };
 

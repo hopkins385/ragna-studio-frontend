@@ -31,6 +31,13 @@ export class AccountServiceError extends Error {
 export function useAccountService() {
   const ac = new AbortController();
 
+  const handleError = (err: unknown, customMessage?: string) => {
+    if (err instanceof Error) {
+    }
+    console.error(err);
+    throw new AccountServiceError(customMessage || 'Failed to fetch data');
+  };
+
   const fetchAccountData = async () => {
     try {
       const route = getRoute(AccountRoute.BASE);
@@ -44,7 +51,7 @@ export function useAccountService() {
 
       return response.data;
     } catch (error) {
-      throw new AccountServiceError('Failed to fetch account data');
+      return handleError('Failed to fetch account data');
     }
   };
 
@@ -65,7 +72,7 @@ export function useAccountService() {
       }
       return response.data;
     } catch (error) {
-      throw new AccountServiceError('Failed to update name');
+      return handleError('Failed to update name');
     }
   };
 
@@ -86,7 +93,7 @@ export function useAccountService() {
       }
       return response.data;
     } catch (error) {
-      throw new AccountServiceError('Failed to update password');
+      return handleError('Failed to update password');
     }
   };
 
@@ -102,7 +109,7 @@ export function useAccountService() {
       }
       return response.data;
     } catch (error) {
-      throw new AccountServiceError('Failed to delete account');
+      return handleError('Failed to delete account');
     }
   };
 

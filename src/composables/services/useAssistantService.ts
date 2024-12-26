@@ -47,25 +47,43 @@ export interface AssistantResponse {
   assistant: Assistant;
 }
 
+class AssistantServiceError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'AssistantServiceError';
+  }
+}
+
 export default function useAssistantService() {
   const ac = new AbortController();
 
-  const createAssistant = async (payload: AssistantDto) => {
-    const response = await $axios.post(
-      'assistant',
-      {
-        ...payload,
-      },
-      {
-        signal: ac.signal,
-      },
-    );
-
-    if (response.status !== 201) {
-      throw new Error('Failed to create assistant');
+  const handleError = (err: unknown, customMessage?: string) => {
+    if (err instanceof Error) {
     }
+    console.error(err);
+    throw new AssistantServiceError(customMessage || 'Failed to fetch data');
+  };
 
-    return response.data;
+  const createAssistant = async (payload: AssistantDto) => {
+    try {
+      const response = await $axios.post(
+        'assistant',
+        {
+          ...payload,
+        },
+        {
+          signal: ac.signal,
+        },
+      );
+
+      if (response.status !== 201) {
+        throw new Error('Failed to create assistant');
+      }
+
+      return response.data;
+    } catch (error) {
+      return handleError('Failed to create assistant');
+    }
   };
 
   const fetchAssistant = async (
@@ -75,19 +93,23 @@ export default function useAssistantService() {
       throw new Error('Assistant ID is required');
     }
 
-    const route = getRoute(AssistantRoute.ASSISTANT, {
-      ':assistantId': assistantId.toString(),
-    });
+    try {
+      const route = getRoute(AssistantRoute.ASSISTANT, {
+        ':assistantId': assistantId.toString(),
+      });
 
-    const response = await $axios.get<AssistantResponse>(route, {
-      signal: ac.signal,
-    });
+      const response = await $axios.get<AssistantResponse>(route, {
+        signal: ac.signal,
+      });
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch assistant');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch assistant');
+      }
+
+      return response.data;
+    } catch (error) {
+      return handleError('Failed to fetch assistant');
     }
-
-    return response.data;
   };
 
   const fetchAllAssistants = async ({
@@ -104,50 +126,63 @@ export default function useAssistantService() {
       limit: limit ?? undefined,
       searchQuery: searchQuery ?? undefined,
     };
-    const route = getRoute(AssistantRoute.BASE);
-    const response = await $axios.get<AssistantsPaginatedResponse>(route, {
-      params,
-      signal: ac.signal,
-    });
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch assistants');
+    try {
+      const route = getRoute(AssistantRoute.BASE);
+      const response = await $axios.get<AssistantsPaginatedResponse>(route, {
+        params,
+        signal: ac.signal,
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch assistants');
+      }
+
+      return response.data;
+    } catch (error) {
+      return handleError('Failed to fetch assistants');
     }
-
-    return response.data;
   };
 
   const updateAssistant = async (
     assistantId: string,
     payload: Partial<AssistantDto>,
   ) => {
-    const route = getRoute(AssistantRoute.ASSISTANT, {
-      ':assistantId': assistantId,
-    });
-    const response = await $axios.patch(route, payload, {
-      signal: ac.signal,
-    });
+    try {
+      const route = getRoute(AssistantRoute.ASSISTANT, {
+        ':assistantId': assistantId,
+      });
+      const response = await $axios.patch(route, payload, {
+        signal: ac.signal,
+      });
 
-    if (response.status !== 200) {
-      throw new Error('Failed to update assistant');
+      if (response.status !== 200) {
+        throw new Error('Failed to update assistant');
+      }
+
+      return response.data;
+    } catch (error) {
+      return handleError('Failed to update assistant');
     }
-
-    return response.data;
   };
 
   const deleteAssistant = async (assistantId: string) => {
-    const route = getRoute(AssistantRoute.ASSISTANT, {
-      ':assistantId': assistantId,
-    });
-    const response = await $axios.delete(route, {
-      signal: ac.signal,
-    });
+    try {
+      const route = getRoute(AssistantRoute.ASSISTANT, {
+        ':assistantId': assistantId,
+      });
+      const response = await $axios.delete(route, {
+        signal: ac.signal,
+      });
 
-    if (response.status !== 200) {
-      throw new Error('Failed to delete assistant');
+      if (response.status !== 200) {
+        throw new Error('Failed to delete assistant');
+      }
+
+      return response.data;
+    } catch (error) {
+      return handleError('Failed to delete assistant');
     }
-
-    return response.data;
   };
 
   onScopeDispose(() => {

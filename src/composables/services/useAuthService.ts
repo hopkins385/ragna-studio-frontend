@@ -39,16 +39,34 @@ interface SocialAuthUrlResponse {
   url: AuthUrl;
 }
 
+class AuthServiceError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'AuthServiceError';
+  }
+}
+
 export function useAuthService() {
   const ac = new AbortController();
 
+  const handleError = (err: unknown, customMessage?: string) => {
+    if (err instanceof Error) {
+    }
+    console.error(err);
+    throw new AuthServiceError(customMessage || 'Failed to fetch data');
+  };
+
   async function loginUser(body: AuthCredentials): Promise<TokensResponse> {
-    const route = getRoute(AuthRoute.LOGIN);
-    const response = await $axios.post<TokensResponse>(route, body, {
-      signal: ac.signal,
-    });
-    if (response.status !== 200) throw new Error('Login failed');
-    return response.data;
+    try {
+      const route = getRoute(AuthRoute.LOGIN);
+      const response = await $axios.post<TokensResponse>(route, body, {
+        signal: ac.signal,
+      });
+      if (response.status !== 200) throw new Error('Login failed');
+      return response.data;
+    } catch (error) {
+      return handleError('Failed to login user');
+    }
   }
 
   async function logoutUser(): Promise<void> {
@@ -60,28 +78,36 @@ export function useAuthService() {
   }
 
   async function refreshTokens(): Promise<TokensResponse> {
-    const body = {};
-    const route = getRoute(AuthRoute.REFRESH);
-    const response = await $axios.post<TokensResponse>(route, body, {
-      signal: ac.signal,
-    });
-    if (response.status !== 201) throw new Error('Failed to refresh token');
-    return response.data;
+    try {
+      const body = {};
+      const route = getRoute(AuthRoute.REFRESH);
+      const response = await $axios.post<TokensResponse>(route, body, {
+        signal: ac.signal,
+      });
+      if (response.status !== 201) throw new Error('Failed to refresh token');
+      return response.data;
+    } catch (error) {
+      return handleError('Failed to refresh tokens');
+    }
   }
 
   const fetchSocialAuthUrl = async (provider: string) => {
-    const route = getRoute(AuthRoute.SOCIAL_AUTH_URL, {
-      ':provider': provider,
-    });
-    const response = await $axios.get<SocialAuthUrlResponse>(route, {
-      signal: ac.signal,
-    });
+    try {
+      const route = getRoute(AuthRoute.SOCIAL_AUTH_URL, {
+        ':provider': provider,
+      });
+      const response = await $axios.get<SocialAuthUrlResponse>(route, {
+        signal: ac.signal,
+      });
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch social auth url');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch social auth url');
+      }
+
+      return response.data;
+    } catch (error) {
+      return handleError('Failed to fetch social auth url');
     }
-
-    return response.data;
   };
 
   const googleAuth = async (data: GoogleAuthCallbackQuery) => {
@@ -92,16 +118,20 @@ export function useAuthService() {
       prompt: data.prompt,
     };
 
-    const route = getRoute(AuthRoute.CALLBACK_GOOGLE);
-    const response = await $axios.post<TokensResponse>(route, body, {
-      signal: ac.signal,
-    });
+    try {
+      const route = getRoute(AuthRoute.CALLBACK_GOOGLE);
+      const response = await $axios.post<TokensResponse>(route, body, {
+        signal: ac.signal,
+      });
 
-    if (response.status !== 201) {
-      throw new Error('Failed to authenticate with Google');
+      if (response.status !== 201) {
+        throw new Error('Failed to authenticate with Google');
+      }
+
+      return response.data;
+    } catch (error) {
+      return handleError('Failed to authenticate with Google');
     }
-
-    return response.data;
   };
 
   // TODO: find alternative to onScopeDispose
