@@ -272,5 +272,12 @@
       "code_required": "Einladungscode erforderlich",
       "code_invalid": "Ungültiger Einladungscode"
     }
+  },
+  "onboard": {
+    "hello": "Hallo, {name}",
+    "subtitle": "Bitte gib einen Namen für deine Organisation ein, den du verwenden möchtest. Du kannst jeden Namen wählen, den du möchtest. Dies kann später nicht geändert werden.",
+    "form": {
+      "label": "Organisationsname"
+    }
   }
 }

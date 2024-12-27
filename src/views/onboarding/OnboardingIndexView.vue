@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import { Input } from '@/components/ui/input';
 import { useOnboardingService } from '@/composables/services/useOnboardingService';
@@ -11,7 +12,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@ui/dialog';
-import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
 
 /**
  * Onboarding
@@ -77,15 +77,16 @@ const backgroundStyles = computed(() => {
   <Dialog :open="open">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Hello, {{ authStore.user?.name ?? 'User' }}</DialogTitle>
+        <DialogTitle>
+          {{ $t('onboard.hello', { name: authStore.user?.name ?? 'User' }) }}
+        </DialogTitle>
         <DialogDescription>
-          Please enter an organisation name you would like to use. You can
-          choose any name you like. This cannot be changed later.
+          {{ $t('onboard.subtitle') }}
         </DialogDescription>
       </DialogHeader>
 
       <div class="space-y-2 p-10 w-full">
-        <div>Your organisation name:</div>
+        <div>{{ $t('onboard.form.label') }}:</div>
         <div>
           <form
             class="space-y-2 flex flex-col justify-center items-center"
@@ -93,7 +94,7 @@ const backgroundStyles = computed(() => {
           >
             <Input v-model="orgName" type="text" />
             <ButtonLoading :loading="isLoading" type="submit" class="self-end">
-              Submit
+              {{ $t('form.button.save') }}
             </ButtonLoading>
           </form>
         </div>
