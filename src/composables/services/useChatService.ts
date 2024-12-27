@@ -67,15 +67,6 @@ export interface ChatMessage {
   visionContent?: ChatMessageVisionContent[];
 }
 
-export class ChatServiceError extends Error {
-  constructor(
-    public statusCode: number,
-    message: string,
-  ) {
-    super(message);
-    this.name = 'ChatServiceError';
-  }
-}
 export interface ChatsPaginated {
   chats: Chat[];
   meta: PaginateMeta;
@@ -97,6 +88,13 @@ export interface CreateChatMessageStream {
   visionContent?: ChatMessage['visionContent'];
   model?: string;
   provider?: string;
+}
+
+class ChatServiceError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ChatServiceError';
+  }
 }
 
 export function useChatService() {
@@ -121,6 +119,13 @@ export function useChatService() {
 
   const chatStore = useChatStore();
   const chatSettingsStore = useChatSettingsStore();
+
+  const handleError = (err: unknown, customMessage?: string) => {
+    if (err instanceof Error) {
+    }
+    console.error(err);
+    throw new ChatServiceError(customMessage || 'Failed to fetch data');
+  };
 
   const setError = (message: string) => {
     error.value = message;
@@ -170,12 +175,9 @@ export function useChatService() {
         throw new Error('Failed to create chat message');
       }
       addChatMessage(response.data);
+      //
     } catch (error: any) {
-      console.error(error);
-      throw new ChatServiceError(
-        error.response?.status ?? 500,
-        'Failed to create chat message',
-      );
+      return handleError('Failed to create chat message');
     }
   };
 
@@ -201,11 +203,7 @@ export function useChatService() {
     try {
       await createChatMessage({ chatId, message: chatMessage });
     } catch (error: any) {
-      console.error(error);
-      throw new ChatServiceError(
-        error.response?.status ?? 500,
-        'Failed to create chat message',
-      );
+      return handleError('Failed to send chat message');
     }
 
     isThinking.value = true;
@@ -280,10 +278,7 @@ export function useChatService() {
       if (error instanceof Error && error.name === 'AbortError') {
         return;
       }
-      throw new ChatServiceError(
-        error.response?.status ?? 500,
-        'Failed to send chat message',
-      );
+      return handleError('Failed to stream chat message');
     } finally {
       isStreaming.value = false;
       finalizeStream();
@@ -302,30 +297,38 @@ export function useChatService() {
   };
 
   const fetchAllChats = async () => {
-    const route = getRoute(ChatRoute.CHAT);
-    const response = await $axios.get<Chat[]>(route, {
-      signal: ac.signal,
-    });
+    try {
+      const route = getRoute(ChatRoute.CHAT);
+      const response = await $axios.get<Chat[]>(route, {
+        signal: ac.signal,
+      });
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch chats');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch chats');
+      }
+
+      return response.data;
+    } catch (error: any) {
+      return handleError('Failed to fetch chats');
     }
-
-    return response.data;
   };
 
   const fetchAllChatsPaginated = async (params: PaginateDto) => {
-    const route = getRoute(ChatRoute.CHAT_HISTORY);
-    const response = await $axios.get<ChatsPaginated>(route, {
-      params,
-      signal: ac.signal,
-    });
+    try {
+      const route = getRoute(ChatRoute.CHAT_HISTORY);
+      const response = await $axios.get<ChatsPaginated>(route, {
+        params,
+        signal: ac.signal,
+      });
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch chats');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch chats');
+      }
+
+      return response.data;
+    } catch (error: any) {
+      return handleError('Failed to fetch chats');
     }
-
-    return response.data;
   };
 
   const fetchLatestChat = async () => {
@@ -338,11 +341,9 @@ export function useChatService() {
         throw new Error('Failed to fetch latest chat');
       }
       return response.data;
+      //
     } catch (error: any) {
-      throw new ChatServiceError(
-        error.response?.status ?? 500,
-        'Failed to fetch latest chat',
-      );
+      return handleError('Failed to fetch latest chat');
     }
   };
 
@@ -360,10 +361,7 @@ export function useChatService() {
         throw new Error('Failed to delete chat messages');
       }
     } catch (error: any) {
-      throw new ChatServiceError(
-        error.response?.status ?? 500,
-        'Failed to delete chat messages',
-      );
+      return handleError('Failed to delete chat messages');
     }
   };
 
@@ -380,10 +378,7 @@ export function useChatService() {
         throw new Error('Failed to delete chat');
       }
     } catch (error: any) {
-      throw new ChatServiceError(
-        error.response?.status ?? 500,
-        'Failed to delete chat',
-      );
+      return handleError('Failed to delete chat');
     }
   };
 
@@ -421,10 +416,7 @@ export function useChatService() {
       isStreaming.value = false;
       initChatMessages(chat.value?.messages || []);
     } catch (error: any) {
-      throw new ChatServiceError(
-        error.response?.status ?? 500,
-        'Failed to fetch chat messages',
-      );
+      return handleError('Failed to fetch chat');
     }
   };
 

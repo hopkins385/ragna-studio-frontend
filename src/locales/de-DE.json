@@ -44,6 +44,8 @@
   },
   "form": {
     "name": "Name",
+    "email": "E-Mail",
+    "password": "Passwort",
     "description": "Beschreibung",
     "supported_file_types": "Unterstützte Dateitypen",
     "button": {
@@ -253,6 +255,22 @@
     "no_account": "Noch keinen Account?",
     "social": {
       "google": "Mit Google anmelden"
+    },
+    "accept_terms_p1": "Ich akzeptiere die",
+    "accept_terms_p2": "Datenschutzerklärung",
+    "accept_terms_p3": "und die",
+    "accept_terms_p4": "Nutzungsbedingungen",
+    "invitation_code": "Einladungscode",
+    "error": {
+      "invalid_email": "Bitte gib eine gültige E-Mail-Adresse ein",
+      "name_min_length": "Der Name muss mindestens {length} Zeichen lang sein",
+      "password_min_length": "Das Passwort muss mindestens {length} Zeichen lang sein",
+      "password_invalid": "Das Passwort ist ungültig",
+      "passwords_not_match": "Die Passwörter stimmen nicht überein",
+      "terms_required": "Bitte akzeptiere die Nutzungsbedingungen",
+      "required": "Dieses Feld ist erforderlich",
+      "code_required": "Einladungscode erforderlich",
+      "code_invalid": "Ungültiger Einladungscode"
     }
   }
 }

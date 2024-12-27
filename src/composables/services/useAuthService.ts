@@ -6,6 +6,7 @@ import { getRoute } from '@/utils/route.util';
 enum AuthRoute {
   LOGIN = 'auth/login', // POST
   LOGOUT = 'auth/logout', // POST
+  REGISTER = 'auth/register', // POST
   REFRESH = 'auth/refresh', // POST
   SOCIAL_AUTH_URL = 'auth/:provider/url', // GET
   CALLBACK_GOOGLE = '/auth/google/callback', // POST
@@ -14,6 +15,14 @@ enum AuthRoute {
 interface AuthCredentials {
   email: string;
   password: string;
+}
+
+interface RegistrationCredentials {
+  name: string;
+  email: string;
+  password: string;
+  termsAndConditions: boolean;
+  invitationCode?: string;
 }
 
 interface AuthUserResponse {
@@ -56,7 +65,7 @@ export function useAuthService() {
     throw new AuthServiceError(customMessage || 'Failed to fetch data');
   };
 
-  async function loginUser(body: AuthCredentials): Promise<TokensResponse> {
+  const loginUser = async (body: AuthCredentials): Promise<TokensResponse> => {
     try {
       const route = getRoute(AuthRoute.LOGIN);
       const response = await $axios.post<TokensResponse>(route, body, {
@@ -67,17 +76,38 @@ export function useAuthService() {
     } catch (error) {
       return handleError('Failed to login user');
     }
-  }
+  };
 
-  async function logoutUser(): Promise<void> {
-    const body = {};
-    const route = getRoute(AuthRoute.LOGOUT);
-    await $axios.post(route, body, {
-      signal: ac.signal,
-    });
-  }
+  const logoutUser = async (): Promise<void> => {
+    try {
+      const body = {};
+      const route = getRoute(AuthRoute.LOGOUT);
+      await $axios.post(route, body, {
+        signal: ac.signal,
+      });
+    } catch (error) {
+      return handleError('Failed to logout user');
+    }
+  };
 
-  async function refreshTokens(): Promise<TokensResponse> {
+  const registerUser = async (body: RegistrationCredentials) => {
+    try {
+      const route = getRoute(AuthRoute.REGISTER);
+      const response = await $axios.post<AuthUserResponse>(route, body, {
+        signal: ac.signal,
+      });
+
+      if (response.status !== 201) {
+        throw new Error('Failed to register user');
+      }
+
+      return response.data;
+    } catch (error) {
+      return handleError('Failed to register user');
+    }
+  };
+
+  const refreshTokens = async (): Promise<TokensResponse> => {
     try {
       const body = {};
       const route = getRoute(AuthRoute.REFRESH);
@@ -89,7 +119,7 @@ export function useAuthService() {
     } catch (error) {
       return handleError('Failed to refresh tokens');
     }
-  }
+  };
 
   const fetchSocialAuthUrl = async (provider: string) => {
     try {
@@ -142,6 +172,7 @@ export function useAuthService() {
   return {
     loginUser,
     logoutUser,
+    registerUser,
     refreshTokens,
     fetchSocialAuthUrl,
     googleAuth,

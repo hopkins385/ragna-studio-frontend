@@ -16,6 +16,8 @@
       "@composables/*": ["./src/composables/*"],
       "@stores/*": ["./src/stores/*"],
       "@schemas/*": ["./src/schemas/*"],
+      "@views/*": ["./src/views/*"],
+      "@utils/*": ["./src/utils/*"],
     }
   }
 }

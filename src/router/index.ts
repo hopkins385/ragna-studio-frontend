@@ -18,40 +18,40 @@ const defaultAppMeta = {
 const homeRoute = {
   path: '/',
   name: 'home',
-  component: () => import('../views/HomeView.vue'),
+  component: () => import('@views/HomeView.vue'),
   meta: defaultAppMeta,
 };
 
 const userRoutes = {
   path: '/user',
-  component: () => import('../views/user/UserRootView.vue'),
+  component: () => import('@views/user/UserRootView.vue'),
   meta: defaultAppMeta,
   children: [
     {
       path: '',
       name: 'user.list',
       beforeEnter: [hasValidRouteQuery],
-      component: () => import('../views/user/UserAllView.vue'),
+      component: () => import('@views/user/UserAllView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'create',
       name: 'user.create',
-      component: () => import('../views/user/UserCreateView.vue'),
+      component: () => import('@views/user/UserCreateView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: ':id',
       name: 'user.show',
       beforeEnter: [hasValidRouteId],
-      component: () => import('../views/user/UserShowView.vue'),
+      component: () => import('@views/user/UserShowView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: ':id/edit',
       name: 'user.edit',
       beforeEnter: [hasValidRouteId],
-      component: () => import('../views/user/UserEditView.vue'),
+      component: () => import('@views/user/UserEditView.vue'),
       meta: defaultAppMeta,
     },
   ],
@@ -59,33 +59,33 @@ const userRoutes = {
 
 const chatRoutes = {
   path: '/chat',
-  component: () => import('../views/chat/ChatRootView.vue'),
+  component: () => import('@views/chat/ChatRootView.vue'),
   meta: defaultAppMeta,
   children: [
     {
       path: '',
       name: 'chat.recent',
-      component: () => import('../views/chat/ChatRecentView.vue'),
+      component: () => import('@views/chat/ChatRecentView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'create',
       name: 'chat.create',
-      component: () => import('../views/chat/ChatCreateView.vue'),
+      component: () => import('@views/chat/ChatCreateView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'history',
       name: 'chat.history',
       beforeEnter: [hasValidRouteQuery],
-      component: () => import('../views/chat/ChatHistoryView.vue'),
+      component: () => import('@views/chat/ChatHistoryView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: ':id',
       name: 'chat.show',
       beforeEnter: [hasValidRouteId],
-      component: () => import('../views/chat/ChatShowView.vue'),
+      component: () => import('@views/chat/ChatShowView.vue'),
       meta: defaultAppMeta,
     },
   ],
@@ -93,27 +93,27 @@ const chatRoutes = {
 
 const assistantRoutes = {
   path: '/assistant',
-  component: () => import('../views/assistant/AssistantRootView.vue'),
+  component: () => import('@views/assistant/AssistantRootView.vue'),
   meta: defaultAppMeta,
   children: [
     {
       path: '',
       name: 'assistant.index',
       beforeEnter: [hasValidRouteQuery],
-      component: () => import('../views/assistant/AssistantListView.vue'),
+      component: () => import('@views/assistant/AssistantListView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'create',
       name: 'assistant.create',
-      component: () => import('../views/assistant/AssistantCreateView.vue'),
+      component: () => import('@views/assistant/AssistantCreateView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: ':id/edit',
       name: 'assistant.edit',
       beforeEnter: [hasValidRouteId],
-      component: () => import('../views/assistant/AssistantEditView.vue'),
+      component: () => import('@views/assistant/AssistantEditView.vue'),
       meta: defaultAppMeta,
     },
   ],
@@ -121,34 +121,34 @@ const assistantRoutes = {
 
 const collectionRoutes = {
   path: '/collection',
-  component: () => import('../views/collection/CollectionRootView.vue'),
+  component: () => import('@views/collection/CollectionRootView.vue'),
   meta: defaultAppMeta,
   children: [
     {
       path: '',
       name: 'collection.index',
       beforeEnter: [hasValidRouteQuery],
-      component: () => import('../views/collection/CollectionListView.vue'),
+      component: () => import('@views/collection/CollectionListView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'create',
       name: 'collection.create',
-      component: () => import('../views/collection/CollectionCreateView.vue'),
+      component: () => import('@views/collection/CollectionCreateView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: ':id',
       name: 'collection.show',
       beforeEnter: [hasValidRouteId],
-      component: () => import('../views/collection/CollectionShowView.vue'),
+      component: () => import('@views/collection/CollectionShowView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: ':id/media',
       name: 'collection.media',
       beforeEnter: [hasValidRouteId],
-      component: () => import('../views/collection/CollectionMediaView.vue'),
+      component: () => import('@views/collection/CollectionMediaView.vue'),
       meta: defaultAppMeta,
     },
   ],
@@ -156,48 +156,48 @@ const collectionRoutes = {
 
 const mediaRoutes = {
   path: '/media',
-  component: () => import('../views/media/MediaRootView.vue'),
+  component: () => import('@views/media/MediaRootView.vue'),
   meta: defaultAppMeta,
   children: [
     {
       path: '',
       name: 'media.index',
-      component: () => import('../views/media/MediaIndexView.vue'),
+      component: () => import('@views/media/MediaIndexView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'upload',
       name: 'media.upload',
       beforeEnter: [hasValidRouteQuery],
-      component: () => import('../views/media/MediaUploadView.vue'),
+      component: () => import('@views/media/MediaUploadView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'google-drive',
       name: 'media.google-drive.index',
       // beforeEnter: [hasValidRouteQuery],
-      component: () => import('../views/media/google/MediaGoogleIndexView.vue'),
+      component: () => import('@views/media/google/MediaGoogleIndexView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'google-drive/callback',
       name: 'media.google-drive.callback',
       component: () =>
-        import('../views/media/google/MediaGoogleCallbackView.vue'),
+        import('@views/media/google/MediaGoogleCallbackView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'google-drive/:id',
       name: 'media.google-drive.show',
       // beforeEnter: [hasValidRouteId],
-      component: () => import('../views/media/google/MediaGoogleShowView.vue'),
+      component: () => import('@views/media/google/MediaGoogleShowView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'one-drive',
       name: 'media.one-drive',
       beforeEnter: [hasValidRouteQuery],
-      component: () => import('../views/media/onedrive/MediaOneDriveView.vue'),
+      component: () => import('@views/media/onedrive/MediaOneDriveView.vue'),
       meta: defaultAppMeta,
     },
   ],
@@ -205,21 +205,20 @@ const mediaRoutes = {
 
 const textToImageRoutes = {
   path: '/text-to-image',
-  component: () => import('../views/text-to-image/TextToImageRootView.vue'),
+  component: () => import('@views/text-to-image/TextToImageRootView.vue'),
   meta: defaultAppMeta,
   children: [
     {
       path: '',
       name: 'text-to-image.index',
-      component: () =>
-        import('../views/text-to-image/TextToImageIndexView.vue'),
+      component: () => import('@views/text-to-image/TextToImageIndexView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'explore',
       name: 'text-to-image.explore',
       component: () =>
-        import('../views/text-to-image/TextToImageExploreView.vue'),
+        import('@views/text-to-image/TextToImageExploreView.vue'),
       meta: defaultAppMeta,
     },
   ],
@@ -227,33 +226,33 @@ const textToImageRoutes = {
 
 const workflowRoutes = {
   path: '/workflow',
-  component: () => import('../views/workflow/WorkflowRootView.vue'),
+  component: () => import('@views/workflow/WorkflowRootView.vue'),
   meta: defaultAppMeta,
   children: [
     {
       path: '',
       name: 'workflow.index',
-      component: () => import('../views/workflow/WorkflowIndexView.vue'),
+      component: () => import('@views/workflow/WorkflowIndexView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'create',
       name: 'workflow.create',
-      component: () => import('../views/workflow/WorkflowCreateView.vue'),
+      component: () => import('@views/workflow/WorkflowCreateView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: ':id',
       name: 'workflow.show',
       beforeEnter: [hasValidRouteId],
-      component: () => import('../views/workflow/WorkflowShowView.vue'),
+      component: () => import('@views/workflow/WorkflowShowView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: ':id/edit',
       name: 'workflow.edit',
       beforeEnter: [hasValidRouteId],
-      component: () => import('../views/workflow/WorkflowEditView.vue'),
+      component: () => import('@views/workflow/WorkflowEditView.vue'),
       meta: defaultAppMeta,
     },
   ],
@@ -261,19 +260,19 @@ const workflowRoutes = {
 
 const accountRoutes = {
   path: '/account',
-  component: () => import('../views/account/AccountRootView.vue'),
+  component: () => import('@views/account/AccountRootView.vue'),
   meta: defaultAppMeta,
   children: [
     {
       path: '',
       name: 'account.index',
-      component: () => import('../views/account/AccountIndexView.vue'),
+      component: () => import('@views/account/AccountIndexView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'settings',
       name: 'account.settings',
-      component: () => import('../views/account/AccountSettingsView.vue'),
+      component: () => import('@views/account/AccountSettingsView.vue'),
       meta: defaultAppMeta,
     },
   ],
@@ -283,7 +282,7 @@ const socialAuthCallbackRoutes = {
   path: '/auth/:provider/callback',
   name: 'social-auth-callback',
   beforeEnter: [hasValidGoogleCallbackQuery],
-  component: () => import('../views/auth/SocialAuthCallbackView.vue'),
+  component: () => import('@views/auth/SocialAuthCallbackView.vue'),
   meta: {
     requiresAuth: false,
     layout: Layout.Login,
@@ -292,13 +291,13 @@ const socialAuthCallbackRoutes = {
 
 const onboardingRoutes = {
   path: '/onboarding',
-  component: () => import('../views/onboarding/OnboardingRootView.vue'),
+  component: () => import('@views/onboarding/OnboardingRootView.vue'),
   meta: defaultAppMeta,
   children: [
     {
       path: '',
       name: 'onboarding.index',
-      component: () => import('../views/onboarding/OnboardingIndexView.vue'),
+      component: () => import('@views/onboarding/OnboardingIndexView.vue'),
       meta: defaultAppMeta,
     },
   ],
@@ -321,7 +320,16 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/LoginView.vue'),
+      component: () => import('@views/auth/LoginView.vue'),
+      meta: {
+        requiresAuth: false,
+        layout: Layout.Login,
+      },
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('@views/auth/RegisterView.vue'),
       meta: {
         requiresAuth: false,
         layout: Layout.Login,
@@ -330,14 +338,14 @@ const router = createRouter({
     {
       path: '/logout',
       name: 'logout',
-      component: () => import('../views/LogoutView.vue'),
+      component: () => import('@views/auth/LogoutView.vue'),
       meta: defaultAppMeta,
     },
     // 404 route - must be last
     {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
-      component: () => import('../views/NotFoundView.vue'),
+      component: () => import('@views/NotFoundView.vue'),
       meta: {
         requiresAuth: false,
         layout: Layout.Error,

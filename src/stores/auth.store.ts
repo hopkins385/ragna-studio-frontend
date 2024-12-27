@@ -1,6 +1,6 @@
-import { defineAbilityFor } from '@/services/ability.service';
 import { useAccountService } from '@/composables/services/useAccountService';
 import { useAuthService } from '@/composables/services/useAuthService';
+import { defineAbilityFor } from '@/services/ability.service';
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
 
@@ -129,6 +129,33 @@ export const useAuthStore = defineStore('auth-store', {
       } catch (error) {
         this.clearUser();
         throw error;
+      }
+    },
+    async register(payload: {
+      name: string;
+      email: string;
+      password: string;
+      termsAndConditions: boolean;
+      invitationCode?: string;
+    }): Promise<void> {
+      const { registerUser } = useAuthService();
+
+      try {
+        const response = await registerUser({
+          name: payload.name,
+          email: payload.email,
+          password: payload.password,
+          termsAndConditions: payload.termsAndConditions,
+          invitationCode: payload.invitationCode,
+        });
+
+        // auto login user and fetch user data
+        await this.login({
+          email: payload.email,
+          password: payload.password,
+        });
+      } catch (error) {
+      } finally {
       }
     },
     async socialGoogleLogin(query: {

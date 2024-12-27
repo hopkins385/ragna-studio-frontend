@@ -66,7 +66,7 @@ const onGoogleLogin = async () => {
   window.location.href = url;
 };
 
-const showRegister = false;
+const showRegister = true;
 </script>
 
 <template>
