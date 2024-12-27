@@ -90,7 +90,14 @@ export function useAuthService() {
     }
   };
 
-  const registerUser = async (body: RegistrationCredentials) => {
+  const registerUser = async (payload: RegistrationCredentials) => {
+    const body = {
+      name: payload.name,
+      email: payload.email,
+      password: payload.password,
+      termsAndConditions: payload.termsAndConditions,
+      invitationCode: payload.invitationCode,
+    };
     try {
       const route = getRoute(AuthRoute.REGISTER);
       const response = await $axios.post<AuthUserResponse>(route, body, {

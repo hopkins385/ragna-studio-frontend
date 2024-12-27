@@ -109,7 +109,7 @@ onUnmounted(() => {});
       <Command>
         <div class="flex items-center gap-3 p-4">
           <div
-            class="flex size-8 items-center justify-center rounded-full bg-muted relative"
+            class="flex size-8 items-center justify-center rounded-full shrink-0 bg-muted relative"
           >
             <span class="text-sm font-medium">{{ initials }}</span>
             <!--
@@ -122,7 +122,7 @@ onUnmounted(() => {});
             ></div>
             -->
           </div>
-          <div class="flex flex-col">
+          <div class="flex flex-col truncate">
             <p class="text-sm font-medium leading-none truncate">
               {{ authStore.user?.name }}
             </p>

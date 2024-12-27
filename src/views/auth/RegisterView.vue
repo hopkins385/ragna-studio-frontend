@@ -23,10 +23,10 @@ const regError = reactive({
 });
 
 const routeCode = computed(() => {
-  const token = route.query.code;
-  if (typeof token !== 'string') return '';
+  const queryToken = route.query.code;
+  if (typeof queryToken !== 'string') return '';
 
-  const sanitizedToken = sanitizeToken(token);
+  const sanitizedToken = sanitizeToken(queryToken);
   return isValidJWT(sanitizedToken) ? sanitizedToken : '';
 });
 
@@ -44,7 +44,7 @@ const registerFormSchema = z.object({
     .boolean()
     .default(false)
     .refine(value => value, t('auth.error.terms_required')),
-  // invitation token is a jwt token
+  // invitation code is a jwt token
   invitationCode: z
     .string()
     .trim()
