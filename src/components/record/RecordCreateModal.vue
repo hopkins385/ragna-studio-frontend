@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PlusIcon } from 'lucide-vue-next';
+import { Button } from '@ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@ui/dialog';
-import { Button } from '@ui/button';
+import { PlusIcon, UploadCloudIcon } from 'lucide-vue-next';
 import RecordAddMediaTable from './RecordAddMediaTable.vue';
 
 defineProps<{
@@ -20,27 +20,44 @@ const emits = defineEmits<{
   refresh: [void];
 }>();
 
+const router = useRouter();
+
 const open = ref(false);
 
 function onSuccess() {
   emits('refresh');
 }
+
+const onUploadFileClick = () => {
+  open.value = false;
+  router.push({
+    name: 'media.upload',
+  });
+};
 </script>
 
 <template>
   <Dialog v-model:open="open">
     <DialogTrigger as-child>
       <Button variant="outline">
-        Add File
+        {{ $t('record.button.add_file') }}
         <PlusIcon class="ml-2 size-4 stroke-2" />
       </Button>
     </DialogTrigger>
     <DialogContent class="max-w-4xl">
       <DialogHeader>
-        <DialogTitle>Add File to Collection</DialogTitle>
+        <DialogTitle>
+          {{ $t('record.add_file_dialog.title') }}
+        </DialogTitle>
         <DialogDescription>
-          Choose a file to add to collection.
+          {{ $t('record.add_file_dialog.subtitle') }}
         </DialogDescription>
+        <div class="flex justify-end">
+          <Button variant="outline" @click="onUploadFileClick" class="">
+            Datei hochladen
+            <UploadCloudIcon class="mr-2 size-4 stroke-2" />
+          </Button>
+        </div>
       </DialogHeader>
       <Suspense>
         <RecordAddMediaTable
@@ -49,8 +66,12 @@ function onSuccess() {
         />
       </Suspense>
       <DialogFooter>
-        <Button variant="outline" @click="open = false">Cancel</Button>
-        <Button @click="open = false">Done</Button>
+        <Button variant="outline" @click="open = false">
+          {{ $t('form.button.cancel') }}
+        </Button>
+        <Button @click="open = false">
+          {{ $t('form.button.done') }}
+        </Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>

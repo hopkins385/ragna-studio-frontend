@@ -34,7 +34,7 @@ const registerFormSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(2, t('auth.error.name_min_length', { length: 2 })),
+    .min(4, t('auth.error.name_min_length', { length: 4 })),
   email: z.string().trim().email(t('auth.error.invalid_email')),
   password: z
     .string()
@@ -126,6 +126,12 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
                   :disabled="true"
                 />
               </FormControl>
+              <!--
+              <FormLabel v-if="!routeCode" class="text-sm text-gray-500">
+                {{ $t('auth.invitation_code_info') }}
+                <AuthWaitlistModal />
+              </FormLabel>
+              -->
               <FormMessage />
             </FormItem>
           </FormField>
@@ -134,7 +140,12 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
             <FormItem>
               <FormLabel>{{ $t('form.name') }}</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="" v-bind="componentField" />
+                <Input
+                  type="text"
+                  placeholder=""
+                  v-bind="componentField"
+                  autocomplete="name"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -144,7 +155,12 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
             <FormItem>
               <FormLabel>{{ $t('form.email') }}</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="" v-bind="componentField" />
+                <Input
+                  type="email"
+                  placeholder=""
+                  v-bind="componentField"
+                  autocomplete="email"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -53,10 +53,11 @@ export function useNavBarItems() {
         break;
       default:
         items.push(...defaultRoutes.value);
-
+      /*
         if (authStore.userHasAdminRole) {
           items.push(...adminRoutes);
         }
+          */
     }
 
     return items;

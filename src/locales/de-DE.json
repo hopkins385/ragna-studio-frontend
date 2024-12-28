@@ -1,7 +1,7 @@
 {
   "nav": {
     "home": "Startseite",
-    "workflows": "Workflows",
+    "workflows": "Flows",
     "agents": "Agenten",
     "chat": "Chat",
     "textToImage": "KI Bilder",
@@ -53,7 +53,9 @@
       "submit": "Absenden",
       "cancel": "Abbrechen",
       "delete": "Löschen",
-      "update": "Aktualisieren"
+      "update": "Aktualisieren",
+      "done": "Fertig",
+      "settings": "Einstellungen"
     },
     "file_input": {
       "label": "Eine Datei auswählen",
@@ -75,7 +77,7 @@
     "updated_at": "Aktualisiert am",
     "file": "Datei",
     "file_size": "Dateigröße",
-    "chunks": "Teile",
+    "chunks": "Teile (Chunks)",
     "meta": {
       "showing": "Zeige {from} bis {to} von {total} Einträgen"
     }
@@ -136,6 +138,23 @@
   },
   "favorites": {
     "title": "Meine Favoriten"
+  },
+  "collections": {},
+  "collection": {
+    "button": {
+      "create": "Erstellen",
+      "add_record": "Eintrag hinzufügen"
+    }
+  },
+  "records": {},
+  "record": {
+    "add_file_dialog": {
+      "title": "Datei zur Sammlung hinzufügen",
+      "subtitle": "Lade zunächst eine Datei hoch, um diese zur Sammlung hinzufügen zu können"
+    },
+    "button": {
+      "add_file": "Datei hinzufügen"
+    }
   },
   "workflows": {
     "title": "Workflows",
@@ -261,6 +280,7 @@
     "accept_terms_p3": "und die",
     "accept_terms_p4": "Nutzungsbedingungen",
     "invitation_code": "Einladungscode",
+    "invitation_code_info": "Du hast keinen Einladungscode?",
     "error": {
       "invalid_email": "Bitte gib eine gültige E-Mail-Adresse ein",
       "name_min_length": "Der Name muss mindestens {length} Zeichen lang sein",
@@ -278,6 +298,14 @@
     "subtitle": "Bitte gib einen Namen für deine Organisation ein, den du verwenden möchtest. Du kannst jeden Namen wählen, den du möchtest. Dies kann später nicht geändert werden.",
     "form": {
       "label": "Organisationsname"
+    }
+  },
+  "waitlist": {
+    "title": "Warteliste",
+    "subtitle": "Bitte trage dich in die Warteliste ein, um benachrichtigt zu werden, sobald wir einen Platz für dich haben.",
+    "trigger_label": "Hier klicken",
+    "button": {
+      "submit": "Eintragen"
     }
   }
 }
