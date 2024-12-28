@@ -60,7 +60,7 @@ const firstCollection = computed(
   () => props.collections?.[0] ?? { id: '-1', name: '+ Add Knowledge' },
 );
 
-const { updateAssistant } = useAssistantService();
+const { updateAssistant, updateHasKnowledgeBase } = useAssistantService();
 
 // form
 
@@ -113,6 +113,8 @@ async function updateCollection(collectionId: string) {
     id: props.assistant.id,
   };
   await replaceCollectionTo(collectionId, { model });
+  // update assistant has collections
+  await updateHasKnowledgeBase(props.assistant.id, true);
   emits('refreshCollections');
   toast.success({
     description: 'Collection updated successfully',
@@ -125,6 +127,8 @@ async function resetCollections() {
     id: props.assistant.id,
   };
   await detachAllCollectionsFrom({ model });
+  // update assistant does not has collections
+  await updateHasKnowledgeBase(props.assistant.id, false);
   emits('refreshCollections');
   toast.success({
     description: 'Collection updated successfully',

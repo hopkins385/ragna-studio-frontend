@@ -6,6 +6,7 @@ import type { AssistantTool } from './useAssistantToolsService';
 enum AssistantRoute {
   BASE = 'assistant', // GET, POST
   ASSISTANT = 'assistant/:assistantId', // GET, PATCH, DELETE
+  HAS_KNOWLEDGE = 'assistant/:assistantId/has-knowledge', // PATCH
 }
 
 export class AssistantDto {
@@ -166,6 +167,28 @@ export default function useAssistantService() {
     }
   };
 
+  const updateHasKnowledgeBase = async (
+    assistantId: string,
+    hasKnowledgeBase: boolean,
+  ) => {
+    try {
+      const route = getRoute(AssistantRoute.HAS_KNOWLEDGE, {
+        ':assistantId': assistantId,
+      });
+      const response = await $axios.patch(route, {
+        hasKnowledgeBase,
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Failed to update assistant knowledge base');
+      }
+
+      return response.data;
+    } catch (error) {
+      return handleError('Failed to update assistant knowledge base');
+    }
+  };
+
   const deleteAssistant = async (assistantId: string) => {
     try {
       const route = getRoute(AssistantRoute.ASSISTANT, {
@@ -195,5 +218,6 @@ export default function useAssistantService() {
     fetchAllAssistants,
     fetchAssistant,
     deleteAssistant,
+    updateHasKnowledgeBase,
   };
 }
