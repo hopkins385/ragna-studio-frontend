@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
 import { useChatService } from '@/composables/services/useChatService';
+import { RouteName } from '@/router/enums/route-names.enum';
 import { EditIcon } from 'lucide-vue-next';
 
 const props = defineProps<{
@@ -20,14 +21,17 @@ const onStartClick = async () => {
     if (!chat || !chat.id) {
       throw new Error('Failed to create chat');
     }
-    router.push({ name: 'chat.show', params: { id: chat.id } });
+    router.push({ name: RouteName.CHAT_SHOW, params: { id: chat.id } });
   } catch (error) {
     console.error('Failed to create chat', error);
   }
 };
 
 const onEditClick = (event: Event) => {
-  router.push({ name: 'assistant.edit', params: { id: props.assistant.id } });
+  router.push({
+    name: RouteName.ASSISTANT_EDIT,
+    params: { id: props.assistant.id },
+  });
 };
 </script>
 

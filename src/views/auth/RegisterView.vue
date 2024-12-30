@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
+import { RouteName } from '@/router/enums/route-names.enum';
 import { useAuthStore } from '@/stores/auth.store';
 import BrandHeader from '@components/brand/BrandHeader.vue';
 import { FormControl, FormField, FormItem, FormLabel } from '@ui/form';
@@ -86,7 +87,7 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
     });
     resetForm();
     // redirect to login page
-    await router.push({ name: 'onboarding.index' });
+    await router.push({ name: RouteName.ONBOARDING_INDEX });
   } catch (error: any) {
     console.error(error);
     setRegError(t('auth.error.code_invalid'));

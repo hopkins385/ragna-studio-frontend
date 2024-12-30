@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
@@ -93,7 +94,7 @@ const onStart = async (assistantId: string) => {
     return;
   }
   emit('newChat', chat.id);
-  router.push({ name: 'chat.show', params: { id: chat.id } });
+  router.push({ name: RouteName.CHAT_SHOW, params: { id: chat.id } });
 };
 
 const onDelete = (id: string) => {

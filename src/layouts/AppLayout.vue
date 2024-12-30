@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import NavTopBar from '@/components/nav/NavTopBar.vue';
 import { useWebsocketGlobal } from '@/composables/websocket/useWebsocketGlobal';
+import { RouteName } from '@/router/enums/route-names.enum';
 import { useAuthStore } from '@/stores/auth.store';
 import NavBar from '@components/nav/NavBar.vue';
 import { Toaster } from '@components/ui/sonner';
@@ -15,7 +16,7 @@ const refreshTokens = async () => {
     await authStore.refreshAuth();
   } catch (error) {
     console.error('Failed to refresh tokens', error);
-    router.push({ name: 'login' });
+    router.push({ name: RouteName.LOGIN });
   }
 };
 

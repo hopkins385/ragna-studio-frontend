@@ -4,17 +4,62 @@ import {
   useUserFavoriteService,
   type UserFavorite,
 } from '@/composables/services/useUserFavoriteService';
+import { RouteName } from '@/router/enums/route-names.enum';
 import { Star } from 'lucide-vue-next';
 import AssistantFavoritesTable from '../assistant/AssistantFavoritesTable.vue';
+
+/*
+Example of the response from the fetchAllFavorites method:
+{
+    "favorites": [
+        {
+            "id": "wgvctinqjptokgf3eq1247fv",
+            "favoriteId": "or83svu5u799yu7uw2up8ag1",
+            "favoriteType": "assistant",
+            "detail": {
+                "id": "or83svu5u799yu7uw2up8ag1",
+                "title": "Project Assistant",
+                "description": "The assistant"
+            }
+        },
+        {
+            "id": "khaxvv3i80b2vuc32ft7h5bg",
+            "favoriteId": "zx0f3xbdpmoly8dhhijspaug",
+            "favoriteType": "assistant",
+            "detail": {
+                "id": "zx0f3xbdpmoly8dhhijspaug",
+                "title": "Velit eligendi totam",
+                "description": "Fuga Quasi quo volu"
+            }
+        },
+        {
+            "id": "i7ajvre5ctwgu3lk3hhw34ei",
+            "favoriteId": "gt2qyyrzo8r9280c9dkiavjz",
+            "favoriteType": "assistant",
+            "detail": {
+                "id": "gt2qyyrzo8r9280c9dkiavjz",
+                "title": "Gemini",
+                "description": "Gemini"
+            }
+        }
+    ]
+}
+*/
 
 const myFavorites = ref<UserFavorite[]>();
 const favoriteAssistants = computed(() => {
   return (
-    myFavorites.value?.filter(fav => fav.favoriteType === 'assistant') ?? []
+    myFavorites.value
+      ?.filter(fav => fav.favoriteType === 'assistant')
+      .map(fav => fav.detail) ?? []
   );
 });
 const favoriteWorkflows = computed(() => {
-  return myFavorites.value?.filter(fav => fav.favoriteType === 'workflow');
+  return (
+    myFavorites.value
+      ?.filter(fav => fav.favoriteType === 'workflow')
+      .map(fav => fav.detail) ?? []
+  );
 });
 
 const router = useRouter();
@@ -23,11 +68,15 @@ const { fetchAllFavorites } = useUserFavoriteService();
 const { createChat } = useChatService();
 
 const onStartChat = async (assistantId: string) => {
-  const { chat } = await createChat(assistantId);
-  if (!chat) {
-    return;
+  try {
+    const { chat } = await createChat(assistantId);
+    if (!chat) {
+      return;
+    }
+    router.push({ name: RouteName.CHAT_SHOW, params: { id: chat.id } });
+  } catch (error) {
+    console.error(error);
   }
-  router.push({ name: 'chat.show', params: { id: chat.id } });
 };
 
 onMounted(async () => {
@@ -48,7 +97,7 @@ onMounted(async () => {
       <div>
         <AssistantFavoritesTable
           :assistants="favoriteAssistants"
-          @startChat="onStartChat"
+          @start-chat="onStartChat"
         />
       </div>
     </div>

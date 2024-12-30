@@ -39,7 +39,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         description: 'Assistant created successfully',
       });
       resetForm();
-      router.push({ name: 'assistant.list' });
+      // router.push({ name: RouteName.A });
     })
     .catch(() => {
       toast.error({

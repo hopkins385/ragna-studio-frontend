@@ -10,6 +10,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useUserService } from '@/composables/services/useUserService';
 import { useNotification } from '@/composables/useNotification';
+import { RouteName } from '@/router/enums/route-names.enum';
 import { createUserSchema } from '@/schemas/user.schema';
 import { toTypedSchema } from '@vee-validate/zod';
 
@@ -29,7 +30,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     await createUser(values);
     resetForm();
     showSuccess('User created');
-    router.push({ name: 'user.list' });
+    router.push({ name: RouteName.USER_LIST });
   } catch (error) {
     console.log(error);
     showError('Failed to create user');

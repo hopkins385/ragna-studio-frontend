@@ -11,6 +11,10 @@ import {
 defineProps<{
   assistants: any[];
 }>();
+
+defineEmits<{
+  startChat: [string];
+}>();
 </script>
 
 <template>
@@ -41,9 +45,10 @@ defineProps<{
         <TableCell>
           <div class="rounded-full size-8 bg-slate-200"></div>
         </TableCell>
-        <TableCell>{{ assistant?.detail.title }}</TableCell>
-        <TableCell>{{ assistant?.detail.description }}</TableCell>
+        <TableCell>{{ assistant?.title }}</TableCell>
+        <TableCell>{{ assistant?.description }}</TableCell>
         <TableCell class="text-right">
+          {{ assistant.id }}
           <button
             @click="$emit('startChat', assistant.id)"
             class="text-xs border px-2 py-1 rounded-lg"

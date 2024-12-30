@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import Button from '@/components/ui/button/Button.vue';
 import {
   FormControl,
@@ -14,6 +13,7 @@ import {
   type User,
 } from '@/composables/services/useUserService';
 import { useNotification } from '@/composables/useNotification';
+import { RouteName } from '@/router/enums/route-names.enum';
 
 const route = useRoute();
 const router = useRouter();
@@ -24,7 +24,7 @@ const { fetchUserById } = useUserService();
 const { showError } = useNotification();
 
 const onEditClick = () => {
-  router.push({ name: 'user.edit', params: { id: route.params.id } });
+  router.push({ name: RouteName.USER_EDIT, params: { id: route.params.id } });
 };
 
 const initUser = async () => {

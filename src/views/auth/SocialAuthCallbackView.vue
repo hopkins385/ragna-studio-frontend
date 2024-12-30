@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouteName } from '@/router/enums/route-names.enum';
 import AuthProcessing from '@components/auth/AuthProcessing.vue';
 import { useAuthStore } from '@stores/auth.store';
 
@@ -14,10 +15,10 @@ onMounted(async () => {
     if (!authStore.isAuthenticated) {
       throw new Error('Failed to login');
     }
-    await router.push({ name: 'home' });
+    await router.push({ name: RouteName.HOME });
   } catch (error) {
     console.error('[social auth login]', error);
-    await router.push({ name: 'login' });
+    await router.push({ name: RouteName.LOGIN });
   }
 });
 </script>

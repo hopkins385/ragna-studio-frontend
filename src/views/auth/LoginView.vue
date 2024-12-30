@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useAuthService } from '@/composables/services/useAuthService';
+import { RouteName } from '@/router/enums/route-names.enum';
 import { loginFormSchema } from '@/schemas/loginForm.schema';
 import { useAuthStore } from '@/stores/auth.store';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -37,7 +38,7 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
   formLoading.value = true;
   try {
     await authStore.login({ email, password });
-    await router.push({ name: 'home' });
+    await router.push({ name: RouteName.HOME });
   } catch (error) {
     if (error instanceof AxiosError) {
       if (error.response?.status === 401) {

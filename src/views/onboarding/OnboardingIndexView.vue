@@ -3,6 +3,7 @@ import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import { Input } from '@/components/ui/input';
 import { useOnboardingService } from '@/composables/services/useOnboardingService';
+import { RouteName } from '@/router/enums/route-names.enum';
 import { useAuthStore } from '@/stores/auth.store';
 import {
   Dialog,
@@ -36,8 +37,8 @@ async function onSubmit() {
       }
       // refresh session
       await authStore.refreshAuth();
-      // navigate to user profile
-      await router.push({ name: 'home' });
+      // navigate to home
+      await router.push({ name: RouteName.HOME });
     })
     .catch((error: any) => console.error(error))
     .finally(() => (isLoading.value = false));
