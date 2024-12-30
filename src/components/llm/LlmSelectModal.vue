@@ -71,7 +71,9 @@ watch(open, () => {
           <SettingsIcon class="size-4 stroke-1.5" />
         </Button>
       </DialogTrigger>
-      <DialogContent class="min-w-[1000px]">
+      <DialogContent
+        class="min-w-[1000px] max-h-[calc(100vh-12rem)] overflow-y-auto"
+      >
         <DialogHeader>
           <DialogTitle>Ai Model</DialogTitle>
           <DialogDescription>

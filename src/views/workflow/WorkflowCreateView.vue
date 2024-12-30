@@ -119,12 +119,12 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
         <FormField v-slot="{ componentField }" name="description">
           <FormItem>
             <FormLabel>{{ $t('form.description') }}</FormLabel>
-            <FormControl>
-              <Textarea v-bind="componentField" />
-            </FormControl>
             <FormDescription>
               {{ $t('workflow.create.description_hint') }}
             </FormDescription>
+            <FormControl>
+              <Textarea v-bind="componentField" />
+            </FormControl>
             <FormMessage />
           </FormItem>
         </FormField>

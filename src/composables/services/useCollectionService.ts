@@ -6,7 +6,7 @@ import type { CollectionAbleModel } from './useCollectionAbleService';
 
 enum CollectionRoute {
   BASE = 'collection',
-  COLLECTION = 'collection/:collectionId',
+  COLLECTION = 'collection/:collectionId', // GET, PATCH, DELETE
   ALL = 'collection/all',
   FOR = 'collection/for',
 }
@@ -40,21 +40,70 @@ export interface CreateCollectionDto {
   description: string;
 }
 
+export interface EditCollectionDto {
+  name: string;
+  description?: string;
+}
+
+class CollectionServiceError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'CollectionServiceError';
+  }
+}
+
 export default function useCollectionService() {
   const ac = new AbortController();
 
+  const handleError = (err: unknown, customMessage?: string) => {
+    if (err instanceof Error) {
+    }
+    console.error(err);
+    throw new CollectionServiceError(customMessage || 'Failed to fetch data');
+  };
+
   const createCollection = async (payload: CreateCollectionDto) => {
     const body = payload;
-    const route = getRoute(CollectionRoute.BASE);
-    const response = await $axios.post<CollectionResponse>(route, body, {
-      signal: ac.signal,
-    });
+    try {
+      const route = getRoute(CollectionRoute.BASE);
+      const response = await $axios.post<CollectionResponse>(route, body, {
+        signal: ac.signal,
+      });
 
-    if (response.status !== 201) {
-      throw new Error('Failed to create collection');
+      if (response.status !== 201) {
+        throw new Error('Failed to create collection');
+      }
+
+      return response.data;
+    } catch (error: unknown) {
+      return handleError(error, 'Failed to create collection');
     }
+  };
 
-    return response.data;
+  const editCollection = async (
+    collectionId: string,
+    payload: EditCollectionDto,
+  ) => {
+    if (!collectionId) {
+      throw new Error('Collection ID is required');
+    }
+    try {
+      const body = payload;
+      const route = getRoute(CollectionRoute.COLLECTION, {
+        ':collectionId': collectionId,
+      });
+      const response = await $axios.patch<CollectionResponse>(route, body, {
+        signal: ac.signal,
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Failed to edit collection');
+      }
+
+      return response.data;
+    } catch (error: unknown) {
+      return handleError(error, 'Failed to edit collection');
+    }
   };
 
   const fetchFirst = async (collectionId: string) => {
@@ -72,52 +121,64 @@ export default function useCollectionService() {
         throw new Error('Failed to fetch collection');
       }
       return response.data;
-    } catch (error: any) {
-      throw new Error('Failed to fetch collection');
+    } catch (error: unknown) {
+      return handleError(error, 'Failed to fetch collection');
     }
   };
 
   const fetchAll = async () => {
-    const route = getRoute(CollectionRoute.ALL);
-    const response = await $axios.get<CollectionsResponse>(route, {
-      signal: ac.signal,
-    });
+    try {
+      const route = getRoute(CollectionRoute.ALL);
+      const response = await $axios.get<CollectionsResponse>(route, {
+        signal: ac.signal,
+      });
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch collection');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch collection');
+      }
+
+      return response.data;
+    } catch (error: unknown) {
+      return handleError(error, 'Failed to fetch collection');
     }
-
-    return response.data;
   };
 
   const fetchAllPaginated = async (params: PaginateDto) => {
-    const route = getRoute(CollectionRoute.BASE);
-    const response = await $axios.get<CollectionsPaginatedResponse>(route, {
-      params,
-      signal: ac.signal,
-    });
+    try {
+      const route = getRoute(CollectionRoute.BASE);
+      const response = await $axios.get<CollectionsPaginatedResponse>(route, {
+        params,
+        signal: ac.signal,
+      });
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch collection');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch collection');
+      }
+
+      return response.data;
+    } catch (error: unknown) {
+      return handleError(error, 'Failed to fetch collection');
     }
-
-    return response.data;
   };
 
   const fetchAllCollectionsFor = async (payload: {
     model: CollectionAbleModel;
   }) => {
-    const body = payload;
-    const route = getRoute(CollectionRoute.FOR);
-    const response = await $axios.post<CollectionsResponse>(route, body, {
-      signal: ac.signal,
-    });
+    try {
+      const body = payload;
+      const route = getRoute(CollectionRoute.FOR);
+      const response = await $axios.post<CollectionsResponse>(route, body, {
+        signal: ac.signal,
+      });
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch collection');
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch collection');
+      }
+
+      return response.data;
+    } catch (error: unknown) {
+      return handleError(error, 'Failed to fetch collection');
     }
-
-    return response.data;
   };
 
   const deleteCollection = async (collectionId: string) => {
@@ -135,13 +196,14 @@ export default function useCollectionService() {
         throw new Error('Failed to delete collection');
       }
       return response.data;
-    } catch (error: any) {
-      throw new Error('Failed to delete collection');
+    } catch (error: unknown) {
+      return handleError(error, 'Failed to delete collection');
     }
   };
 
   return {
     createCollection,
+    editCollection,
     fetchFirst,
     fetchAll,
     fetchAllPaginated,

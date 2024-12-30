@@ -154,9 +154,9 @@ const siderBarTabs = [
 <template>
   <div class="w-full flex justify-end">
     <div class="flex items-center space-x-4">
-      <Button @click="$router.back()" variant="outline">{{
-        $t('form.button.cancel')
-      }}</Button>
+      <Button @click="$router.back()" variant="outline">
+        {{ $t('form.button.cancel') }}
+      </Button>
       <ButtonLoading :loading="isLoading" @click="onSubmit">
         {{ $t('assistant.edit.button') }}
       </ButtonLoading>

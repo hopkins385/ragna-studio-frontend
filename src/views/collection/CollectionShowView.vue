@@ -4,7 +4,7 @@
  * Route: /collection/:id
  */
 import BoxContainer from '@/components/box/BoxContainer.vue';
-import ButtonLink from '@/components/button/ButtonLink.vue';
+import CollectionEditSheet from '@/components/collection/CollectionEditSheet.vue';
 import Heading from '@/components/heading/Heading.vue';
 import RecordAllTable from '@/components/record/RecordAllTable.vue';
 import RecordCreateModal from '@/components/record/RecordCreateModal.vue';
@@ -13,7 +13,6 @@ import SectionHeading from '@/components/section/SectionHeading.vue';
 import useCollectionService, {
   type Collection,
 } from '@/composables/services/useCollectionService';
-import { SettingsIcon } from 'lucide-vue-next';
 
 const route = useRoute();
 const refresh = ref(false);
@@ -50,19 +49,19 @@ onMounted(() => {
       <template #bottom>
         <div class="flex w-full justify-between px-3 pb-2 pt-14">
           <div></div>
-          <div class="flex flex-col space-y-2">
+          <div class="flex space-x-2">
             <RecordCreateModal
               v-if="collection"
               :collection-id="collection.id"
               @refresh="onRefresh"
             />
-            <ButtonLink
-              class="self-end"
-              :to="`/collections/${collectionId}/edit`"
-            >
-              {{ $t('collection.button.settings') }}
-              <SettingsIcon class="ml-2 size-4 stroke-2" />
-            </ButtonLink>
+            <CollectionEditSheet
+              v-if="collection"
+              :collection-id="collection.id"
+              :collection-name="collection.name"
+              :collection-description="collection.description"
+              @refresh="initCollection"
+            />
           </div>
         </div>
       </template>

@@ -88,12 +88,12 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
             <FormLabel>
               {{ $t('collection.create.form.description') }}
             </FormLabel>
-            <FormControl>
-              <Textarea v-bind="componentField" />
-            </FormControl>
             <FormDescription>
               {{ $t('collection.create.form.description_hint') }}
             </FormDescription>
+            <FormControl>
+              <Textarea v-bind="componentField" />
+            </FormControl>
             <FormMessage />
           </FormItem>
         </FormField>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useWorkflowService } from '@/composables/services/useWorkflowService';
-import useToast from '@/composables/useToast';
-import { workflowSettingsSchema } from '@/schemas/workflow-settings.schema';
+import useCollectionService from '@composables/services/useCollectionService';
+import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
 import {
   FormControl,
@@ -11,11 +10,15 @@ import {
   FormMessage,
 } from '@ui/form';
 import { Input } from '@ui/input';
-import Separator from '@ui/separator/Separator.vue';
-import { SheetContent, SheetHeader, SheetTrigger } from '@ui/sheet';
-import Sheet from '@ui/sheet/Sheet.vue';
-import SheetDescription from '@ui/sheet/SheetDescription.vue';
-import SheetTitle from '@ui/sheet/SheetTitle.vue';
+import { Separator } from '@ui/separator';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@ui/sheet';
 import { Textarea } from '@ui/textarea';
 import {
   Tooltip,
@@ -25,44 +28,55 @@ import {
 } from '@ui/tooltip';
 import { toTypedSchema } from '@vee-validate/zod';
 import { SettingsIcon } from 'lucide-vue-next';
+import { z } from 'zod';
 
-const props = defineProps<{
-  workflowId: string;
-  workflowName: string;
-  workflowDescription: string;
-}>();
+interface CollectionSettingsProps {
+  collectionId: string;
+  collectionName: string;
+  collectionDescription: string;
+}
 
-const emit = defineEmits<{
+interface CollectionSettingsEmits {
   refresh: [void];
-}>();
+}
+
+const props = defineProps<CollectionSettingsProps>();
+const emit = defineEmits<CollectionSettingsEmits>();
 
 const toast = useToast();
 
 const sheetIsOpen = ref(false);
 
-const { updateWorkflow } = useWorkflowService();
+const collectionSettingsSchema = z.object({
+  name: z.string().trim().min(3).max(255),
+  description: z.string().optional().or(z.string().min(3).max(255)),
+});
+
+const { t } = useI18n();
+const { editCollection } = useCollectionService();
 
 const { handleSubmit, resetForm } = useForm({
-  validationSchema: toTypedSchema(workflowSettingsSchema),
+  validationSchema: toTypedSchema(collectionSettingsSchema),
   initialValues: {
-    name: props.workflowName,
-    description: props.workflowDescription,
+    name: props.collectionName,
+    description: props.collectionDescription,
   },
 });
 
-const onClick = () => {
+const onSettingsButtonClick = () => {
   sheetIsOpen.value = true;
 };
 
 const onSubmit = handleSubmit(async values => {
   try {
-    await updateWorkflow(props.workflowId, {
+    await editCollection(props.collectionId, {
       name: values.name,
       description: values.description,
     });
-    toast.success({ description: 'Workflow settings updated' });
+    toast.success({ description: t('collection.settings.toast.success') });
   } catch (error) {
     console.error(error);
+    toast.error({ description: t('collection.settings.toast.error') });
   } finally {
     emit('refresh');
   }
@@ -82,14 +96,17 @@ watch(sheetIsOpen, isOpen => {
       <TooltipProvider :delay-duration="300">
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" class="group" @click="onClick">
-              <SettingsIcon
-                class="stroke-1.5 opacity-75 group-hover:opacity-100"
-              />
+            <Button
+              variant="outline"
+              size="icon"
+              class="group"
+              @click="onSettingsButtonClick"
+            >
+              <SettingsIcon class="opacity-75 group-hover:opacity-100" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p class="text-sm">{{ $t('workflow.settings.tooltip') }}</p>
+            <p class="text-sm">{{ $t('collection.settings.tooltip') }}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -102,7 +119,7 @@ watch(sheetIsOpen, isOpen => {
       <SheetHeader class="">
         <SheetTitle class="text-base flex items-center space-x-2">
           <SettingsIcon class="size-5 stroke-1.5" />
-          <span>{{ $t('workflow.settings.title') }}</span>
+          <span>{{ $t('collection.settings.title') }}</span>
         </SheetTitle>
         <SheetDescription> </SheetDescription>
       </SheetHeader>
@@ -110,12 +127,12 @@ watch(sheetIsOpen, isOpen => {
       <Separator />
       <div class="mt-10">
         <form @submit.prevent="onSubmit" class="flex flex-col space-y-4">
-          <Button variant="outline" class="self-end">{{
-            $t('workflow.settings.button.save')
-          }}</Button>
+          <Button class="self-end">
+            {{ $t('collection.settings.button.save') }}
+          </Button>
           <FormField v-slot="{ componentField }" name="name">
             <FormItem>
-              <FormLabel>{{ $t('workflow.settings.form.name') }}</FormLabel>
+              <FormLabel>{{ $t('collection.settings.form.name') }}</FormLabel>
               <FormControl>
                 <Input
                   id="wfNameInput"
@@ -130,9 +147,9 @@ watch(sheetIsOpen, isOpen => {
           </FormField>
           <FormField v-slot="{ componentField }" name="description">
             <FormItem>
-              <FormLabel>{{
-                $t('workflow.settings.form.description')
-              }}</FormLabel>
+              <FormLabel>
+                {{ $t('collection.settings.form.description') }}
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Description"

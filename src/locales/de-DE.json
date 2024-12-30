@@ -111,7 +111,7 @@
     },
     "new_password": {
       "title": "Passwort ändern",
-      "subtitle": "Dein Passwort muss mindestens 8 Zeichen lang sein und mindestens eine Zahl enthalten.",
+      "subtitle": "Dein Passwort muss mindestens 8 Zeichen lang sein und mindestens eine Zahl enthalten",
       "change": "Passwort ändern",
       "submit": "Passwort speichern",
       "current": "Aktuelles Passwort",
@@ -120,7 +120,7 @@
     },
     "delete": {
       "title": "Account löschen",
-      "description": "Bist du sicher, dass du deinen Account löschen möchtest? Dein Account wird unwiderruflich gelöscht. Alle Daten gehen verloren.",
+      "description": "Bist du sicher, dass du deinen Account löschen möchtest? Dein Account wird unwiderruflich gelöscht. Alle Daten gehen verloren",
       "confirm": "Account löschen",
       "cancel": "Abbrechen",
       "enter_password": "Bitte gib dein Passwort ein, um fortzufahren",
@@ -133,7 +133,7 @@
       "name_updated": "Name erfolgreich aktualisiert"
     },
     "tooltip": {
-      "email_info": "Mit deiner E-Mail-Adresse kannst du dich anmelden. Deine E-Mail Adresse kannst du nicht ändern."
+      "email_info": "Mit deiner E-Mail-Adresse kannst du dich anmelden. Deine E-Mail Adresse kannst du nicht ändern"
     }
   },
   "favorites": {
@@ -154,7 +154,22 @@
       },
       "button": "Wissensdatenbank erstellen",
       "toast": {
-        "success": "Wissensdatenbank erfolgreich erstellt",
+        "success": "Wissensdatenbank erstellt",
+        "error": "Ups, es ist etwas schiefgelaufen"
+      }
+    },
+    "settings": {
+      "title": "Wissensdatenbank Einstellungen",
+      "tooltip": "Einstellungen",
+      "form": {
+        "name": "Datenbankname",
+        "description": "Beschreibung"
+      },
+      "button": {
+        "save": "Speichern"
+      },
+      "toast": {
+        "success": "Einstellungen gespeichert",
         "error": "Ups, es ist etwas schiefgelaufen"
       }
     },
@@ -172,8 +187,8 @@
   "records": {},
   "record": {
     "add_file_dialog": {
-      "title": "Datei zur Sammlung hinzufügen",
-      "subtitle": "Lade zunächst eine Datei hoch, um diese zur Sammlung hinzufügen zu können"
+      "title": "Datei zur Datenbank hinzufügen",
+      "subtitle": "Lade zunächst eine Datei hoch, um diese zur Datenbank hinzufügen zu können"
     },
     "button": {
       "add_file": "Datei hinzufügen"
@@ -181,16 +196,16 @@
   },
   "workflows": {
     "title": "Agenten Workflows",
-    "subtitle": "Hier kannst du Agentenworkflows erstellen und verwalten.",
+    "subtitle": "Hier kannst du Agentenworkflows erstellen und verwalten",
     "template": {
       "title": "Workflow aus Vorlage starten",
-      "description": "Wähle eine Vorlage aus, um einen neuen Workflow zu starten."
+      "description": "Wähle eine Vorlage aus, um einen neuen Workflow zu starten"
     }
   },
   "workflow": {
     "create": {
       "title": "Workflow erstellen",
-      "description_hint": "Die Beschreibung ist insbesondere hilfreich für Agenten, die den Workflow verwenden.",
+      "description_hint": "Die Beschreibung ist insbesondere hilfreich für Agenten, die den Workflow verwenden",
       "from_file": "Von Datei erstellen",
       "button": "Workflow erstellen",
       "new_step_name": "Neuer Schritt",
@@ -263,7 +278,7 @@
       "label": "Generell"
     },
     "genai": {
-      "label": "KI Modell"
+      "label": "Ki Modell"
     },
     "behavior": {
       "label": "Verhalten",
