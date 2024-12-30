@@ -1,4 +1,6 @@
-# Build stage
+#
+# 🏡 Production Build
+#
 FROM node:22-slim AS build
 
 WORKDIR /app
@@ -15,8 +17,8 @@ COPY . .
 # Build the app
 RUN npm run build-prod
 
-# Production stage
 #
+# 🚀 Production Server
 #
 FROM nginx:alpine
 
