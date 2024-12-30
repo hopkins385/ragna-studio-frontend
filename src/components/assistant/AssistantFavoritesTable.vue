@@ -48,7 +48,6 @@ defineEmits<{
         <TableCell>{{ assistant?.title }}</TableCell>
         <TableCell>{{ assistant?.description }}</TableCell>
         <TableCell class="text-right">
-          {{ assistant.id }}
           <button
             @click="$emit('startChat', assistant.id)"
             class="text-xs border px-2 py-1 rounded-lg"

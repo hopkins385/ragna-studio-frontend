@@ -12,8 +12,8 @@ import { PlusIcon } from 'lucide-vue-next';
 <template>
   <SectionContainer>
     <SectionHeading
-      title="Knowledge Collections"
-      subtitle="Create, edit, and manage your knowledge collections"
+      :title="$t('collections.title')"
+      :subtitle="$t('collections.subtitle')"
     />
     <Heading>
       <template #top> </template>
@@ -21,7 +21,7 @@ import { PlusIcon } from 'lucide-vue-next';
         <div class="flex w-full justify-between px-3 pb-2 pt-14">
           <div></div>
           <ButtonLink class="self-end" to="/collection/create">
-            New Collection
+            {{ $t('collection.button.create') }}
             <PlusIcon class="ml-2 size-4 stroke-2" />
           </ButtonLink>
         </div>

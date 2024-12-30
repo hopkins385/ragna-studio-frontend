@@ -2,6 +2,7 @@
 /**
  * Component: ChatSettings
  */
+import { RouteName } from '@/router/enums/route-names.enum';
 import QuestionToolTip from '@components/question/QuestionToolTip.vue';
 import { useChatSettingsStore } from '@stores/chat-settings.store';
 import { Button } from '@ui/button';
@@ -28,8 +29,10 @@ const presencePenalty = false;
 
 function onEditAssistantClick() {
   if (!props.assistantId) return;
-  // navigateTo(`/assistants/${props.assistantId}/edit`);
-  router.push(`/assistant/${props.assistantId}/edit`);
+  router.push({
+    name: RouteName.ASSISTANT_EDIT,
+    params: { id: props.assistantId },
+  });
 }
 
 function onDeleteChatMessages() {

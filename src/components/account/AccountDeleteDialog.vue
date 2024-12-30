@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAccountService } from '@/composables/services/useAccountService';
+import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import { Button } from '@ui/button';
 import {
@@ -62,7 +63,7 @@ const onSubmit = handleSubmit(async ({ password }, { resetForm }) => {
     if (result.success !== true) {
       throw new Error('Failed to delete account');
     }
-    router.push('/logout');
+    router.push({ name: RouteName.LOGOUT });
   } catch (error) {
     setErrors({ password: t('account.delete.error') });
     return;

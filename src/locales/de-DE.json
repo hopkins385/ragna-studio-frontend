@@ -139,11 +139,34 @@
   "favorites": {
     "title": "Meine Favoriten"
   },
-  "collections": {},
+  "collections": {
+    "title": "Wissensdatenbanken",
+    "subtitle": "Hier kannst du Wissensdatenbanken erstellen und verwalten"
+  },
   "collection": {
+    "create": {
+      "title": "Wissensdatenbank erstellen",
+      "subtitle": "Hier kannst du eine neue Wissensdatenbank erstellen",
+      "form": {
+        "name": "Datenbankname",
+        "description": "Beschreibung",
+        "description_hint": "Die Beschreibung ist insbesondere hilfreich für Agenten, die die Wissensdatenbank verwenden"
+      },
+      "button": "Wissensdatenbank erstellen",
+      "toast": {
+        "success": "Wissensdatenbank erfolgreich erstellt",
+        "error": "Ups, es ist etwas schiefgelaufen"
+      }
+    },
     "button": {
-      "create": "Erstellen",
+      "create": "Datenbank erstellen",
+      "edit": "Datenbank bearbeiten",
+      "settings": "Einstellungen",
       "add_record": "Eintrag hinzufügen"
+    },
+    "tooltip": {
+      "view": "Anzeigen",
+      "delete": "Löschen"
     }
   },
   "records": {},
@@ -157,8 +180,8 @@
     }
   },
   "workflows": {
-    "title": "Workflows",
-    "subtitle": "Hier kannst du Workflows erstellen und verwalten.",
+    "title": "Agenten Workflows",
+    "subtitle": "Hier kannst du Agentenworkflows erstellen und verwalten.",
     "template": {
       "title": "Workflow aus Vorlage starten",
       "description": "Wähle eine Vorlage aus, um einen neuen Workflow zu starten."
@@ -306,6 +329,14 @@
     "trigger_label": "Hier klicken",
     "button": {
       "submit": "Eintragen"
+    }
+  },
+  "confirm": {
+    "title": "Bist du absolut sicher?",
+    "description": "Diese Aktion kann nicht rückgängig gemacht werden, und die Daten können nicht wiederhergestellt werden.",
+    "button": {
+      "confirm": "Ja, fortfahren",
+      "cancel": "Abbrechen"
     }
   }
 }

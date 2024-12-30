@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouteName } from '@/router/enums/route-names.enum';
 import {
   allowedMimeTypes,
   createWorkflowSchema,
@@ -78,10 +79,12 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     toast.success({
       description: t('workflow.toast.created'),
     });
-    resetForm();
+    await router.push({
+      name: RouteName.WORKFLOW_SHOW,
+      params: { id: workflow.id },
+    });
 
-    const path = `/workflow/${workflow.id}`;
-    await router.push({ path });
+    resetForm();
   } catch (error: any) {
     errorAlert.show = true;
     errorAlert.message = error.message;

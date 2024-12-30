@@ -27,16 +27,17 @@ defineEmits<{
   >
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+        <AlertDialogTitle>{{ $t('confirm.title') }}</AlertDialogTitle>
         <AlertDialogDescription>
-          This action cannot be undone. This will permanently delete the data
-          from our servers.
+          {{ $t('confirm.description') }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogCancel>
+          {{ $t('confirm.button.cancel') }}
+        </AlertDialogCancel>
         <AlertDialogAction @click="$emit('confirm', true)">
-          Continue
+          {{ $t('confirm.button.confirm') }}
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>

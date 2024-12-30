@@ -1,3 +1,4 @@
+import { RouteName } from '@/router/enums/route-names.enum';
 import { cuidSchema } from '@/schemas/cuid.schema';
 import { z } from 'zod';
 
@@ -10,7 +11,7 @@ export default function useRouteValidation() {
     });
     const res = idSchema.safeParse(params);
     if (!res.success) {
-      router.push('/404');
+      router.push({ name: RouteName.NOT_FOUND });
       return { id: null };
     }
     return res.data;

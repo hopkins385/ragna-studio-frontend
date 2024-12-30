@@ -1,13 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useForm } from 'vee-validate';
-import { toTypedSchema } from '@vee-validate/zod';
-import {
-  useUserService,
-  type User,
-} from '@/composables/services/useUserService';
-import { useNotification } from '@/composables/useNotification';
-import { updateUserSchema } from '@/schemas/user.schema';
+import { Button } from '@/components/ui/button';
 import {
   FormControl,
   FormField,
@@ -16,7 +8,13 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { useUserService } from '@/composables/services/useUserService';
+import { useNotification } from '@/composables/useNotification';
+import { RouteName } from '@/router/enums/route-names.enum';
+import { updateUserSchema } from '@/schemas/user.schema';
+import { toTypedSchema } from '@vee-validate/zod';
+import { useForm } from 'vee-validate';
+import { ref } from 'vue';
 
 const isLoading = ref(false);
 
@@ -70,7 +68,9 @@ const initUser = async () => {
     });
   } catch (error) {
     handleError(error, 'Failed to load user');
-    router.push('/users');
+    router.push({
+      name: RouteName.USER_LIST,
+    });
   } finally {
     isLoading.value = false;
   }

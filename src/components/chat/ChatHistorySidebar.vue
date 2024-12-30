@@ -1,10 +1,19 @@
 <script setup lang="ts">
 import { Button } from '@ui/button';
-import { Tooltip, TooltipContent } from '@ui/tooltip';
-import { TooltipProvider } from '@ui/tooltip';
-import { TooltipTrigger } from '@ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@ui/tooltip';
 import { History } from 'lucide-vue-next';
 
+import {
+  useChatService,
+  type ChatsPaginated,
+} from '@/composables/services/useChatService';
+import { RouteName } from '@/router/enums/route-names.enum';
+import { Separator } from '@ui/separator';
 import {
   Sheet,
   SheetContent,
@@ -13,11 +22,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@ui/sheet';
-import {
-  useChatService,
-  type ChatsPaginated,
-} from '@/composables/services/useChatService';
-import { Separator } from '@ui/separator';
 
 const data = ref<ChatsPaginated | null>(null);
 const chats = computed(() => data.value?.chats || []);
@@ -25,11 +29,13 @@ const chats = computed(() => data.value?.chats || []);
 const sheetIsOpen = ref(false);
 const sheetDisplaySide = 'left';
 
+const router = useRouter();
+
 // const chatSettingStore = useChatSettingsStore();
 
 const { fetchAllChatsPaginated } = useChatService();
 
-const onClick = () => {
+const openSheet = () => {
   sheetIsOpen.value = true;
   // chatSettingStore.setHistorySideBarOpen(true);
   initChatHistory({ page: 1, limit: 20 });
@@ -44,6 +50,10 @@ const initChatHistory = async ({
 }) => {
   data.value = await fetchAllChatsPaginated({ page, limit });
 };
+
+const navigateToChat = (chatId: string) => {
+  router.push({ name: RouteName.CHAT_SHOW, params: { id: chatId } });
+};
 </script>
 
 <template>
@@ -56,7 +66,7 @@ const initChatHistory = async ({
               variant="outline"
               size="icon"
               class="group"
-              @click="onClick"
+              @click="openSheet"
             >
               <History class="size-4 stroke-1.5 group-hover:stroke-2" />
             </Button>
@@ -86,7 +96,7 @@ const initChatHistory = async ({
             :class="{
               // 'font-semibold ': chat.id === $route.params.id.toString(),
             }"
-            @click="$router.push(`/chat/${chat.id}`)"
+            @click="() => navigateToChat(chat.id)"
           >
             <span class="text-sm">{{ chat?.title }}</span>
           </li>

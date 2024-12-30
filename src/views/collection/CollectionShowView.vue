@@ -60,7 +60,7 @@ onMounted(() => {
               class="self-end"
               :to="`/collections/${collectionId}/edit`"
             >
-              Collection Settings
+              {{ $t('collection.button.settings') }}
               <SettingsIcon class="ml-2 size-4 stroke-2" />
             </ButtonLink>
           </div>

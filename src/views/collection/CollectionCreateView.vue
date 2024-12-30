@@ -3,8 +3,11 @@
  * Collection Create - Create a new collection
  * Route: /collection/create
  */
+import { RouteName } from '@/router/enums/route-names.enum';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import SectionHeading from '@components/section/SectionHeading.vue';
+import useCollectionService from '@composables/services/useCollectionService';
+import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
 import {
   FormControl,
@@ -16,8 +19,6 @@ import {
 } from '@ui/form';
 import { Input } from '@ui/input';
 import { Textarea } from '@ui/textarea';
-import useCollectionService from '@composables/services/useCollectionService';
-import useToast from '@composables/useToast';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import * as z from 'zod';
@@ -32,6 +33,8 @@ const createCollectionSchema = toTypedSchema(
   }),
 );
 
+const { t } = useI18n();
+
 const { handleSubmit } = useForm({
   validationSchema: createCollectionSchema,
 });
@@ -45,13 +48,16 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
       description: values.description || '',
     });
     toast.success({
-      description: 'Collection created successfully',
+      description: t('collection.create.toast.success'),
     });
     resetForm();
-    router.push(`/collection/${collection.id}`);
+    router.push({
+      name: RouteName.COLLECTION_SHOW,
+      params: { id: collection.id },
+    });
   } catch (error: any) {
     toast.error({
-      description: 'Ups, something went wrong.',
+      description: t('collection.create.toast.error'),
     });
   }
 });
@@ -59,12 +65,17 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 
 <template>
   <SectionContainer>
-    <SectionHeading title="Create Collection" />
+    <SectionHeading
+      :title="$t('collection.create.title')"
+      :subtitle="$t('collection.create.subtitle')"
+    />
     <div class="rounded-lg border bg-white p-10">
       <form class="space-y-8" @submit="onSubmit">
         <FormField v-slot="{ componentField }" name="name">
           <FormItem>
-            <FormLabel> Collectionname </FormLabel>
+            <FormLabel>
+              {{ $t('collection.create.form.name') }}
+            </FormLabel>
             <FormControl>
               <Input type="text" v-bind="componentField" autocomplete="off" />
             </FormControl>
@@ -74,18 +85,22 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 
         <FormField v-slot="{ componentField }" name="description">
           <FormItem>
-            <FormLabel> Description </FormLabel>
+            <FormLabel>
+              {{ $t('collection.create.form.description') }}
+            </FormLabel>
             <FormControl>
               <Textarea v-bind="componentField" />
             </FormControl>
             <FormDescription>
-              Describe the collection in a few words.
+              {{ $t('collection.create.form.description_hint') }}
             </FormDescription>
             <FormMessage />
           </FormItem>
         </FormField>
 
-        <Button type="submit">Create Collection</Button>
+        <Button type="submit">
+          {{ $t('collection.create.button') }}
+        </Button>
       </form>
     </div>
   </SectionContainer>

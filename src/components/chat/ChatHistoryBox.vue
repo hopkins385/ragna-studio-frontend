@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { RouteName } from '@/router/enums/route-names.enum';
 import useForHumans from '@composables/useForHumans';
 
-defineProps<{
+interface ChatHistoryProps {
   id: string;
   title: string;
   createdAt: Date;
@@ -10,15 +11,23 @@ defineProps<{
     title: string;
   };
   active: boolean;
-}>();
+}
+
+const props = defineProps<ChatHistoryProps>();
+
+const router = useRouter();
 
 const { getDateTimeForHumans } = useForHumans();
+
+const onClick = () => {
+  router.push({ name: RouteName.CHAT_SHOW, params: { id: props.id } });
+};
 </script>
 
 <template>
   <div
     class="flex h-16 cursor-pointer border-0 text-xs text-muted-foreground"
-    @click="$router.push(`/chats/${id}`)"
+    @click="onClick"
   >
     <div class="size-8 shrink-0 rounded-full bg-slate-100"></div>
     <div

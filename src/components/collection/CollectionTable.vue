@@ -116,7 +116,7 @@ await initCollections();
             collection.description
           }}</TableCell>
           <TableCell>
-            {{ collection.records.length }}
+            {{ collection?.records.length }}
           </TableCell>
           <TableCell class="space-x-2 text-right">
             <TooltipProvider>
@@ -134,7 +134,9 @@ await initCollections();
                   </ButtonLink>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p class="max-w-xs text-sm">View Collection</p>
+                  <p class="max-w-xs text-sm">
+                    {{ $t('collection.tooltip.view') }}
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -153,7 +155,9 @@ await initCollections();
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p class="max-w-xs text-sm">Delete Collection</p>
+                  <p class="max-w-xs text-sm">
+                    {{ $t('collection.tooltip.delete') }}
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
