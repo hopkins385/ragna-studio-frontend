@@ -2,6 +2,7 @@
 import { useProviderIcons } from '@composables/useProviderIcons';
 
 interface AssistantDetailsProps {
+  chatTitle?: string;
   llmProvider?: string;
   llmName?: string;
   title?: string;
@@ -14,10 +15,15 @@ const { getProviderIcon } = useProviderIcons();
 
 <template>
   <div
-    class="border rounded-full px-4 py-2 max-w-xs bg-white relative flex items-center space-x-2"
+    class="border rounded-full px-4 py-2 bg-white relative flex items-center space-x-2"
   >
-    <p class="text-xs truncate">{{ title ?? 'Assistant' }} /</p>
-    <div class="flex items-center space-x-1" v-if="llmProvider">
+    <div class="text-xs flex space-x-1 truncate">
+      <p class="truncate max-w-xs">{{ chatTitle ?? 'Chat' }}</p>
+      <p class="">/</p>
+      <p class="truncate max-w-40">{{ title ?? 'Assistant' }}</p>
+      <p class="">/</p>
+    </div>
+    <div class="flex items-center space-x-1 shrink-0" v-if="llmProvider">
       <component
         :is="getProviderIcon(llmProvider)"
         class="size-4 text-slate-500"

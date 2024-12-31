@@ -87,6 +87,7 @@ useHead({
         :collections="collections"
         @refreshCollections="initCollections"
       />
+      <div v-else>Agent not found</div>
     </div>
   </SectionContainer>
 </template>

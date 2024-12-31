@@ -32,6 +32,7 @@ const {
   sendChatMessage,
   clearChatMessages,
   abortChatRequest,
+  chat,
   chatTextChunks,
   chatAssistant: assistant,
   chatMessages,
@@ -51,14 +52,12 @@ const route = useRoute();
 const chatId = route.params.id.toString();
 
 const inputMessage = ref('');
-const chatTitle = ref('');
-
 const autoScrollLocked = ref(false);
-
 const chatInputFormRef = ref<HTMLFormElement | null>(null);
 const chatBoxContainerRef = ref<HTMLElement | null>(null);
 const chatMessagesContainerRef = ref<HTMLElement | null>(null);
 
+const chatTitle = computed(() => chat.value?.title);
 const showAbortButton = computed(
   () => isThinking.value === true || isStreaming.value === true,
 );
@@ -259,6 +258,7 @@ useHead({
     <div class="absolute right-10 top-5 border-0 z-10">
       <div class="flex justify-center items-center shrink-0 space-x-5">
         <ChatAssistantDetails
+          :chat-title="chatTitle"
           :llm-provider="assistant?.llm.provider"
           :llm-name="assistant?.llm.displayName"
           :title="assistant?.title"
