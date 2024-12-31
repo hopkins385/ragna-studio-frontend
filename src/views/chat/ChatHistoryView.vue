@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Input } from '@ui/input';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import ChatHistory from '@components/chat/ChatHistory.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import SectionHeading from '@components/section/SectionHeading.vue';
 import TableSkeleton from '@components/table/TableSkeleton.vue';
+import { Input } from '@ui/input';
 
 const router = useRouter();
 const route = useRoute();
@@ -21,8 +21,8 @@ function setRoutePage(value: number) {
 <template>
   <SectionContainer>
     <SectionHeading
-      title="Chat History"
-      subtitle="Here you can see all your recent chats"
+      :title="$t('chat.history.title')"
+      :subtitle="$t('chat.history.subtitle')"
     />
     <div class="pb-6 hidden">
       <Input v-model="search" placeholder="Search chat title ..." />

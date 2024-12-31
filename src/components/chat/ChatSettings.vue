@@ -12,13 +12,16 @@ import { Slider } from '@ui/slider';
 import { Switch } from '@ui/switch';
 import { RotateCcwIcon, SlidersHorizontalIcon } from 'lucide-vue-next';
 
-const props = defineProps<{
+interface ChatSettingsProps {
   assistantId?: string | null;
-}>();
+}
 
-const emits = defineEmits<{
+interface ChatSettingsEmits {
   resetChat: [void];
-}>();
+}
+
+const props = defineProps<ChatSettingsProps>();
+const emits = defineEmits<ChatSettingsEmits>();
 
 const router = useRouter();
 

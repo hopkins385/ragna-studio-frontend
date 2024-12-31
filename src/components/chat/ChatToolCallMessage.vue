@@ -1,8 +1,10 @@
 <script setup lang="ts">
-defineProps<{
+interface ChatToolCallMessageProps {
   displayName: string;
   activeTools: any;
-}>();
+}
+
+defineProps<ChatToolCallMessageProps>();
 </script>
 
 <template>

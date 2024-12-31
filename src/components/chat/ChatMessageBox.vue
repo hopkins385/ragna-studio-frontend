@@ -1,21 +1,25 @@
 <script setup lang="ts">
 import type { ChatMessageVisionContent } from '@/composables/services/useChatService';
 import useMarkdown from '@/composables/useMarkdown';
+import type { ChatMessageRole } from '@/enums/chat-role.enum';
 import 'highlight.js/styles/stackoverflow-light.min.css';
 import ChatMessageBoxWrapper from './ChatMessageBoxWrapper.vue';
 
-defineProps<{
+interface ChatMessageBoxProps {
+  role: ChatMessageRole;
   type: 'text' | 'image' | 'video' | 'audio' | null | undefined;
   content: string;
   displayName?: string;
   visionContents?: ChatMessageVisionContent[] | null;
-}>();
+}
+
+defineProps<ChatMessageBoxProps>();
 
 const { parseMarkdown } = useMarkdown();
 </script>
 
 <template>
-  <ChatMessageBoxWrapper :display-name="displayName || ''">
+  <ChatMessageBoxWrapper :display-name="displayName || ''" :role="role">
     <div v-if="visionContents?.length">
       <div
         v-for="(visionContent, index) in visionContents"

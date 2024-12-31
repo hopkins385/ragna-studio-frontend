@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { Tooltip, TooltipContent } from '@ui/tooltip';
-import { TooltipProvider } from '@ui/tooltip';
-import { TooltipTrigger } from '@ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@ui/tooltip';
 import { SquarePen } from 'lucide-vue-next';
 import ButtonLink from '../button/ButtonLink.vue';
 </script>
@@ -15,7 +18,7 @@ import ButtonLink from '../button/ButtonLink.vue';
         </ButtonLink>
       </TooltipTrigger>
       <TooltipContent>
-        <p class="text-sm">New Chat</p>
+        <p class="text-sm">{{ $t('chat.create.tooltip.new') }}</p>
       </TooltipContent>
     </Tooltip>
   </TooltipProvider>

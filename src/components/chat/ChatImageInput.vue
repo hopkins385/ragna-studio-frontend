@@ -2,13 +2,16 @@
 import type { ChatImage } from '@/composables/chat/useChatImages';
 import { LoaderCircleIcon, XIcon } from 'lucide-vue-next';
 
-const props = defineProps<{
+interface ChatImageInputProps {
   inputImages: ChatImage[];
-}>();
+}
 
-const emit = defineEmits<{
+interface ChatImageInputEmits {
   'update:inputImages': [ChatImage[]];
-}>();
+}
+
+const props = defineProps<ChatImageInputProps>();
+const emit = defineEmits<ChatImageInputEmits>();
 
 function removeImage(index: number) {
   emit(

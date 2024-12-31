@@ -353,5 +353,26 @@
       "confirm": "Ja, fortfahren",
       "cancel": "Abbrechen"
     }
+  },
+  "chat": {
+    "title": "Chat",
+    "input": {
+      "placeholder": "Deine Nachricht..."
+    },
+    "footer": {
+      "info": "Unterhaltung mit künstlicher Intelligenz. Es kann Fehler machen. Bitte überprüfe wichtige Informationen."
+    },
+    "create": {
+      "tooltip": {
+        "new": "Neuer Chat"
+      }
+    },
+    "history": {
+      "title": "Chat Historie",
+      "subtitle": "Hier kannst du deine Chat Historie einsehen",
+      "tooltip": {
+        "show": "Historie"
+      }
+    }
   }
 }

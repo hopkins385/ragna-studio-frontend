@@ -1,38 +1,40 @@
 <script setup lang="ts">
-  import {
-    FileTextIcon,
-    GiftIcon,
-    HelpCircleIcon,
-    MapIcon,
-    ShoppingBasketIcon,
-    ShoppingCartIcon,
-    ScrollTextIcon,
-    ClipboardList,
-    CodeSquare,
-    ChefHatIcon,
-  } from 'lucide-vue-next';
+import {
+  ChefHatIcon,
+  ClipboardList,
+  CodeSquare,
+  FileTextIcon,
+  GiftIcon,
+  HelpCircleIcon,
+  MapIcon,
+  ScrollTextIcon,
+  ShoppingBasketIcon,
+  ShoppingCartIcon,
+} from 'lucide-vue-next';
 
-  defineProps<{
-    title: string;
-    iconName: string;
-  }>();
+interface ChatPresetBoxProps {
+  title: string;
+  iconName: string;
+}
 
-  function getIcon(name: string) {
-    return (
-      {
-        help: HelpCircleIcon,
-        fileText: FileTextIcon,
-        basket: ShoppingBasketIcon,
-        shopping: ShoppingCartIcon,
-        gift: GiftIcon,
-        map: MapIcon,
-        text: ScrollTextIcon,
-        clipboard: ClipboardList,
-        code: CodeSquare,
-        cook: ChefHatIcon,
-      }[name] || {}
-    );
-  }
+defineProps<ChatPresetBoxProps>();
+
+function getIcon(name: string) {
+  return (
+    {
+      help: HelpCircleIcon,
+      fileText: FileTextIcon,
+      basket: ShoppingBasketIcon,
+      shopping: ShoppingCartIcon,
+      gift: GiftIcon,
+      map: MapIcon,
+      text: ScrollTextIcon,
+      clipboard: ClipboardList,
+      code: CodeSquare,
+      cook: ChefHatIcon,
+    }[name] || {}
+  );
+}
 </script>
 
 <template>

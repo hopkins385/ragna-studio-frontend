@@ -22,15 +22,18 @@ import {
 } from '@ui/table';
 import { MessageCircleMoreIcon, Trash2Icon } from 'lucide-vue-next';
 
-const props = defineProps<{
+interface ChatHistoryProps {
   page: number;
   limit?: number;
   search?: string;
-}>();
+}
 
-const emit = defineEmits<{
+interface ChatHistoryEmits {
   'update:page': [number];
-}>();
+}
+
+const props = defineProps<ChatHistoryProps>();
+const emit = defineEmits<ChatHistoryEmits>();
 
 const data = ref<ChatsPaginated | null>(null);
 

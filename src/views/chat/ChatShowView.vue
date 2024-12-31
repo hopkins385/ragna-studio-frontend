@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ChatMessageRole } from '@/enums/chat-role.enum';
 import { chatInputTextSchema } from '@/schemas/chat-input-text.schema';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import ChatButtonNewChat from '@components/chat/ChatButtonNewChat.vue';
@@ -279,12 +280,18 @@ onBeforeUnmount(() => {
         :content="message.content"
         :vision-contents="message.visionContent"
         :display-name="message.role === 'user' ? 'User' : assistant?.title"
+        :role="
+          message.role === 'user'
+            ? ChatMessageRole.USER
+            : ChatMessageRole.ASSISTANT
+        "
       />
       <!-- thinking message -->
       <ChatMessageBox
         v-if="isThinking"
         type="text"
         :display-name="assistant?.title"
+        :role="ChatMessageRole.ASSISTANT"
         content="..."
       />
       <!-- streaming message -->
@@ -302,7 +309,7 @@ onBeforeUnmount(() => {
       />
       <!-- error message -->
       <div v-if="hasError" class="px-20 text-sm text-destructive">
-        <p class="pb-2 font-semibold">Ups, something went wrong:</p>
+        <p class="pb-2 font-semibold">{{ $t('alert.error.message') }}</p>
         <p>{{ errorMessage }}</p>
       </div>
       <div class="h-10 border-0"></div>
@@ -356,7 +363,7 @@ onBeforeUnmount(() => {
           <div class="relative z-10 max-h-96 w-full">
             <Textarea
               v-model="inputMessage"
-              placeholder="Your message..."
+              :placeholder="$t('chat.input.placeholder')"
               rows="1"
               resize="none"
               class="no-scrollbar min-h-[52px] resize-none rounded-2xl py-4 pr-14 focus:shadow-lg"
@@ -392,8 +399,7 @@ onBeforeUnmount(() => {
     <!-- Notification -->
     <div class="absolute bottom-2 left-0 w-full text-center">
       <p class="text-slate-500" style="font-size: 0.65rem">
-        Conversation with artifical intelligence. It can make mistakes. Please
-        verify important information.
+        {{ $t('chat.footer.info') }}
       </p>
     </div>
   </BoxContainer>
