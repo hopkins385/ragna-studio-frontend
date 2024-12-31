@@ -12,6 +12,7 @@ import svgLoader from 'vite-svg-loader';
 
 // https://vite.dev/config/
 export default defineConfig({
+  build: { chunkSizeWarningLimit: 1600 },
   plugins: [
     VueI18nPlugin({
       /* options */

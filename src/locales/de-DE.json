@@ -307,7 +307,22 @@
     "title": "Datei Manager",
     "subtitle": "Verbinde deine Cloud Speicher oder lade Dateien hoch"
   },
-  "media": {},
+  "media": {
+    "uploads": {
+      "title": "Dateien hochladen",
+      "subtitle": "Hier kannst du neue Dateien hochladen und deine hochgeladenen Dateien verwalten",
+      "button": {
+        "upload": "Dateien hochladen",
+        "browse": "Durchsuchen"
+      },
+      "status": {
+        "processing": "Verarbeite ..."
+      },
+      "dropzone": {
+        "drag_and_drop": "Dateien hierher ziehen oder klicken, um Dateien hochzuladen"
+      }
+    }
+  },
   "textToImages": {
     "title": "KI Bilder",
     "subtitle": "Hier kannst du KI Bilder erstellen"

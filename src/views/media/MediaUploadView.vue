@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import MediaList from '@/components/media/MediaList.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import FileDropzone from '@components/file/FileDropzone.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import SectionHeading from '@components/section/SectionHeading.vue';
-import Button from '@ui/button/Button.vue';
 import { useMediaService } from '@composables/services/useMediaService';
-import MediaList from '@/components/media/MediaList.vue';
+import Button from '@ui/button/Button.vue';
 
-const emits = defineEmits<{
+interface MediaUploadViewEmits {
   refresh: [void];
-}>();
+}
+
+defineEmits<MediaUploadViewEmits>();
 
 const router = useRouter();
 const route = useRoute();
@@ -19,6 +21,7 @@ const page = ref(1);
 const refreshData = ref(false);
 const openFileDialog = ref(false);
 
+const { t } = useI18n();
 const { dropzoneFiles, isLoading, uploadFiles } = useMediaService();
 
 function setRoutePage(value: number) {
@@ -37,47 +40,63 @@ const onSubmit = async (e: Event) => {
 
 const onRefreshData = () => {
   refreshData.value = true;
-  setTimeout(() => {
+  nextTick(() => {
     refreshData.value = false;
-  }, 0);
+  });
 };
 
 const onOpenFileDialog = () => {
   openFileDialog.value = true;
-  setTimeout(() => {
+  nextTick(() => {
     openFileDialog.value = false;
-  }, 0);
+  });
 };
 
 const onBrowseFiles = () => {
   onOpenFileDialog();
 };
+
+useHead({
+  title: t('media.uploads.title'),
+  meta: [
+    {
+      name: 'description',
+      content: t('media.uploads.description'),
+    },
+  ],
+});
 </script>
 
 <template>
   <SectionContainer class="space-y-4">
     <SectionHeading
-      title="Uploads"
-      subtitle="You can view your uploaded files below."
+      :title="t('media.uploads.title')"
+      :subtitle="t('media.uploads.subtitle')"
     />
     <BoxContainer>
       <FileDropzone
         v-model="dropzoneFiles"
+        :max-files="10"
         :open-file-dialog="openFileDialog"
       />
       <div class="flex justify-end">
         <div class="flex items-center justify-center pt-4">
-          <div v-if="isLoading" class="pr-5 text-sm">Uploading...</div>
+          <div v-if="isLoading" class="pr-5 text-sm">
+            {{ t('media.uploads.status.processing') }}
+          </div>
           <div class="flex justify-center items-center space-x-2">
             <Button
               :disabled="isLoading"
               variant="outline"
               @click.prevent="onBrowseFiles"
             >
-              Browse Files
+              {{ t('media.uploads.button.browse') }}
             </Button>
-            <Button :disabled="isLoading" @click.prevent="onSubmit">
-              Upload Files
+            <Button
+              :disabled="isLoading || !dropzoneFiles.length"
+              @click.prevent="onSubmit"
+            >
+              {{ t('media.uploads.button.upload') }}
             </Button>
           </div>
         </div>

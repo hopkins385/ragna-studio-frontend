@@ -21,7 +21,7 @@ export function useMediaService() {
   const uploadFiles = async (files: File[], vision: boolean = false) => {
     const formData = new FormData();
     files.forEach(file => {
-      formData.append('clientFiles', file);
+      formData.append('file', file);
     });
 
     // add to form vision key

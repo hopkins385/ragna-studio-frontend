@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import { useDropZone, useMouseInElement } from '@vueuse/core';
 import { FileIcon, PlusIcon, XIcon } from 'lucide-vue-next';
+import type { ZodError } from 'zod';
 import { z } from 'zod';
 
-import type { ZodError } from 'zod';
+interface FileDropzoneProps {
+  maxFiles?: number;
+  modelValue: File[];
+  openFileDialog?: boolean;
+}
 
-const MAX_FILE_SIZE = 15000000;
+interface FileDropzoneEmits {
+  'update:modelValue': [value: File[]];
+}
+
 const ACCEPTED_TYPES = [
   // pdf
   'application/pdf',
@@ -28,20 +36,16 @@ const ACCEPTED_TYPES = [
   // jpeg
   'image/jpeg',
 ];
+const MAX_FILE_SIZE = 15000000;
+const MAX_FILES = 10;
 
-const props = defineProps<{
-  modelValue: File[];
-  openFileDialog?: boolean;
-}>();
-
-const emits = defineEmits<{
-  'update:modelValue': [value: File[]];
-}>();
+const props = defineProps<FileDropzoneProps>();
+const emit = defineEmits<FileDropzoneEmits>();
 
 const dropZoneRef = ref<HTMLDivElement>();
 const fileListRef = ref<HTMLDivElement>();
 
-const errors = ref<string | null>(null);
+const errors = ref<string[] | null>(null);
 const files = ref<File[]>(props.modelValue || []);
 const { isOverDropZone } = useDropZone(dropZoneRef, onDrop);
 const { isOutside: mouseIsOutsideList } = useMouseInElement(fileListRef);
@@ -56,6 +60,10 @@ const showFileList = computed(() => {
 
 const sumSize = computed(() => {
   return files.value.reduce((acc, file) => acc + file.size, 0);
+});
+
+const fileCount = computed(() => {
+  return files.value.length;
 });
 
 const zodSchema = z.object({
@@ -75,8 +83,12 @@ const isValidFile = (file: File) => {
     !file.size ||
     !file.name ||
     !file.type ||
-    fileAlreadyInList(file)
+    fileAlreadyInList(file) ||
+    files.value.length >= MAX_FILES
   ) {
+    if (files.value.length >= MAX_FILES) {
+      errors.value = [`Maximum ${MAX_FILES} files allowed`];
+    }
     return false;
   }
   const result = zodSchema.safeParse({ file });
@@ -96,17 +108,32 @@ const fileAlreadyInList = (file: File) => {
 };
 
 function onDrop(droppedfiles: File[] | null) {
-  if (files.value) {
-    if (droppedfiles) {
-      for (const file of droppedfiles) {
-        if (!isValidFile(file)) {
-          return;
-        }
-      }
-      files.value.push(...droppedfiles);
+  if (!droppedfiles) {
+    files.value = [];
+    return;
+  }
+
+  // Check if adding files would exceed limit
+  const totalFiles = files.value
+    ? files.value.length + droppedfiles.length
+    : droppedfiles.length;
+  if (props.maxFiles && totalFiles > props.maxFiles) {
+    errors.value = [`Maximum ${props.maxFiles} files at the same time allowed`];
+    return;
+  }
+
+  // Validate individual files
+  for (const file of droppedfiles) {
+    if (!isValidFile(file)) {
+      return;
     }
+  }
+
+  // Add files
+  if (files.value) {
+    files.value.push(...droppedfiles);
   } else {
-    files.value = droppedfiles || [];
+    files.value = droppedfiles;
   }
 }
 
@@ -115,15 +142,32 @@ const onDragOver = (e: DragEvent) => {
   e.stopPropagation();
 };
 
-const onClick = () => {
+const onClickDropzone = () => {
   if (fileListRef.value && !mouseIsOutsideList.value) return;
+
+  if (props.maxFiles && files.value && files.value.length >= props.maxFiles) {
+    errors.value = [`Maximum ${props.maxFiles} files at the same time allowed`];
+    return;
+  }
+
   const input = document.createElement('input');
   input.multiple = true;
   input.type = 'file';
   input.onchange = (e: Event) => {
     const target = e.target as HTMLInputElement;
     if (target.files) {
+      const totalFiles = files.value
+        ? files.value.length + target.files.length
+        : target.files.length;
       const selectedFiles = Array.from(target.files);
+
+      if (props.maxFiles && totalFiles > props.maxFiles) {
+        errors.value = [
+          `Maximum ${props.maxFiles} files at the same time allowed`,
+        ];
+        return;
+      }
+
       for (const file of selectedFiles) {
         if (!isValidFile(file)) {
           return;
@@ -142,13 +186,17 @@ const fileSizeToMB = (size: number) => {
 watch(
   () => files.value,
   files => {
-    emits('update:modelValue', files);
+    emit('update:modelValue', files);
   },
 );
 
 watch(
   () => props.modelValue,
   value => {
+    if (!value.length) {
+      files.value = [];
+      errors.value = null;
+    }
     files.value = value;
   },
 );
@@ -157,7 +205,7 @@ watch(
   () => props.openFileDialog,
   value => {
     if (value) {
-      onClick();
+      onClickDropzone();
     }
   },
 );
@@ -167,7 +215,7 @@ watch(
   <div
     ref="dropZoneRef"
     class="group relative flex min-h-[200px] w-full cursor-pointer flex-col items-center justify-center overflow-y-auto rounded-xl border p-5"
-    @click="onClick"
+    @click="onClickDropzone"
   >
     <div
       v-if="sumSize > 0"
@@ -199,13 +247,12 @@ watch(
     </div>
     <div v-else class="flex h-full items-center justify-center text-center">
       <div
-        class="flex w-40 flex-col items-center justify-center space-y-2 rounded-lg border-0 border-dashed border-slate-300 p-5 text-slate-400"
+        class="flex w-60 flex-col items-center justify-center space-y-2 rounded-lg border-0 border-dashed border-slate-300 p-5 opacity-75"
       >
         <FileIcon class="size-6 stroke-1.5" />
         <span class="text-sm">
-          Click here or<br />
-          Drag & Drop</span
-        >
+          {{ $t('media.uploads.dropzone.drag_and_drop') }}
+        </span>
       </div>
     </div>
     <div
