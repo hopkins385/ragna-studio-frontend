@@ -11,11 +11,23 @@ const route = useRoute();
 const page = ref(route.query.page ? parseInt(route.query.page as string) : 1);
 const search = ref('');
 
+const { t } = useI18n();
+
 function setRoutePage(value: number) {
   page.value = value;
   const query = { ...route.query, page: value.toString() };
   router.push({ query });
 }
+
+useHead({
+  title: t('chat.history.title'),
+  meta: [
+    {
+      name: 'description',
+      content: t('chat.history.subtitle'),
+    },
+  ],
+});
 </script>
 
 <template>

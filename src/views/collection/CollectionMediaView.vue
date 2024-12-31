@@ -1,5 +1,5 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div></div>
+  <div>Please come back later</div>
 </template>

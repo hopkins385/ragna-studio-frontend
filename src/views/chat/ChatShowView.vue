@@ -21,13 +21,11 @@ import { Textarea } from '@ui/textarea';
 import { PaperclipIcon, SendIcon, SquareIcon } from 'lucide-vue-next';
 import ChatAssistantDetails from './ChatAssistantDetails.vue';
 
-useHead({
-  title: 'Chat',
-});
-
 const socket = useWebsocketGlobal();
 const chatStore = useChatStore();
 const settings = useChatSettingsStore();
+
+const { t } = useI18n();
 
 const {
   initChat,
@@ -227,6 +225,16 @@ onMounted(() => {
 onBeforeUnmount(() => {
   socket.off(`chat-${chatId}-tool-start-event`, setActiveTool);
   socket.off(`chat-${chatId}-tool-end-event`, unsetActiveTool);
+});
+
+useHead({
+  title: t('chat.title'),
+  meta: [
+    {
+      name: 'description',
+      content: t('chat.subtitle'),
+    },
+  ],
 });
 </script>
 

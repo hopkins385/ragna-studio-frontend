@@ -35,15 +35,18 @@ import {
   Workflow,
 } from 'lucide-vue-next';
 
-const props = defineProps<{
+interface AssistantEditFormProps {
   assistant: Assistant;
   assistantTools: AssistantTool[];
   collections: Collection[];
-}>();
+}
 
-const emits = defineEmits<{
+interface AssistantEditFormEmits {
   refreshCollections: [void];
-}>();
+}
+
+const props = defineProps<AssistantEditFormProps>();
+const emit = defineEmits<AssistantEditFormEmits>();
 
 const authStore = useAuthStore();
 const toast = useToast();
@@ -115,7 +118,7 @@ async function updateCollection(collectionId: string) {
   await replaceCollectionTo(collectionId, { model });
   // update assistant has collections
   await updateHasKnowledgeBase(props.assistant.id, true);
-  emits('refreshCollections');
+  emit('refreshCollections');
   toast.success({
     description: 'Collection updated successfully',
   });
@@ -129,7 +132,7 @@ async function resetCollections() {
   await detachAllCollectionsFrom({ model });
   // update assistant does not has collections
   await updateHasKnowledgeBase(props.assistant.id, false);
-  emits('refreshCollections');
+  emit('refreshCollections');
   toast.success({
     description: 'Collection updated successfully',
   });
@@ -155,10 +158,10 @@ const siderBarTabs = [
   <div class="w-full flex justify-end">
     <div class="flex items-center space-x-4">
       <Button @click="$router.back()" variant="outline">
-        {{ $t('form.button.cancel') }}
+        {{ $t('form.button.back') }}
       </Button>
       <ButtonLoading :loading="isLoading" @click="onSubmit">
-        {{ $t('assistant.edit.button') }}
+        {{ $t('form.button.save') }}
       </ButtonLoading>
     </div>
   </div>
@@ -196,7 +199,7 @@ const siderBarTabs = [
     </template>
     <template #tab2>
       <!-- TAB 2-->
-      <FormField v-slot="{ handleChange, value }" name="llmId">
+      <FormField v-slot="{ handleChange }" name="llmId">
         <FormItem>
           <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
           <FormControl>
@@ -230,7 +233,7 @@ const siderBarTabs = [
     </template>
     <!-- TAB 4 -->
     <template #tab4>
-      <FormField v-slot="{ handleChange, value }" name="collectionId">
+      <FormField v-slot="{ handleChange }" name="collectionId">
         <FormItem>
           <FormLabel>{{ $t('assistant.knowledge.label') }}</FormLabel>
           <FormDescription>

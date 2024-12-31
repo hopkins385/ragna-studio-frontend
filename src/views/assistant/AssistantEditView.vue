@@ -17,6 +17,7 @@ const collections = ref<Collection[]>([]);
 const route = useRoute();
 const assistantId = route.params.id.toString();
 
+const { t } = useI18n();
 const { fetchAssistant } = useAssistantService();
 const { fetchAllTools } = useAssistantToolsService();
 const { fetchAllCollectionsFor } = useCollectionService();
@@ -59,6 +60,16 @@ onMounted(() => {
   initAssistant();
   initAssistantTools();
   initCollections();
+});
+
+useHead({
+  title: t('assistant.edit.title'),
+  meta: [
+    {
+      name: 'description',
+      content: t('assistant.edit.subtitle'),
+    },
+  ],
 });
 </script>
 

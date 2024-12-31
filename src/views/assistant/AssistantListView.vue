@@ -21,6 +21,18 @@ function setRoutePage(value: number) {
   const query = { ...route.query, page: value.toString() };
   router.push({ query });
 }
+
+const { t } = useI18n();
+
+useHead({
+  title: t('assistants.title'),
+  meta: [
+    {
+      name: 'description',
+      content: t('assistants.subtitle'),
+    },
+  ],
+});
 </script>
 
 <template>

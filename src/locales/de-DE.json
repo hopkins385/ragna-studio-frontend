@@ -55,7 +55,8 @@
       "delete": "Löschen",
       "update": "Aktualisieren",
       "done": "Fertig",
-      "settings": "Einstellungen"
+      "settings": "Einstellungen",
+      "back": "Zurück"
     },
     "file_input": {
       "label": "Eine Datei auswählen",
@@ -144,6 +145,7 @@
     "subtitle": "Hier kannst du Wissensdatenbanken erstellen und verwalten"
   },
   "collection": {
+    "title": "Wissensdatenbank",
     "create": {
       "title": "Wissensdatenbank erstellen",
       "subtitle": "Hier kannst du eine neue Wissensdatenbank erstellen",
@@ -301,6 +303,15 @@
       "description": "Wähle die Privatsphäre Einstellungen für den Agenten"
     }
   },
+  "medias": {
+    "title": "Datei Manager",
+    "subtitle": "Verbinde deine Cloud Speicher oder lade Dateien hoch"
+  },
+  "media": {},
+  "textToImages": {
+    "title": "KI Bilder",
+    "subtitle": "Hier kannst du KI Bilder erstellen"
+  },
   "auth": {
     "or": "oder",
     "email": "Email",
@@ -365,6 +376,28 @@
     "create": {
       "tooltip": {
         "new": "Neuer Chat"
+      }
+    },
+    "settings": {
+      "title": "Chat Einstellungen",
+      "tooltip": {
+        "settings": "Einstellungen"
+      },
+      "button": {
+        "edit_assistant": "Agent bearbeiten",
+        "reset_chat": "Chat zurücksetzen"
+      },
+      "temperature": {
+        "title": "Temperatur",
+        "description": "Die Temperatur steuert die Kreativität der Antworten. Eine höhere Temperatur führt zu kreativeren Antworten, während eine niedrigere Temperatur zu weniger kreativen Antworten führt."
+      },
+      "max_tokens": {
+        "title": "Maximale Tokens",
+        "description": "Die maximal erlaubte Anzahl von Tokens, die von der KI generiert werden können. Eine niedrigere Anzahl von Tokens ist insbesondere hilfreich, um das KI Modell daran zu hindern übermäßig viele Tokens zu generieren. Ist die maximale Anzahl von Tokens erreicht, wird die Antwort abgeschnitten."
+      },
+      "on_enter_submit": {
+        "title": "Mit Enter senden",
+        "description": "Wenn aktiviert, wird die Nachricht gesendet, wenn die Enter-Taste gedrückt wird. Andernfalls wird eine neue Zeile hinzugefügt."
       }
     },
     "history": {

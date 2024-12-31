@@ -20,6 +20,7 @@ const refresh = ref(false);
 const collectionId = route.params.id.toString();
 const collection = ref<Collection | null>(null);
 
+const { t } = useI18n();
 const { fetchFirst } = useCollectionService();
 
 const initCollection = async () => {
@@ -35,6 +36,16 @@ async function onRefresh() {
 
 onMounted(() => {
   initCollection();
+});
+
+useHead({
+  title: t('collection.title'),
+  meta: [
+    {
+      name: 'description',
+      content: t('collection.subtitle'),
+    },
+  ],
 });
 </script>
 

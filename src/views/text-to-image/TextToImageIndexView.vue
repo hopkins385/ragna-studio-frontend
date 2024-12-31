@@ -21,6 +21,8 @@ const imageUrls = ref<string[] | null>(null);
 const promptFormRef = ref<HTMLFormElement | null>(null);
 
 const settings = useImgGenSettingsStore();
+
+const { t } = useI18n();
 const { generateImages, fetchFolders, toggleHideRun } = useTextToImageService();
 
 async function generateImage(submitPrompt: string) {
@@ -185,6 +187,16 @@ onUnmounted(() => {
   if (observer) {
     observer.disconnect();
   }
+});
+
+useHead({
+  title: t('textToImages.title'),
+  meta: [
+    {
+      name: 'description',
+      content: t('textToImages.subtitle'),
+    },
+  ],
 });
 </script>
 

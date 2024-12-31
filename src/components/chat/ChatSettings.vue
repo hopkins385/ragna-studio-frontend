@@ -52,9 +52,10 @@ function onDeleteChatMessages() {
         />
       </Button>
     </PopoverTrigger>
+
     <PopoverContent align="end" class="mt-1 w-60 text-sm">
       <div class="flex items-center justify-between">
-        <span>Chat Settings</span>
+        <span>{{ $t('chat.settings.title') }}</span>
         <button @click="settings.resetSettings()">
           <RotateCcwIcon class="size-3 opacity-60" />
         </button>
@@ -75,7 +76,7 @@ function onDeleteChatMessages() {
         class="w-full"
         @click="onEditAssistantClick"
       >
-        Edit Assistant
+        {{ $t('chat.settings.button.edit_assistant') }}
       </Button>
       <Separator class="my-3" />
       <Button
@@ -84,16 +85,16 @@ function onDeleteChatMessages() {
         class="w-full hover:text-destructive"
         @click="onDeleteChatMessages"
       >
-        Reset Chat
+        {{ $t('chat.settings.button.reset_chat') }}
       </Button>
       <Separator class="my-3" />
       <div class="my-5 flex flex-col space-y-4">
         <div class="flex w-full justify-between">
           <div>
-            Temperature
+            {{ $t('chat.settings.temperature.title') }}
             <QuestionToolTip
-              title="$t('chat.settings.temperature.title')"
-              content="$t('chat.settings.temperature.description')"
+              :title="$t('chat.settings.temperature.title')"
+              :content="$t('chat.settings.temperature.description')"
             />
           </div>
           <div>{{ settings.getTemperature }}</div>
@@ -130,10 +131,10 @@ function onDeleteChatMessages() {
       <div class="mb-5 flex flex-col space-y-4">
         <div class="flex w-full justify-between">
           <div>
-            Max Tokens
+            {{ $t('chat.settings.max_tokens.title') }}
             <QuestionToolTip
-              title="$t('chat.settings.maxTokens.title')"
-              content="$t('chat.settings.maxTokens.description')"
+              :title="$t('chat.settings.max_tokens.title')"
+              :content="$t('chat.settings.max_tokens.description')"
             />
           </div>
           <div>{{ settings.getMaxTokens }}</div>
@@ -148,10 +149,10 @@ function onDeleteChatMessages() {
       </div>
       <div class="flex flex-col">
         <div>
-          On Enter Submit
+          {{ $t('chat.settings.on_enter_submit.title') }}
           <QuestionToolTip
-            title="$t('chat.settings.onEnterSubmit.title')"
-            content="$t('chat.settings.onEnterSubmit.description')"
+            :title="$t('chat.settings.on_enter_submit.title')"
+            :content="$t('chat.settings.on_enter_submit.description')"
           />
         </div>
         <Switch

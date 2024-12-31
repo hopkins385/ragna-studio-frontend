@@ -12,6 +12,7 @@ import { useForm } from 'vee-validate';
 
 const router = useRouter();
 
+const { t } = useI18n();
 const { createAssistant } = useAssistantService();
 const authStore = useAuthStore();
 const toast = useToast();
@@ -63,6 +64,16 @@ const getTools = async () => {
 };
 
 onMounted(() => getTools());
+
+useHead({
+  title: t('assistant.create.title'),
+  meta: [
+    {
+      name: 'description',
+      content: t('assistant.create.subtitle'),
+    },
+  ],
+});
 </script>
 
 <template>

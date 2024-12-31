@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useProviderIcons } from '@composables/useProviderIcons';
 
-defineProps<{
+interface AssistantDetailsProps {
   llmProvider?: string;
   llmName?: string;
   title?: string;
-}>();
+}
+
+defineProps<AssistantDetailsProps>();
 
 const { getProviderIcon } = useProviderIcons();
 </script>

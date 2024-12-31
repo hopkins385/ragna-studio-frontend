@@ -61,6 +61,16 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     });
   }
 });
+
+useHead({
+  title: t('collection.create.title'),
+  meta: [
+    {
+      name: 'description',
+      content: t('collection.create.subtitle'),
+    },
+  ],
+});
 </script>
 
 <template>

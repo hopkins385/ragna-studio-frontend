@@ -7,6 +7,18 @@ import SectionContainer from '@/components/section/SectionContainer.vue';
 import SectionHeading from '@/components/section/SectionHeading.vue';
 import TableSkeleton from '@/components/table/TableSkeleton.vue';
 import { PlusIcon } from 'lucide-vue-next';
+
+const { t } = useI18n();
+
+useHead({
+  title: t('collections.title'),
+  meta: [
+    {
+      name: 'description',
+      content: t('collections.subtitle'),
+    },
+  ],
+});
 </script>
 
 <template>

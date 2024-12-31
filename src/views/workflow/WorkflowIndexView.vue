@@ -7,6 +7,18 @@ import SectionHeading from '@components/section/SectionHeading.vue';
 import TableSkeleton from '@components/table/TableSkeleton.vue';
 import WorkflowListAll from '@components/workflow/WorkflowListAll.vue';
 import { PlusIcon } from 'lucide-vue-next';
+
+const { t } = useI18n();
+
+useHead({
+  title: t('workflows.title'),
+  meta: [
+    {
+      name: 'description',
+      content: t('workflows.subtitle'),
+    },
+  ],
+});
 </script>
 
 <template>

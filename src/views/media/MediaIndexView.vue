@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import LogoMicrosoftOnedrive from '~icons/logos/microsoft-onedrive';
-import LogoGoogleDrive from '~icons/logos/google-drive';
-import FluentEmojiFlatFileFolder from '~icons/fluent-emoji-flat/file-folder';
+import BoxContainer from '@/components/box/BoxContainer.vue';
 import SectionContainer from '@/components/section/SectionContainer.vue';
 import SectionHeading from '@/components/section/SectionHeading.vue';
-import BoxContainer from '@/components/box/BoxContainer.vue';
+import FluentEmojiFlatFileFolder from '~icons/fluent-emoji-flat/file-folder';
+import LogoGoogleDrive from '~icons/logos/google-drive';
+import LogoMicrosoftOnedrive from '~icons/logos/microsoft-onedrive';
 
 const router = useRouter();
+
+const { t } = useI18n();
 
 const getOneDriveAuthUrl = async () => {
   const result = await fetch('/api/onedrive/consent');
@@ -18,13 +20,23 @@ const onAddOneDrive = async () => {
   if (!url) return;
   window.open(url, '_blank');
 };
+
+useHead({
+  title: t('medias.title'),
+  meta: [
+    {
+      name: 'description',
+      content: t('medias.subtitle'),
+    },
+  ],
+});
 </script>
 
 <template>
   <SectionContainer>
     <SectionHeading
-      title="File Manager"
-      subtitle="Connect your cloud storage or upload files"
+      :title="t('medias.title')"
+      :subtitle="t('medias.subtitle')"
     />
     <BoxContainer>
       <ul class="max-w-sm space-y-5">
