@@ -6,15 +6,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@ui/table';
 
-defineProps<{
+interface AssistantFavoriteProps {
   assistants: any[];
-}>();
+}
 
-defineEmits<{
+interface AssistantFavoriteEmits {
   startChat: [string];
-}>();
+}
+
+defineProps<AssistantFavoriteProps>();
+defineEmits<AssistantFavoriteEmits>();
 </script>
 
 <template>
@@ -52,7 +55,7 @@ defineEmits<{
             @click="$emit('startChat', assistant.id)"
             class="text-xs border px-2 py-1 rounded-lg"
           >
-            Start Chat
+            {{ $t('chat.button.start') }}
           </button>
         </TableCell>
       </TableRow>

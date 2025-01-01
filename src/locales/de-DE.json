@@ -382,6 +382,9 @@
   },
   "chat": {
     "title": "Chat",
+    "button": {
+      "start": "Chat starten"
+    },
     "input": {
       "placeholder": "Deine Nachricht..."
     },
