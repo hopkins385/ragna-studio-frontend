@@ -1,5 +1,5 @@
-import { useChatStore } from '@/stores/chat.store';
-import { useMediaService } from '../services/useMediaService';
+import { useMediaService } from '@composables/services/useMediaService';
+import { useChatStore } from '@stores/chat-inference.store';
 
 export interface ChatImage {
   src: string;

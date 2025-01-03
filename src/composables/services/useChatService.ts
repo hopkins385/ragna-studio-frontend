@@ -1,9 +1,9 @@
 import { $axios } from '@/axios/axiosInstance';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
+import { useChatStore } from '@/stores/chat-inference.store';
 import { useChatSettingsStore } from '@/stores/chat-settings.store';
 import { getRoute } from '@/utils/route.util';
-import { useChatStore } from '@stores/chat.store';
 
 enum ChatRoute {
   BASE = 'chat', // POST

@@ -18,7 +18,7 @@ import {
 import type { LargeLangModel } from '@/composables/services/interfaces/large-lang-model.interface';
 import { useLlmService } from '@/composables/services/useLlmService';
 import { cn } from '@/lib/utils';
-import { useChatStore } from '@/stores/chat.store';
+import { useChatStore } from '@/stores/chat-inference.store';
 
 const { getAllModels } = useLlmService();
 

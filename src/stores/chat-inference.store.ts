@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia';
 
-export const useChatStore = defineStore('chatStore', {
+interface ISetModelPayload {
+  model: string;
+  provider: string;
+  hasVision: boolean;
+}
+
+export const useChatStore = defineStore('chat-inference-store', {
   state: () => ({
     modelWithVision: false,
     model: '',
@@ -17,7 +23,7 @@ export const useChatStore = defineStore('chatStore', {
     setOnlyProvider(provider: string) {
       this.provider = provider;
     },
-    setModel(payload: { model: string; provider: string; hasVision: boolean }) {
+    setModel(payload: ISetModelPayload) {
       this.model = payload.model;
       this.provider = payload.provider;
       this.modelWithVision = payload.hasVision || false;

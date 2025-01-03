@@ -1,13 +1,13 @@
 <script setup lang="ts">
 // const homeImageSrc = '@/assets/images/home.jpg&q=100&format=webp&imagetools';
-import imageUrl from '@/assets/images/bg_1.jpeg?q=100&format=webp&imagetools';
+import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
 import HomeFavorites from '@/components/home/HomeFavorites.vue';
 import { Bot, Workflow } from 'lucide-vue-next';
 
 const backgroundStyles = computed(() => {
   return {
-    backgroundImage: `linear-gradient(rgba(0,0,0,.20),rgba(0,0,0,.20)), url('${imageUrl}')`,
-    // backgroundImage: `linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0.2)), url('${imageUrl}')`,
+    // backgroundImage: `linear-gradient(rgba(0,0,0,.20),rgba(0,0,0,.20)), url('${imageUrl}')`,
+    backgroundImage: `linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)), url('${imageUrl}')`,
     backgroundSize: 'cover',
     // opacity: 0.4,
   };
@@ -15,7 +15,8 @@ const backgroundStyles = computed(() => {
 </script>
 
 <template>
-  <div class="">
+  <!-- Home View   -->
+  <div class="bg-gradient-to-b from-blue-50 to-white h-full">
     <div class="p-3 overflow-hidden">
       <div
         class="bg-blue-200 p-5 bg-center flex items-center h-60 rounded-xl overflow-hidde"

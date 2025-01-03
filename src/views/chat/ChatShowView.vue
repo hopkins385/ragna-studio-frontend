@@ -15,7 +15,7 @@ import { useChatService } from '@composables/services/useChatService';
 import { useChatTools } from '@composables/useChatTools';
 import { useWebsocketGlobal } from '@composables/websocket/useWebsocketGlobal';
 import { useChatSettingsStore } from '@stores/chat-settings.store';
-import { useChatStore } from '@stores/chat.store';
+import { useChatStore } from '@/stores/chat-inference.store';
 import { Button } from '@ui/button';
 import { Textarea } from '@ui/textarea';
 import { PaperclipIcon, SendIcon, SquareIcon } from 'lucide-vue-next';

@@ -5,9 +5,6 @@ interface IChatSettings {
   presencePenalty: [number];
   maxTokens: [number];
   submitOnEnter: boolean;
-  sideBarOpen: boolean;
-  newChatModalOpen: boolean;
-  historySideBarOpen: boolean;
 }
 
 export const useChatSettingsStore = defineStore('chat-settings', {
@@ -16,9 +13,6 @@ export const useChatSettingsStore = defineStore('chat-settings', {
     presencePenalty: [0],
     maxTokens: [4000],
     submitOnEnter: true,
-    sideBarOpen: false,
-    newChatModalOpen: false,
-    historySideBarOpen: false,
   }),
   getters: {
     getTemperature(state) {
@@ -40,18 +34,6 @@ export const useChatSettingsStore = defineStore('chat-settings', {
     },
     setMaxTokens(maxTokens: [number]) {
       this.maxTokens = maxTokens;
-    },
-    toggleSideBarOpen() {
-      this.sideBarOpen = !this.sideBarOpen;
-    },
-    toggleNewChatModalOpen() {
-      this.newChatModalOpen = !this.newChatModalOpen;
-    },
-    toggleHistorySideBarOpen() {
-      this.historySideBarOpen = !this.historySideBarOpen;
-    },
-    setHistorySideBarOpen(value: boolean) {
-      this.historySideBarOpen = value;
     },
     resetSettings() {
       this.temperature = [80];
