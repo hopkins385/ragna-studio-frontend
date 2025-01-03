@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import NavTopBar from '@/components/nav/NavTopBar.vue';
-import { useWebsocketGlobal } from '@/composables/websocket/useWebsocketGlobal';
+import NavTopBar from '@components/nav/NavTopBar.vue';
+import { useWebsocketGlobal } from '@composables/websocket/useWebsocketGlobal';
 import { RouteName } from '@/router/enums/route-names.enum';
-import { useAuthStore } from '@/stores/auth.store';
+import { useAuthStore } from '@stores/auth.store';
 import NavBar from '@components/nav/NavBar.vue';
 import { Toaster } from '@components/ui/sonner';
+import DrawerPanel from '@components/drawer/DrawerPanel.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -69,9 +70,11 @@ onUnmounted(() => {
     <div class="flex overflow-hidden" style="height: calc(100vh - 3.5rem)">
       <!-- Toast -->
       <Toaster position="top-right" />
-      <!-- NavBar -->
+      <!-- Nav SideBar -->
       <NavBar />
-      <!-- Main  mr-2 mb-2 -->
+      <!-- Drawer -->
+      <DrawerPanel />
+      <!-- Main -->
       <div
         id="main"
         class="relative grow overflow-y-scroll overflow-x-hidden text-slate-800 bg-white shadow-lg border-l border-t rounded-xl"

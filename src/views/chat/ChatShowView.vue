@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import ChatHistoryDrawerButton from '@/components/chat/ChatHistoryDrawerButton.vue';
 import { ChatMessageRole } from '@/enums/chat-role.enum';
 import { chatInputTextSchema } from '@/schemas/chat-input-text.schema';
+import { useChatStore } from '@/stores/chat-inference.store';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import ChatButtonNewChat from '@components/chat/ChatButtonNewChat.vue';
-import ChatHistorySidebar from '@components/chat/ChatHistorySidebar.vue';
 import ChatImageInput from '@components/chat/ChatImageInput.vue';
 import ChatMessageBox from '@components/chat/ChatMessageBox.vue';
 import ChatMessageChunk from '@components/chat/ChatMessageChunk.vue';
@@ -15,7 +16,6 @@ import { useChatService } from '@composables/services/useChatService';
 import { useChatTools } from '@composables/useChatTools';
 import { useWebsocketGlobal } from '@composables/websocket/useWebsocketGlobal';
 import { useChatSettingsStore } from '@stores/chat-settings.store';
-import { useChatStore } from '@/stores/chat-inference.store';
 import { Button } from '@ui/button';
 import { Textarea } from '@ui/textarea';
 import { PaperclipIcon, SendIcon, SquareIcon } from 'lucide-vue-next';
@@ -241,17 +241,14 @@ useHead({
   <BoxContainer
     id="chatWrapper"
     ref="chatBoxContainerRef"
-    class="relative flex size-full flex-col border-0 px-10 pb-8 pt-16"
-    :class="{
-      'md:px-20 2xl:px-40': !settings.sideBarOpen,
-    }"
+    class="relative flex size-full flex-col border-0 px-32 pb-8 pt-16"
   >
     <!-- chat header -->
     <!-- left quick controls -->
     <div class="absolute left-7 top-5 border-0 z-10">
       <div class="space-y-3 border-0 flex flex-col p-2 rounded-lg">
         <ChatButtonNewChat />
-        <ChatHistorySidebar />
+        <ChatHistoryDrawerButton />
       </div>
     </div>
     <!-- right quick controls -->

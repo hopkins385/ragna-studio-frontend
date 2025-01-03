@@ -20,5 +20,5 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>Please come back later</div>
+  <div></div>
 </template>
