@@ -87,14 +87,14 @@ onMounted(async () => {
 
 <template>
   <div class="flex space-x-4">
-    <div class="rounded-xl bg-white h-96 w-full border p-6">
+    <div class="rounded-xl w-full p-6">
       <div class="pb-3 flex items-center space-x-2">
-        <Star class="size-4 stroke-1.5" />
-        <h2 class="text-sm font-semibold">
+        <Star class="size-6 stroke-1.5" />
+        <h2 class="text-2xl font-semibold">
           {{ $t('favorites.title') }}
         </h2>
       </div>
-      <div>
+      <div class="">
         <AssistantFavoritesTable
           :assistants="favoriteAssistants"
           @start-chat="onStartChat"
@@ -102,10 +102,10 @@ onMounted(async () => {
       </div>
     </div>
     <div class="grid grid-cols-2 gap-3 shrink-0">
-      <div class="bg-white rounded-2xl size-52 border"></div>
-      <div class="bg-white rounded-2xl size-52 border"></div>
-      <div class="bg-white rounded-2xl size-52 border"></div>
-      <div class="bg-white rounded-2xl size-52 border"></div>
+      <div class="bg-stone-50 rounded-2xl size-52"></div>
+      <div class="bg-stone-50 rounded-2xl size-52"></div>
+      <div class="bg-stone-50 rounded-2xl size-52"></div>
+      <div class="bg-stone-50 rounded-2xl size-52"></div>
     </div>
   </div>
   <!--

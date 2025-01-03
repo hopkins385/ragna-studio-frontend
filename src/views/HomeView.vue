@@ -2,12 +2,13 @@
 // const homeImageSrc = '@/assets/images/home.jpg&q=100&format=webp&imagetools';
 import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
 import HomeFavorites from '@/components/home/HomeFavorites.vue';
+import HomeQuickAccess from '@/components/home/HomeQuickAccess.vue';
 import { Bot, Workflow } from 'lucide-vue-next';
 
 const backgroundStyles = computed(() => {
   return {
     // backgroundImage: `linear-gradient(rgba(0,0,0,.20),rgba(0,0,0,.20)), url('${imageUrl}')`,
-    backgroundImage: `linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)), url('${imageUrl}')`,
+    backgroundImage: `linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.3)), url('${imageUrl}')`,
     backgroundSize: 'cover',
     // opacity: 0.4,
   };
@@ -16,20 +17,26 @@ const backgroundStyles = computed(() => {
 
 <template>
   <!-- Home View   -->
-  <div class="bg-gradient-to-b from-blue-50 to-white h-full">
-    <div class="p-3 overflow-hidden">
+  <div class="h-full">
+    <div class="p-4 overflow-hidden">
       <div
-        class="bg-blue-200 p-5 bg-center flex items-center h-60 rounded-xl overflow-hidde"
+        class="bg-blue-200 p-5 bg-center flex items-center h-44 rounded-xl overflow-hidde"
         :style="backgroundStyles"
       >
         <!-- Image Overlay -->
         <div
-          class="hidden h-40 border w-96 bg-white/60 rounded-lg backdrop-blur-xs"
-        ></div>
+          class="hidden h-20 border-0 w-full flex items-center justify-center"
+        >
+          <p class="text-4xl text-white font-semibold">
+            Was gestaltest du heute?
+          </p>
+        </div>
       </div>
     </div>
+    <!-- Home Quick Access  -->
+    <HomeQuickAccess />
     <!-- Home Favorites  -->
-    <div class="p-3 pt-1">
+    <div class="p-4">
       <div class="space-y-4">
         <HomeFavorites />
         <div class="w-full border p-5 rounded-xl bg-white hidden">
