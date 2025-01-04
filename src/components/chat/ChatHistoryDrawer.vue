@@ -2,24 +2,27 @@
 import useForHumans from '@/composables/useForHumans';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { RouteName } from '@/router/enums/route-names.enum';
-import { useDrawerStore } from '@/stores/drawer.store';
 import {
   useChatService,
   type ChatsPaginated,
 } from '@composables/services/useChatService';
+import {
+  groupByOptions,
+  useChatSettingsStore,
+  type GroupByOption,
+} from '@stores/chat-settings.store';
+import { useDrawerStore } from '@stores/drawer.store';
 import { Button } from '@ui/button';
 import { Separator } from '@ui/separator';
 import { CalendarIcon, XIcon } from 'lucide-vue-next';
 
-const groupByOptions = ['day', 'month', 'year'] as const;
-type GroupByOption = (typeof groupByOptions)[number];
-
-const data = ref<ChatsPaginated | null>(null);
-const selectedGroupBy = ref<GroupByOption>('day');
-const chats = computed(() => data.value?.chats || []);
-
 const router = useRouter();
 const drawer = useDrawerStore();
+const chatSettings = useChatSettingsStore();
+
+const data = ref<ChatsPaginated | null>(null);
+const selectedGroupBy = ref<GroupByOption>(chatSettings.getHistoryGroupBy);
+const chats = computed(() => data.value?.chats || []);
 
 const { fetchAllChatsPaginated } = useChatService();
 
@@ -69,6 +72,7 @@ const toggleGroupBy = () => {
   const currentIndex = groupByOptions.indexOf(selectedGroupBy.value);
   const nextIndex = (currentIndex + 1) % groupByOptions.length;
   selectedGroupBy.value = groupByOptions[nextIndex];
+  chatSettings.setHistoryGroupBy(selectedGroupBy.value);
 };
 
 // watch route changes and if the route changes away from anything different than the chat show path, close the drawer

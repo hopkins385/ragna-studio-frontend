@@ -1,10 +1,14 @@
 import { defineStore } from 'pinia';
 
+export const groupByOptions = ['day', 'month', 'year'] as const;
+export type GroupByOption = (typeof groupByOptions)[number];
+
 interface IChatSettings {
   temperature: [number];
   presencePenalty: [number];
   maxTokens: [number];
   submitOnEnter: boolean;
+  historyGroupBy: GroupByOption;
 }
 
 export const useChatSettingsStore = defineStore('chat-settings', {
@@ -13,6 +17,7 @@ export const useChatSettingsStore = defineStore('chat-settings', {
     presencePenalty: [0],
     maxTokens: [4000],
     submitOnEnter: true,
+    historyGroupBy: 'day',
   }),
   getters: {
     getTemperature(state) {
@@ -24,6 +29,9 @@ export const useChatSettingsStore = defineStore('chat-settings', {
     getMaxTokens(state) {
       return state.maxTokens[0];
     },
+    getHistoryGroupBy(state) {
+      return state.historyGroupBy;
+    },
   },
   actions: {
     setTemperature(temperature: [number]) {
@@ -34,6 +42,9 @@ export const useChatSettingsStore = defineStore('chat-settings', {
     },
     setMaxTokens(maxTokens: [number]) {
       this.maxTokens = maxTokens;
+    },
+    setHistoryGroupBy(groupBy: GroupByOption) {
+      this.historyGroupBy = groupBy;
     },
     resetSettings() {
       this.temperature = [80];
