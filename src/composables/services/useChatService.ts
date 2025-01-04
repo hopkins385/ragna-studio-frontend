@@ -155,7 +155,7 @@ export function useChatService() {
       }
 
       return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       return handleError(error, 'Failed to create chat');
     }
   };
@@ -180,7 +180,7 @@ export function useChatService() {
       }
       addChatMessage(response.data);
       //
-    } catch (error: any) {
+    } catch (error: unknown) {
       return handleError(error, 'Failed to create chat message');
     }
   };
@@ -206,7 +206,7 @@ export function useChatService() {
 
     try {
       await createChatMessage({ chatId, message: chatMessage });
-    } catch (error: any) {
+    } catch (error: unknown) {
       return handleError(error, 'Failed to send chat message');
     }
 
@@ -278,7 +278,7 @@ export function useChatService() {
           }
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof Error && error.name === 'AbortError') {
         return;
       }
@@ -312,7 +312,7 @@ export function useChatService() {
       }
 
       return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       return handleError(error, 'Failed to fetch chats');
     }
   };
@@ -330,8 +330,8 @@ export function useChatService() {
       }
 
       return response.data;
-    } catch (error: any) {
-      return handleError('Failed to fetch chats');
+    } catch (error: unknown) {
+      return handleError(error, 'Failed to fetch chats');
     }
   };
 
@@ -346,7 +346,7 @@ export function useChatService() {
       }
       return response.data;
       //
-    } catch (error: any) {
+    } catch (error: unknown) {
       return handleError(error, 'Failed to fetch latest chat');
     }
   };
@@ -364,7 +364,7 @@ export function useChatService() {
       if (response.status !== 200) {
         throw new Error('Failed to delete chat messages');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       return handleError(error, 'Failed to delete chat messages');
     }
   };
@@ -381,7 +381,7 @@ export function useChatService() {
       if (response.status !== 200) {
         throw new Error('Failed to delete chat');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       return handleError(error, 'Failed to delete chat');
     }
   };
@@ -407,7 +407,7 @@ export function useChatService() {
         signal: ac.signal,
       });
       if (response.status !== 200) {
-        throw new Error('Failed to fetch chat');
+        throw new Error('Invalid response');
       }
       chat.value = response.data.chat;
       chatStore.setModel({
@@ -419,7 +419,7 @@ export function useChatService() {
       isPending.value = false;
       isStreaming.value = false;
       initChatMessages(chat.value?.messages || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       return handleError(error, 'Failed to fetch chat');
     }
   };
