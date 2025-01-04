@@ -8,23 +8,19 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@ui/alert-dialog';
 
-defineProps<{
-  modelValue: boolean;
-}>();
-
-defineEmits<{
-  'update:modelValue': [boolean];
+interface ConfirmDialogEmits {
   confirm: [boolean];
-}>();
+}
+
+const modelValue = defineModel<boolean>();
+
+defineEmits<ConfirmDialogEmits>();
 </script>
 
 <template>
-  <AlertDialog
-    :open="modelValue"
-    @update:open="(val: boolean) => $emit('update:modelValue', val)"
-  >
+  <AlertDialog v-model:open="modelValue">
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>{{ $t('confirm.title') }}</AlertDialogTitle>

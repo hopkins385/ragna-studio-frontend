@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@ui/alert';
 import { AlertCircleIcon, XIcon } from 'lucide-vue-next';
 
-defineProps<{
-  modelValue: boolean;
+interface ErrorAlertProps {
   message: string;
-}>();
+}
 
-defineEmits<{
-  'update:modelValue': [boolean];
-}>();
+defineProps<ErrorAlertProps>();
+
+const modelValue = defineModel<boolean>();
 </script>
 
 <template>
