@@ -25,7 +25,8 @@ const backgroundStyles = computed(() => {
       >
         <!-- Image Overlay -->
         <div
-          class="hidden h-20 border-0 w-full flex items-center justify-center"
+          v-if="false"
+          class="h-20 border-0 w-full flex items-center justify-center"
         >
           <p class="text-4xl text-white font-semibold">
             Was gestaltest du heute?

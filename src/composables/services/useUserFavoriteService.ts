@@ -4,11 +4,11 @@ import { getRoute } from '@/utils/route.util';
 export interface UserFavorite {
   favoriteId: string;
   favoriteType: string;
-  detail?: {
-    id?: string;
-    title?: string;
-    name?: string;
-    description?: string;
+  detail: {
+    id: string;
+    title: string;
+    name: string;
+    description: string;
   };
 }
 

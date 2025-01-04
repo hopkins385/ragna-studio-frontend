@@ -26,15 +26,15 @@ import {
   Trash2Icon,
 } from 'lucide-vue-next';
 
+const page = defineModel<number>('page');
+
 const props = defineProps<{
-  page: number;
   limit?: number;
   search?: string;
 }>();
 
 const emit = defineEmits<{
   newChat: [string];
-  'update:page': [number];
 }>();
 
 const router = useRouter();
@@ -79,7 +79,7 @@ const handleDelete = async () => {
     toast.success({
       description: 'Assistant has been deleted.',
     });
-    await initAllAssistants({ page: props.page });
+    await initAllAssistants({ page: page.value ?? 1 });
   } catch (error: any) {
     errorAlert.show = true;
     errorAlert.message = error?.message;
@@ -102,9 +102,9 @@ const onDelete = (id: string) => {
   showConfirmDialog.value = true;
 };
 
-const onUpdatePage = async (page: number) => {
-  emit('update:page', page);
-  await initAllAssistants({ page });
+const onUpdatePage = async (currentPage: number) => {
+  page.value = currentPage;
+  await initAllAssistants({ page: currentPage });
 };
 
 watch(
@@ -122,13 +122,14 @@ const { addFavorite, deleteFavorite, fetchAllFavoritesByType } =
 const onAddFavorite = async (assistantId: string) => {
   try {
     await addFavorite({ id: assistantId, type: 'assistant' });
-    toast.success({
-      description: 'Assistant has been added to favorites.',
-    });
     await initAssistantFavorites();
-  } catch (error: any) {
+  } catch (error: unknown) {
     errorAlert.show = true;
-    errorAlert.message = error?.message;
+    if (error instanceof Error) {
+      errorAlert.message = error.message;
+    } else {
+      errorAlert.message = 'An error occurred';
+    }
   }
 };
 
@@ -138,13 +139,14 @@ const onDeleteFavorite = async (assistantId: string) => {
   ).id;
   try {
     await deleteFavorite({ entityId, favoriteType: 'assistant' });
-    toast.success({
-      description: 'Assistant has been removed from favorites.',
-    });
     await initAssistantFavorites();
-  } catch (error: any) {
+  } catch (error: unknown) {
     errorAlert.show = true;
-    errorAlert.message = error?.message;
+    if (error instanceof Error) {
+      errorAlert.message = error.message;
+    } else {
+      errorAlert.message = 'An error occurred';
+    }
   }
 };
 
@@ -153,7 +155,7 @@ const initAssistantFavorites = async () => {
   assistantFavorites.value = all;
 };
 
-await initAllAssistants({ page: props.page });
+await initAllAssistants({ page: page.value ?? 1 });
 await initAssistantFavorites();
 </script>
 
@@ -254,7 +256,7 @@ await initAssistantFavorites();
     <!-- Pagination Controls -->
     <PaginateControls
       v-if="meta.totalCount > 10"
-      :page="page"
+      :page="page || 1"
       :meta="meta"
       :limit="10"
       @update:page="onUpdatePage"

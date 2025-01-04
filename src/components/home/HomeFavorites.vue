@@ -6,7 +6,6 @@ import {
 } from '@/composables/services/useUserFavoriteService';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { Star } from 'lucide-vue-next';
-import AssistantFavoritesTable from '../assistant/AssistantFavoritesTable.vue';
 
 /*
 Example of the response from the fetchAllFavorites method:
@@ -54,6 +53,9 @@ const favoriteAssistants = computed(() => {
       .map(fav => fav.detail) ?? []
   );
 });
+const hasFavoriteAssistants = computed(
+  () => favoriteAssistants.value.length > 0,
+);
 const favoriteWorkflows = computed(() => {
   return (
     myFavorites.value
@@ -87,25 +89,50 @@ onMounted(async () => {
 
 <template>
   <div class="flex space-x-4">
-    <div class="rounded-xl w-full p-6">
-      <div class="pb-3 flex items-center space-x-2">
+    <div v-if="hasFavoriteAssistants" class="rounded-xl w-full p-6">
+      <div class="pb-4 flex items-center space-x-2">
         <Star class="size-6 stroke-1.5" />
         <h2 class="text-2xl font-semibold">
           {{ $t('favorites.title') }}
         </h2>
       </div>
-      <div class="">
+      <div class="overflow-hidden w-full relative">
+        <div
+          id="endGradient"
+          class="absolute right-0 top-0 w-2 h-full bg-gradient-to-l from-white/80 to-transparent"
+        ></div>
+        <div class="flex space-x-2 overflow-x-auto no-scrollbar w-full">
+          <div
+            v-for="fav in favoriteAssistants"
+            :key="fav.id"
+            class="bg-stone-100 shrink-0 rounded-2xl w-72 h-40 p-4 flex space-x-2"
+          >
+            <div>
+              <div class="rounded-xl h-full w-24 bg-stone-200"></div>
+            </div>
+            <div class="py-1 flex flex-col justify-between w-36">
+              <div class="space-y-1">
+                <p class="text-sm font-medium truncate">{{ fav?.title }}</p>
+                <p class="text-xs truncate">{{ fav?.description }}</p>
+              </div>
+              <div>
+                <button
+                  @click="() => onStartChat(fav.id)"
+                  class="text-xs border px-2 py-1 rounded-lg hover:shadow-md"
+                >
+                  {{ $t('chat.button.start') }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--
         <AssistantFavoritesTable
           :assistants="favoriteAssistants"
           @start-chat="onStartChat"
         />
+        -->
       </div>
-    </div>
-    <div class="grid grid-cols-2 gap-3 shrink-0">
-      <div class="bg-stone-50 rounded-2xl size-52"></div>
-      <div class="bg-stone-50 rounded-2xl size-52"></div>
-      <div class="bg-stone-50 rounded-2xl size-52"></div>
-      <div class="bg-stone-50 rounded-2xl size-52"></div>
     </div>
   </div>
   <!--
