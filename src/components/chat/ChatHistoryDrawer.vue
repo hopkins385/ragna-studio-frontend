@@ -27,10 +27,6 @@ const initChatHistory = async ({ page, limit }: PaginateDto) => {
   data.value = await fetchAllChatsPaginated({ page, limit });
 };
 
-const navigateToChat = (chatId: string) => {
-  router.push({ name: RouteName.CHAT_SHOW, params: { id: chatId } });
-};
-
 const { getDateForHumans } = useForHumans();
 
 const groupedChats = computed(() => {
@@ -148,17 +144,18 @@ Example API response
             {{ chatGroup.date }}
           </div>
         </div>
-        <ul class="">
-          <li
-            v-for="chat in chatGroup.chats"
-            :key="chat.id"
-            class="cursor-pointer hover:bg-stone-200 py-2 rounded-lg truncate"
-            :class="{
-              // 'font-semibold ': chat.id === $route.params.id.toString(),
-            }"
-            @click="() => navigateToChat(chat.id)"
-          >
-            <span class="text-sm">{{ chat?.title }}</span>
+        <ul>
+          <li v-for="chat in chatGroup.chats" :key="chat.id">
+            <router-link
+              :title="chat.title"
+              :to="{ name: RouteName.CHAT_SHOW, params: { id: chat.id } }"
+              class="cursor-pointer hover:bg-stone-200 rounded-lg block py-2 truncate"
+              :class="{
+                'font-semibold': chat.id === $route.params.id?.toString(),
+              }"
+            >
+              <span class="text-sm">{{ chat.title }}</span>
+            </router-link>
           </li>
         </ul>
       </div>
