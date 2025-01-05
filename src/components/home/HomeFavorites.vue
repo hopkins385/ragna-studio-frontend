@@ -63,6 +63,7 @@ const favoriteWorkflows = computed(() => {
       .map(fav => fav.detail) ?? []
   );
 });
+const hasFavoriteWorkflows = false; // computed(() => favoriteWorkflows.value.length > 0);
 
 const router = useRouter();
 
@@ -88,8 +89,53 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex space-x-4">
+  <div class="flex flex-col">
     <div v-if="hasFavoriteAssistants" class="rounded-xl w-full p-6">
+      <div class="pb-4 flex items-center space-x-2">
+        <Star class="size-6 stroke-1.5" />
+        <h2 class="text-2xl font-semibold">
+          {{ $t('favorites.title') }}
+        </h2>
+      </div>
+      <div class="overflow-hidden w-full relative">
+        <div
+          id="endGradient"
+          class="absolute right-0 top-0 w-2 h-full bg-gradient-to-l from-white/80 to-transparent"
+        ></div>
+        <div class="flex space-x-2 overflow-x-auto no-scrollbar w-full pb-2">
+          <div
+            v-for="fav in favoriteAssistants"
+            :key="fav.id"
+            class="bg-stone-50 border border-stone-100 shrink-0 rounded-2xl w-96 h-36 p-4 flex space-x-2 hover:shadow-md"
+          >
+            <div>
+              <div class="rounded-xl h-full w-24 bg-stone-200/50"></div>
+            </div>
+            <div class="py-1 flex flex-col justify-between w-52">
+              <div class="space-y-1">
+                <p class="text-sm font-medium truncate">{{ fav?.title }}</p>
+                <p class="text-xs truncate">{{ fav?.description }}</p>
+              </div>
+              <div>
+                <button
+                  @click="() => onStartChat(fav.id)"
+                  class="text-xs border px-2 py-1 rounded-lg hover:bg-stone-200"
+                >
+                  {{ $t('chat.button.start') }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--
+        <AssistantFavoritesTable
+          :assistants="favoriteAssistants"
+          @start-chat="onStartChat"
+        />
+        -->
+      </div>
+    </div>
+    <div v-if="hasFavoriteWorkflows" class="rounded-xl w-full p-6">
       <div class="pb-4 flex items-center space-x-2">
         <Star class="size-6 stroke-1.5" />
         <h2 class="text-2xl font-semibold">
@@ -105,10 +151,10 @@ onMounted(async () => {
           <div
             v-for="fav in favoriteAssistants"
             :key="fav.id"
-            class="bg-stone-100 shrink-0 rounded-2xl w-72 h-40 p-4 flex space-x-2"
+            class="bg-stone-50 shrink-0 rounded-2xl w-96 h-36 p-4 flex space-x-2"
           >
             <div>
-              <div class="rounded-xl h-full w-24 bg-stone-200"></div>
+              <div class="rounded-xl h-full w-24 bg-stone-200/50"></div>
             </div>
             <div class="py-1 flex flex-col justify-between w-36">
               <div class="space-y-1">

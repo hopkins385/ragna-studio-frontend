@@ -14,36 +14,43 @@ const { t } = useI18n();
 const quickAccessItems = [
   {
     icon: BotIcon,
+    class: 'text-blue-600',
     label: t('nav.agents'),
     route: '/assistant',
   },
   {
     icon: WorkflowIcon,
+    class: 'text-green-600',
     label: t('nav.workflows'),
     route: '/workflow',
   },
   {
     icon: MessagesSquareIcon,
+    class: 'text-amber-600',
     label: t('nav.chat'),
     route: '/chat',
   },
   {
     icon: ImageIcon,
+    class: 'text-violet-600',
     label: t('nav.text_to_image'),
     route: '/text-to-image',
   },
   {
     icon: DatabaseIcon,
+    class: 'text-slate-600',
     label: t('nav.collections'),
     route: '/collection',
   },
   {
     icon: CloudUploadIcon,
+    class: 'text-indigo-600',
     label: t('nav.uploads'),
     route: '/media/upload',
   },
   {
     icon: LayoutTemplateIcon,
+    class: 'text-cyan-600',
     label: t('nav.agent_templates'),
     route: '/templates',
   },
@@ -63,7 +70,8 @@ const quickAccessItems = [
       >
         <component
           :is="item.icon"
-          class="size-5 stroke-1.5 group-hover:stroke-2"
+          class="size-6 stroke-1.5 group-hover:stroke-2"
+          :class="item.class"
         />
       </div>
       <p class="text-xs font-medium">{{ item.label }}</p>

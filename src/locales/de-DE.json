@@ -5,6 +5,8 @@
     "agents": "Agenten",
     "agent_templates": "Vorlagen",
     "chat": "Chat",
+    "chats": "Chats",
+    "last_chat": "Letzter Chat",
     "textToImage": "KI Bilder",
     "text_to_image": "Bild Generator",
     "collections": "Datenbanken",
@@ -426,6 +428,12 @@
       "tooltip": {
         "show": "Historie"
       }
+    }
+  },
+  "templates": {
+    "assistants": {
+      "title": "Vorlagen",
+      "subtitle": "Hier kannst du Agent Vorlagen erstellen und verwalten"
     }
   }
 }

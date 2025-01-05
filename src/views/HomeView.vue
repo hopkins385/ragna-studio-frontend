@@ -1,9 +1,10 @@
 <script setup lang="ts">
 // const homeImageSrc = '@/assets/images/home.jpg&q=100&format=webp&imagetools';
 import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
+import HomeAgentTemplates from '@/components/home/HomeAgentTemplates.vue';
 import HomeFavorites from '@/components/home/HomeFavorites.vue';
 import HomeQuickAccess from '@/components/home/HomeQuickAccess.vue';
-import { Bot, Workflow } from 'lucide-vue-next';
+import { Workflow } from 'lucide-vue-next';
 
 const backgroundStyles = computed(() => {
   return {
@@ -38,44 +39,9 @@ const backgroundStyles = computed(() => {
     <HomeQuickAccess />
     <!-- Home Favorites  -->
     <div class="p-4">
-      <div class="space-y-4">
+      <div class="">
         <HomeFavorites />
-        <div class="w-full border p-5 rounded-xl bg-white hidden">
-          <div class="pb-3 flex space-x-2">
-            <Bot class="size-4 stroke-1.5 mt-1" />
-            <div>
-              <h2 class="text-sm font-semibold">
-                {{ $t('agents.template.title') }}
-              </h2>
-              <p class="text-xs opacity-75">
-                {{ $t('agents.template.description') }}
-              </p>
-            </div>
-          </div>
-          <div class="grid grid-cols-3 gap-5">
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-          </div>
-        </div>
+        <HomeAgentTemplates />
         <div class="w-full border p-5 rounded-2xl bg-white hidden">
           <div class="pb-3 flex space-x-2">
             <Workflow class="size-4 stroke-1.5 mt-1" />
