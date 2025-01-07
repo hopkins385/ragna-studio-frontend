@@ -44,7 +44,7 @@ const onUploadFileClick = () => {
         <PlusIcon class="ml-2 size-4 stroke-2" />
       </Button>
     </DialogTrigger>
-    <DialogContent class="max-w-4xl">
+    <DialogContent class="max-w-4xl overflow-y-scroll max-h-[calc(100vh-4rem)]">
       <DialogHeader>
         <DialogTitle>
           {{ $t('record.add_file_dialog.title') }}

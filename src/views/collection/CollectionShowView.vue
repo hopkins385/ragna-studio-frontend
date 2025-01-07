@@ -3,16 +3,16 @@
  * Collection Index - Show a collection
  * Route: /collection/:id
  */
-import BoxContainer from '@/components/box/BoxContainer.vue';
-import CollectionEditSheet from '@/components/collection/CollectionEditSheet.vue';
-import Heading from '@/components/heading/Heading.vue';
-import RecordAllTable from '@/components/record/RecordAllTable.vue';
-import RecordCreateModal from '@/components/record/RecordCreateModal.vue';
-import SectionContainer from '@/components/section/SectionContainer.vue';
-import SectionHeading from '@/components/section/SectionHeading.vue';
+import BoxContainer from '@components/box/BoxContainer.vue';
+import CollectionEditSheet from '@components/collection/CollectionEditSheet.vue';
+import Heading from '@components/heading/Heading.vue';
+import RecordAllTable from '@components/record/RecordAllTable.vue';
+import RecordCreateModal from '@components/record/RecordCreateModal.vue';
+import SectionContainer from '@components/section/SectionContainer.vue';
+import SectionHeading from '@components/section/SectionHeading.vue';
 import useCollectionService, {
   type Collection,
-} from '@/composables/services/useCollectionService';
+} from '@composables/services/useCollectionService';
 
 const route = useRoute();
 const refresh = ref(false);

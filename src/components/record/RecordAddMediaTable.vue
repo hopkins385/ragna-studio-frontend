@@ -110,9 +110,14 @@ async function onAdd(id: string) {
   }
 }
 
-function setPage(page: number) {
-  page = page;
+function setPage(newPage: number) {
+  page.value = newPage;
 }
+
+watch(page, () => {
+  initRecords();
+  initMedia();
+});
 
 onMounted(() => {
   initRecords();
