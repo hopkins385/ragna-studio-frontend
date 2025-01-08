@@ -27,7 +27,7 @@ import messages from '@intlify/unplugin-vue-i18n/messages';
 const i18n = createI18n({
   legacy: false,
   locale: 'de-DE',
-  fallbackLocale: 'en-UK',
+  // fallbackLocale: 'en-UK',
   messages,
 });
 

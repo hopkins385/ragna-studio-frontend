@@ -358,7 +358,8 @@
       "terms_required": "Bitte akzeptiere die Nutzungsbedingungen",
       "required": "Dieses Feld ist erforderlich",
       "code_required": "Einladungscode erforderlich",
-      "code_invalid": "Ungültiger Einladungscode"
+      "code_invalid": "Ungültiger Einladungscode",
+      "invalid_credentials": "Benutzername oder Passwort falsch"
     }
   },
   "onboard": {

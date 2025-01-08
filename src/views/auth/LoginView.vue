@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { UnauthorizedError } from '@/common/errors/unauthorized.error';
 import BrandHeader from '@/components/brand/BrandHeader.vue';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import {
@@ -14,7 +15,6 @@ import { RouteName } from '@/router/enums/route-names.enum';
 import { loginFormSchema } from '@/schemas/loginForm.schema';
 import { useAuthStore } from '@/stores/auth.store';
 import { toTypedSchema } from '@vee-validate/zod';
-import { AxiosError } from 'axios';
 import { useForm } from 'vee-validate';
 import LogosGoogleIcon from '~icons/logos/google-icon';
 
@@ -22,8 +22,9 @@ const authStore = useAuthStore();
 const router = useRouter();
 const formLoading = ref(false);
 
-const authError = ref<string | null>(null);
+const { t } = useI18n();
 
+const authError = ref<string | null>(null);
 const form = useForm({
   validationSchema: toTypedSchema(loginFormSchema),
   initialValues: {
@@ -40,14 +41,13 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
     await authStore.login({ email, password });
     await router.push({ name: RouteName.HOME });
   } catch (error) {
-    if (error instanceof AxiosError) {
-      if (error.response?.status === 401) {
-        authError.value = 'Invalid email or password';
-        resetForm();
-        return;
-      }
-    }
     console.error(error);
+    if (error instanceof UnauthorizedError) {
+      authError.value = t('auth.error.invalid_credentials');
+    } else {
+      authError.value = 'An error occurred';
+    }
+    resetForm();
   } finally {
     formLoading.value = false;
   }

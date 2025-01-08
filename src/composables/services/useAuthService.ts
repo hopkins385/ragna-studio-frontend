@@ -1,7 +1,9 @@
 // authService.ts
 import { $axios } from '@/axios/axiosInstance';
+import { UnauthorizedError } from '@/common/errors/unauthorized.error';
 import type { GoogleAuthCallbackQuery } from '@/interfaces/auth/google-auth-callback.interface';
 import { getRoute } from '@/utils/route.util';
+import { AxiosError } from 'axios';
 
 enum AuthRoute {
   LOGIN = 'auth/login', // POST
@@ -58,23 +60,37 @@ class AuthServiceError extends Error {
 export function useAuthService() {
   const ac = new AbortController();
 
-  const handleError = (err: unknown, customMessage?: string) => {
-    if (err instanceof Error) {
+  const handleError = (err: unknown) => {
+    if (err instanceof AxiosError) {
+      switch (err.response?.status) {
+        case 401:
+          throw new UnauthorizedError('Invalid credentials');
+        case 403:
+          throw new AuthServiceError('User is not verified');
+        case 404:
+          throw new AuthServiceError('User not found');
+        default:
+          throw new AuthServiceError('Unknown error');
+      }
     }
-    console.error(err);
-    throw new AuthServiceError(customMessage || 'Failed to fetch data');
+
+    throw new AuthServiceError('Unknown error');
   };
 
-  const loginUser = async (body: AuthCredentials): Promise<TokensResponse> => {
+  const loginUser = async (body: AuthCredentials) => {
     try {
       const route = getRoute(AuthRoute.LOGIN);
       const response = await $axios.post<TokensResponse>(route, body, {
         signal: ac.signal,
       });
-      if (response.status !== 200) throw new Error('Login failed');
+
+      if (response.status !== 200) {
+        throw new Error('Failed to login user');
+      }
+
       return response.data;
     } catch (error) {
-      return handleError('Failed to login user');
+      return handleError(error);
     }
   };
 
@@ -86,7 +102,7 @@ export function useAuthService() {
         signal: ac.signal,
       });
     } catch (error) {
-      return handleError('Failed to logout user');
+      return handleError(error);
     }
   };
 
@@ -110,21 +126,23 @@ export function useAuthService() {
 
       return response.data;
     } catch (error) {
-      return handleError('Failed to register user');
+      return handleError(error);
     }
   };
 
-  const refreshTokens = async (): Promise<TokensResponse> => {
+  const refreshTokens = async () => {
     try {
       const body = {};
       const route = getRoute(AuthRoute.REFRESH);
       const response = await $axios.post<TokensResponse>(route, body, {
         signal: ac.signal,
       });
-      if (response.status !== 201) throw new Error('Failed to refresh token');
+      if (response.status !== 201) {
+        throw new Error('Failed to refresh token');
+      }
       return response.data;
     } catch (error) {
-      return handleError('Failed to refresh tokens');
+      return handleError(error);
     }
   };
 
@@ -143,7 +161,7 @@ export function useAuthService() {
 
       return response.data;
     } catch (error) {
-      return handleError('Failed to fetch social auth url');
+      return handleError(error);
     }
   };
 
@@ -167,7 +185,7 @@ export function useAuthService() {
 
       return response.data;
     } catch (error) {
-      return handleError('Failed to authenticate with Google');
+      return handleError(error);
     }
   };
 
