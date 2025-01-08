@@ -13,7 +13,7 @@ import { PlusIcon, UploadCloudIcon } from 'lucide-vue-next';
 import RecordAddMediaTable from './RecordAddMediaTable.vue';
 
 defineProps<{
-  collectionId: string | undefined;
+  collectionId: string;
 }>();
 
 const emits = defineEmits<{

@@ -4,6 +4,9 @@ import {
   type RecordsPaginatedResponse,
 } from '@/composables/services/useRecordService';
 import useToast from '@/composables/useToast';
+import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
+import PaginateControls from '@components/pagniate/PaginateControls.vue';
+import TableMetaCaption from '@components/table/TableMetaCaption.vue';
 import { Button } from '@ui/button';
 import {
   TableBody,
@@ -20,9 +23,6 @@ import {
   TooltipTrigger,
 } from '@ui/tooltip';
 import { FileIcon, LoaderIcon, Trash2Icon } from 'lucide-vue-next';
-import ConfirmDialog from '../confirm/ConfirmDialog.vue';
-import PaginateControls from '../pagniate/PaginateControls.vue';
-import TableMetaCaption from '../table/TableMetaCaption.vue';
 
 const props = defineProps<{
   collectionId: string | undefined;
@@ -38,8 +38,9 @@ const { fetchAllPaginated, deleteRecord } = useRecordService();
 
 const initRecords = async () => {
   if (!props.collectionId) return;
-  data.value = await fetchAllPaginated(props.collectionId, {
-    page: page.value,
+  data.value = await fetchAllPaginated({
+    collectionId: props.collectionId,
+    params: { page: page.value },
   });
 };
 

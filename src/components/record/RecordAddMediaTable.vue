@@ -3,10 +3,7 @@ import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
 import { useMediaService } from '@composables/services/useMediaService';
-import {
-  useRecordService,
-  type RecordsPaginatedResponse,
-} from '@composables/services/useRecordService';
+import { useRecordService } from '@composables/services/useRecordService';
 import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
 import { useAuthStore } from '@stores/auth.store';
@@ -21,6 +18,14 @@ import {
 } from '@ui/table';
 import { CheckIcon, FileIcon, Loader2Icon, PlusIcon } from 'lucide-vue-next';
 
+interface IMediaData {
+  medias: any[];
+  meta: {
+    totalCount: number;
+    currentPage: number;
+  };
+}
+
 const props = defineProps<{
   collectionId: string | undefined;
 }>();
@@ -29,7 +34,7 @@ const emits = defineEmits<{
   success: [void];
 }>();
 
-const { fetchAllPaginated, createRecord } = useRecordService();
+const { fetchAll, createRecord } = useRecordService();
 const { fetchAllMediaFor } = useMediaService();
 const { getFileSizeForHumans } = useForHumans();
 
@@ -41,38 +46,30 @@ const page = ref(1);
 const errorAlert = reactive({ show: false, message: '' });
 const pendingUpdateId = ref<string | null>(null);
 
-const mediaData = ref<any | null>(null);
-
-const medias = computed(() => mediaData.value?.medias || []);
-const meta = computed(() => {
-  return {
-    totalCount: mediaData.value?.meta?.totalCount || 0,
-    currentPage: mediaData.value?.meta?.currentPage || 0,
-  };
+const mediaData = reactive<IMediaData>({
+  medias: [],
+  meta: {
+    totalCount: 0,
+    currentPage: 0,
+  },
 });
 
-const recordData = ref<RecordsPaginatedResponse | null>(null);
+const allRecords = ref<any[]>([]);
 
-const records = computed(() => recordData.value?.records || []);
-const recordsLength = computed(() => records.value.length);
-const recordsMeta = computed(() => {
-  return {
-    totalCount: recordData.value?.meta?.totalCount || 0,
-    currentPage: recordData.value?.meta?.currentPage || 0,
-  };
+const allRecordsMediaIds = computed(() => {
+  return allRecords.value.map(record => record.media.id);
 });
 
-const mediaIds = computed(
-  () => records.value?.map(record => record.media?.id) || [],
-);
-
-const initRecords = async () => {
+const initAllRecords = async () => {
   if (!props.collectionId) {
     throw new Error('Collection ID is required');
   }
-  recordData.value = await fetchAllPaginated(props.collectionId, {
-    page: page.value,
+
+  const data = await fetchAll({
+    collectionId: props.collectionId.toString(),
   });
+
+  allRecords.value = data.records;
 };
 
 const initMedia = async () => {
@@ -83,9 +80,15 @@ const initMedia = async () => {
     id: authStore.user.id,
     type: 'user',
   };
-  mediaData.value = await fetchAllMediaFor(userModel, {
+  const data = await fetchAllMediaFor(userModel, {
     page: page.value,
   });
+
+  mediaData.medias = data.medias;
+  mediaData.meta = {
+    totalCount: data.meta.totalCount,
+    currentPage: data.meta.currentPage,
+  };
 };
 
 async function onAdd(id: string) {
@@ -102,7 +105,7 @@ async function onAdd(id: string) {
     pendingUpdateId.value = null;
     toast.success({ description: 'Record created successfully' });
     emits('success');
-    await initRecords();
+    await initAllRecords();
   } catch (error: any) {
     pendingUpdateId.value = null;
     errorAlert.show = true;
@@ -114,14 +117,13 @@ function setPage(newPage: number) {
   page.value = newPage;
 }
 
-watch(page, () => {
-  initRecords();
-  initMedia();
+watch(page, async () => {
+  await initMedia();
 });
 
-onMounted(() => {
-  initRecords();
-  initMedia();
+onMounted(async () => {
+  await initAllRecords();
+  await initMedia();
 });
 </script>
 
@@ -139,7 +141,7 @@ onMounted(() => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow v-for="item in medias || []" :key="item.id">
+        <TableRow v-for="media in mediaData.medias || []" :key="media.id">
           <TableCell>
             <div
               class="flex size-8 items-center justify-center truncate rounded-full"
@@ -147,24 +149,28 @@ onMounted(() => {
               <FileIcon class="size-4" />
             </div>
           </TableCell>
-          <TableCell>{{ item.name }}</TableCell>
+          <TableCell class="truncate max-w-sm">{{ media.name }}</TableCell>
           <TableCell>
-            {{ getFileSizeForHumans(item.fileSize) }}
+            {{ getFileSizeForHumans(media.fileSize) }}
           </TableCell>
           <TableCell class="space-x-2 text-right">
             <Button
               variant="outline"
               size="icon"
               :disabled="
-                pendingUpdateId == item.id || mediaIds.includes(item.id)
+                pendingUpdateId == media.id ||
+                allRecordsMediaIds.includes(media.id)
               "
-              @click="onAdd(item.id)"
+              @click="onAdd(media.id)"
             >
-              <span v-if="pendingUpdateId == item.id" class="animate-spin">
+              <span v-if="pendingUpdateId == media.id" class="animate-spin">
                 <Loader2Icon class="size-4" />
               </span>
               <span v-else>
-                <CheckIcon v-if="mediaIds.includes(item.id)" class="size-4" />
+                <CheckIcon
+                  v-if="allRecordsMediaIds.includes(media.id)"
+                  class="size-4"
+                />
                 <PlusIcon v-else class="size-4" />
               </span>
             </Button>
@@ -172,9 +178,16 @@ onMounted(() => {
         </TableRow>
       </TableBody>
       <!-- Meta Caption -->
-      <TableMetaCaption :itemsLength="recordsLength" :meta="meta" />
+      <TableMetaCaption
+        :itemsLength="mediaData.medias.length"
+        :meta="mediaData.meta"
+      />
     </Table>
     <!-- Pagination Controls -->
-    <PaginateControls :page="page" :meta="meta" @update:page="setPage" />
+    <PaginateControls
+      :page="page"
+      :meta="mediaData.meta"
+      @update:page="setPage"
+    />
   </div>
 </template>

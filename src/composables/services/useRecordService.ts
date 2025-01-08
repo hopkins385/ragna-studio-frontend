@@ -5,6 +5,8 @@ import { getRoute } from '@/utils/route.util';
 enum RecordRoute {
   BASE = 'record',
   RECORD = 'record/:recordId',
+  ALL_RECORDS = 'record/:collectionId',
+  ALL_RECORDS_PAGINATED = 'record/:collectionId/paginated',
 }
 
 export interface Record {
@@ -13,6 +15,10 @@ export interface Record {
   description: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface AllRecordsResponse {
+  records: Record[];
 }
 
 export interface RecordsPaginatedResponse {
@@ -28,10 +34,30 @@ export interface CreateRecordDto {
 export function useRecordService() {
   const ac = new AbortController();
 
-  const fetchAllPaginated = async (recordId: string, params: PaginateDto) => {
-    const route = getRoute(RecordRoute.RECORD, { ':recordId': recordId });
+  const fetchAll = async (payload: { collectionId: string }) => {
+    const route = getRoute(RecordRoute.ALL_RECORDS, {
+      ':collectionId': payload.collectionId,
+    });
+    const response = await $axios.get<AllRecordsResponse>(route, {
+      signal: ac.signal,
+    });
+
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch records');
+    }
+
+    return response.data;
+  };
+
+  const fetchAllPaginated = async (payload: {
+    collectionId: string;
+    params: PaginateDto;
+  }) => {
+    const route = getRoute(RecordRoute.ALL_RECORDS_PAGINATED, {
+      ':collectionId': payload.collectionId,
+    });
     const response = await $axios.get<RecordsPaginatedResponse>(route, {
-      params,
+      params: payload.params,
       signal: ac.signal,
     });
 
@@ -76,6 +102,7 @@ export function useRecordService() {
   });
 
   return {
+    fetchAll,
     fetchAllPaginated,
     createRecord,
     deleteRecord,

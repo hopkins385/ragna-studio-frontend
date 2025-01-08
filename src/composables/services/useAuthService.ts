@@ -10,6 +10,7 @@ enum AuthRoute {
   LOGOUT = 'auth/logout', // POST
   REGISTER = 'auth/register', // POST
   REFRESH = 'auth/refresh', // POST
+  SESSION = 'auth/session', // GET
   SOCIAL_AUTH_URL = 'auth/:provider/url', // GET
   CALLBACK_GOOGLE = '/auth/google/callback', // POST
 }
@@ -130,6 +131,23 @@ export function useAuthService() {
     }
   };
 
+  const fetchSession = async () => {
+    try {
+      const route = getRoute(AuthRoute.SESSION);
+      const response = await $axios.get<AuthUserResponse>(route, {
+        signal: ac.signal,
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch session');
+      }
+
+      return response.data;
+    } catch (error) {
+      return handleError(error);
+    }
+  };
+
   const refreshTokens = async () => {
     try {
       const body = {};
@@ -199,6 +217,7 @@ export function useAuthService() {
     logoutUser,
     registerUser,
     refreshTokens,
+    fetchSession,
     fetchSocialAuthUrl,
     googleAuth,
   };

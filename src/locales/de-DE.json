@@ -193,8 +193,8 @@
   "records": {},
   "record": {
     "add_file_dialog": {
-      "title": "Datei zur Datenbank hinzufügen",
-      "subtitle": "Lade zunächst eine Datei hoch, um diese zur Datenbank hinzufügen zu können"
+      "title": "Datei zur Wissensdatenbank hinzufügen",
+      "subtitle": "Lade zunächst eine Datei hoch, um diese zur Wissensdatenbank hinzufügen zu können"
     },
     "button": {
       "add_file": "Datei hinzufügen"
