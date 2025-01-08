@@ -22,6 +22,9 @@ RUN npm run build-prod
 #
 FROM nginx:alpine
 
+ENV DISABLE_IPV6=true
+# ENV NGINX_ENTRYPOINT_QUIET_LOGS=1
+
 # Install build dependencies
 RUN apk add --no-cache \
     gcc \
