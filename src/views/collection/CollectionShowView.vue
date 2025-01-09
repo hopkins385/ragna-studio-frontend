@@ -3,13 +3,13 @@
  * Collection Index - Show a collection
  * Route: /collection/:id
  */
+import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import CollectionEditSheet from '@components/collection/CollectionEditSheet.vue';
 import Heading from '@components/heading/Heading.vue';
 import RecordAllTable from '@components/record/RecordAllTable.vue';
 import RecordCreateModal from '@components/record/RecordCreateModal.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import SectionHeading from '@components/section/SectionHeading.vue';
 import useCollectionService, {
   type Collection,
 } from '@composables/services/useCollectionService';
@@ -51,14 +51,15 @@ useHead({
 
 <template>
   <SectionContainer>
-    <SectionHeading
-      :title="collection?.name"
-      :subtitle="collection?.description"
-    />
     <Heading>
-      <template #top> </template>
+      <template #top>
+        <HeadingTitle
+          :title="collection?.name ?? ''"
+          :subtitle="collection?.description ?? ''"
+        />
+      </template>
       <template #bottom>
-        <div class="flex w-full justify-between px-3 pb-2 pt-14">
+        <div class="flex w-full justify-between space-x-4">
           <div></div>
           <div class="flex space-x-2">
             <RecordCreateModal

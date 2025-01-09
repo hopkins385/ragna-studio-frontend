@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="overflow-hidden rounded-xl border bg-white p-10">
+  <div class="overflow-hidden rounded-xl bg-white p-6">
     <slot />
   </div>
 </template>

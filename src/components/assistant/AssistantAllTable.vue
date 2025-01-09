@@ -163,96 +163,97 @@ await initAssistantFavorites();
   <div v-if="assistants && assistants.length > 0">
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
     <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
-
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>{{ $t('table.favorites') }}</TableHead>
-          <TableHead>{{ $t('table.avatar') }}</TableHead>
-          <TableHead>{{ $t('table.title') }}</TableHead>
-          <TableHead class="whitespace-nowrap">
-            {{ $t('table.ai_model') }}
-          </TableHead>
-          <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow
-          v-for="assistant in data?.assistants || []"
-          :key="assistant.id"
-        >
-          <TableCell>
-            <div class="border-0">
-              <Button
-                v-if="
-                  assistantFavorites.some(f => f.favoriteId === assistant.id)
-                "
-                variant="ghost"
-                size="icon"
-                @click="() => onDeleteFavorite(assistant.id)"
-              >
-                <StarIcon
-                  class="!size-6 stroke-1.5 stroke-none fill-blue-500"
+    <div class="mb-4 rounded-xl p-10">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{{ $t('table.favorites') }}</TableHead>
+            <TableHead>{{ $t('table.avatar') }}</TableHead>
+            <TableHead>{{ $t('table.title') }}</TableHead>
+            <TableHead class="whitespace-nowrap">
+              {{ $t('table.ai_model') }}
+            </TableHead>
+            <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow
+            v-for="assistant in data?.assistants || []"
+            :key="assistant.id"
+          >
+            <TableCell>
+              <div class="border-0">
+                <Button
+                  v-if="
+                    assistantFavorites.some(f => f.favoriteId === assistant.id)
+                  "
+                  variant="ghost"
+                  size="icon"
+                  @click="() => onDeleteFavorite(assistant.id)"
+                >
+                  <StarIcon
+                    class="!size-6 stroke-1.5 stroke-none fill-blue-500"
+                  />
+                </Button>
+                <Button
+                  v-else
+                  variant="ghost"
+                  size="icon"
+                  @click="() => onAddFavorite(assistant.id)"
+                >
+                  <StarIcon class="!size-5 stroke-1.5 stroke-stone-400" />
+                </Button>
+              </div>
+            </TableCell>
+            <TableCell>
+              <div class="size-8 rounded-full bg-slate-200"></div>
+            </TableCell>
+            <TableCell class="">
+              <div class="text-sm font-semibold">
+                {{ assistant.title }}
+              </div>
+            </TableCell>
+            <TableCell class="whitespace-nowrap">
+              <div class="flex space-x-2 items-center">
+                <component
+                  :is="getProviderIcon(assistant.llm.provider)"
+                  class="stroke-1.5 size-4"
+                />
+                <span>{{ assistant.llm.displayName }}</span>
+              </div>
+            </TableCell>
+            <TableCell
+              class="flex justify-end space-x-2 whitespace-nowrap text-right"
+            >
+              <Button variant="outline" @click="() => onStart(assistant.id)">
+                Chat
+                <MessageSquareIcon
+                  class="ml-2 size-4 shrink-0 stroke-1.5 text-primary"
                 />
               </Button>
-              <Button
-                v-else
-                variant="ghost"
+              <ButtonLink
+                v-if="$ability.can('edit', 'Assistant')"
+                :to="`/assistant/${assistant.id}/edit`"
+                variant="outline"
                 size="icon"
-                @click="() => onAddFavorite(assistant.id)"
               >
-                <StarIcon class="!size-5 stroke-1.5 stroke-stone-400" />
+                <SettingsIcon class="size-4 stroke-1.5 text-primary" />
+              </ButtonLink>
+              <Button
+                v-if="$ability.can('delete', 'Assistant')"
+                variant="outline"
+                size="icon"
+                @click="onDelete(assistant.id)"
+              >
+                <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
               </Button>
-            </div>
-          </TableCell>
-          <TableCell>
-            <div class="size-8 rounded-full bg-slate-200"></div>
-          </TableCell>
-          <TableCell class="">
-            <div class="">
-              {{ assistant.title }}
-            </div>
-          </TableCell>
-          <TableCell class="whitespace-nowrap">
-            <div class="flex space-x-2 items-center">
-              <component
-                :is="getProviderIcon(assistant.llm.provider)"
-                class="stroke-1.5 size-4"
-              />
-              <span>{{ assistant.llm.displayName }}</span>
-            </div>
-          </TableCell>
-          <TableCell
-            class="flex justify-end space-x-2 whitespace-nowrap text-right"
-          >
-            <Button variant="outline" @click="() => onStart(assistant.id)">
-              Chat
-              <MessageSquareIcon
-                class="ml-2 size-4 shrink-0 stroke-1.5 text-primary"
-              />
-            </Button>
-            <ButtonLink
-              v-if="$ability.can('edit', 'Assistant')"
-              :to="`/assistant/${assistant.id}/edit`"
-              variant="outline"
-              size="icon"
-            >
-              <SettingsIcon class="size-4 stroke-1.5 text-primary" />
-            </ButtonLink>
-            <Button
-              v-if="$ability.can('delete', 'Assistant')"
-              variant="outline"
-              size="icon"
-              @click="onDelete(assistant.id)"
-            >
-              <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
-            </Button>
-          </TableCell>
-        </TableRow>
-      </TableBody>
-      <!-- Meta Caption -->
-      <TableMetaCaption :itemsLength="assistantsLength" :meta="meta" />
-    </Table>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+        <!-- Meta Caption -->
+        <TableMetaCaption :itemsLength="assistantsLength" :meta="meta" />
+      </Table>
+    </div>
     <!-- Pagination Controls -->
     <PaginateControls
       v-if="meta.totalCount > 10"

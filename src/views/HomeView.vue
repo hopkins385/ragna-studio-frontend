@@ -42,42 +42,6 @@ const backgroundStyles = computed(() => {
       <div class="">
         <HomeFavorites />
         <HomeAgentTemplates />
-        <div class="w-full border p-5 rounded-2xl bg-white hidden">
-          <div class="pb-3 flex space-x-2">
-            <Workflow class="size-4 stroke-1.5 mt-1" />
-            <div>
-              <h2 class="text-sm font-semibold">
-                {{ $t('workflows.template.title') }}
-              </h2>
-              <p class="text-xs opacity-75">
-                {{ $t('workflows.template.description') }}
-              </p>
-            </div>
-          </div>
-          <div class="grid grid-cols-3 gap-5">
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-            <div
-              class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
-            ></div>
-          </div>
-        </div>
       </div>
     </div>
   </div>

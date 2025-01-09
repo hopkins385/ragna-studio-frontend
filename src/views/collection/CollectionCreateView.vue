@@ -3,9 +3,10 @@
  * Collection Create - Create a new collection
  * Route: /collection/create
  */
+import Heading from '@/components/heading/Heading.vue';
+import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { RouteName } from '@/router/enums/route-names.enum';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import SectionHeading from '@components/section/SectionHeading.vue';
 import useCollectionService from '@composables/services/useCollectionService';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
@@ -75,11 +76,16 @@ useHead({
 
 <template>
   <SectionContainer>
-    <SectionHeading
-      :title="$t('collection.create.title')"
-      :subtitle="$t('collection.create.subtitle')"
-    />
-    <div class="rounded-lg border bg-white p-10">
+    <Heading>
+      <template #top>
+        <HeadingTitle
+          :title="$t('collection.create.title')"
+          :subtitle="$t('collection.create.subtitle')"
+        />
+      </template>
+      <template #bottom> </template>
+    </Heading>
+    <div class="rounded-lg py-10 px-20">
       <form class="space-y-8" @submit="onSubmit">
         <FormField v-slot="{ componentField }" name="name">
           <FormItem>
@@ -107,10 +113,11 @@ useHead({
             <FormMessage />
           </FormItem>
         </FormField>
-
-        <Button type="submit">
-          {{ $t('collection.create.button') }}
-        </Button>
+        <div class="flex justify-end">
+          <Button type="submit">
+            {{ $t('collection.create.button') }}
+          </Button>
+        </div>
       </form>
     </div>
   </SectionContainer>

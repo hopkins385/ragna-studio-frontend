@@ -34,6 +34,9 @@ export enum RouteName {
   WORKFLOW_CREATE = 'workflow.create',
   WORKFLOW_SHOW = 'workflow.show',
   WORKFLOW_EDIT = 'workflow.edit',
+  // Template routes
+  TEMPLATE_INDEX = 'template.index',
+  TEMPLATE_SHOW = 'template.show',
   // Account routes
   ACCOUNT_INDEX = 'account.index',
   ACCOUNT_SETTINGS = 'account.settings',

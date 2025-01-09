@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import Heading from '@/components/heading/Heading.vue';
+import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import ChatHistory from '@components/chat/ChatHistory.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import SectionHeading from '@components/section/SectionHeading.vue';
 import TableSkeleton from '@components/table/TableSkeleton.vue';
 import { Input } from '@ui/input';
 
@@ -32,10 +33,15 @@ useHead({
 
 <template>
   <SectionContainer>
-    <SectionHeading
-      :title="$t('chat.history.title')"
-      :subtitle="$t('chat.history.subtitle')"
-    />
+    <Heading>
+      <template #top>
+        <HeadingTitle
+          :title="$t('chat.history.title')"
+          :subtitle="$t('chat.history.subtitle')"
+        />
+      </template>
+      <template #bottom> </template>
+    </Heading>
     <div class="pb-6 hidden">
       <Input v-model="search" placeholder="Search chat title ..." />
     </div>

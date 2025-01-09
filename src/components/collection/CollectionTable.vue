@@ -97,76 +97,77 @@ await initCollections();
   <div v-if="collectionsLength > 0">
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
     <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
-
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>{{ $t('table.name') }}</TableHead>
-          <TableHead>{{ $t('table.description') }}</TableHead>
-          <TableHead>{{ $t('table.records') }}</TableHead>
-          <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow v-for="collection in collections" :key="collection.id">
-          <TableCell class="max-w-xl truncate">
-            {{ collection.name }}
-          </TableCell>
-          <TableCell class="max-w-xl truncate">{{
-            collection.description
-          }}</TableCell>
-          <TableCell>
-            {{ collection?.records.length }}
-          </TableCell>
-          <TableCell class="space-x-2 text-right">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <ButtonLink
-                    class="group"
-                    variant="outline"
-                    size="icon"
-                    :to="`/collection/${collection.id}`"
-                  >
-                    <FolderClosedIcon
-                      class="size-4 stroke-1.5 text-primary group-hover:stroke-2"
-                    />
-                  </ButtonLink>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p class="max-w-xs text-sm">
-                    {{ $t('collection.tooltip.view') }}
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <Button
-                    class="group"
-                    variant="outline"
-                    size="icon"
-                    @click="onDelete(collection.id)"
-                  >
-                    <Trash2Icon
-                      class="size-4 stroke-1.5 text-destructive group-hover:stroke-2"
-                    />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p class="max-w-xs text-sm">
-                    {{ $t('collection.tooltip.delete') }}
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </TableCell>
-        </TableRow>
-      </TableBody>
-      <!-- Meta Caption -->
-      <TableMetaCaption :itemsLength="collectionsLength" :meta="meta" />
-    </Table>
+    <div class="mb-4 rounded-xl p-10">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{{ $t('table.name') }}</TableHead>
+            <TableHead>{{ $t('table.description') }}</TableHead>
+            <TableHead>{{ $t('table.records') }}</TableHead>
+            <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow v-for="collection in collections" :key="collection.id">
+            <TableCell class="max-w-sm truncate font-semibold text-sm">
+              {{ collection.name }}
+            </TableCell>
+            <TableCell class="max-w-lg truncate">
+              {{ collection.description }}
+            </TableCell>
+            <TableCell>
+              {{ collection?.records.length }}
+            </TableCell>
+            <TableCell class="space-x-2 text-right">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger as-child>
+                    <ButtonLink
+                      class="group"
+                      variant="outline"
+                      size="icon"
+                      :to="`/collection/${collection.id}`"
+                    >
+                      <FolderClosedIcon
+                        class="size-4 stroke-1.5 text-primary group-hover:stroke-2"
+                      />
+                    </ButtonLink>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p class="max-w-xs text-sm">
+                      {{ $t('collection.tooltip.view') }}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger as-child>
+                    <Button
+                      class="group"
+                      variant="outline"
+                      size="icon"
+                      @click="onDelete(collection.id)"
+                    >
+                      <Trash2Icon
+                        class="size-4 stroke-1.5 text-destructive group-hover:stroke-2"
+                      />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p class="max-w-xs text-sm">
+                      {{ $t('collection.tooltip.delete') }}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+        <!-- Meta Caption -->
+        <TableMetaCaption :itemsLength="collectionsLength" :meta="meta" />
+      </Table>
+    </div>
     <!-- Pagination Controls -->
     <PaginateControls
       v-if="meta.totalCount > 10"

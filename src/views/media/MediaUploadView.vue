@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import Heading from '@/components/heading/Heading.vue';
+import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import MediaList from '@/components/media/MediaList.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import FileDropzone from '@components/file/FileDropzone.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import SectionHeading from '@components/section/SectionHeading.vue';
 import { useMediaService } from '@composables/services/useMediaService';
 import Button from '@ui/button/Button.vue';
 
@@ -69,10 +70,15 @@ useHead({
 
 <template>
   <SectionContainer class="space-y-4">
-    <SectionHeading
-      :title="t('media.uploads.title')"
-      :subtitle="t('media.uploads.subtitle')"
-    />
+    <Heading>
+      <template #top>
+        <HeadingTitle
+          :title="t('media.uploads.title')"
+          :subtitle="t('media.uploads.subtitle')"
+        />
+      </template>
+      <template #bottom> </template>
+    </Heading>
     <BoxContainer>
       <FileDropzone
         v-model="dropzoneFiles"

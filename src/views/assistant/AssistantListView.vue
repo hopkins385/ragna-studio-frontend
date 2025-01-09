@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import AssistantAllTable from '@components/assistant/AssistantAllTable.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import Heading from '@components/heading/Heading.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import SectionHeading from '@components/section/SectionHeading.vue';
 import TableSkeleton from '@components/table/TableSkeleton.vue';
 import { PlusIcon } from 'lucide-vue-next';
 
@@ -37,14 +37,15 @@ useHead({
 
 <template>
   <SectionContainer>
-    <SectionHeading
-      :title="$t('assistants.title')"
-      :subtitle="$t('assistants.subtitle')"
-    />
     <Heading>
-      <template #top> </template>
+      <template #top>
+        <HeadingTitle
+          :title="$t('assistants.title')"
+          :subtitle="$t('assistants.subtitle')"
+        />
+      </template>
       <template #bottom>
-        <div class="flex w-full justify-between space-x-4 px-3 pb-2 pt-14">
+        <div class="flex w-full justify-between space-x-4">
           <div></div>
           <!--
           <div class="w-full">
@@ -64,7 +65,7 @@ useHead({
       </template>
     </Heading>
 
-    <BoxContainer>
+    <BoxContainer class="!p-0">
       <div>
         <Suspense>
           <AssistantAllTable

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import BoxContainer from '@/components/box/BoxContainer.vue';
+import Heading from '@/components/heading/Heading.vue';
+import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import SectionContainer from '@/components/section/SectionContainer.vue';
-import SectionHeading from '@/components/section/SectionHeading.vue';
 import FluentEmojiFlatFileFolder from '~icons/fluent-emoji-flat/file-folder';
 import LogoGoogleDrive from '~icons/logos/google-drive';
 import LogoMicrosoftOnedrive from '~icons/logos/microsoft-onedrive';
@@ -34,10 +35,15 @@ useHead({
 
 <template>
   <SectionContainer>
-    <SectionHeading
-      :title="t('medias.title')"
-      :subtitle="t('medias.subtitle')"
-    />
+    <Heading>
+      <template #top>
+        <HeadingTitle
+          :title="t('medias.title')"
+          :subtitle="t('medias.subtitle')"
+        />
+      </template>
+      <template #bottom> </template>
+    </Heading>
     <BoxContainer>
       <ul class="max-w-sm space-y-5">
         <li class="">

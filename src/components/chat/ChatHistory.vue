@@ -107,7 +107,7 @@ await initChatHistory({ page: queryPage.value });
   <div v-if="chats.length > 0">
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
     <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
-    <div class="mb-4 rounded-xl border bg-white p-10">
+    <div class="mb-4 rounded-xl p-10">
       <Table>
         <TableHeader>
           <TableRow>

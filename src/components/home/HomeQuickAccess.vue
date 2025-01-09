@@ -52,7 +52,7 @@ const quickAccessItems = [
     icon: LayoutTemplateIcon,
     class: 'text-cyan-600',
     label: t('nav.agent_templates'),
-    route: '/templates',
+    route: '/template',
   },
 ];
 </script>

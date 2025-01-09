@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import Heading from '@/components/heading/Heading.vue';
+import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { RouteName } from '@/router/enums/route-names.enum';
 import {
   allowedMimeTypes,
@@ -8,7 +10,6 @@ import {
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import SectionHeading from '@components/section/SectionHeading.vue';
 import { Textarea } from '@components/ui/textarea';
 import { useMediaAbleService } from '@composables/services/useMediaAbleService';
 import { useMediaService } from '@composables/services/useMediaService';
@@ -102,8 +103,14 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
     <!-- Alerts -->
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
     <!-- Heading -->
-    <SectionHeading :title="$t('workflow.create.title')" />
-    <div class="rounded-lg border bg-white p-10">
+    <Heading>
+      <template #top>
+        <HeadingTitle :title="$t('workflow.create.title')" />
+      </template>
+      <template #bottom> </template>
+    </Heading>
+
+    <div class="rounded-lg border bg-white p-10 mx-6">
       <!-- Form -->
       <form class="space-y-8" @submit="onSubmit">
         <FormField v-slot="{ componentField }" name="name">

@@ -1,7 +1,5 @@
 <script setup lang="ts"></script>
 
 <template>
-  <section class="">
-    <slot />
-  </section>
+  <RouterView />
 </template>

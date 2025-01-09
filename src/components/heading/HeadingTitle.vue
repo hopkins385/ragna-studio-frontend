@@ -6,10 +6,12 @@ defineProps<{
 </script>
 
 <template>
-  <div class="flex w-full items-center justify-between pb-8">
-    <div class="max-w-2xl">
-      <h1 class="text-2xl font-bold">{{ title ?? '' }}</h1>
-      <p class="text-sm text-gray-500">
+  <div class="flex w-full items-center justify-between">
+    <div class="">
+      <h1 class="max-w-lg text-2xl font-bold opacity-95 truncate">
+        {{ title ?? '' }}
+      </h1>
+      <p class="max-w-2xl text-sm opacity-85 truncate">
         {{ subtitle ?? '' }}
       </p>
     </div>
