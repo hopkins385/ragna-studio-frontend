@@ -1,7 +1,7 @@
 import { $axios } from '@/axios/axiosInstance';
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PATCH';
 
 interface RequestOptions<TParams = never, TData = never> {
   method: HttpMethod;
@@ -11,10 +11,12 @@ interface RequestOptions<TParams = never, TData = never> {
   headers?: Record<string, string>;
   timeout?: number;
   responseType?: 'json' | 'text' | 'blob' | 'arraybuffer';
+  signal?: AbortSignal;
 }
 
 class RequestBuilder<TResponse, TParams = never, TData = never> {
   private instance: AxiosInstance;
+  private errorHandler: (error: unknown) => void = () => {};
   private config: RequestOptions<TParams, TData> = {
     method: 'GET',
     url: '',
@@ -24,8 +26,18 @@ class RequestBuilder<TResponse, TParams = never, TData = never> {
     this.instance = axiosInstance;
   }
 
-  setMethod(method: HttpMethod): this {
-    this.config.method = method;
+  setMethodPOST(): this {
+    this.config.method = 'POST';
+    return this;
+  }
+
+  setMethodPATCH(): this {
+    this.config.method = 'PATCH';
+    return this;
+  }
+
+  setMethodDELETE(): this {
+    this.config.method = 'DELETE';
     return this;
   }
 
@@ -61,6 +73,16 @@ class RequestBuilder<TResponse, TParams = never, TData = never> {
     return this;
   }
 
+  setSignal(signal: AbortSignal): this {
+    this.config.signal = signal;
+    return this;
+  }
+
+  setErrorHandler(handler: (error: unknown) => void): this {
+    this.errorHandler = handler;
+    return this;
+  }
+
   async execute(): Promise<AxiosResponse<TResponse>> {
     try {
       const axiosConfig: AxiosRequestConfig = {
@@ -68,9 +90,10 @@ class RequestBuilder<TResponse, TParams = never, TData = never> {
         method: this.config.method,
         url: this.config.url,
       };
+
       return await this.instance.request<TResponse>(axiosConfig);
     } catch (error) {
-      // Handle or rethrow the error as needed
+      this.errorHandler(error);
       throw error;
     }
   }

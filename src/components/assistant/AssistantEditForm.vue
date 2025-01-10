@@ -166,8 +166,8 @@ const siderBarTabs = [
     </div>
   </div>
   <TabSidebar v-model="currentTab" :tabs="siderBarTabs">
+    <!-- TAB 1-->
     <template #tab1>
-      <!-- TAB 1-->
       <div class="space-y-8">
         <FormField v-slot="{ componentField }" name="title">
           <FormItem>
@@ -195,10 +195,9 @@ const siderBarTabs = [
           </FormItem>
         </FormField>
       </div>
-      <!-- END TAB 1-->
     </template>
+    <!-- TAB 2-->
     <template #tab2>
-      <!-- TAB 2-->
       <FormField v-slot="{ handleChange }" name="llmId">
         <FormItem>
           <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
@@ -212,10 +211,9 @@ const siderBarTabs = [
           <FormMessage />
         </FormItem>
       </FormField>
-      <!-- END TAB 2-->
     </template>
+    <!-- TAB 3-->
     <template #tab3>
-      <!-- TAB 3-->
       <div class="space-y-8">
         <FormField v-slot="{ componentField }" name="systemPrompt">
           <FormItem>
@@ -255,8 +253,8 @@ const siderBarTabs = [
         </FormItem>
       </FormField>
     </template>
+    <!-- TAB 5 -->
     <template #tab5>
-      <!-- Tools -->
       <FormField name="tools">
         <FormItem>
           <div class="mb-4 space-y-2">
@@ -302,6 +300,7 @@ const siderBarTabs = [
         </FormItem>
       </FormField>
     </template>
+    <!-- TAB 6 -->
     <template #tab6>
       <FormField v-slot="{ componentField, value }" name="temperature">
         <FormItem>
@@ -318,6 +317,7 @@ const siderBarTabs = [
         </FormItem>
       </FormField>
     </template>
+    <!-- TAB 7 -->
     <template #tab7>
       <FormField v-slot="{ componentField, value }" name="temperature">
         <FormItem>
@@ -334,6 +334,7 @@ const siderBarTabs = [
         </FormItem>
       </FormField>
     </template>
+    <!-- TAB 8 -->
     <template #tab8>
       <FormField v-slot="{ componentField, value }" name="temperature">
         <FormItem>

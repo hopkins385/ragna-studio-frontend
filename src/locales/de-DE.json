@@ -441,5 +441,16 @@
       "title": "Vorlagen",
       "subtitle": "Hier kannst du Agent Vorlagen erstellen und verwalten"
     }
+  },
+  "template": {
+    "category": {
+      "business": {
+        "title": "Geschäftlich",
+        "description": "Beschreibe in deinen eigenen Worten, wie der Agent sich verhalten soll"
+      }
+    },
+    "assistant": {
+      "general": "Allgemein"
+    }
   }
 }

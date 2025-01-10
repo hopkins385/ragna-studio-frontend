@@ -23,21 +23,21 @@ const emits = defineEmits<{
   'update:id': [string];
 }>();
 
+const initialModel = {
+  id: props.id,
+  displayName: props.initialDisplayName,
+};
+
 const open = ref(false);
 const models = ref<LargeLangModel[] | null>(null);
+const activeModelId = ref(props.id);
 
 const { getAllModels } = useLlmService();
 
-const selectedModel = computed<LargeLangModel>(
-  // TODO: Fix this type error
-  //@ts-expect-error
-  () => {
-    return (
-      models.value?.find(model => model.id === props.id) || {
-        displayName: props.initialDisplayName,
-      }
-    );
-  },
+const selectedModel = computed<LargeLangModel | any>(
+  () =>
+    models.value?.find(model => model.id === activeModelId.value) ||
+    initialModel,
 );
 
 const initModels = async () => {
@@ -47,6 +47,7 @@ const initModels = async () => {
 
 const onModelClick = (id: string) => {
   emits('update:id', id);
+  activeModelId.value = id;
   open.value = false;
 };
 

@@ -1,21 +1,25 @@
-import { $axios } from '@/axios/axiosInstance';
+import { createApiClient } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
 
 enum AssistantTemplateRoute {
-  TEMPLATE_ID = '/assistant-template/:templateId', // GET
-  ALL_TEMPLATES = '/assistant-template', // GET
-  ALL_TEMPLATES_PAGINATED = '/assistant-template/paginated', // GET
-  RANDOM_TEMPLATES = '/assistant-template/random', // GET
-  CATEGORY_ID = '/assistant-template/category/:categoryId', // GET
-  ALL_CATEGORIES = '/assistant-template/category', // GET
-  ALL_CATEGORIES_PAGINATED = '/assistant-template/category/paginated', // GET
+  ASSISTANT_TEMPLATE = '/assistant-template', // GET
+  ASSISTANT_TEMPLATE_PAGINATED = '/assistant-template/paginated', // GET
+  ASSISTANT_TEMPLATE_RANDOM = '/assistant-template/random', // GET
+  ASSISTANT_TEMPLATE_ID = '/assistant-template/:templateId', // GET
+  ASSISTANT_CATEGORY_ID = '/assistant-template/category/:categoryId', // GET
+  ASSISTANT_CATEGORY = '/assistant-template/category', // GET
+  ASSISTANT_CATEGORY_PAGINATED = '/assistant-template/category/paginated', // GET
 }
 
 interface AssistantTemplatePrompt {
   de: string;
   en: string;
+}
+
+interface RandomTemplatesParams {
+  limit: number;
 }
 
 export interface AssistantTemplate {
@@ -56,56 +60,58 @@ export function useAssistantTemplateService() {
    * Fetch all assistant templates
    */
   async function fetchAllTemplates() {
-    try {
-      const route = getRoute(AssistantTemplateRoute.ALL_TEMPLATES);
-      const response = await $axios.get<AssistantTemplateResponse>(route, {
-        signal: ac.signal,
-      });
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch assistant templates');
-      }
-      return response.data;
-    } catch (e) {
-      return handleError(e);
+    const api = createApiClient();
+    const route = getRoute(AssistantTemplateRoute.ASSISTANT_TEMPLATE);
+    const response = await api
+      .request<AssistantTemplateResponse>()
+      .setRoute(route)
+      .setErrorHandler(handleError)
+      .execute();
+
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch assistant templates');
     }
+
+    return response.data;
   }
 
   /**
    * Fetch all assistant templates paginated
    */
   async function fetchAllTemplatesPaginated(params: PaginateDto) {
-    try {
-      const route = getRoute(AssistantTemplateRoute.ALL_TEMPLATES_PAGINATED);
-      const response = await $axios.get<AssistantTemplatePaginatedResponse>(
-        route,
-        {
-          params,
-          signal: ac.signal,
-        },
-      );
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch assistant templates');
-      }
-      return response.data;
-    } catch (e) {
-      return handleError(e);
+    const api = createApiClient();
+    const route = getRoute(AssistantTemplateRoute.ASSISTANT_TEMPLATE_PAGINATED);
+    const response = await api
+      .request<AssistantTemplatePaginatedResponse, PaginateDto>()
+      .setSignal(ac.signal)
+      .setRoute(route)
+      .setParams(params)
+      .setErrorHandler(handleError)
+      .execute();
+
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch assistant templates');
     }
+
+    return response.data;
   }
 
-  async function fetchRandomTemplates(params: { limit: number }) {
-    try {
-      const route = getRoute(AssistantTemplateRoute.RANDOM_TEMPLATES);
-      const response = await $axios.get<AssistantTemplateResponse>(route, {
-        params,
-        signal: ac.signal,
-      });
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch random assistant templates');
-      }
-      return response.data;
-    } catch (e) {
-      return handleError(e);
+  async function fetchRandomTemplates(params: RandomTemplatesParams) {
+    const api = createApiClient();
+    const route = getRoute(AssistantTemplateRoute.ASSISTANT_TEMPLATE_RANDOM);
+    const response = await api
+      .request<AssistantTemplateResponse, RandomTemplatesParams>()
+      .setSignal(ac.signal)
+      .setRoute(route)
+      .setParams(params)
+      .setErrorHandler(handleError)
+      .execute();
+
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch random assistant templates');
     }
+
+    return response.data;
   }
 
   onScopeDispose(() => {

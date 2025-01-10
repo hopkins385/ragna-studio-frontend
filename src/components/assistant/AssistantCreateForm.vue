@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouteName } from '@/router/enums/route-names.enum';
 import { assistantFormSchema } from '@/schemas/assistant.form';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
@@ -80,14 +81,16 @@ const onSubmit = handleSubmit(async values => {
   try {
     await createAssistant({
       ...values,
-      // TODO: calculate the token count based on the system prompt
+      // TODO: calculate the token count based on the system prompt, but lets do that on the backend!
       systemPromptTokenCount: 1,
     });
     toast.success({
       description: t('assistant.create.success'),
     });
+    router.push({
+      name: RouteName.ASSISTANT_INDEX,
+    });
     resetForm();
-    router.back();
   } catch (error: any) {
     console.error(error);
     toast.error({

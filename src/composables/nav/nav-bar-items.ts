@@ -311,7 +311,7 @@ export const imageGenRoutes: NavItem[] = [
     children: [],
   },
   // Explore
-  {
+  /*{
     icon: FolderIcon,
     path: '/text-to-image/folders',
     label: 'nav.folders',
