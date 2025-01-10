@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { assistantFormSchema } from '@/schemas/assistant.form';
+import ButtonLink from '@components/button/ButtonLink.vue';
+import ButtonLoading from '@components/button/ButtonLoading.vue';
+import ErrorAlert from '@components/error/ErrorAlert.vue';
+import LlmSelectModal from '@components/llm/LlmSelectModal.vue';
+import TabSidebar from '@components/tab/TabSidebar.vue';
 import useAssistantService from '@composables/services/useAssistantService';
 import {
   useAssistantToolsService,
@@ -26,88 +31,85 @@ import {
   Stars,
   Workflow,
 } from 'lucide-vue-next';
-import ButtonLink from '../button/ButtonLink.vue';
-import ButtonLoading from '../button/ButtonLoading.vue';
-import ErrorAlert from '../error/ErrorAlert.vue';
-import LlmSelectModal from '../llm/LlmSelectModal.vue';
-import TabSidebar from '../tab/TabSidebar.vue';
+
+const { t } = useI18n();
+const { fetchAllTools } = useAssistantToolsService();
+const { createAssistant } = useAssistantService();
 
 const currentTab = ref('tab1');
 const isLoading = ref(false);
 const assistantTools = ref<AssistantTool[] | null>(null);
 
+const showErrorAlert = ref(false);
+const errorAlertMessage = ref('');
+
 const authStore = useAuthStore();
 const toast = useToast();
 const router = useRouter();
 
-const initialAssistantName = computed(() => 'Select AI Model');
-const initialCollectionName = computed(() => 'Select Knowledge Collection');
-
-const { fetchAllTools } = useAssistantToolsService();
-const { createAssistant } = useAssistantService();
+const initialAssistantName = computed(() => t('assistant.genai.select'));
+const initialCollectionName = computed(() => t('assistant.knowledge.select'));
 
 const initAssistantTools = async () => {
   const { tools } = await fetchAllTools();
   assistantTools.value = tools;
 };
 
-const { errors, handleSubmit, isSubmitting, isValidating, resetForm } = useForm(
-  {
-    validationSchema: assistantFormSchema,
-    initialValues: {
-      teamId: authStore.user?.firstTeamId || '-1',
-      llmId: '',
-      title: '',
-      description: '',
-      systemPrompt: '',
-      temperature: [80],
-      hasKnowledgeBase: false,
-      hasWorkflow: false,
-      isShared: false,
-      tools: [],
-    },
+const {
+  errors: formErrors,
+  handleSubmit,
+  resetForm,
+} = useForm({
+  validationSchema: assistantFormSchema,
+  initialValues: {
+    teamId: authStore.user?.firstTeamId || '-1',
+    llmId: '',
+    title: '',
+    description: '',
+    systemPrompt: '',
+    temperature: [80],
+    hasKnowledgeBase: false,
+    hasWorkflow: false,
+    isShared: false,
+    tools: [],
   },
-);
+});
 
 const onSubmit = handleSubmit(async values => {
   isLoading.value = true;
   try {
     await createAssistant({
       ...values,
+      // TODO: calculate the token count based on the system prompt
       systemPromptTokenCount: 1,
     });
     toast.success({
-      description: 'Agent created',
+      description: t('assistant.create.success'),
     });
     resetForm();
     router.back();
   } catch (error: any) {
     console.error(error);
     toast.error({
-      description: 'Failed to create agent',
+      description: t('assistant.create.error'),
     });
   } finally {
     isLoading.value = false;
   }
 });
 
-const showErrorAlert = ref(false);
-const errorAlertMessage = ref('');
-
 watch(
-  () => errors.value,
+  () => formErrors.value,
   errors => {
     if (Object.keys(errors).length > 0) {
       showErrorAlert.value = true;
-      errorAlertMessage.value = errors[Object.keys(errors)[0]]; //errors[Object.keys(errors)[0]];
+      errorAlertMessage.value = errors[Object.keys(errors)[0]];
     } else {
       showErrorAlert.value = false;
       errorAlertMessage.value = '';
     }
   },
 );
-
-const { t } = useI18n();
 
 const siderBarTabs = [
   { id: 'tab1', icon: Settings, label: t('assistant.settings.label') },
@@ -137,8 +139,8 @@ onMounted(() => {
     </div>
   </div>
   <TabSidebar v-model="currentTab" :tabs="siderBarTabs">
+    <!-- TAB 1-->
     <template #tab1>
-      <!-- TAB 1-->
       <div class="space-y-8">
         <FormField v-slot="{ componentField }" name="title">
           <FormItem>
@@ -168,10 +170,9 @@ onMounted(() => {
           </FormItem>
         </FormField>
       </div>
-      <!-- END TAB 1-->
     </template>
+    <!-- TAB 2-->
     <template #tab2>
-      <!-- TAB 2-->
       <FormField v-slot="{ handleChange, value }" name="llmId">
         <FormItem>
           <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
@@ -185,10 +186,9 @@ onMounted(() => {
           <FormMessage />
         </FormItem>
       </FormField>
-      <!-- END TAB 2-->
     </template>
+    <!-- TAB 3-->
     <template #tab3>
-      <!-- TAB 3-->
       <div class="space-y-8">
         <FormField v-slot="{ componentField }" name="systemPrompt">
           <FormItem>
@@ -203,8 +203,8 @@ onMounted(() => {
           </FormItem>
         </FormField>
       </div>
-      <!-- END TAB 3-->
     </template>
+    <!-- TAB 4-->
     <template #tab4>
       <div class="text-sm border rounded-lg p-4 mt-4">
         {{ $t('assistant.alert.create_first') }}
@@ -233,8 +233,8 @@ onMounted(() => {
       </FormField>
       -->
     </template>
+    <!-- TAB 5-->
     <template #tab5>
-      <!-- Tools -->
       <div class="text-sm border rounded-lg p-4 mt-4">
         {{ $t('assistant.alert.create_first') }}
       </div>
@@ -272,14 +272,14 @@ onMounted(() => {
       </FormField>
       -->
     </template>
+    <!-- TAB 6 -->
     <template #tab6>
-      <!--  -->
       <div class="text-sm border rounded-lg p-4 mt-4">
         {{ $t('assistant.alert.create_first') }}
       </div>
     </template>
+    <!-- TAB 7 -->
     <template #tab7>
-      <!--  -->
       <div class="text-sm border rounded-lg p-4 mt-4">
         {{ $t('assistant.alert.create_first') }}
       </div>

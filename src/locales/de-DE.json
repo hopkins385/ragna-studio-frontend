@@ -266,7 +266,9 @@
     "create": {
       "title": "Agent erstellen",
       "subtitle": "Hier kannst du einen neuen Agenten erstellen",
-      "button": "Agent erstellen"
+      "button": "Agent erstellen",
+      "success": "Agent erfolgreich erstellt",
+      "error": "Der Agent konnte nicht erstellt werden"
     },
     "edit": {
       "title": "Agent bearbeiten",
@@ -286,7 +288,8 @@
       "label": "Generell"
     },
     "genai": {
-      "label": "Ki Modell"
+      "label": "Ki Modell",
+      "select": "Ki Modell auswählen"
     },
     "behavior": {
       "label": "Verhalten",
