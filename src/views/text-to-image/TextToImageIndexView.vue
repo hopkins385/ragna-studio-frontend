@@ -256,7 +256,7 @@ useHead({
         </div>
       </div>
     </SectionContainer>
-    <SectionContainer class="">
+    <SectionContainer class="px-10 pt-3">
       <div v-if="isLoading" class="flex">
         <div class="grid shrink-0 grid-cols-4">
           <div
