@@ -23,7 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@ui/tooltip';
-import { FolderClosedIcon, Trash2Icon } from 'lucide-vue-next';
+import { DatabaseIcon, FolderClosedIcon, Trash2Icon } from 'lucide-vue-next';
 
 const route = useRoute();
 const router = useRouter();
@@ -101,6 +101,7 @@ await initCollections();
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead></TableHead>
             <TableHead>{{ $t('table.name') }}</TableHead>
             <TableHead>{{ $t('table.description') }}</TableHead>
             <TableHead>{{ $t('table.records') }}</TableHead>
@@ -109,6 +110,9 @@ await initCollections();
         </TableHeader>
         <TableBody>
           <TableRow v-for="collection in collections" :key="collection.id">
+            <TableCell class="w-12">
+              <DatabaseIcon class="size-4 stroke-1.5" />
+            </TableCell>
             <TableCell class="max-w-sm truncate font-semibold text-sm">
               {{ collection.name }}
             </TableCell>

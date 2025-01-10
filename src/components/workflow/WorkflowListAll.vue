@@ -66,9 +66,6 @@ const { addFavorite, deleteFavorite, fetchAllFavoritesByType } =
 const onAddFavorite = async (workflowId: string) => {
   try {
     await addFavorite({ id: workflowId, type: 'workflow' });
-    toast.success({
-      description: 'Workflow has been added to favorites.',
-    });
     await initWorkflowFavorites();
   } catch (error: any) {
     errorAlert.show = true;
@@ -82,9 +79,6 @@ const onDeleteFavorite = async (workflowId: string) => {
   ).id;
   try {
     await deleteFavorite({ entityId, favoriteType: 'workflow' });
-    toast.success({
-      description: 'Workflow has been removed from favorites.',
-    });
     await initWorkflowFavorites();
   } catch (error: any) {
     errorAlert.show = true;
@@ -111,14 +105,14 @@ onMounted(() => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>{{ $t('table.favorites') }}</TableHead>
+          <TableHead>{{ $t('table.favorit') }}</TableHead>
           <TableHead>{{ $t('table.name') }}</TableHead>
           <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         <TableRow v-for="workflow in workflows || []" :key="workflow.id">
-          <TableCell>
+          <TableCell class="w-12">
             <Button
               v-if="workflowFavorites.some(f => f.favoriteId === workflow.id)"
               variant="ghost"
@@ -136,7 +130,7 @@ onMounted(() => {
               <StarIcon class="!size-5 stroke-1.5 stroke-stone-400" />
             </Button>
           </TableCell>
-          <TableCell>
+          <TableCell class="font-semibold">
             {{ workflow.name }}
           </TableCell>
           <TableCell class="space-x-2 text-right">

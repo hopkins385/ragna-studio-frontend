@@ -167,7 +167,7 @@ await initAssistantFavorites();
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{{ $t('table.favorites') }}</TableHead>
+            <TableHead>{{ $t('table.favorit') }}</TableHead>
             <TableHead>{{ $t('table.avatar') }}</TableHead>
             <TableHead>{{ $t('table.title') }}</TableHead>
             <TableHead class="whitespace-nowrap">
@@ -181,7 +181,7 @@ await initAssistantFavorites();
             v-for="assistant in data?.assistants || []"
             :key="assistant.id"
           >
-            <TableCell>
+            <TableCell class="w-12">
               <div class="border-0">
                 <Button
                   v-if="

@@ -131,23 +131,21 @@ onMounted(() => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow v-for="item in medias || []" :key="item.id">
-          <TableCell>
-            <div
-              class="flex size-8 items-center justify-center truncate rounded-full"
-            >
-              <FileIcon class="size-4" />
+        <TableRow v-for="media in medias || []" :key="media.id">
+          <TableCell class="w-12">
+            <div class="flex items-center justify-center">
+              <FileIcon class="size-4 stroke-1.5" />
             </div>
           </TableCell>
-          <TableCell>{{ item.name }}</TableCell>
+          <TableCell class="font-semibold">{{ media.name }}</TableCell>
           <TableCell>
-            {{ getFileSizeForHumans(item.fileSize) }}
+            {{ getFileSizeForHumans(media.fileSize) }}
           </TableCell>
           <TableCell class="space-x-2 text-right">
             <!-- Button variant="outline" size="icon" @click="onPlusClick(item.id)">
               <PlusIcon class="size-4" />
             </!-->
-            <Button variant="outline" size="icon" @click="onDelete(item.id)">
+            <Button variant="outline" size="icon" @click="onDelete(media.id)">
               <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
             </Button>
           </TableCell>

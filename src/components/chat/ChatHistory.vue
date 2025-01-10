@@ -20,7 +20,11 @@ import {
   TableHeader,
   TableRow,
 } from '@ui/table';
-import { MessageCircleMoreIcon, Trash2Icon } from 'lucide-vue-next';
+import {
+  MessageCircleMoreIcon,
+  MessagesSquareIcon,
+  Trash2Icon,
+} from 'lucide-vue-next';
 
 interface ChatHistoryProps {
   page: number;
@@ -111,6 +115,7 @@ await initChatHistory({ page: queryPage.value });
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead></TableHead>
             <TableHead>{{ $t('table.title') }}</TableHead>
             <TableHead>{{ $t('table.assistant') }}</TableHead>
             <TableHead>{{ $t('table.ai_model') }}</TableHead>
@@ -120,7 +125,12 @@ await initChatHistory({ page: queryPage.value });
         </TableHeader>
         <TableBody>
           <TableRow v-for="chat in data?.chats || []" :key="chat.id">
-            <TableCell class="min-w-[20rem]">{{ chat.title }}</TableCell>
+            <TableCell class="w-12">
+              <MessagesSquareIcon class="size-4 stroke-1.5" />
+            </TableCell>
+            <TableCell class="min-w-[20rem] font-semibold">
+              {{ chat.title }}
+            </TableCell>
             <TableCell class="max-w-[10rem] truncate">
               {{ chat.assistant?.title }}
             </TableCell>
