@@ -106,7 +106,7 @@ watch(
   errors => {
     if (Object.keys(errors).length > 0) {
       showErrorAlert.value = true;
-      errorAlertMessage.value = errors[Object.keys(errors)[0]];
+      errorAlertMessage.value = errors[Object.keys(errors)[0] as any] as string;
     } else {
       showErrorAlert.value = false;
       errorAlertMessage.value = '';

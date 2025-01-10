@@ -2,6 +2,7 @@ import { $axios } from '@/axios/axiosInstance';
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PATCH';
+type ResponseType = 'json' | 'text' | 'blob' | 'arraybuffer';
 
 interface RequestOptions<TParams = never, TData = never> {
   method: HttpMethod;
@@ -10,7 +11,7 @@ interface RequestOptions<TParams = never, TData = never> {
   data?: TData;
   headers?: Record<string, string>;
   timeout?: number;
-  responseType?: 'json' | 'text' | 'blob' | 'arraybuffer';
+  responseType?: ResponseType;
   signal?: AbortSignal;
 }
 
@@ -66,9 +67,7 @@ class RequestBuilder<TResponse, TParams = never, TData = never> {
     return this;
   }
 
-  setResponseType(
-    responseType: 'json' | 'text' | 'blob' | 'arraybuffer',
-  ): this {
+  setResponseType(responseType: ResponseType): this {
     this.config.responseType = responseType;
     return this;
   }

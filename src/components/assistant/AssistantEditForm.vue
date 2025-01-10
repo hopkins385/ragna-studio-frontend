@@ -309,9 +309,7 @@ const siderBarTabs = [
             {{ $t('assistant.workflow.description') }}
           </FormDescription>
           <FormControl>
-            <div class="text-sm border px-5 py-3 rounded-xl w-fit">
-              Under Construction
-            </div>
+            <div class="text-sm border px-5 py-3 w-fit">Under Construction</div>
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -326,9 +324,7 @@ const siderBarTabs = [
             {{ $t('assistant.privacy.description') }}
           </FormDescription>
           <FormControl>
-            <div class="text-sm border px-5 py-3 rounded-xl w-fit">
-              Under Construction
-            </div>
+            <div class="text-sm border px-5 py-3 w-fit">Under Construction</div>
           </FormControl>
           <FormMessage />
         </FormItem>
