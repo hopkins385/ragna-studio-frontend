@@ -11,7 +11,7 @@ defineProps<{
       <h1 class="max-w-lg text-2xl font-bold opacity-95 truncate">
         {{ title ?? '' }}
       </h1>
-      <p class="max-w-2xl text-sm opacity-85 truncate">
+      <p class="max-w-2xl text-sm opacity-90 truncate">
         {{ subtitle ?? '' }}
       </p>
     </div>

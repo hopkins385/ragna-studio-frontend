@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import BoxContainer from '@/components/box/BoxContainer.vue';
 import GoogleDriveTable from '@/components/google/GoogleDriveTable.vue';
+import Heading from '@/components/heading/Heading.vue';
+import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import SectionContainer from '@/components/section/SectionContainer.vue';
-import SectionHeading from '@/components/section/SectionHeading.vue';
 import TableSkeleton from '@/components/table/TableSkeleton.vue';
 </script>
 
 <template>
   <SectionContainer>
-    <SectionHeading title="Google Drive" />
+    <Heading>
+      <template #top>
+        <HeadingTitle title="Google Drive" />
+      </template>
+      <template #bottom> </template>
+    </Heading>
     <BoxContainer>
       <Suspense>
         <GoogleDriveTable />

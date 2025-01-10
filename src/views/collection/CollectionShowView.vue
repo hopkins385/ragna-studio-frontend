@@ -13,6 +13,7 @@ import SectionContainer from '@components/section/SectionContainer.vue';
 import useCollectionService, {
   type Collection,
 } from '@composables/services/useCollectionService';
+import bgImgUrl from '@images/bg_databases.png?q=100&format=webp&imagetools';
 
 const route = useRoute();
 const refresh = ref(false);
@@ -51,7 +52,7 @@ useHead({
 
 <template>
   <SectionContainer>
-    <Heading>
+    <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
         <HeadingTitle
           :title="collection?.name ?? ''"

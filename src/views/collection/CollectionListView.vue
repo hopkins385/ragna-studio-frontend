@@ -6,6 +6,7 @@ import CollectionTable from '@components/collection/CollectionTable.vue';
 import Heading from '@components/heading/Heading.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import TableSkeleton from '@components/table/TableSkeleton.vue';
+import bgImgUrl from '@images/bg_databases.png?q=100&format=webp&imagetools';
 import { PlusIcon } from 'lucide-vue-next';
 
 const { t } = useI18n();
@@ -23,7 +24,7 @@ useHead({
 
 <template>
   <SectionContainer>
-    <Heading>
+    <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
         <HeadingTitle
           :title="$t('collections.title')"

@@ -9,6 +9,7 @@ import { RouteName } from '@/router/enums/route-names.enum';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import useCollectionService from '@composables/services/useCollectionService';
 import useToast from '@composables/useToast';
+import bgImgUrl from '@images/bg_databases.png?q=100&format=webp&imagetools';
 import { Button } from '@ui/button';
 import {
   FormControl,
@@ -76,7 +77,7 @@ useHead({
 
 <template>
   <SectionContainer>
-    <Heading>
+    <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
         <HeadingTitle
           :title="$t('collection.create.title')"

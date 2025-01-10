@@ -6,6 +6,7 @@ import BoxContainer from '@components/box/BoxContainer.vue';
 import FileDropzone from '@components/file/FileDropzone.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import { useMediaService } from '@composables/services/useMediaService';
+import bgImgUrl from '@images/bg_upload.png?q=100&format=webp&imagetools';
 import Button from '@ui/button/Button.vue';
 
 interface MediaUploadViewEmits {
@@ -70,7 +71,7 @@ useHead({
 
 <template>
   <SectionContainer class="space-y-4">
-    <Heading>
+    <Heading :img-url="bgImgUrl" bg-position="center">
       <template #top>
         <HeadingTitle
           :title="t('media.uploads.title')"

@@ -202,7 +202,7 @@ useHead({
 
 <template>
   <div id="sectionContainer" class="min-h-full bg-white">
-    <SectionContainer class="sticky inset-0 z-10 !py-0">
+    <SectionContainer class="sticky inset-0 z-10 !py-0 px-10">
       <div class="h-8 bg-white/95"></div>
       <div class="w-full">
         <div

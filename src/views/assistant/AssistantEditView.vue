@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import Heading from '@/components/heading/Heading.vue';
+import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import AssistantEditForm from '@components/assistant/AssistantEditForm.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import SectionHeading from '@components/section/SectionHeading.vue';
 import type { Assistant } from '@composables/services/useAssistantService';
 import useAssistantService from '@composables/services/useAssistantService';
 import type { AssistantTool } from '@composables/services/useAssistantToolsService';
 import { useAssistantToolsService } from '@composables/services/useAssistantToolsService';
 import type { Collection } from '@composables/services/useCollectionService';
 import useCollectionService from '@composables/services/useCollectionService';
+import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
 
 const assistant = ref<Assistant | null>(null);
 const assistantTools = ref<AssistantTool[]>([]);
@@ -75,11 +77,16 @@ useHead({
 
 <template>
   <SectionContainer>
-    <SectionHeading
-      :title="$t('assistant.edit.title')"
-      :subtitle="$t('assistant.edit.subtitle')"
-    />
-    <div class="px-5">
+    <Heading :img-url="bgImgUrl" bg-position="bottom">
+      <template #top>
+        <HeadingTitle
+          :title="$t('assistant.edit.title')"
+          :subtitle="$t('assistant.edit.subtitle')"
+        />
+      </template>
+      <template #bottom> </template>
+    </Heading>
+    <div class="px-10">
       <AssistantEditForm
         v-if="assistant && assistantTools.length"
         :assistant="assistant"

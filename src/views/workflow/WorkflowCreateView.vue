@@ -16,6 +16,7 @@ import { useMediaService } from '@composables/services/useMediaService';
 import { useWorkflowService } from '@composables/services/useWorkflowService';
 import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
+import bgImgUrl from '@images/bg_workflow.png?q=100&format=webp&imagetools';
 import {
   FormControl,
   FormDescription,
@@ -103,14 +104,14 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
     <!-- Alerts -->
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
     <!-- Heading -->
-    <Heading>
+    <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
         <HeadingTitle :title="$t('workflow.create.title')" />
       </template>
       <template #bottom> </template>
     </Heading>
 
-    <div class="rounded-lg border bg-white p-10 mx-6">
+    <div class="rounded-lg p-10 mx-6">
       <!-- Form -->
       <form class="space-y-8" @submit="onSubmit">
         <FormField v-slot="{ componentField }" name="name">

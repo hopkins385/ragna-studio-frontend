@@ -6,6 +6,7 @@ import ButtonLink from '@components/button/ButtonLink.vue';
 import Heading from '@components/heading/Heading.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import TableSkeleton from '@components/table/TableSkeleton.vue';
+import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
 import { PlusIcon } from 'lucide-vue-next';
 
 const route = useRoute();
@@ -37,7 +38,7 @@ useHead({
 
 <template>
   <SectionContainer>
-    <Heading>
+    <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
         <HeadingTitle
           :title="$t('assistants.title')"
@@ -45,13 +46,7 @@ useHead({
         />
       </template>
       <template #bottom>
-        <div class="flex w-full justify-between space-x-4">
-          <div></div>
-          <!--
-          <div class="w-full">
-            <Input v-model="search" placeholder="Search assistant title ..." />
-          </div>
-          -->
+        <div class="flex w-full justify-end space-x-4">
           <div class="whitespace-nowrap">
             <ButtonLink
               v-if="$ability.can('create', 'Assistant')"

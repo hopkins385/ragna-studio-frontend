@@ -3,6 +3,7 @@ import BoxContainer from '@/components/box/BoxContainer.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import SectionContainer from '@/components/section/SectionContainer.vue';
+import bgImgUrl from '@images/bg_upload.png?q=100&format=webp&imagetools';
 import FluentEmojiFlatFileFolder from '~icons/fluent-emoji-flat/file-folder';
 import LogoGoogleDrive from '~icons/logos/google-drive';
 import LogoMicrosoftOnedrive from '~icons/logos/microsoft-onedrive';
@@ -35,7 +36,7 @@ useHead({
 
 <template>
   <SectionContainer>
-    <Heading>
+    <Heading :img-url="bgImgUrl" bg-position="center">
       <template #top>
         <HeadingTitle
           :title="t('medias.title')"
@@ -44,7 +45,7 @@ useHead({
       </template>
       <template #bottom> </template>
     </Heading>
-    <BoxContainer>
+    <BoxContainer class="px-10">
       <ul class="max-w-sm space-y-5">
         <li class="">
           <RouterLink
