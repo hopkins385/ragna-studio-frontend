@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ButtonLink from '@/components/button/ButtonLink.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { RouteName } from '@/router/enums/route-names.enum';
@@ -106,14 +107,25 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
     <!-- Heading -->
     <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
-        <HeadingTitle :title="$t('workflow.create.title')" />
+        <HeadingTitle
+          :title="$t('workflow.create.title')"
+          :subtitle="$t('workflow.create.subtitle')"
+        />
       </template>
       <template #bottom> </template>
     </Heading>
 
-    <div class="rounded-lg p-10 mx-6">
+    <div class="rounded-lg px-10">
       <!-- Form -->
       <form class="space-y-8" @submit="onSubmit">
+        <div class="flex justify-end space-x-4">
+          <ButtonLink to="/workflow" variant="secondary">
+            {{ $t('form.button.cancel') }}
+          </ButtonLink>
+          <ButtonLoading :loading="isLoading" type="submit">
+            {{ $t('workflow.create.button') }}
+          </ButtonLoading>
+        </div>
         <FormField v-slot="{ componentField }" name="name">
           <FormItem>
             <FormLabel>{{ $t('form.name') }}</FormLabel>
@@ -158,11 +170,6 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
             <FormMessage />
           </FormItem>
         </FormField>
-        <div class="pt-5">
-          <ButtonLoading :loading="isLoading" type="submit">
-            {{ $t('workflow.create.button') }}
-          </ButtonLoading>
-        </div>
       </form>
     </div>
   </SectionContainer>

@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import useAssistantService from '@/composables/services/useAssistantService';
+import { assistantFormSchema } from '@/schemas/assistant.form';
+import useAssistantService from '@composables/services/useAssistantService';
 import {
   useAssistantToolsService,
   type AssistantTool,
-} from '@/composables/services/useAssistantToolsService';
-import useToast from '@/composables/useToast';
-import { assistantFormSchema } from '@/schemas/assistant.form';
-import { useAuthStore } from '@/stores/auth.store';
-import { Button } from '@ui/button';
+} from '@composables/services/useAssistantToolsService';
+import useToast from '@composables/useToast';
+import { useAuthStore } from '@stores/auth.store';
 import {
   FormControl,
   FormDescription,
@@ -27,6 +26,7 @@ import {
   Stars,
   Workflow,
 } from 'lucide-vue-next';
+import ButtonLink from '../button/ButtonLink.vue';
 import ButtonLoading from '../button/ButtonLoading.vue';
 import ErrorAlert from '../error/ErrorAlert.vue';
 import LlmSelectModal from '../llm/LlmSelectModal.vue';
@@ -99,7 +99,7 @@ watch(
   errors => {
     if (Object.keys(errors).length > 0) {
       showErrorAlert.value = true;
-      errorAlertMessage.value = t('alert.error.all_form_fields'); //errors[Object.keys(errors)[0]];
+      errorAlertMessage.value = errors[Object.keys(errors)[0]]; //errors[Object.keys(errors)[0]];
     } else {
       showErrorAlert.value = false;
       errorAlertMessage.value = '';
@@ -128,9 +128,9 @@ onMounted(() => {
   <ErrorAlert v-model="showErrorAlert" :message="errorAlertMessage" />
   <div class="w-full flex justify-end">
     <div class="flex items-center space-x-4">
-      <Button @click="$router.back()" variant="outline">
+      <ButtonLink to="/assistant" variant="secondary">
         {{ $t('form.button.cancel') }}
-      </Button>
+      </ButtonLink>
       <ButtonLoading :loading="isLoading" @click="onSubmit">
         {{ $t('assistant.create.button') }}
       </ButtonLoading>

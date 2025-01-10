@@ -23,6 +23,11 @@ import {
   Trash2Icon,
 } from 'lucide-vue-next';
 
+const { t } = useI18n();
+const { fetchWorkflowsPaginated, deleteWorkflow } = useWorkflowService();
+const { addFavorite, deleteFavorite, fetchAllFavoritesByType } =
+  useUserFavoriteService();
+
 const toast = useToast();
 
 const page = ref(1);
@@ -38,30 +43,39 @@ const meta = computed(() => {
   };
 });
 
-const { fetchWorkflowsPaginated } = useWorkflowService();
-
 const initWorkflows = async () => {
   data.value = await fetchWorkflowsPaginated();
 };
 
 const errorAlert = reactive({ show: false, message: '' });
 const showConfirmDialog = ref(false);
+const deleteId = ref('');
 
-function onDelete(id: string) {
-  showConfirmDialog.value = true;
-}
-
-async function setPage(value: number) {
+const setPage = (value: number) => {
   page.value = value;
-}
+};
 
-function handleDelete() {
-  throw new Error('Not implemented');
-}
+const onDelete = (id: string) => {
+  showConfirmDialog.value = true;
+  deleteId.value = id;
+};
 
-// favorite
-const { addFavorite, deleteFavorite, fetchAllFavoritesByType } =
-  useUserFavoriteService();
+const handleDelete = async () => {
+  if (!deleteId.value) return;
+  try {
+    await deleteWorkflow(deleteId.value);
+    await initWorkflows();
+    toast.success({
+      description: t('workflow.delete.success'),
+    });
+  } catch (error: any) {
+    errorAlert.show = true;
+    errorAlert.message = error?.message;
+  } finally {
+    showConfirmDialog.value = false;
+    deleteId.value = '';
+  }
+};
 
 const onAddFavorite = async (workflowId: string) => {
   try {

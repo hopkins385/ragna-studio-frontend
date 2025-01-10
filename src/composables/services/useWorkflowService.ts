@@ -203,7 +203,25 @@ export function useWorkflowService() {
   };
 
   const deleteWorkflow = async (workflowId: string) => {
-    throw new Error('Not implemented');
+    try {
+      const route = getRoute(WorkflowRoute.WORKFLOW, {
+        ':workflowId': workflowId,
+      });
+      const response = await $axios.delete(route, {
+        signal: ac.signal,
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Response not ok');
+      }
+
+      return response.data;
+    } catch (error: any) {
+      throw new WorkflowServiceError(
+        error.status ?? 500,
+        'Failed to delete workflow',
+      );
+    }
   };
 
   const deleteWorkflowRows = async (

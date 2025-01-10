@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { setLocale as setVeeLocale } from '@vee-validate/i18n';
 import { RouterView } from 'vue-router';
 import { useLocaleStore } from './stores/locale.store';
 
@@ -17,6 +18,8 @@ const initializeLocale = async () => {
 
     if (localeStore.currentLocale) {
       locale.value = localeStore.currentLocale;
+      setVeeLocale(localeStore.currentLocale);
+      console.log(`Locale set to ${localeStore.currentLocale}`);
     }
 
     localeStatus.value = 'ready';

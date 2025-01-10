@@ -212,6 +212,7 @@
   "workflow": {
     "create": {
       "title": "Workflow erstellen",
+      "subtitle": "Hier kannst du einen neuen Workflow erstellen",
       "description_hint": "Die Beschreibung ist insbesondere hilfreich für Agenten, die den Workflow verwenden",
       "from_file": "Von Datei erstellen",
       "button": "Workflow erstellen",
