@@ -12,10 +12,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { useAuthService } from '@/composables/services/useAuthService';
 import { RouteName } from '@/router/enums/route-names.enum';
-import { loginFormSchema } from '@/schemas/loginForm.schema';
 import { useAuthStore } from '@/stores/auth.store';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
+import { z } from 'zod';
 import LogosGoogleIcon from '~icons/logos/google-icon';
 
 const authStore = useAuthStore();
@@ -23,6 +23,28 @@ const router = useRouter();
 const formLoading = ref(false);
 
 const { t } = useI18n();
+
+const passwordMinLength = 4;
+const passwordMaxLength = 100;
+
+const loginFormSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .email(t('auth.error.invalid_email'))
+    .max(100, t('auth.error.invalid_email')),
+  password: z
+    .string()
+    .trim()
+    .min(
+      passwordMinLength,
+      t('auth.error.password_min_length', { length: passwordMinLength }),
+    )
+    .max(
+      passwordMaxLength,
+      t('auth.error.password_max_length', { length: passwordMaxLength }),
+    ),
+});
 
 const authError = ref<string | null>(null);
 const form = useForm({

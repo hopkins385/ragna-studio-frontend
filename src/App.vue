@@ -11,6 +11,11 @@ const localeStore = useLocaleStore();
 const { locale } = useI18n();
 const localeStatus = ref<LocaleStatus>('loading');
 
+const setDocumentLang = (lang: string) => {
+  document.documentElement.lang = lang;
+  // document.querySelector('html').setAttribute('lang', localeStore.currentLocale)
+};
+
 // Initialize locale
 const initializeLocale = async () => {
   try {
@@ -44,6 +49,11 @@ initializeLocale();
 // Layout handling is managed by the layout middleware
 
 // TODO: Proper locale error handling
+
+onMounted(() => {
+  // Set the document lang attribute
+  setDocumentLang(localeStore.currentLocale);
+});
 </script>
 
 <template>

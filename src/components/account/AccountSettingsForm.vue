@@ -15,8 +15,8 @@ const { availableLocales } = useI18n();
 const currentTab = ref('tab2');
 
 const langLookup: Record<string, string> = {
-  'en-UK': 'English',
-  'de-DE': 'Deutsch',
+  en: 'English',
+  de: 'Deutsch',
 };
 
 const getLocale = (lang: string) => {

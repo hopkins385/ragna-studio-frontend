@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 export const useLocaleStore = defineStore('locale', {
   state: () => ({
-    currentLocale: localStorage.getItem('locale') || 'de-DE',
+    currentLocale: localStorage.getItem('locale') || 'de',
   }),
 
   actions: {
