@@ -7,8 +7,8 @@ enum AssistantTemplateRoute {
   ASSISTANT_TEMPLATE = '/assistant-template', // GET
   ASSISTANT_TEMPLATE_PAGINATED = '/assistant-template/paginated', // GET
   ASSISTANT_TEMPLATE_RANDOM = '/assistant-template/random', // GET
-  ASSISTANT_TEMPLATE_ID = '/assistant-template/:templateId', // GET
-  ASSISTANT_CATEGORY_ID = '/assistant-template/category/:categoryId', // GET
+  ASSISTANT_TEMPLATE_ID = '/assistant-template/one/:templateId', // GET
+  ASSISTANT_CATEGORY_ID = '/assistant-template/category/one/:categoryId', // GET
   ASSISTANT_CATEGORY = '/assistant-template/category', // GET
   ASSISTANT_CATEGORY_PAGINATED = '/assistant-template/category/paginated', // GET
 }
@@ -22,6 +22,15 @@ interface RandomTemplatesParams {
   limit: number;
 }
 
+export interface AssistantTemplateCategory {
+  id: string;
+  name: string;
+}
+
+interface AssistantTemplateCategoriesResponse {
+  categories: AssistantTemplateCategory[];
+}
+
 export interface AssistantTemplate {
   id: string;
   llmId: string;
@@ -30,11 +39,11 @@ export interface AssistantTemplate {
   systemPrompt: AssistantTemplatePrompt;
 }
 
-export interface AssistantTemplateResponse {
+interface AssistantTemplateResponse {
   templates: AssistantTemplate[];
 }
 
-export interface AssistantTemplatePaginatedResponse {
+interface AssistantTemplatePaginatedResponse {
   templates: AssistantTemplate[];
   meta: PaginateMeta;
 }
@@ -48,17 +57,18 @@ export function useAssistantTemplateService() {
   async function fetchAllTemplates() {
     const api = newApiRequest();
     const route = getRoute(AssistantTemplateRoute.ASSISTANT_TEMPLATE);
-    const response = await api
+
+    const { status, data } = await api
       .GET<AssistantTemplateResponse>()
       .setRoute(route)
       .setSignal(ac.signal)
       .execute();
 
-    if (response.status !== 200) {
+    if (status !== 200) {
       throw new Error('Failed to fetch assistant templates');
     }
 
-    return response.data;
+    return data;
   }
 
   /**
@@ -67,18 +77,19 @@ export function useAssistantTemplateService() {
   async function fetchAllTemplatesPaginated(params: PaginateDto) {
     const api = newApiRequest();
     const route = getRoute(AssistantTemplateRoute.ASSISTANT_TEMPLATE_PAGINATED);
-    const response = await api
+
+    const { status, data } = await api
       .GET<AssistantTemplatePaginatedResponse, PaginateDto>()
       .setRoute(route)
       .setParams(params)
       .setSignal(ac.signal)
       .execute();
 
-    if (response.status !== 200) {
+    if (status !== 200) {
       throw new Error('Failed to fetch assistant templates');
     }
 
-    return response.data;
+    return data;
   }
 
   /**
@@ -87,18 +98,39 @@ export function useAssistantTemplateService() {
   async function fetchRandomTemplates(params: RandomTemplatesParams) {
     const api = newApiRequest();
     const route = getRoute(AssistantTemplateRoute.ASSISTANT_TEMPLATE_RANDOM);
-    const response = await api
+
+    const { status, data } = await api
       .GET<AssistantTemplateResponse, RandomTemplatesParams>()
       .setRoute(route)
       .setParams(params)
       .setSignal(ac.signal)
       .execute();
 
-    if (response.status !== 200) {
+    if (status !== 200) {
       throw new Error('Failed to fetch random assistant templates');
     }
 
-    return response.data;
+    return data;
+  }
+
+  /**
+   * Fetch all templates categories
+   */
+  async function fetchAllCategories() {
+    const api = newApiRequest();
+    const route = getRoute(AssistantTemplateRoute.ASSISTANT_CATEGORY);
+
+    const { status, data } = await api
+      .GET<AssistantTemplateCategoriesResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .execute();
+
+    if (status !== 200) {
+      throw new Error('Failed to fetch assistant templates categories');
+    }
+
+    return data;
   }
 
   onScopeDispose(() => {
@@ -106,6 +138,7 @@ export function useAssistantTemplateService() {
   });
 
   return {
+    fetchAllCategories,
     fetchAllTemplates,
     fetchAllTemplatesPaginated,
     fetchRandomTemplates,

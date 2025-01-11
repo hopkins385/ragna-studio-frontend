@@ -437,20 +437,36 @@
     }
   },
   "templates": {
-    "assistants": {
-      "title": "Vorlagen",
-      "subtitle": "Hier kannst du Agent Vorlagen erstellen und verwalten"
-    }
+    "title": "Vorlagen",
+    "subtitle": "Wähle aus einer Vielzahl von Vorlagen, um schnell und unkompliziert loslegen zu können"
   },
   "template": {
+    "title": "Vorlage",
     "category": {
+      "recommended": {
+        "title": "Empfohlen",
+        "description": ""
+      },
       "business": {
         "title": "Geschäftlich",
-        "description": "Beschreibe in deinen eigenen Worten, wie der Agent sich verhalten soll"
+        "description": ""
+      },
+      "marketing": {
+        "title": "Marketing",
+        "description": ""
+      },
+      "social_media": {
+        "title": "Soziale Medien",
+        "description": ""
+      },
+      "education": {
+        "title": "Bildung",
+        "description": ""
+      },
+      "personal": {
+        "title": "Persönlich",
+        "description": ""
       }
-    },
-    "assistant": {
-      "general": "Allgemein"
     }
   }
 }

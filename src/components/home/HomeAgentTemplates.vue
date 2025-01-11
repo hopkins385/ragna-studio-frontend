@@ -5,10 +5,9 @@ import {
 } from '@/composables/services/useAssistantTemplateService';
 import { BotIcon } from 'lucide-vue-next';
 
-const templates = ref<AssistantTemplate[]>([]);
-
-const { t } = useI18n();
 const { fetchRandomTemplates } = useAssistantTemplateService();
+
+const templates = ref<AssistantTemplate[]>([]);
 
 const initTemplates = async () => {
   const { templates: data } = await fetchRandomTemplates({ limit: 9 });
@@ -26,10 +25,10 @@ onMounted(() => {
       <BotIcon class="size-6 stroke-1.5 mt-1" />
       <div>
         <h2 class="text-2xl font-semibold">
-          {{ $t('templates.assistants.title') }}
+          {{ $t('templates.title') }}
         </h2>
         <p class="text-xs opacity-75 hidden">
-          {{ $t('templates.assistants.description') }}
+          {{ $t('templates.description') }}
         </p>
       </div>
     </div>
