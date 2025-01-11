@@ -3,6 +3,7 @@
  * Collection Create - Create a new collection
  * Route: /collection/create
  */
+import ButtonLink from '@/components/button/ButtonLink.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { RouteName } from '@/router/enums/route-names.enum';
@@ -86,8 +87,16 @@ useHead({
       </template>
       <template #bottom> </template>
     </Heading>
-    <div class="rounded-lg py-10 px-20">
+    <div class="rounded-lg px-10">
       <form class="space-y-8" @submit="onSubmit">
+        <div class="flex justify-end space-x-4">
+          <ButtonLink to="/collection" variant="secondary">
+            {{ $t('form.button.cancel') }}
+          </ButtonLink>
+          <Button type="submit">
+            {{ $t('collection.create.button') }}
+          </Button>
+        </div>
         <FormField v-slot="{ componentField }" name="name">
           <FormItem>
             <FormLabel>
@@ -114,11 +123,6 @@ useHead({
             <FormMessage />
           </FormItem>
         </FormField>
-        <div class="flex justify-end">
-          <Button type="submit">
-            {{ $t('collection.create.button') }}
-          </Button>
-        </div>
       </form>
     </div>
   </SectionContainer>

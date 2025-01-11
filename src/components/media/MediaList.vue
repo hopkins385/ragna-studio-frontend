@@ -137,7 +137,9 @@ onMounted(() => {
               <FileIcon class="size-4 stroke-1.5" />
             </div>
           </TableCell>
-          <TableCell class="font-semibold">{{ media.name }}</TableCell>
+          <TableCell class="max-w-sm truncate font-semibold">{{
+            media.name
+          }}</TableCell>
           <TableCell>
             {{ getFileSizeForHumans(media.fileSize) }}
           </TableCell>

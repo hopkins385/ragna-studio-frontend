@@ -149,7 +149,9 @@ onMounted(async () => {
               <FileIcon class="size-4" />
             </div>
           </TableCell>
-          <TableCell class="truncate max-w-sm">{{ media.name }}</TableCell>
+          <TableCell class="max-w-sm truncate font-semibold">{{
+            media.name
+          }}</TableCell>
           <TableCell>
             {{ getFileSizeForHumans(media.fileSize) }}
           </TableCell>

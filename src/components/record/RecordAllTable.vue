@@ -123,14 +123,12 @@ onMounted(() => {
     </TableHeader>
     <TableBody>
       <TableRow v-for="record in records || []" :key="record?.id">
-        <TableCell>
-          <div
-            class="flex size-8 items-center justify-center truncate rounded-full"
-          >
-            <FileIcon class="size-4" />
-          </div>
+        <TableCell class="w-12">
+          <FileIcon class="size-4 stroke-1.5" />
         </TableCell>
-        <TableCell class="truncate">{{ record?.media?.name }}</TableCell>
+        <TableCell class="max-w-sm truncate font-semibold">
+          {{ record?.media?.name }}
+        </TableCell>
         <TableCell> {{ record?.chunks?.length ?? 0 }} </TableCell>
         <TableCell class="space-x-2 text-right">
           <TooltipProvider>

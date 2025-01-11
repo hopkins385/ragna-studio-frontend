@@ -1,13 +1,30 @@
 import { defineStore } from 'pinia';
 
+const SUPPORTED_LOCALES = ['de', 'en'];
+
 export const useLocaleStore = defineStore('locale', {
   state: () => ({
-    currentLocale: localStorage.getItem('locale') || 'de',
+    _currentLocale: 'de',
   }),
+
+  getters: {
+    currentLocale(state) {
+      const locale = localStorage.getItem('locale');
+      if (locale && SUPPORTED_LOCALES.includes(locale)) {
+        state._currentLocale = locale;
+        return locale;
+      } else {
+        return state._currentLocale;
+      }
+    },
+  },
 
   actions: {
     setLocale(newLocale: string) {
-      this.currentLocale = newLocale;
+      if (!SUPPORTED_LOCALES.includes(newLocale)) {
+        throw new Error('Unsupported locale');
+      }
+      this._currentLocale = newLocale;
       localStorage.setItem('locale', newLocale);
     },
   },
