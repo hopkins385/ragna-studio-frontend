@@ -1,4 +1,4 @@
-import { createApiClient } from '@/common/http/http-request.builder';
+import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
@@ -39,33 +39,19 @@ export interface AssistantTemplatePaginatedResponse {
   meta: PaginateMeta;
 }
 
-class AssistantTemplateServiceError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'AssistantTemplateServiceError';
-  }
-}
-
 export function useAssistantTemplateService() {
   const ac = new AbortController();
-
-  const handleError = (err: unknown) => {
-    if (err instanceof Error) {
-    }
-    console.error(err);
-    throw new AssistantTemplateServiceError('Failed to fetch data');
-  };
 
   /**
    * Fetch all assistant templates
    */
   async function fetchAllTemplates() {
-    const api = createApiClient();
+    const api = newApiRequest();
     const route = getRoute(AssistantTemplateRoute.ASSISTANT_TEMPLATE);
     const response = await api
-      .request<AssistantTemplateResponse>()
+      .GET<AssistantTemplateResponse>()
       .setRoute(route)
-      .setErrorHandler(handleError)
+      .setSignal(ac.signal)
       .execute();
 
     if (response.status !== 200) {
@@ -79,14 +65,13 @@ export function useAssistantTemplateService() {
    * Fetch all assistant templates paginated
    */
   async function fetchAllTemplatesPaginated(params: PaginateDto) {
-    const api = createApiClient();
+    const api = newApiRequest();
     const route = getRoute(AssistantTemplateRoute.ASSISTANT_TEMPLATE_PAGINATED);
     const response = await api
-      .request<AssistantTemplatePaginatedResponse, PaginateDto>()
-      .setSignal(ac.signal)
+      .GET<AssistantTemplatePaginatedResponse, PaginateDto>()
       .setRoute(route)
       .setParams(params)
-      .setErrorHandler(handleError)
+      .setSignal(ac.signal)
       .execute();
 
     if (response.status !== 200) {
@@ -96,15 +81,17 @@ export function useAssistantTemplateService() {
     return response.data;
   }
 
+  /**
+   * Fetch random assistant templates
+   */
   async function fetchRandomTemplates(params: RandomTemplatesParams) {
-    const api = createApiClient();
+    const api = newApiRequest();
     const route = getRoute(AssistantTemplateRoute.ASSISTANT_TEMPLATE_RANDOM);
     const response = await api
-      .request<AssistantTemplateResponse, RandomTemplatesParams>()
-      .setSignal(ac.signal)
+      .GET<AssistantTemplateResponse, RandomTemplatesParams>()
       .setRoute(route)
       .setParams(params)
-      .setErrorHandler(handleError)
+      .setSignal(ac.signal)
       .execute();
 
     if (response.status !== 200) {
