@@ -1,25 +1,37 @@
-import { $axios } from '@/axios/axiosInstance';
+import { BadResponseError } from '@/common/errors/bad-response.error';
+import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
-import type { LargeLangModelListResponse } from './interfaces/large-lang-model.interface';
+import type { LargeLangModel } from './interfaces/large-lang-model.interface';
+
+interface LargeLangModelResponse {
+  llm: LargeLangModel;
+}
+
+interface LargeLangModelListResponse {
+  llms: LargeLangModel[];
+}
 
 enum LlmRoute {
-  MODELS = 'llm/models', // GET
+  MODELS = '/llm/models', // GET
 }
 
 export function useLlmService() {
   const ac = new AbortController();
 
   const getAllModels = async () => {
+    const api = newApiRequest();
     const route = getRoute(LlmRoute.MODELS);
-    const response = await $axios.get<LargeLangModelListResponse>(route, {
-      signal: ac.signal,
-    });
+    const { status, data } = await api
+      .GET<LargeLangModelListResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch models');
+    if (status !== 200) {
+      throw new BadResponseError();
     }
 
-    return response.data;
+    return data;
   };
 
   onScopeDispose(() => {

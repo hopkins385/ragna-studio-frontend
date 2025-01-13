@@ -1,4 +1,5 @@
-import { $axios } from '@/axios/axiosInstance';
+import { BadResponseError } from '@/common/errors/bad-response.error';
+import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
 
 export type ProviderAuthName = 'google' | 'microsoft';
@@ -16,62 +17,62 @@ type ProviderAuthConsentURLResponse = ProviderAuthConsentURL;
 type ProviderAuthHasAccessResponse = ProviderAuthHasAccess;
 
 enum ProviderAuthRoute {
-  GOOGLE = 'google-drive',
-  GOOGLE_CONSENT_URL = 'google-drive/consent-url',
-  GOOGLE_CALLBACK = 'google-drive/callback',
-  GOOGLE_HAS_ACCESS = 'google-drive/has-access',
-}
-
-class ProviderAuthServiceError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ProviderAuthServiceError';
-  }
+  GOOGLE = '/google-drive',
+  GOOGLE_CONSENT_URL = '/google-drive/consent-url',
+  GOOGLE_CALLBACK = '/google-drive/callback',
+  GOOGLE_HAS_ACCESS = '/google-drive/has-access',
 }
 
 export function useProviderAuthService() {
+  const ac = new AbortController();
+
   const fetchUserHasAccess = async (provider: ProviderAuthName) => {
-    try {
-      const route = getRoute(ProviderAuthRoute.GOOGLE_HAS_ACCESS);
-      const response = await $axios.get<ProviderAuthHasAccessResponse>(route);
-      if (!response.data) {
-        throw new Error('No data received');
-      }
-      return response.data;
-    } catch (error) {
-      throw new ProviderAuthServiceError('Failed to fetch user access');
+    const api = newApiRequest();
+    const route = getRoute(ProviderAuthRoute.GOOGLE_HAS_ACCESS);
+    const { status, data } = await api
+      .GET<ProviderAuthHasAccessResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const fetchConsentURL = async (provider: ProviderAuthName) => {
-    try {
-      const route = getRoute(ProviderAuthRoute.GOOGLE_CONSENT_URL);
-      const response = await $axios.get<ProviderAuthConsentURLResponse>(route);
-      if (!response.data) {
-        throw new Error('No data received');
-      }
-      return response.data;
-    } catch (error) {
-      throw new ProviderAuthServiceError('Failed to fetch consent URL');
+    const api = newApiRequest();
+    const route = getRoute(ProviderAuthRoute.GOOGLE_CONSENT_URL);
+    const { status, data } = await api
+      .GET<ProviderAuthConsentURLResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const connectGoogleDrive = async (payload: { code: string }) => {
-    try {
-      const route = getRoute(ProviderAuthRoute.GOOGLE_CALLBACK);
-      const params = {
-        code: payload.code,
-      };
-      const response = await $axios.get(route, {
-        params,
-      });
-      if (!response.data) {
-        throw new Error('No data received');
-      }
-      return response.data;
-    } catch (error) {
-      throw new ProviderAuthServiceError('Failed to connect provider');
+    const api = newApiRequest();
+    const route = getRoute(ProviderAuthRoute.GOOGLE_CALLBACK);
+    const { status, data } = await api
+      .GET<any, { code: string }>()
+      .setRoute(route)
+      .setParams(payload)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   return {

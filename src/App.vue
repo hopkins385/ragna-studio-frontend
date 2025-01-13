@@ -24,7 +24,7 @@ const initializeLocale = async () => {
     if (localeStore.currentLocale) {
       locale.value = localeStore.currentLocale;
       setVeeLocale(localeStore.currentLocale);
-      console.log(`Locale set to ${localeStore.currentLocale}`);
+      // console.log(`Locale set to ${localeStore.currentLocale}`);
     }
 
     localeStatus.value = 'ready';

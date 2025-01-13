@@ -1,4 +1,7 @@
 import { $axios } from '@/axios/axiosInstance';
+import { BadRequestError } from '@/common/errors/bad-request.error';
+import { BadResponseError } from '@/common/errors/bad-response.error';
+import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { useChatStore } from '@/stores/chat-inference.store';
@@ -6,14 +9,14 @@ import { useChatSettingsStore } from '@/stores/chat-settings.store';
 import { getRoute } from '@/utils/route.util';
 
 enum ChatRoute {
-  BASE = 'chat', // POST
-  CHAT = 'chat/:chatId', // GET, PATCH, DELETE
-  CHAT_ALL = 'chat/all', // GET
-  CHAT_STREAM = 'chat-stream/:chatId', // POST
-  CHAT_HISTORY = 'chat/history', // GET
-  CHAT_LATEST = 'chat/latest', // GET
-  CHAT_MESSAGE = 'chat/:chatId/message', // POST
-  CHAT_MESSAGES = 'chat/:chatId/messages', // DELETE
+  BASE = '/chat', // POST
+  CHAT = '/chat/:chatId', // GET, PATCH, DELETE
+  CHAT_ALL = '/chat/all', // GET
+  CHAT_STREAM = '/chat-stream/:chatId', // POST
+  CHAT_HISTORY = '/chat/history', // GET
+  CHAT_LATEST = '/chat/latest', // GET
+  CHAT_MESSAGE = '/chat/:chatId/message', // POST
+  CHAT_MESSAGES = '/chat/:chatId/messages', // DELETE
 }
 
 export type InputChatId = string | null | undefined;
@@ -141,48 +144,43 @@ export function useChatService() {
   };
 
   const createChat = async (assistantId: string) => {
-    if (!assistantId) {
-      throw new Error('Assistant ID is required');
+    const api = newApiRequest();
+    const route = getRoute(ChatRoute.BASE);
+    const { status, data } = await api
+      .POST<ChatResponse, never, { assistantId: string }>()
+      .setRoute(route)
+      .setData({ assistantId })
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 201) {
+      throw new BadResponseError();
     }
 
-    try {
-      const response = await $axios.post<ChatResponse>('chat', {
-        assistantId,
-      });
-
-      if (response.status !== 201) {
-        throw new Error('Failed to create chat');
-      }
-
-      return response.data;
-    } catch (error: unknown) {
-      return handleError(error, 'Failed to create chat');
-    }
+    return data;
   };
 
   const createChatMessage = async (payload: CreateChatMessage) => {
     const { chatId, message } = payload;
     if (!chatId || !message) {
-      throw new Error('Chat ID and message are required');
+      throw new BadRequestError();
+    }
+    const api = newApiRequest();
+    const route = getRoute(ChatRoute.CHAT_MESSAGE, { ':chatId': chatId });
+    const { status, data } = await api
+      .POST<ChatMessage, never, { message: ChatMessage }>()
+      .setRoute(route)
+      .setData({ message })
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 201) {
+      throw new BadResponseError();
     }
 
-    try {
-      const route = getRoute(ChatRoute.CHAT_MESSAGE, { ':chatId': chatId });
-      const response = await $axios.post<ChatMessage>(
-        route,
-        { message },
-        {
-          signal: ac.signal,
-        },
-      );
-      if (response.status !== 201) {
-        throw new Error('Failed to create chat message');
-      }
-      addChatMessage(response.data);
-      //
-    } catch (error: unknown) {
-      return handleError(error, 'Failed to create chat message');
-    }
+    addChatMessage(data);
+
+    return;
   };
 
   const sendChatMessage = async (payload: CreateChatMessageStream) => {
@@ -301,89 +299,90 @@ export function useChatService() {
   };
 
   const fetchAllChats = async () => {
-    try {
-      const route = getRoute(ChatRoute.CHAT);
-      const response = await $axios.get<Chat[]>(route, {
-        signal: ac.signal,
-      });
+    const api = newApiRequest();
+    const route = getRoute(ChatRoute.CHAT_ALL);
+    const { status, data } = await api
+      .GET<Chat[]>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch chats');
-      }
-
-      return response.data;
-    } catch (error: unknown) {
-      return handleError(error, 'Failed to fetch chats');
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const fetchAllChatsPaginated = async (params: PaginateDto) => {
-    try {
-      const route = getRoute(ChatRoute.CHAT_HISTORY);
-      const response = await $axios.get<ChatsPaginated>(route, {
-        params,
-        signal: ac.signal,
-      });
+    const api = newApiRequest();
+    const route = getRoute(ChatRoute.CHAT_HISTORY);
+    const { status, data } = await api
+      .GET<ChatsPaginated, PaginateDto>()
+      .setRoute(route)
+      .setParams(params)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch chats');
-      }
-
-      return response.data;
-    } catch (error: unknown) {
-      return handleError(error, 'Failed to fetch chats');
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const fetchLatestChat = async () => {
-    try {
-      const route = getRoute(ChatRoute.CHAT_LATEST);
-      const response = await $axios.get<ChatResponse>(route, {
-        signal: ac.signal,
-      });
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch latest chat');
-      }
-      return response.data;
-      //
-    } catch (error: unknown) {
-      return handleError(error, 'Failed to fetch latest chat');
+    const api = newApiRequest();
+    const route = getRoute(ChatRoute.CHAT_LATEST);
+    const { status, data } = await api
+      .GET<ChatResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const deleteAllChatMessages = async (chatId: InputChatId) => {
     if (!chatId) {
       throw new Error('Chat ID is required');
     }
+    const api = newApiRequest();
+    const route = getRoute(ChatRoute.CHAT_MESSAGES, { ':chatId': chatId });
+    const { status } = await api
+      .DELETE()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-    try {
-      const route = getRoute(ChatRoute.CHAT_MESSAGES, { ':chatId': chatId });
-      const response = await $axios.delete(route, {
-        signal: ac.signal,
-      });
-      if (response.status !== 200) {
-        throw new Error('Failed to delete chat messages');
-      }
-    } catch (error: unknown) {
-      return handleError(error, 'Failed to delete chat messages');
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return;
   };
 
   const deleteChat = async (chatId: InputChatId) => {
     if (!chatId) {
       throw new Error('Chat ID is required');
     }
-    try {
-      const route = getRoute(ChatRoute.CHAT, { ':chatId': chatId });
-      const response = await $axios.delete(route, {
-        signal: ac.signal,
-      });
-      if (response.status !== 200) {
-        throw new Error('Failed to delete chat');
-      }
-    } catch (error: unknown) {
-      return handleError(error, 'Failed to delete chat');
+    const api = newApiRequest();
+    const route = getRoute(ChatRoute.CHAT, { ':chatId': chatId });
+    const { status } = await api
+      .DELETE()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return;
   };
 
   const initChatMessages = async (messages: ChatMessage[]) => {
@@ -400,28 +399,31 @@ export function useChatService() {
     if (!chatId) {
       throw new Error('Chat ID is required');
     }
+    const api = newApiRequest();
+    const route = getRoute(ChatRoute.CHAT, { ':chatId': chatId });
+    const { status, data } = await api
+      .GET<ChatResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-    try {
-      const route = getRoute(ChatRoute.CHAT, { ':chatId': chatId });
-      const response = await $axios.get<ChatResponse>(route, {
-        signal: ac.signal,
-      });
-      if (response.status !== 200) {
-        throw new Error('Invalid response');
-      }
-      chat.value = response.data.chat;
-      chatStore.setModel({
-        model: chat.value.assistant?.llm.apiName || '',
-        provider: chat.value.assistant?.llm.provider || '',
-        hasVision: chat.value.assistant?.llm?.capabilities?.imageInput || false,
-      });
-      isThinking.value = false;
-      isPending.value = false;
-      isStreaming.value = false;
-      initChatMessages(chat.value?.messages || []);
-    } catch (error: unknown) {
-      return handleError(error, 'Failed to fetch chat');
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    chat.value = data.chat;
+
+    chatStore.setModel({
+      model: chat.value.assistant?.llm.apiName || '',
+      provider: chat.value.assistant?.llm.provider || '',
+      hasVision: chat.value.assistant?.llm?.capabilities?.imageInput || false,
+    });
+
+    isThinking.value = false;
+    isPending.value = false;
+    isStreaming.value = false;
+
+    initChatMessages(chat.value?.messages || []);
   };
 
   const clearChatMessages = async () => {

@@ -1,5 +1,15 @@
-import { $axios } from '@/axios/axiosInstance';
+import { BadResponseError } from '@/common/errors/bad-response.error';
+import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
+
+enum WorkflowStepRoute {
+  BASE = '/workflow-step',
+  ROW = '/workflow-step/row',
+  STEP = '/workflow-step/:workflowStepId',
+  INPUT_STEPS = '/workflow-step/:workflowStepId/input-steps',
+  STEP_ASSISTANT = '/workflow-step/:workflowStepId/assistant',
+  ITEM = '/workflow-step/:stepId/item/:itemId',
+}
 
 interface CreateWorkflowStepDto {
   assistantId: string;
@@ -23,25 +33,6 @@ interface CreateWorkflowRowDto {
 
 type UpdateWorkflowStepDto = Partial<CreateWorkflowStepDto>;
 
-class WorkflowStepServiceError extends Error {
-  constructor(
-    public statusCode: number,
-    message: string,
-  ) {
-    super(message);
-    this.name = 'WorkflowServiceError';
-  }
-}
-
-enum WorkflowStepRoute {
-  BASE = '/workflow-step',
-  ROW = '/workflow-step/row',
-  STEP = '/workflow-step/:workflowStepId',
-  INPUT_STEPS = '/workflow-step/:workflowStepId/input-steps',
-  STEP_ASSISTANT = '/workflow-step/:workflowStepId/assistant',
-  ITEM = '/workflow-step/:stepId/item/:itemId',
-}
-
 export function useWorkflowStepService() {
   const ac = new AbortController();
 
@@ -51,157 +42,148 @@ export function useWorkflowStepService() {
 
   const createWorkflowStep = async (
     workflowId: string,
-    data: CreateWorkflowStepDto,
+    payload: CreateWorkflowStepDto,
   ) => {
-    try {
-      const route = getRoute(WorkflowStepRoute.BASE);
-      const body = {
-        workflowId,
-        ...data,
-      };
-      const response = await $axios.post(route, body, {
-        signal: ac.signal,
-      });
+    const bodyData = {
+      workflowId,
+      ...payload,
+    };
 
-      if (response.status !== 201) {
-        throw new Error('Failed to create workflow step');
-      }
+    const api = newApiRequest();
+    const route = getRoute(WorkflowStepRoute.BASE);
+    const { status, data } = await api
+      .POST<any, never, CreateWorkflowStepDto>()
+      .setRoute(route)
+      .setData(bodyData)
+      .setSignal(ac.signal)
+      .send();
 
-      return response.data;
-    } catch (error: any) {
-      throw new WorkflowStepServiceError(
-        error?.status || 500,
-        error?.data?.message || 'Failed to create workflow step',
-      );
+    if (status !== 201) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const createWorkflowRow = async (
     workflowId: string,
-    data: CreateWorkflowRowDto,
+    payload: CreateWorkflowRowDto,
   ) => {
-    try {
-      const route = getRoute(WorkflowStepRoute.ROW);
-      const body = {
-        workflowId,
-        items: data.items,
-      };
-      const response = await $axios.post(route, body, {
-        signal: ac.signal,
-      });
+    const bodyData = {
+      workflowId,
+      items: payload.items,
+    };
 
-      if (response.status !== 201) {
-        throw new Error('Failed to create workflow row');
-      }
+    const api = newApiRequest();
+    const route = getRoute(WorkflowStepRoute.ROW);
+    const { status, data } = await api
+      .POST<any, never, CreateWorkflowRowDto>()
+      .setRoute(route)
+      .setData(bodyData)
+      .setSignal(ac.signal)
+      .send();
 
-      return response.data;
-    } catch (error: any) {
-      throw new WorkflowStepServiceError(
-        error?.status || 500,
-        error?.data?.message || 'Failed to create workflow row',
-      );
+    if (status !== 201) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const updateInputSteps = async (
     workflowStepId: string,
     payload: { inputStepIds: string[] },
   ) => {
-    try {
-      const route = getRoute(WorkflowStepRoute.INPUT_STEPS, {
-        ':workflowStepId': workflowStepId,
-      });
-      const body = {
-        ...payload,
-      };
-      const response = await $axios.patch(route, body, {
-        signal: ac.signal,
-      });
+    // const bodyData = {
+    //   ...payload,
+    // };
 
-      if (response.status !== 200) {
-        throw new Error('Failed to update input steps');
-      }
+    const api = newApiRequest();
+    const route = getRoute(WorkflowStepRoute.INPUT_STEPS, {
+      ':workflowStepId': workflowStepId,
+    });
+    const { status, data } = await api
+      .PATCH<any, never, { inputStepIds: string[] }>()
+      .setRoute(route)
+      .setData(payload)
+      .setSignal(ac.signal)
+      .send();
 
-      return response.data;
-    } catch (error: any) {
-      throw new WorkflowStepServiceError(
-        error?.status || 500,
-        error?.data?.message || 'Failed to update input steps',
-      );
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const updateWorkflowStep = async (
     workflowId: string,
-    data: { name?: string },
+    payload: { name?: string },
   ) => {
-    try {
-      const route = getRoute(WorkflowStepRoute.STEP, {
-        ':workflowStepId': workflowId,
-      });
-      const body = {
-        name: data.name,
-      };
-      const response = await $axios.patch(route, body, {
-        signal: ac.signal,
-      });
+    const bodyData = {
+      name: payload.name,
+    };
 
-      if (response.status !== 200) {
-        throw new Error('Failed to update workflow step name');
-      }
+    const api = newApiRequest();
+    const route = getRoute(WorkflowStepRoute.STEP, {
+      ':workflowStepId': workflowId,
+    });
+    const { status, data } = await api
+      .PATCH<any, never, { name?: string }>()
+      .setRoute(route)
+      .setData(bodyData)
+      .setSignal(ac.signal)
+      .send();
 
-      return response.data;
-    } catch (error: any) {
-      throw new WorkflowStepServiceError(
-        error?.status || 500,
-        error?.data?.message || 'Failed to update workflow step name',
-      );
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const updateWorkflowStepAssistant = async (
     workflowStepId: string,
     payload: { assistantId: string },
   ) => {
-    try {
-      const route = getRoute(WorkflowStepRoute.STEP_ASSISTANT, {
-        ':workflowStepId': workflowStepId,
-      });
-      const body = {
-        assistantId: payload.assistantId,
-      };
-      const response = await $axios.patch(route, body, {
-        signal: ac.signal,
-      });
+    const bodyData = {
+      assistantId: payload.assistantId,
+    };
 
-      if (response.status !== 200) {
-        throw new Error('Failed to update workflow step assistant');
-      }
+    const api = newApiRequest();
+    const route = getRoute(WorkflowStepRoute.STEP_ASSISTANT, {
+      ':workflowStepId': workflowStepId,
+    });
+    const { status, data } = await api
+      .PATCH<any, never, { assistantId: string }>()
+      .setRoute(route)
+      .setData(bodyData)
+      .setSignal(ac.signal)
+      .send();
 
-      return response.data;
-    } catch (error: any) {}
+    if (status !== 200) {
+      throw new BadResponseError();
+    }
+
+    return data;
   };
 
   const deleteWorkflowStep = async (workflowStepId: string) => {
-    try {
-      const route = getRoute(WorkflowStepRoute.STEP, {
-        ':workflowStepId': workflowStepId,
-      });
-      const response = await $axios.delete(route, {
-        signal: ac.signal,
-      });
+    const api = newApiRequest();
+    const route = getRoute(WorkflowStepRoute.STEP, {
+      ':workflowStepId': workflowStepId,
+    });
+    const { status, data } = await api
+      .DELETE<any, never, never>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 200) {
-        throw new Error('Failed to delete workflow step');
-      }
-
-      return response.data;
-    } catch (error: any) {
-      throw new WorkflowStepServiceError(
-        error?.status || 500,
-        error?.data?.message || 'Failed to delete workflow step',
-      );
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const updateItemContent = async ({
@@ -220,26 +202,23 @@ export function useWorkflowStepService() {
       ':stepId': stepId,
       ':itemId': itemId,
     });
-    const body = {
+    const bodyData = {
       itemContent: content,
     };
 
-    try {
-      const response = await $axios.patch(route, body, {
-        // signal: ac.signal, // on cell card close this will be called, so no need to abort
-      });
+    const api = newApiRequest();
+    const { status, data } = await api
+      .PATCH<any, never, { itemContent: string }>()
+      .setRoute(route)
+      .setData(bodyData)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 200) {
-        throw new Error('Failed to update item content');
-      }
-
-      return response.data;
-    } catch (error: any) {
-      throw new WorkflowStepServiceError(
-        error?.status || 500,
-        error?.data?.message || 'Failed to update item content',
-      );
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   return {

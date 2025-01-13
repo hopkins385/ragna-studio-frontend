@@ -1,50 +1,40 @@
-import { $axios } from '@/axios/axiosInstance';
+import { BadResponseError } from '@/common/errors/bad-response.error';
+import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
 
 enum GoogleDriveRoute {
   BASE = '/google-drive',
 }
 
-class GoogleDriveServiceError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'GoogleDriveServiceError';
-  }
+interface DriveParams {
+  folderId: string | null;
+  fileName?: string | null;
+  pageToken?: string | null;
 }
 
 export function useGoogleDriveService() {
   const ac = new AbortController();
 
+  const fetchDriveData = async (params: DriveParams) => {
+    const api = newApiRequest();
+    const route = getRoute(GoogleDriveRoute.BASE);
+    const { status, data } = await api
+      .GET<any, DriveParams>()
+      .setRoute(route)
+      .setParams(params)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
+    }
+
+    return data;
+  };
+
   onScopeDispose(() => {
     ac.abort();
   });
-
-  const fetchDriveData = async (payload: {
-    folderId: string | null;
-    fileName?: string | null;
-    pageToken?: string | null;
-  }) => {
-    try {
-      const route = getRoute(GoogleDriveRoute.BASE);
-      const params = {
-        searchFileName: payload.fileName,
-        searchFolderId: payload.folderId,
-        pageToken: payload.pageToken,
-      };
-      const response = await $axios.get(route, {
-        params,
-        signal: ac.signal,
-      });
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch drive data');
-      }
-
-      return response.data;
-    } catch (error: any) {
-      throw new GoogleDriveServiceError(error?.message);
-    }
-  };
 
   return {
     fetchDriveData,

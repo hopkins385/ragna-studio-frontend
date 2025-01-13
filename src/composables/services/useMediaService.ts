@@ -1,13 +1,14 @@
-import { $axios } from '@/axios/axiosInstance';
+import { BadResponseError } from '@/common/errors/bad-response.error';
+import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
 
 enum MediaRoute {
-  UPLOAD = 'upload',
-  BASE = 'media', // POST
-  MEDIA = 'media/:mediaId', // GET, PATCH, DELETE
-  FOR = 'media/for', // POST
-  FOR_PAGINATE = 'media/for/paginate', // POST
+  UPLOAD = '/upload',
+  BASE = '/media', // POST
+  MEDIA = '/media/:mediaId', // GET, PATCH, DELETE
+  FOR = '/media/for', // POST
+  FOR_PAGINATE = '/media/for/paginate', // POST
 }
 
 export function useMediaService() {
@@ -23,30 +24,32 @@ export function useMediaService() {
     files.forEach(file => {
       formData.append('file', file);
     });
-
     // add to form vision key
     formData.append('vision', vision.toString());
 
-    try {
-      isLoading.value = true;
-      const route = getRoute(MediaRoute.UPLOAD);
-      const response = await $axios.post(route, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        signal: ac.signal,
-      });
-      if (response.status !== 201) {
-        throw new Error('Error uploading files');
-      }
-      dropzoneFiles.value = [];
-      isLoading.value = false;
-      refreshData.value = true;
-      return response.data;
-    } catch (err) {
-      console.error(err);
-      isLoading.value = false;
+    isLoading.value = true;
+
+    const api = newApiRequest();
+    const route = getRoute(MediaRoute.UPLOAD);
+    const { status, data } = await api
+      .POST<any, never, FormData>()
+      .setHeaders({
+        'Content-Type': 'multipart/form-data',
+      })
+      .setRoute(route)
+      .setData(formData)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 201) {
+      throw new BadResponseError();
     }
+
+    isLoading.value = false;
+    dropzoneFiles.value = [];
+    refreshData.value = true;
+
+    return data;
   };
 
   const fetchAllMediaFor = async (
@@ -56,36 +59,43 @@ export function useMediaService() {
     },
     params: PaginateDto,
   ) => {
-    const body = {
+    const bodyData = {
       model: {
         id: model.id,
         type: model.type,
       },
     };
+    const api = newApiRequest();
     const route = getRoute(MediaRoute.FOR_PAGINATE);
-    const response = await $axios.post(route, body, {
-      params,
-      signal: ac.signal,
-    });
+    const { status, data } = await api
+      .POST<any, PaginateDto, { model: { id: string; type: any } }>()
+      .setRoute(route)
+      .setParams(params)
+      .setData(bodyData)
+      .setSignal(ac.signal)
+      .send();
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch media');
+    if (status !== 200) {
+      throw new BadResponseError();
     }
 
-    return response.data;
+    return data;
   };
 
   const deleteMedia = async (mediaId: string) => {
+    const api = newApiRequest();
     const route = getRoute(MediaRoute.MEDIA, { ':mediaId': mediaId });
-    const response = await $axios.delete(route, {
-      signal: ac.signal,
-    });
+    const { status, data } = await api
+      .DELETE<any, never, never>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-    if (response.status !== 200) {
-      throw new Error('Failed to delete media');
+    if (status !== 200) {
+      throw new BadResponseError();
     }
 
-    return response.data;
+    return data;
   };
 
   return {

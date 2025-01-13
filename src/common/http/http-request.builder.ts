@@ -5,6 +5,11 @@ import {
   type AxiosRequestConfig,
   type AxiosResponse,
 } from 'axios';
+import { BadRequestError } from '../errors/bad-request.error';
+import { ForbiddenError } from '../errors/forbidden.error';
+import { NotFoundError } from '../errors/not-found.error';
+import { UnauthorizedError } from '../errors/unauthorized.error';
+import { UnknownError } from '../errors/unknown.error';
 
 type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 type ResponseType = 'json' | 'text' | 'blob' | 'arraybuffer';
@@ -20,9 +25,13 @@ interface RequestOptions<TParams = never, TData = never> {
   signal?: AbortSignal;
 }
 
+interface ErrorHandler {
+  (error: AxiosError): void;
+}
+
 class RequestBuilder<TResponse, TParams = never, TData = never> {
   private instance: AxiosInstance;
-  private errorHandler: (error: AxiosError) => void = () => {};
+  private errorHandler: ErrorHandler | null = null;
   private config: RequestOptions<TParams, TData> = {
     method: 'GET',
     url: '',
@@ -83,11 +92,30 @@ class RequestBuilder<TResponse, TParams = never, TData = never> {
 
       return await this.instance.request<TResponse>(axiosConfig);
     } catch (error) {
-      if (error instanceof AxiosError && this.errorHandler) {
-        this.errorHandler(error);
+      if (error instanceof AxiosError) {
+        if (this.errorHandler) {
+          this.errorHandler(error);
+        } else {
+          defaultErrorHandler(error);
+        }
       }
       throw error;
     }
+  }
+}
+
+function defaultErrorHandler(error: AxiosError) {
+  switch (error.response?.status) {
+    case 400:
+      throw new BadRequestError();
+    case 401:
+      throw new UnauthorizedError();
+    case 403:
+      throw new ForbiddenError();
+    case 404:
+      throw new NotFoundError();
+    default:
+      throw new UnknownError();
   }
 }
 

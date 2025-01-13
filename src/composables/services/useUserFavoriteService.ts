@@ -1,4 +1,5 @@
-import { $axios } from '@/axios/axiosInstance';
+import { BadResponseError } from '@/common/errors/bad-response.error';
+import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
 
 export interface UserFavorite {
@@ -44,55 +45,56 @@ export function useUserFavoriteService() {
   const ac = new AbortController();
 
   const addFavorite = async (payload: UserFavoriteDto) => {
-    const body = {
+    const bodyData = {
       favoriteId: payload.id,
       favoriteType: payload.type,
     };
-    try {
-      const route = getRoute(UserFavoriteRoute.BASE);
-      const response = await $axios.post<UserFavoriteResponse>(route, body, {
-        signal: ac.signal,
-      });
-      if (response.status !== 201) {
-        throw new Error('Failed to add favorite');
-      }
-      return response.data;
-    } catch (error: any) {
-      throw new UserFavoriteServiceError(
-        error?.message ?? 'Failed to add favorite',
-      );
+    const api = newApiRequest();
+    const route = getRoute(UserFavoriteRoute.BASE);
+    const { status, data } = await api
+      .POST<UserFavoriteResponse, never, any>()
+      .setRoute(route)
+      .setData(bodyData)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 201) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const fetchAllFavorites = async () => {
-    try {
-      const route = getRoute(UserFavoriteRoute.BASE);
-      const response = await $axios.get<UserFavoritesResponse>(route, {
-        signal: ac.signal,
-      });
-      return response.data;
-    } catch (error: any) {
-      throw new UserFavoriteServiceError(
-        error?.message ?? 'Failed to get all favorites',
-      );
+    const api = newApiRequest();
+    const route = getRoute(UserFavoriteRoute.BASE);
+    const { status, data } = await api
+      .GET<UserFavoritesResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const fetchAllFavoritesByType = async (favoriteType: string) => {
-    try {
-      const route = UserFavoriteRoute.TYPE.replace(
-        ':favoriteType',
-        favoriteType,
-      );
-      const response = await $axios.get<UserFavoritesResponse>(route, {
-        signal: ac.signal,
-      });
-      return response.data;
-    } catch (error: any) {
-      throw new UserFavoriteServiceError(
-        error?.message ?? 'Failed to get all favorites by type',
-      );
+    const api = newApiRequest();
+    const route = UserFavoriteRoute.TYPE.replace(':favoriteType', favoriteType);
+    const { status, data } = await api
+      .GET<UserFavoritesResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const deleteFavorite = async (payload: {
@@ -102,23 +104,25 @@ export function useUserFavoriteService() {
     if (!payload.entityId) {
       throw new Error('id missing');
     }
-    const body = {
+    const bodyData = {
       favoriteType: payload.favoriteType,
     };
-    try {
-      const route = getRoute(UserFavoriteRoute.DELETE, {
-        ':entityId': payload.entityId,
-      });
-      const response = await $axios.delete<UserFavoriteResponse>(route, {
-        data: body,
-        signal: ac.signal,
-      });
-      return response.data;
-    } catch (error: any) {
-      throw new UserFavoriteServiceError(
-        error?.message ?? 'Failed to delete favorite',
-      );
+    const api = newApiRequest();
+    const route = getRoute(UserFavoriteRoute.DELETE, {
+      ':entityId': payload.entityId,
+    });
+    const { status, data } = await api
+      .DELETE<UserFavoriteResponse, never, { favoriteType: string }>()
+      .setRoute(route)
+      .setData(bodyData)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   return {

@@ -1,4 +1,5 @@
-import { $axios } from '@/axios/axiosInstance';
+import { BadResponseError } from '@/common/errors/bad-response.error';
+import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
@@ -60,23 +61,9 @@ export interface ImageGenPaginatedResponse {
   meta: PaginateMeta;
 }
 
-class ImageGenError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ImageGenError';
-  }
-}
-
 export function useTextToImageService() {
   const ac = new AbortController();
   let acGen: AbortController | null = null;
-
-  const handleError = (err: unknown, customMessage?: string) => {
-    if (err instanceof Error) {
-    }
-    console.error(err);
-    throw new ImageGenError(customMessage || 'Failed to fetch data');
-  };
 
   const generateImages = async (payload: {
     folderId: string;
@@ -90,61 +77,82 @@ export function useTextToImageService() {
   }) => {
     acGen = new AbortController();
 
-    // remove output_format from payload
-
-    const body = {
+    const bodyData = {
       ...payload,
       safety_tolerance: 4,
     };
 
-    try {
-      const route = getRoute(ImageGenRoute.GENERATE);
-      const response = await $axios.post<ImageGenResponse>(route, body, {
-        signal: acGen.signal,
-      });
-      return response.data;
-    } catch (error: unknown) {
-      return handleError(error, 'Failed to generate images');
+    const api = newApiRequest();
+    const route = getRoute(ImageGenRoute.GENERATE);
+    const { status, data } = await api
+      .POST<ImageGenResponse, never, typeof bodyData>()
+      .setRoute(route)
+      .setData(bodyData)
+      .setSignal(acGen.signal)
+      .send();
+
+    if (status !== 201) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
-  const toggleHideRun = async ({ runId }: { runId: string }) => {
-    try {
-      const route = getRoute(ImageGenRoute.TOGGLE_HIDE, { ':runId': runId });
-      await $axios.patch(route);
-    } catch (error: unknown) {
-      return handleError(error, 'Failed to toggle hide run');
+  const toggleHideRun = async (payload: { runId: string }) => {
+    const api = newApiRequest();
+    const route = getRoute(ImageGenRoute.TOGGLE_HIDE, {
+      ':runId': payload.runId,
+    });
+    const { status, data } = await api
+      .PATCH<ImageGenResponse, never, typeof payload>()
+      .setRoute(route)
+      //.setData(payload)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const fetchFolders = async () => {
-    try {
-      const route = getRoute(ImageGenRoute.FOLDERS);
-      const response = await $axios.get<ImageGenFolderResponse>(route, {
-        signal: ac.signal,
-      });
-      return response.data;
-    } catch (error: unknown) {
-      return handleError(error, 'Failed to fetch folders');
+    const api = newApiRequest();
+    const route = getRoute(ImageGenRoute.FOLDERS);
+    const { status, data } = await api
+      .GET<ImageGenFolderResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   const fetchRunsPaginated = async (
     { folderId }: { folderId: string },
     params: PaginateDto & { showHidden?: boolean },
   ) => {
-    try {
-      const route = getRoute(ImageGenRoute.FOLDER_RUNS_PAGINATED, {
-        ':folderId': folderId,
-      });
-      const response = await $axios.get<ImageGenPaginatedResponse>(route, {
-        params,
-        signal: ac.signal,
-      });
-      return response.data;
-    } catch (error: unknown) {
-      return handleError(error, 'Failed to fetch runs');
+    const api = newApiRequest();
+    const route = getRoute(ImageGenRoute.FOLDER_RUNS_PAGINATED, {
+      ':folderId': folderId,
+    });
+    const { status, data } = await api
+      .GET<ImageGenPaginatedResponse, PaginateDto>()
+      .setRoute(route)
+      .setParams(params)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   };
 
   return {

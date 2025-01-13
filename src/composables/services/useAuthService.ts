@@ -1,17 +1,17 @@
 // authService.ts
+import { BadResponseError } from '@/common/errors/bad-response.error';
 import { UnauthorizedError } from '@/common/errors/unauthorized.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import type { GoogleAuthCallbackQuery } from '@/interfaces/auth/google-auth-callback.interface';
 import { getRoute } from '@/utils/route.util';
-import { AxiosError } from 'axios';
 
-enum AuthRoute {
-  LOGIN = 'auth/login', // POST
-  LOGOUT = 'auth/logout', // POST
-  REGISTER = 'auth/register', // POST
-  REFRESH = 'auth/refresh', // POST
-  SESSION = 'auth/session', // GET
-  SOCIAL_AUTH_URL = 'auth/:provider/url', // GET
+export enum AuthRoute {
+  LOGIN = '/auth/login', // POST
+  LOGOUT = '/auth/logout', // POST
+  REGISTER = '/auth/register', // POST
+  REFRESH = '/auth/refresh', // POST
+  SESSION = '/auth/session', // GET
+  SOCIAL_AUTH_URL = '/auth/:provider/url', // GET
   CALLBACK_GOOGLE = '/auth/google/callback', // POST
 }
 
@@ -55,28 +55,8 @@ interface EmptyBodyData {}
 
 const emptyBodyData: EmptyBodyData = {};
 
-class AuthServiceError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'AuthServiceError';
-  }
-}
-
 export function useAuthService() {
   const ac = new AbortController();
-
-  const handleError = (err: AxiosError) => {
-    switch (err.response?.status) {
-      case 401:
-        throw new UnauthorizedError('Invalid credentials');
-      case 403:
-        throw new AuthServiceError('User is not verified');
-      case 404:
-        throw new AuthServiceError('User not found');
-      default:
-        throw new AuthServiceError('Unknown error');
-    }
-  };
 
   const loginUser = async (body: AuthCredentials) => {
     const api = newApiRequest();
@@ -86,10 +66,9 @@ export function useAuthService() {
       .setRoute(route)
       .setData(body)
       .setSignal(ac.signal)
-      .setErrorHandler(handleError)
       .send();
 
-    if (status !== 200) {
+    if (status !== 201) {
       throw new UnauthorizedError('Invalid credentials');
     }
 
@@ -106,8 +85,9 @@ export function useAuthService() {
       .setSignal(ac.signal)
       .send();
 
+    // Logout should always return 200 (OK) status
     if (status !== 200) {
-      throw new Error('Failed to logout user');
+      throw new BadResponseError();
     }
 
     return;
@@ -124,7 +104,7 @@ export function useAuthService() {
       .send();
 
     if (status !== 201) {
-      throw new Error('Failed to register user');
+      throw new BadResponseError();
     }
 
     return data;
@@ -140,7 +120,7 @@ export function useAuthService() {
       .send();
 
     if (status !== 200) {
-      throw new Error('Failed to fetch session');
+      throw new BadResponseError();
     }
 
     return data;
@@ -157,7 +137,7 @@ export function useAuthService() {
       .send();
 
     if (status !== 201) {
-      throw new Error('Failed to refresh token');
+      throw new BadResponseError();
     }
 
     return data;
@@ -175,7 +155,7 @@ export function useAuthService() {
       .send();
 
     if (status !== 200) {
-      throw new Error('Failed to fetch social auth url');
+      throw new BadResponseError();
     }
 
     return data;
@@ -192,7 +172,7 @@ export function useAuthService() {
       .send();
 
     if (status !== 201) {
-      throw new Error('Failed to authenticate with Google');
+      throw new BadResponseError();
     }
 
     return data;

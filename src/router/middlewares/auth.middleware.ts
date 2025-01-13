@@ -25,7 +25,7 @@ export async function authMiddleware(to: RouteLocationNormalized) {
         return true;
       }
     } catch (error: unknown) {
-      console.error('[middleware] Failed to refresh auth');
+      console.error('[middleware] Failed to refresh auth', error);
       return { name: 'login' };
     }
   }

@@ -200,6 +200,7 @@ export const useAuthStore = defineStore('auth-store', {
      * Refreshes the current session.
      */
     async refreshAuth(): Promise<void> {
+      console.log('Refreshing token...', this.refreshAttempts);
       this.refreshAttempts++;
       if (this.refreshAttempts > this.maxRefreshAttempts) {
         this.clearUser();

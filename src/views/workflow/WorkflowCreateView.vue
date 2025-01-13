@@ -102,8 +102,6 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
 
 <template>
   <SectionContainer>
-    <!-- Alerts -->
-    <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
     <!-- Heading -->
     <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
@@ -114,6 +112,9 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
       </template>
       <template #bottom> </template>
     </Heading>
+
+    <!-- Alerts -->
+    <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
 
     <div class="rounded-lg px-10">
       <!-- Form -->

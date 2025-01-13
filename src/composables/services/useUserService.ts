@@ -1,21 +1,11 @@
-import { $axios } from '@/axios/axiosInstance';
+import { BadResponseError } from '@/common/errors/bad-response.error';
+import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import { getRoute } from '@/utils/route.util';
 
 enum UserRoute {
   BASE = 'user', // GET, POST
   USER = 'user/:userId', // GET, PATCH, DELETE
-}
-
-// Custom error class
-export class UserServiceError extends Error {
-  constructor(
-    public statusCode: number,
-    message: string,
-  ) {
-    super(message);
-    this.name = 'UserServiceError';
-  }
 }
 
 export interface User {
@@ -40,115 +30,119 @@ type UserUpdate = Omit<User, 'id'>;
  */
 export function useUserService() {
   const ac = new AbortController();
+
   /**
    * Fetches all users from the system
-   * @throws {UserServiceError} If the request fails
    */
   async function fetchAllUsers(): Promise<UsersPaginated> {
-    try {
-      const route = getRoute(UserRoute.BASE);
-      const response = await $axios.get<UsersPaginated>(route, {
-        signal: ac.signal,
-      });
-      return response.data;
-    } catch (error: any) {
-      throw new UserServiceError(
-        error.response?.status ?? 500,
-        'Failed to fetch users',
-      );
+    const api = newApiRequest();
+    const route = getRoute(UserRoute.BASE);
+    const { status, data } = await api
+      .GET<UsersPaginated>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   }
 
   /**
    * Fetches a user by their ID
    * @param id User ID
-   * @throws {UserServiceError} If the request fails
    */
   async function fetchUserById(id: string): Promise<User> {
     const userId = id.toLowerCase();
     if (!userId) throw new Error('User ID is required');
 
-    try {
-      const route = getRoute(UserRoute.USER, { ':userId': userId });
-      const response = await $axios.get<User>(route, {
-        signal: ac.signal,
-      });
-      return response.data;
-    } catch (error: any) {
-      throw new UserServiceError(
-        error.response?.status ?? 500,
-        `Failed to fetch user with ID ${userId}`,
-      );
+    const api = newApiRequest();
+    const route = getRoute(UserRoute.USER, { ':userId': userId });
+    const { status, data } = await api
+      .GET<User>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   }
 
   /**
    * Creates a new user
    * @param user User data
-   * @throws {UserServiceError} If the request fails
    */
   async function createUser(user: UserCreate): Promise<User> {
     if (!user.name || !user.email || !user.password) {
       throw new Error('Name, email and password are required');
     }
 
-    try {
-      const route = getRoute(UserRoute.BASE);
-      const response = await $axios.post<User>(route, user, {
-        signal: ac.signal,
-      });
-      return response.data;
-    } catch (error: any) {
-      throw new UserServiceError(
-        error.response?.status ?? 500,
-        'Failed to create user',
-      );
+    const api = newApiRequest();
+    const route = getRoute(UserRoute.BASE);
+    const { status, data } = await api
+      .POST<User, never, UserCreate>()
+      .setRoute(route)
+      .setData(user)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 201) {
+      throw new BadResponseError();
     }
+
+    return data;
   }
 
   /**
    * Updates an existing user
    * @param user User data with ID
-   * @throws {UserServiceError} If the request fails
    */
-  async function updateUser(id: string, data: UserUpdate): Promise<User> {
+  async function updateUser(id: string, updateData: UserUpdate): Promise<User> {
     const userId = id.toLowerCase();
     if (!userId) throw new Error('User ID is required');
 
-    try {
-      const route = getRoute(UserRoute.USER, { ':userId': userId });
-      const response = await $axios.patch<User>(route, data, {
-        signal: ac.signal,
-      });
-      return response.data;
-    } catch (error: any) {
-      throw new UserServiceError(
-        error.response?.status ?? 500,
-        `Failed to update user with ID ${userId}`,
-      );
+    const api = newApiRequest();
+    const route = getRoute(UserRoute.USER, { ':userId': userId });
+    const { status, data } = await api
+      .PATCH<User, never, UserUpdate>()
+      .setRoute(route)
+      .setData(updateData)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return data;
   }
 
   /**
    * Deletes a user
    * @param id User ID
-   * @throws {UserServiceError} If the request fails
    */
   async function deleteUser(id: string): Promise<void> {
     const userId = id.toLowerCase();
     if (!userId) throw new Error('User ID is required');
 
-    try {
-      const route = getRoute(UserRoute.USER, { ':userId': userId });
-      await $axios.delete(route, {
-        signal: ac.signal,
-      });
-    } catch (error: any) {
-      throw new UserServiceError(
-        error.response?.status ?? 500,
-        `Failed to delete user with ID ${userId}`,
-      );
+    const api = newApiRequest();
+    const route = getRoute(UserRoute.USER, { ':userId': userId });
+    const { status } = await api
+      .DELETE<never, never, never>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
     }
+
+    return;
   }
 
   onScopeDispose(() => {

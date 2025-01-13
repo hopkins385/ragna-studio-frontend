@@ -1,12 +1,13 @@
-import { $axios } from '@/axios/axiosInstance';
+import { BadResponseError } from '@/common/errors/bad-response.error';
+import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
 
 enum RecordRoute {
-  BASE = 'record',
-  RECORD = 'record/:recordId',
-  ALL_RECORDS = 'record/:collectionId',
-  ALL_RECORDS_PAGINATED = 'record/:collectionId/paginated',
+  BASE = '/record',
+  RECORD = '/record/:recordId',
+  ALL_RECORDS = '/record/:collectionId',
+  ALL_RECORDS_PAGINATED = '/record/:collectionId/paginated',
 }
 
 export interface Record {
@@ -35,66 +36,76 @@ export function useRecordService() {
   const ac = new AbortController();
 
   const fetchAll = async (payload: { collectionId: string }) => {
+    const api = newApiRequest();
     const route = getRoute(RecordRoute.ALL_RECORDS, {
       ':collectionId': payload.collectionId,
     });
-    const response = await $axios.get<AllRecordsResponse>(route, {
-      signal: ac.signal,
-    });
+    const { status, data } = await api
+      .GET<AllRecordsResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch records');
+    if (status !== 200) {
+      throw new BadResponseError();
     }
 
-    return response.data;
+    return data;
   };
 
   const fetchAllPaginated = async (payload: {
     collectionId: string;
     params: PaginateDto;
   }) => {
+    const api = newApiRequest();
     const route = getRoute(RecordRoute.ALL_RECORDS_PAGINATED, {
       ':collectionId': payload.collectionId,
     });
-    const response = await $axios.get<RecordsPaginatedResponse>(route, {
-      params: payload.params,
-      signal: ac.signal,
-    });
+    const { status, data } = await api
+      .GET<RecordsPaginatedResponse, PaginateDto>()
+      .setRoute(route)
+      .setParams(payload.params)
+      .setSignal(ac.signal)
+      .send();
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch records');
+    if (status !== 200) {
+      throw new BadResponseError();
     }
 
-    return response.data;
+    return data;
   };
 
   const createRecord = async (payload: CreateRecordDto) => {
+    const api = newApiRequest();
     const route = getRoute(RecordRoute.BASE);
-    const body = {
-      ...payload,
-    };
-    const response = await $axios.post(route, body, {
-      signal: ac.signal,
-    });
+    const { status, data } = await api
+      .POST<any, never, CreateRecordDto>()
+      .setRoute(route)
+      .setData(payload)
+      .setSignal(ac.signal)
+      .send();
 
-    if (response.status !== 201) {
-      throw new Error('Failed to create record');
+    if (status !== 201) {
+      throw new BadResponseError();
     }
 
-    return response.data;
+    return data;
   };
 
   const deleteRecord = async (recordId: string) => {
+    const api = newApiRequest();
     const route = getRoute(RecordRoute.RECORD, { ':recordId': recordId });
-    const response = await $axios.delete(route, {
-      signal: ac.signal,
-    });
+    const { status, data } = await api
+      .DELETE<any, never, never>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-    if (response.status !== 200) {
-      throw new Error('Failed to delete record');
+    if (status !== 200) {
+      throw new BadResponseError();
     }
 
-    return response.data;
+    return data;
   };
 
   onScopeDispose(() => {

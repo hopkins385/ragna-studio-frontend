@@ -1,3 +1,4 @@
+import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
@@ -65,7 +66,7 @@ export function useAssistantTemplateService() {
       .send();
 
     if (status !== 200) {
-      throw new Error('Failed to fetch assistant templates');
+      throw new BadResponseError();
     }
 
     return data;
@@ -86,7 +87,7 @@ export function useAssistantTemplateService() {
       .send();
 
     if (status !== 200) {
-      throw new Error('Failed to fetch assistant templates');
+      throw new BadResponseError();
     }
 
     return data;
@@ -107,7 +108,7 @@ export function useAssistantTemplateService() {
       .send();
 
     if (status !== 200) {
-      throw new Error('Failed to fetch random assistant templates');
+      throw new BadResponseError();
     }
 
     return data;
@@ -127,7 +128,7 @@ export function useAssistantTemplateService() {
       .send();
 
     if (status !== 200) {
-      throw new Error('Failed to fetch assistant templates categories');
+      throw new BadResponseError();
     }
 
     return data;

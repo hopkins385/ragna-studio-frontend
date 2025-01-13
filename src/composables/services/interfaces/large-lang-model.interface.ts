@@ -50,11 +50,3 @@ export interface LargeLangModel {
   capability: LargeLangModelCapabilities;
   cost: LargeLangModelCost;
 }
-
-export interface LargeLangModelResponse {
-  llm: LargeLangModel;
-}
-
-export interface LargeLangModelListResponse {
-  llms: LargeLangModel[];
-}

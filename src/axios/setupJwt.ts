@@ -1,4 +1,5 @@
-import { useAuthStore } from '@/stores/auth.store';
+import { AuthRoute } from '@composables/services/useAuthService';
+import { useAuthStore } from '@stores/auth.store';
 import type { AxiosError, AxiosRequestConfig } from 'axios';
 import { $axios } from './axiosInstance';
 
@@ -38,7 +39,7 @@ export function setupAxiosJwtInterceptor() {
 
   $axios.interceptors.request.use(config => {
     const token =
-      config.url === 'auth/refresh'
+      config.url === AuthRoute.REFRESH
         ? authStore.getRefreshToken
         : authStore.getAccessToken;
     if (token) {
