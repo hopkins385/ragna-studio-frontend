@@ -73,7 +73,7 @@ class RequestBuilder<TResponse, TParams = never, TData = never> {
     return this;
   }
 
-  public async execute(): Promise<AxiosResponse<TResponse>> {
+  public async send(): Promise<AxiosResponse<TResponse>> {
     try {
       const axiosConfig: AxiosRequestConfig = {
         ...this.config,
@@ -83,10 +83,8 @@ class RequestBuilder<TResponse, TParams = never, TData = never> {
 
       return await this.instance.request<TResponse>(axiosConfig);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        if (this.errorHandler) {
-          this.errorHandler(error);
-        }
+      if (error instanceof AxiosError && this.errorHandler) {
+        this.errorHandler(error);
       }
       throw error;
     }

@@ -4,14 +4,6 @@ import { $axios } from './axiosInstance';
 
 const MAX_REFRESH_RETRIES = 3;
 
-const noAutoRefreshRoutes = [
-  'auth/login',
-  'auth/refresh',
-  'auth/logout',
-  'auth/register',
-  'auth/social-auth',
-];
-
 interface ExtendedAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: number;
 }
@@ -66,27 +58,8 @@ export function setupAxiosJwtInterceptor() {
         !originalRequest._retry &&
         authStore.hasRefreshToken
       ) {
-        // If the route is in the noAutoRefreshRoutes array, do not auto refresh the token
-        if (
-          noAutoRefreshRoutes.some(route =>
-            originalRequest.url?.includes(route),
-          )
-        ) {
-          return Promise.reject(error);
-        }
-
         console.log('Refreshing token...');
         console.log('Route', originalRequest.url);
-
-        // TODO: doesnt work, is it needed?
-        /*if (isRefreshing) {
-          console.log('Token is being refreshed, adding to queue...');
-          return new Promise(function (resolve, reject) {
-            failedQueue.push({ resolve, reject });
-          })
-            .then(() => $axios.request(originalRequest))
-            .catch(err => Promise.reject(err));
-        }*/
 
         originalRequest._retry = 1;
         isRefreshing = true;

@@ -1,6 +1,6 @@
 // authService.ts
-import { $axios } from '@/axios/axiosInstance';
 import { UnauthorizedError } from '@/common/errors/unauthorized.error';
+import { newApiRequest } from '@/common/http/http-request.builder';
 import type { GoogleAuthCallbackQuery } from '@/interfaces/auth/google-auth-callback.interface';
 import { getRoute } from '@/utils/route.util';
 import { AxiosError } from 'axios';
@@ -51,6 +51,10 @@ interface SocialAuthUrlResponse {
   url: AuthUrl;
 }
 
+interface EmptyBodyData {}
+
+const emptyBodyData: EmptyBodyData = {};
+
 class AuthServiceError extends Error {
   constructor(message: string) {
     super(message);
@@ -61,150 +65,137 @@ class AuthServiceError extends Error {
 export function useAuthService() {
   const ac = new AbortController();
 
-  const handleError = (err: unknown) => {
-    if (err instanceof AxiosError) {
-      switch (err.response?.status) {
-        case 401:
-          throw new UnauthorizedError('Invalid credentials');
-        case 403:
-          throw new AuthServiceError('User is not verified');
-        case 404:
-          throw new AuthServiceError('User not found');
-        default:
-          throw new AuthServiceError('Unknown error');
-      }
+  const handleError = (err: AxiosError) => {
+    switch (err.response?.status) {
+      case 401:
+        throw new UnauthorizedError('Invalid credentials');
+      case 403:
+        throw new AuthServiceError('User is not verified');
+      case 404:
+        throw new AuthServiceError('User not found');
+      default:
+        throw new AuthServiceError('Unknown error');
     }
-
-    throw new AuthServiceError('Unknown error');
   };
 
   const loginUser = async (body: AuthCredentials) => {
-    try {
-      const route = getRoute(AuthRoute.LOGIN);
-      const response = await $axios.post<TokensResponse>(route, body, {
-        signal: ac.signal,
-      });
+    const api = newApiRequest();
+    const route = getRoute(AuthRoute.LOGIN);
+    const { status, data } = await api
+      .POST<TokensResponse, never, AuthCredentials>()
+      .setRoute(route)
+      .setData(body)
+      .setSignal(ac.signal)
+      .setErrorHandler(handleError)
+      .send();
 
-      if (response.status !== 200) {
-        throw new Error('Failed to login user');
-      }
-
-      return response.data;
-    } catch (error) {
-      return handleError(error);
+    if (status !== 200) {
+      throw new UnauthorizedError('Invalid credentials');
     }
+
+    return data;
   };
 
   const logoutUser = async (): Promise<void> => {
-    try {
-      const body = {};
-      const route = getRoute(AuthRoute.LOGOUT);
-      await $axios.post(route, body, {
-        signal: ac.signal,
-      });
-    } catch (error) {
-      return handleError(error);
+    const api = newApiRequest();
+    const route = getRoute(AuthRoute.LOGOUT);
+    const { status } = await api
+      .POST<never, never, EmptyBodyData>()
+      .setRoute(route)
+      .setData(emptyBodyData)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new Error('Failed to logout user');
     }
+
+    return;
   };
 
   const registerUser = async (payload: RegistrationCredentials) => {
-    const body = {
-      name: payload.name,
-      email: payload.email,
-      password: payload.password,
-      termsAndConditions: payload.termsAndConditions,
-      invitationCode: payload.invitationCode,
-    };
-    try {
-      const route = getRoute(AuthRoute.REGISTER);
-      const response = await $axios.post<AuthUserResponse>(route, body, {
-        signal: ac.signal,
-      });
+    const api = newApiRequest();
+    const route = getRoute(AuthRoute.REGISTER);
+    const { status, data } = await api
+      .POST<AuthUserResponse, never, RegistrationCredentials>()
+      .setRoute(route)
+      .setData(payload)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 201) {
-        throw new Error('Failed to register user');
-      }
-
-      return response.data;
-    } catch (error) {
-      return handleError(error);
+    if (status !== 201) {
+      throw new Error('Failed to register user');
     }
+
+    return data;
   };
 
   const fetchSession = async () => {
-    try {
-      const route = getRoute(AuthRoute.SESSION);
-      const response = await $axios.get<AuthUserResponse>(route, {
-        signal: ac.signal,
-      });
+    const api = newApiRequest();
+    const route = getRoute(AuthRoute.SESSION);
+    const { status, data } = await api
+      .GET<AuthUserResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch session');
-      }
-
-      return response.data;
-    } catch (error) {
-      return handleError(error);
+    if (status !== 200) {
+      throw new Error('Failed to fetch session');
     }
+
+    return data;
   };
 
   const refreshTokens = async () => {
-    try {
-      const body = {};
-      const route = getRoute(AuthRoute.REFRESH);
-      const response = await $axios.post<TokensResponse>(route, body, {
-        signal: ac.signal,
-      });
-      if (response.status !== 201) {
-        throw new Error('Failed to refresh token');
-      }
-      return response.data;
-    } catch (error) {
-      return handleError(error);
+    const api = newApiRequest();
+    const route = getRoute(AuthRoute.REFRESH);
+    const { status, data } = await api
+      .POST<TokensResponse, never, EmptyBodyData>()
+      .setRoute(route)
+      .setData(emptyBodyData)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 201) {
+      throw new Error('Failed to refresh token');
     }
+
+    return data;
   };
 
   const fetchSocialAuthUrl = async (provider: string) => {
-    try {
-      const route = getRoute(AuthRoute.SOCIAL_AUTH_URL, {
-        ':provider': provider,
-      });
-      const response = await $axios.get<SocialAuthUrlResponse>(route, {
-        signal: ac.signal,
-      });
+    const api = newApiRequest();
+    const route = getRoute(AuthRoute.SOCIAL_AUTH_URL, {
+      ':provider': provider,
+    });
+    const { status, data } = await api
+      .GET<SocialAuthUrlResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch social auth url');
-      }
-
-      return response.data;
-    } catch (error) {
-      return handleError(error);
+    if (status !== 200) {
+      throw new Error('Failed to fetch social auth url');
     }
+
+    return data;
   };
 
-  const googleAuth = async (data: GoogleAuthCallbackQuery) => {
-    const body = {
-      code: data.code,
-      scope: data.scope,
-      authuser: data.authuser,
-      prompt: data.prompt,
-    };
+  const googleAuth = async (callbackData: GoogleAuthCallbackQuery) => {
+    const api = newApiRequest();
+    const route = getRoute(AuthRoute.CALLBACK_GOOGLE);
+    const { status, data } = await api
+      .POST<TokensResponse, never, GoogleAuthCallbackQuery>()
+      .setRoute(route)
+      .setData(callbackData)
+      .setSignal(ac.signal)
+      .send();
 
-    try {
-      const route = getRoute(AuthRoute.CALLBACK_GOOGLE);
-      const response = await $axios.post<TokensResponse>(route, body, {
-        signal: ac.signal,
-      });
-
-      if (response.status !== 201) {
-        throw new Error('Failed to authenticate with Google');
-      }
-
-      return response.data;
-    } catch (error) {
-      return handleError(error);
+    if (status !== 201) {
+      throw new Error('Failed to authenticate with Google');
     }
+
+    return data;
   };
 
   // TODO: find alternative to onScopeDispose

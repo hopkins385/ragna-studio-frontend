@@ -239,6 +239,18 @@ export const useAuthStore = defineStore('auth-store', {
       }
     },
     /**
+     * Get Session
+     */
+    async getSession(): Promise<void> {
+      const { fetchSession } = useAuthService();
+      try {
+        const data = await fetchSession();
+      } catch (error) {
+        this.clearUser();
+        throw error;
+      }
+    },
+    /**
      * Sets the access token.
      * @param token Access token to set.
      */

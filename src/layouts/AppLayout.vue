@@ -12,16 +12,16 @@ const authStore = useAuthStore();
 const socket = useWebsocketGlobal();
 
 // Token refresh logic
-const refreshTokens = async () => {
+const getSession = async () => {
   try {
-    await authStore.refreshAuth();
+    await authStore.getSession();
   } catch (error) {
     console.error('Failed to refresh tokens', error);
     router.push({ name: RouteName.LOGIN });
   }
 };
 
-const debouncedRefresh = useDebounceFn(refreshTokens, 300);
+const debouncedRefresh = useDebounceFn(getSession, 300);
 
 const handleVisibilityChange = () => {
   if (!document.hidden) {

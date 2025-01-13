@@ -62,7 +62,7 @@ export function useAssistantTemplateService() {
       .GET<AssistantTemplateResponse>()
       .setRoute(route)
       .setSignal(ac.signal)
-      .execute();
+      .send();
 
     if (status !== 200) {
       throw new Error('Failed to fetch assistant templates');
@@ -83,7 +83,7 @@ export function useAssistantTemplateService() {
       .setRoute(route)
       .setParams(params)
       .setSignal(ac.signal)
-      .execute();
+      .send();
 
     if (status !== 200) {
       throw new Error('Failed to fetch assistant templates');
@@ -104,7 +104,7 @@ export function useAssistantTemplateService() {
       .setRoute(route)
       .setParams(params)
       .setSignal(ac.signal)
-      .execute();
+      .send();
 
     if (status !== 200) {
       throw new Error('Failed to fetch random assistant templates');
@@ -124,7 +124,7 @@ export function useAssistantTemplateService() {
       .GET<AssistantTemplateCategoriesResponse>()
       .setRoute(route)
       .setSignal(ac.signal)
-      .execute();
+      .send();
 
     if (status !== 200) {
       throw new Error('Failed to fetch assistant templates categories');

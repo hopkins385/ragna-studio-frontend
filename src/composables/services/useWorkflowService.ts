@@ -1,4 +1,5 @@
 import { $axios } from '@/axios/axiosInstance';
+import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import { getRoute } from '@/utils/route.util';
 
@@ -14,8 +15,9 @@ class WorkflowServiceError extends Error {
 
 enum WorkflowRoute {
   BASE = '/workflow',
-  WORKFLOW = '/workflow/:workflowId',
+  WORKFLOW = '/workflow/:workflowId', // GET, PATCH, DELETE
   WORKFLOW_FULL = '/workflow/:workflowId/full',
+  WORKFLOW_ROW = '/workflow/:workflowId/row', // DELETE
   EXECUTE = '/workflow/:workflowId/execute',
   EXPORT = '/workflow/:workflowId/export',
 }
@@ -63,23 +65,20 @@ export function useWorkflowService() {
   });
 
   const createWorkflow = async (payload: ICreateWorkflow) => {
-    try {
-      const route = getRoute(WorkflowRoute.BASE);
-      const response = await $axios.post<WorkflowResponse>(route, payload, {
-        signal: ac.signal,
-      });
+    const api = newApiRequest();
+    const route = getRoute(WorkflowRoute.BASE);
+    const { status, data } = await api
+      .POST<WorkflowResponse, never, ICreateWorkflow>()
+      .setRoute(route)
+      .setData(payload)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 201) {
-        throw new Error('Response not ok');
-      }
-
-      return response.data;
-    } catch (error: any) {
-      throw new WorkflowServiceError(
-        error.status ?? 500,
-        'Failed to create workflow',
-      );
+    if (status !== 201) {
+      throw new Error('Failed to create workflow');
     }
+
+    return data;
   };
 
   const reCreateWorkflowFromMedia = async (
@@ -89,47 +88,39 @@ export function useWorkflowService() {
   };
 
   const fetchWorkflow = async (workflowId: string) => {
-    try {
-      const route = getRoute(WorkflowRoute.WORKFLOW, {
-        ':workflowId': workflowId,
-      });
-      const response = await $axios.get<WorkflowResponse>(route, {
-        signal: ac.signal,
-      });
+    const api = newApiRequest();
+    const route = getRoute(WorkflowRoute.WORKFLOW, {
+      ':workflowId': workflowId,
+    });
+    const { status, data } = await api
+      .GET<WorkflowResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 200) {
-        throw new Error('Response not ok');
-      }
-
-      return response.data;
-    } catch (error: any) {
-      throw new WorkflowServiceError(
-        error.status ?? 500,
-        'Failed to fetch workflow',
-      );
+    if (status !== 200) {
+      throw new Error('Failed to fetch workflow');
     }
+
+    return data;
   };
 
   const fetchFullWorkflow = async (workflowId: string) => {
-    try {
-      const route = getRoute(WorkflowRoute.WORKFLOW_FULL, {
-        ':workflowId': workflowId,
-      });
-      const response = await $axios.get<WorkflowResponse>(route, {
-        signal: ac.signal,
-      });
+    const api = newApiRequest();
+    const route = getRoute(WorkflowRoute.WORKFLOW_FULL, {
+      ':workflowId': workflowId,
+    });
+    const { status, data } = await api
+      .GET<WorkflowResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 200) {
-        throw new Error('Response not ok');
-      }
-
-      return response.data;
-    } catch (error: any) {
-      throw new WorkflowServiceError(
-        error.status ?? 500,
-        'Failed to fetch workflow',
-      );
+    if (status !== 200) {
+      throw new Error('Failed to fetch workflow');
     }
+
+    return data;
   };
 
   const fetchWorkflows = async () => {
@@ -154,23 +145,19 @@ export function useWorkflowService() {
   };
 
   const fetchWorkflowsPaginated = async () => {
-    try {
-      const route = getRoute(WorkflowRoute.BASE);
-      const response = await $axios.get<WorkflowsPaginatedResponse>(route, {
-        signal: ac.signal,
-      });
+    const api = newApiRequest();
+    const route = getRoute(WorkflowRoute.BASE);
+    const { status, data } = await api
+      .GET<WorkflowsPaginatedResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 200) {
-        throw new Error('Response not ok');
-      }
-
-      return response.data;
-    } catch (error: any) {
-      throw new WorkflowServiceError(
-        error.status ?? 500,
-        'Failed to fetch workflows',
-      );
+    if (status !== 200) {
+      throw new Error('Failed to fetch workflows');
     }
+
+    return data;
   };
 
   const fetchWorkflowSettings = async (workflowId: string) => {
@@ -181,77 +168,82 @@ export function useWorkflowService() {
     workflowId: string,
     payload: Partial<UpdateWorkflowDto>,
   ) => {
-    try {
-      const route = getRoute(WorkflowRoute.WORKFLOW, {
-        ':workflowId': workflowId,
-      });
-      const response = await $axios.patch(route, payload, {
-        signal: ac.signal,
-      });
+    const api = newApiRequest();
+    const route = getRoute(WorkflowRoute.WORKFLOW, {
+      ':workflowId': workflowId,
+    });
+    const { status, data } = await api
+      .PATCH<WorkflowResponse, never, Partial<UpdateWorkflowDto>>()
+      .setRoute(route)
+      .setData(payload)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 200) {
-        throw new Error('Response not ok');
-      }
-
-      return response.data;
-    } catch (error: any) {
-      throw new WorkflowServiceError(
-        error.status ?? 500,
-        'Failed to update workflow',
-      );
+    if (status !== 200) {
+      throw new Error('Failed to update workflow');
     }
+
+    return data;
   };
 
   const deleteWorkflow = async (workflowId: string) => {
-    try {
-      const route = getRoute(WorkflowRoute.WORKFLOW, {
-        ':workflowId': workflowId,
-      });
-      const response = await $axios.delete(route, {
-        signal: ac.signal,
-      });
+    const api = newApiRequest();
+    const route = getRoute(WorkflowRoute.WORKFLOW, {
+      ':workflowId': workflowId,
+    });
+    const { status, data } = await api
+      .DELETE<WorkflowResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 200) {
-        throw new Error('Response not ok');
-      }
-
-      return response.data;
-    } catch (error: any) {
-      throw new WorkflowServiceError(
-        error.status ?? 500,
-        'Failed to delete workflow',
-      );
+    if (status !== 200) {
+      throw new Error('Failed to delete workflow');
     }
+
+    return data;
   };
 
   const deleteWorkflowRows = async (
     workflowId: string,
     orderColumns: number[],
   ) => {
-    throw new Error('Not implemented');
+    const api = newApiRequest();
+    const route = getRoute(WorkflowRoute.WORKFLOW_ROW, {
+      ':workflowId': workflowId,
+    });
+    console.log('orderColumns', orderColumns);
+    const { status, data } = await api
+      .PATCH<never, never, { orderColumns: number[] }>()
+      .setRoute(route)
+      .setData({ orderColumns })
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new Error('Failed to delete workflow rows');
+    }
+
+    return data;
   };
 
   const exportWorkflow = async (workflowId: string, format: string) => {
-    try {
-      const route = getRoute(WorkflowRoute.EXPORT, {
-        ':workflowId': workflowId,
-      });
-      const response = await $axios.get(route, {
-        signal: ac.signal,
-        responseType: 'blob',
-      });
+    const api = newApiRequest();
+    const route = getRoute(WorkflowRoute.EXPORT, {
+      ':workflowId': workflowId,
+    });
+    const { status, data } = await api
+      .GET<Blob>()
+      .setRoute(route)
+      .setResponseType('blob')
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 200) {
-        throw new Error('Response not ok');
-      }
-
-      return response.data;
-    } catch (error: any) {
-      throw new WorkflowServiceError(
-        error.status ?? 500,
-        'Failed to export workflow',
-      );
+    if (status !== 200) {
+      throw new Error('Failed to export workflow');
     }
+
+    return data;
   };
 
   const clearAllRows = async (workflowId: string) => {
@@ -259,30 +251,21 @@ export function useWorkflowService() {
   };
 
   const executeWorkflow = async (workflowId: string) => {
-    try {
-      const route = getRoute(WorkflowRoute.EXECUTE, {
-        ':workflowId': workflowId,
-      });
-      const response = await $axios.post(
-        route,
-        {},
-        {
-          signal: ac.signal,
-        },
-      );
+    const api = newApiRequest();
+    const route = getRoute(WorkflowRoute.EXECUTE, {
+      ':workflowId': workflowId,
+    });
+    const { status, data } = await api
+      .POST<WorkflowResponse>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
 
-      if (response.status !== 201) {
-        throw new Error('Response not ok');
-      }
-
-      return response.data;
-    } catch (error: any) {
-      console.log(error);
-      throw new WorkflowServiceError(
-        error.status ?? 500,
-        'Failed to execute workflow',
-      );
+    if (status !== 201) {
+      throw new Error('Failed to execute workflow');
     }
+
+    return data;
   };
 
   return {
