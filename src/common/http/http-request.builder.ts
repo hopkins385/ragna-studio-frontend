@@ -22,6 +22,7 @@ interface RequestOptions<TParams = never, TData = never> {
 
 class RequestBuilder<TResponse, TParams = never, TData = never> {
   private instance: AxiosInstance;
+  private errorHandler: (error: AxiosError) => void = () => {};
   private config: RequestOptions<TParams, TData> = {
     method: 'GET',
     url: '',
@@ -67,6 +68,11 @@ class RequestBuilder<TResponse, TParams = never, TData = never> {
     return this;
   }
 
+  public setErrorHandler(handler: (error: AxiosError) => void): this {
+    this.errorHandler = handler;
+    return this;
+  }
+
   public async execute(): Promise<AxiosResponse<TResponse>> {
     try {
       const axiosConfig: AxiosRequestConfig = {
@@ -77,15 +83,13 @@ class RequestBuilder<TResponse, TParams = never, TData = never> {
 
       return await this.instance.request<TResponse>(axiosConfig);
     } catch (error) {
-      this.handleError(error);
+      if (error instanceof AxiosError) {
+        if (this.errorHandler) {
+          this.errorHandler(error);
+        }
+      }
       throw error;
     }
-  }
-
-  private handleError(err: unknown) {
-    if (err instanceof AxiosError) {
-    }
-    console.error(err);
   }
 }
 
