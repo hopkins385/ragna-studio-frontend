@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ConnectionError } from '@/common/errors/connection.error';
 import { UnauthorizedError } from '@/common/errors/unauthorized.error';
 import BrandHeader from '@/components/brand/BrandHeader.vue';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
@@ -66,8 +67,10 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
     console.error(error);
     if (error instanceof UnauthorizedError) {
       authError.value = t('auth.error.invalid_credentials');
+    } else if (error instanceof ConnectionError) {
+      authError.value = t('error.connection');
     } else {
-      authError.value = 'An error occurred';
+      authError.value = t('error.unknown');
     }
     resetForm();
   } finally {

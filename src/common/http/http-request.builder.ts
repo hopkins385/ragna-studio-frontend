@@ -6,6 +6,7 @@ import {
   type AxiosResponse,
 } from 'axios';
 import { BadRequestError } from '../errors/bad-request.error';
+import { ConnectionError } from '../errors/connection.error';
 import { ForbiddenError } from '../errors/forbidden.error';
 import { NotFoundError } from '../errors/not-found.error';
 import { UnauthorizedError } from '../errors/unauthorized.error';
@@ -93,6 +94,9 @@ class RequestBuilder<TResponse, TParams = never, TData = never> {
       return await this.instance.request<TResponse>(axiosConfig);
     } catch (error) {
       if (error instanceof AxiosError) {
+        if (error.code === 'ERR_NETWORK') {
+          throw new ConnectionError();
+        }
         if (this.errorHandler) {
           this.errorHandler(error);
         } else {

@@ -46,6 +46,10 @@
       "all_form_fields": "Bitte fülle alle Formularfelder aus"
     }
   },
+  "error": {
+    "connection": "Verbindung zum Server konnte nicht hergestellt werden. Bitte versuchen Sie es später erneut.",
+    "unknown": "Ein unbekannter Fehler ist aufgetreten"
+  },
   "form": {
     "name": "Name",
     "email": "E-Mail",
@@ -445,7 +449,7 @@
     "title": "Vorlage",
     "category": {
       "recommended": {
-        "title": "Empfohlen",
+        "title": "Highlights",
         "description": ""
       },
       "business": {
