@@ -1,17 +1,6 @@
-import { $axios } from '@/axios/axiosInstance';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import { getRoute } from '@/utils/route.util';
-
-class WorkflowServiceError extends Error {
-  constructor(
-    public statusCode: number,
-    message: string,
-  ) {
-    super(message);
-    this.name = 'WorkflowServiceError';
-  }
-}
 
 enum WorkflowRoute {
   BASE = '/workflow',
@@ -125,7 +114,7 @@ export function useWorkflowService() {
 
   const fetchWorkflows = async () => {
     throw new Error('Not implemented');
-    try {
+    /*try {
       const route = getRoute(WorkflowRoute.BASE);
       const response = await $axios.get<WorkflowsResponse>(route, {
         signal: ac.signal,
@@ -141,7 +130,7 @@ export function useWorkflowService() {
         error.status ?? 500,
         'Failed to fetch workflows',
       );
-    }
+    }*/
   };
 
   const fetchWorkflowsPaginated = async () => {

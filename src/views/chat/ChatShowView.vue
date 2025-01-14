@@ -45,7 +45,8 @@ const {
   clearError,
 } = useChatService();
 
-const { setActiveTool, unsetActiveTool, activeTools } = useChatTools();
+const { setActiveTool, unsetActiveTool, clearActiveTools, activeTools } =
+  useChatTools();
 
 // ChatId
 const route = useRoute();
@@ -124,9 +125,14 @@ const onPresetClick = (value: string) => {
   onSubmit();
 };
 
+const onAbortChatRequest = () => {
+  abortChatRequest();
+  clearActiveTools();
+};
+
 const onResetChat = async () => {
   await clearChatMessages();
-  activeTools.value = [];
+  clearActiveTools();
   await initChat(chatId);
 };
 
@@ -201,20 +207,20 @@ useEventListener(
   },
 );
 
-// watch route changes
-watch(
-  () => route.params.id,
-  async value => {
-    await initChat(value.toString());
-    scrollToBottom({ instant: true });
-  },
-);
-
-onMounted(async () => {
+const setupChat = async (chatId: string) => {
   await initChat(chatId);
   scrollToBottom({ instant: true });
   focusInput();
-});
+};
+
+// watch route changes
+watch(
+  () => route.params.id.toString(),
+  async id => await setupChat(id),
+  { immediate: true },
+);
+
+onMounted(async () => await setupChat(chatId));
 
 onMounted(() => {
   socket.on(`chat-${chatId}-tool-start-event`, setActiveTool);
@@ -381,7 +387,7 @@ useHead({
             variant="outline"
             size="icon"
             class="group absolute bottom-3 right-3 z-20 mr-1 size-8 rounded-full bg-slate-100"
-            @click="() => abortChatRequest()"
+            @click="onAbortChatRequest"
           >
             <SquareIcon
               class="!size-4 stroke-1.5 text-slate-500 group-hover:text-slate-900"

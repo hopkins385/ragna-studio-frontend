@@ -66,7 +66,7 @@ const handleDelete = async () => {
     await deleteWorkflow(deleteId.value);
     await initWorkflows();
     toast.success({
-      description: t('workflow.delete.success'),
+      description: t('workflow.toast.deleted'),
     });
   } catch (error: any) {
     errorAlert.show = true;

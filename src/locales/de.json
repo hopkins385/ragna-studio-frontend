@@ -282,7 +282,8 @@
       "description_description": "Die Beschreibung ist insbesondere hilfreich für andere Agenten, die diesen Agenten verwenden oder für Workflows"
     },
     "alert": {
-      "create_first": "Bitte erstelle zuerst den Agenten, um diese Funktion zu konfigurieren zu können"
+      "create_first": "Bitte erstelle zuerst den Agenten, um diese Funktion zu konfigurieren zu können",
+      "executing_tool": "Benutze Tool"
     },
     "settings": {
       "label": "Generell"
