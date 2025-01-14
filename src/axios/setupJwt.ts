@@ -59,6 +59,17 @@ export function setupAxiosJwtInterceptor() {
         !originalRequest._retry &&
         authStore.hasRefreshToken
       ) {
+        // do not auto refresh token for these routes
+        if (
+          originalRequest.url === AuthRoute.REFRESH ||
+          originalRequest.url === AuthRoute.LOGIN ||
+          originalRequest.url === AuthRoute.CALLBACK_GOOGLE ||
+          originalRequest.url === AuthRoute.SOCIAL_AUTH_URL ||
+          originalRequest.url === AuthRoute.REGISTER
+        ) {
+          return Promise.reject(error);
+        }
+
         console.log('Refreshing token...');
         console.log('Route', originalRequest.url);
 
