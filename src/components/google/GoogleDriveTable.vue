@@ -1,11 +1,8 @@
 <script setup lang="ts">
+import { useGoogleDriveService } from '@/composables/services/useGoogleDriveService';
 import useForHumans from '@/composables/useForHumans';
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  CopyPlusIcon,
-  LoaderIcon,
-} from 'lucide-vue-next';
+import useGoogleDriveIcons from '@/composables/useGoogleDriveIcons';
+import { Button } from '@ui/button';
 import {
   Table,
   TableBody,
@@ -14,16 +11,19 @@ import {
   TableHeader,
   TableRow,
 } from '@ui/table';
-import { Button } from '@ui/button';
-import useGoogleDriveIcons from '@/composables/useGoogleDriveIcons';
-import { useGoogleDriveService } from '@/composables/services/useGoogleDriveService';
-import TableSkeleton from '../table/TableSkeleton.vue';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@ui/tooltip';
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CopyPlusIcon,
+  LoaderIcon,
+} from 'lucide-vue-next';
+import TableSkeleton from '../table/TableSkeleton.vue';
 import GoogleSearchFileBar from './GoogleSearchFileBar.vue';
 
 interface File {
@@ -40,7 +40,9 @@ interface Data {
   nextPageToken: string | null;
 }
 
-const indexableMimeTypes = [
+const GOOGLE_DRIVE_FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
+
+const RAGMimeTypes = [
   'text/plain',
   'application/pdf',
   'application/vnd.google-apps.document',
@@ -206,7 +208,7 @@ onMounted(init);
           v-for="(file, index) in data?.files"
           :key="index"
           :class="
-            file?.mimeType === 'application/vnd.google-apps.folder'
+            file?.mimeType === GOOGLE_DRIVE_FOLDER_MIME_TYPE
               ? 'cursor-pointer'
               : ''
           "
@@ -225,9 +227,7 @@ onMounted(init);
             {{ file?.size ? getFileSizeForHumans(file?.size) : '-' }}
           </TableCell>
           <TableCell>
-            <div
-              v-if="file?.size && indexableMimeTypes.includes(file?.mimeType)"
-            >
+            <div v-if="file?.size && RAGMimeTypes.includes(file?.mimeType)">
               <TooltipProvider :delay-duration="300">
                 <Tooltip>
                   <TooltipTrigger as-child>
@@ -258,7 +258,7 @@ onMounted(init);
         </TableRow>
       </TableBody>
     </Table>
-    <div class="ml-auto flex w-fit space-x-4" v-if="showPageControls">
+    <div class="flex space-x-4 ml-4" v-if="showPageControls">
       <div class="mt-4 flex flex-col">
         <Button
           variant="outline"
