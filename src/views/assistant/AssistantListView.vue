@@ -59,7 +59,7 @@ useHead({
         </div>
       </template>
     </Heading>
-    <BoxContainer class="px-10">
+    <BoxContainer class="!p-0">
       <div>
         <Suspense>
           <AssistantAllTable

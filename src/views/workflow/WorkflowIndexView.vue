@@ -41,7 +41,7 @@ useHead({
         </div>
       </template>
     </Heading>
-    <BoxContainer>
+    <BoxContainer class="!p-0">
       <Suspense>
         <WorkflowListAll />
         <template #fallback>

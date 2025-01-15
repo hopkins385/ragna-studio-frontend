@@ -163,7 +163,7 @@ await initAssistantFavorites();
   <div v-if="assistants && assistants.length > 0">
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
     <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
-    <div class="mb-4">
+    <div class="px-10">
       <Table>
         <TableHeader>
           <TableRow>

@@ -111,7 +111,7 @@ await initChatHistory({ page: queryPage.value });
   <div v-if="chats.length > 0">
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
     <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
-    <div class="mb-4 rounded-xl p-10">
+    <div class="px-10">
       <Table>
         <TableHeader>
           <TableRow>
@@ -174,8 +174,10 @@ await initChatHistory({ page: queryPage.value });
         <TableMetaCaption :itemsLength="chatsLength" :meta="meta" />
       </Table>
     </div>
-    <!-- Pagination Controls -->
-    <PaginateControls :page="page" :meta="meta" @update:page="updatePage" />
+    <div class="pb-10 px-10">
+      <!-- Pagination Controls -->
+      <PaginateControls :page="page" :meta="meta" @update:page="updatePage" />
+    </div>
   </div>
   <div v-else class="w-full rounded-lg border p-10">
     <div class="">No chats found</div>

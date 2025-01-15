@@ -115,63 +115,68 @@ onMounted(() => {
   <div>
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
     <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
-
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>{{ $t('table.favorit') }}</TableHead>
-          <TableHead>{{ $t('table.name') }}</TableHead>
-          <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow v-for="workflow in workflows || []" :key="workflow.id">
-          <TableCell class="w-12">
-            <Button
-              v-if="workflowFavorites.some(f => f.favoriteId === workflow.id)"
-              variant="ghost"
-              size="icon"
-              @click="onDeleteFavorite(workflow.id)"
-            >
-              <StarIcon class="!size-6 stroke-1.5 stroke-none fill-blue-500" />
-            </Button>
-            <Button
-              v-else
-              variant="ghost"
-              size="icon"
-              @click="onAddFavorite(workflow.id)"
-            >
-              <StarIcon class="!size-5 stroke-1.5 stroke-stone-400" />
-            </Button>
-          </TableCell>
-          <TableCell class="font-semibold">
-            {{ workflow.name }}
-          </TableCell>
-          <TableCell class="space-x-2 text-right">
-            <ButtonLink
-              class="group"
-              variant="outline"
-              size="icon"
-              :to="`workflow/${workflow.id}`"
-            >
-              <SquareArrowOutUpRightIcon
-                class="size-4 stroke-1.5 text-primary group-hover:stroke-2"
-              />
-            </ButtonLink>
-            <Button
-              variant="outline"
-              size="icon"
-              @click="onDelete(workflow.id)"
-            >
-              <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
-            </Button>
-          </TableCell>
-        </TableRow>
-      </TableBody>
-      <!-- Meta Caption -->
-      <TableMetaCaption :itemsLength="workflowsLength" :meta="meta" />
-    </Table>
-    <!-- Pagination Controls -->
-    <PaginateControls :page="page" :meta="meta" @update:page="setPage" />
+    <div class="px-10">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{{ $t('table.favorit') }}</TableHead>
+            <TableHead>{{ $t('table.name') }}</TableHead>
+            <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow v-for="workflow in workflows || []" :key="workflow.id">
+            <TableCell class="w-12">
+              <Button
+                v-if="workflowFavorites.some(f => f.favoriteId === workflow.id)"
+                variant="ghost"
+                size="icon"
+                @click="onDeleteFavorite(workflow.id)"
+              >
+                <StarIcon
+                  class="!size-6 stroke-1.5 stroke-none fill-blue-500"
+                />
+              </Button>
+              <Button
+                v-else
+                variant="ghost"
+                size="icon"
+                @click="onAddFavorite(workflow.id)"
+              >
+                <StarIcon class="!size-5 stroke-1.5 stroke-stone-400" />
+              </Button>
+            </TableCell>
+            <TableCell class="font-semibold">
+              {{ workflow.name }}
+            </TableCell>
+            <TableCell class="space-x-2 text-right">
+              <ButtonLink
+                class="group"
+                variant="outline"
+                size="icon"
+                :to="`workflow/${workflow.id}`"
+              >
+                <SquareArrowOutUpRightIcon
+                  class="size-4 stroke-1.5 text-primary group-hover:stroke-2"
+                />
+              </ButtonLink>
+              <Button
+                variant="outline"
+                size="icon"
+                @click="onDelete(workflow.id)"
+              >
+                <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
+              </Button>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+        <!-- Meta Caption -->
+        <TableMetaCaption :itemsLength="workflowsLength" :meta="meta" />
+      </Table>
+    </div>
+    <div class="pb-10 px-10">
+      <!-- Pagination Controls -->
+      <PaginateControls :page="page" :meta="meta" @update:page="setPage" />
+    </div>
   </div>
 </template>

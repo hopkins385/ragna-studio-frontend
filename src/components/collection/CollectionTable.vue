@@ -97,7 +97,7 @@ await initCollections();
   <div v-if="collectionsLength > 0">
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
     <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
-    <div class="mb-4 rounded-xl p-10">
+    <div class="px-10">
       <Table>
         <TableHeader>
           <TableRow>
@@ -172,13 +172,15 @@ await initCollections();
         <TableMetaCaption :itemsLength="collectionsLength" :meta="meta" />
       </Table>
     </div>
-    <!-- Pagination Controls -->
-    <PaginateControls
-      v-if="meta.totalCount > 10"
-      :page="page"
-      :meta="meta"
-      :limit="limit"
-      @update:page="onUpdatePage"
-    />
+    <div class="pb-10 px-10">
+      <!-- Pagination Controls -->
+      <PaginateControls
+        v-if="meta.totalCount > 10"
+        :page="page"
+        :meta="meta"
+        :limit="limit"
+        @update:page="onUpdatePage"
+      />
+    </div>
   </div>
 </template>

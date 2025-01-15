@@ -109,7 +109,7 @@ useHead({
         </div>
       </div>
     </BoxContainer>
-    <BoxContainer>
+    <BoxContainer class="!p-0">
       <MediaList
         :page="page"
         @update:page="setRoutePage"

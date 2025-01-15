@@ -120,47 +120,50 @@ onMounted(() => {
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
     <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
     <RecordAddFileDialog v-model="showAddToCollectionDialog" />
-
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>{{ $t('table.file') }}</TableHead>
-          <TableHead>{{ $t('table.name') }}</TableHead>
-          <TableHead>{{ $t('table.file_size') }}</TableHead>
-          <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow v-for="media in medias || []" :key="media.id">
-          <TableCell class="w-12">
-            <div class="flex items-center justify-center">
-              <FileIcon class="size-4 stroke-1.5" />
-            </div>
-          </TableCell>
-          <TableCell class="max-w-sm truncate font-semibold">
-            {{ decodeURIComponent(media.name) }}
-          </TableCell>
-          <TableCell>
-            {{ getFileSizeForHumans(media.fileSize) }}
-          </TableCell>
-          <TableCell class="space-x-2 text-right">
-            <!-- Button variant="outline" size="icon" @click="onPlusClick(item.id)">
+    <div class="px-10">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{{ $t('table.file') }}</TableHead>
+            <TableHead>{{ $t('table.name') }}</TableHead>
+            <TableHead>{{ $t('table.file_size') }}</TableHead>
+            <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow v-for="media in medias || []" :key="media.id">
+            <TableCell class="w-12">
+              <div class="flex items-center justify-center">
+                <FileIcon class="size-4 stroke-1.5" />
+              </div>
+            </TableCell>
+            <TableCell class="max-w-sm truncate font-semibold">
+              {{ decodeURIComponent(media.name) }}
+            </TableCell>
+            <TableCell>
+              {{ getFileSizeForHumans(media.fileSize) }}
+            </TableCell>
+            <TableCell class="space-x-2 text-right">
+              <!-- Button variant="outline" size="icon" @click="onPlusClick(item.id)">
               <PlusIcon class="size-4" />
             </!-->
-            <Button variant="outline" size="icon" @click="onDelete(media.id)">
-              <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
-            </Button>
-          </TableCell>
-        </TableRow>
-      </TableBody>
-      <!-- Meta Caption -->
-      <TableMetaCaption :itemsLength="mediasLength" :meta="meta" />
-    </Table>
-    <!-- Pagination Controls -->
-    <PaginateControls
-      :page="page"
-      :meta="meta"
-      @update:page="value => $emit('update:page', value)"
-    />
+              <Button variant="outline" size="icon" @click="onDelete(media.id)">
+                <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
+              </Button>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+        <!-- Meta Caption -->
+        <TableMetaCaption :itemsLength="mediasLength" :meta="meta" />
+      </Table>
+    </div>
+    <div class="pb-10 px-10">
+      <!-- Pagination Controls -->
+      <PaginateControls
+        :page="page"
+        :meta="meta"
+        @update:page="value => $emit('update:page', value)"
+      />
+    </div>
   </div>
 </template>
