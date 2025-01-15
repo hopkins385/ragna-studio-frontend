@@ -25,7 +25,7 @@ onMounted(() => {
       <BotIcon class="size-6 stroke-1.5 mt-1" />
       <div>
         <h2 class="text-2xl font-semibold">
-          {{ $t('templates.title') }}
+          {{ $t('templates.title_short') }}
         </h2>
         <p class="text-xs opacity-75 hidden">
           {{ $t('templates.description') }}
@@ -38,7 +38,7 @@ onMounted(() => {
         :key="template.id"
         class="border w-full bg-white h-24 rounded-lg hover:shadow-md"
       >
-        {{ template.title }}
+        <h2 class="p-4 font-medium">{{ template.title }}</h2>
       </div>
     </div>
   </div>

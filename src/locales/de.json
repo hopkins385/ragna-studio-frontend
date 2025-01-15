@@ -442,8 +442,9 @@
     }
   },
   "templates": {
-    "title": "Vorlagen",
-    "subtitle": "Wähle aus einer Vielzahl von Vorlagen, um schnell und unkompliziert loslegen zu können"
+    "title_short": "Vorlagen",
+    "title": "Passende Vorlagen für deine Bedürfnisse",
+    "subtitle": "Lass dich von den besten Vorlagen des RAGNA Ai Studio Teams inspirieren."
   },
   "template": {
     "title": "Vorlage",

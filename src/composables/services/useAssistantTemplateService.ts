@@ -30,6 +30,12 @@ export interface AssistantTemplateCategory {
   name: string;
 }
 
+export interface AssistantTemplateConfig {
+  icon: string;
+  color: string;
+  free: boolean;
+}
+
 interface AssistantTemplateCategoriesResponse {
   categories: AssistantTemplateCategory[];
 }
@@ -40,6 +46,7 @@ export interface AssistantTemplate {
   title: string;
   description: string;
   systemPrompt: AssistantTemplatePrompt;
+  config: AssistantTemplateConfig;
 }
 
 interface AssistantTemplatesResponse {

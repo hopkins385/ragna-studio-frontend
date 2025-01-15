@@ -48,9 +48,9 @@ const {
 const { setActiveTool, unsetActiveTool, clearActiveTools, activeTools } =
   useChatTools();
 
-// ChatId
+// activeChatId
 const route = useRoute();
-const chatId = route.params.id.toString();
+const activeChatId = ref('');
 
 const inputMessage = ref('');
 const autoScrollLocked = ref(false);
@@ -79,7 +79,11 @@ const clearVisionContent = () => {
 };
 
 // SUBMIT
-const onSubmit = async () => {
+const onSubmit = async (chatId: string) => {
+  if (!chatId || !chatId.trim()) {
+    console.error('No chatId provided');
+    return;
+  }
   if (!inputMessage.value.trim()) return;
   const userMessageContent = inputMessage.value;
   inputMessage.value = '';
@@ -113,16 +117,25 @@ const onSubmit = async () => {
   }
 };
 
+const scrollToBottom = (options: { instant: boolean } = { instant: false }) => {
+  nextTick(() => {
+    chatMessagesContainerRef.value?.scrollTo({
+      top: chatMessagesContainerRef.value.scrollHeight,
+      behavior: options.instant ? 'instant' : 'smooth',
+    });
+  });
+};
+
 const onKeyDownEnter = (event: KeyboardEvent) => {
   if (event.key === 'Enter' && !event.shiftKey && settings.submitOnEnter) {
     event.preventDefault();
-    onSubmit();
+    onSubmit(activeChatId.value);
   }
 };
 
 const onPresetClick = (value: string) => {
   inputMessage.value = value;
-  onSubmit();
+  onSubmit(activeChatId.value);
 };
 
 const onAbortChatRequest = () => {
@@ -133,16 +146,27 @@ const onAbortChatRequest = () => {
 const onResetChat = async () => {
   await clearChatMessages();
   clearActiveTools();
-  await initChat(chatId);
+  await initChat(activeChatId.value);
 };
 
-const scrollToBottom = (options: { instant: boolean } = { instant: false }) => {
-  nextTick(() => {
-    chatMessagesContainerRef.value?.scrollTo({
-      top: chatMessagesContainerRef.value.scrollHeight,
-      behavior: options.instant ? 'instant' : 'smooth',
-    });
-  });
+const setupSocketListeners = (chatId: string) => {
+  socket.on(`chat-${chatId}-tool-start-event`, setActiveTool);
+  socket.on(`chat-${chatId}-tool-end-event`, unsetActiveTool);
+};
+
+const removeSocketListeners = (chatId: string) => {
+  socket.off(`chat-${chatId}-tool-start-event`, setActiveTool);
+  socket.off(`chat-${chatId}-tool-end-event`, unsetActiveTool);
+};
+
+const setupChat = async (chatId: string) => {
+  // console.log('Setting up chat:', chatId);
+  activeChatId.value = chatId;
+  await initChat(chatId);
+  removeSocketListeners(chatId);
+  setupSocketListeners(chatId);
+  scrollToBottom({ instant: true });
+  focusInput();
 };
 
 const { openFileDialog, readFile, inputImages, allowedFileMimeTypes } =
@@ -207,29 +231,16 @@ useEventListener(
   },
 );
 
-const setupChat = async (chatId: string) => {
-  await initChat(chatId);
-  scrollToBottom({ instant: true });
-  focusInput();
-};
-
-// watch route changes
+// watch route changes and setup chat onMount
+// onMounted setupChat is not required, because the watcher is immediate
 watch(
   () => route.params.id.toString(),
   async id => await setupChat(id),
   { immediate: true },
 );
 
-onMounted(async () => await setupChat(chatId));
-
-onMounted(() => {
-  socket.on(`chat-${chatId}-tool-start-event`, setActiveTool);
-  socket.on(`chat-${chatId}-tool-end-event`, unsetActiveTool);
-});
-
 onBeforeUnmount(() => {
-  socket.off(`chat-${chatId}-tool-start-event`, setActiveTool);
-  socket.off(`chat-${chatId}-tool-end-event`, unsetActiveTool);
+  removeSocketListeners(activeChatId.value);
 });
 
 useHead({
@@ -369,7 +380,7 @@ useHead({
           id="chatInputForm"
           ref="chatInputFormRef"
           class="relative flex w-full items-center space-x-2 border-0"
-          @submit.prevent="onSubmit"
+          @submit.prevent="() => onSubmit(activeChatId)"
         >
           <div class="relative z-10 max-h-96 w-full">
             <Textarea
