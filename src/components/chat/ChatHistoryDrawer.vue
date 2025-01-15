@@ -39,14 +39,14 @@ const groupedChats = computed(() => {
 
       switch (selectedGroupBy.value) {
         case 'month':
-          key = chat.createdAt.substring(0, 7); // YYYY-MM
+          key = chat.updatedAt.substring(0, 7); // YYYY-MM
           break;
         case 'year':
-          key = chat.createdAt.substring(0, 4); // YYYY
+          key = chat.updatedAt.substring(0, 4); // YYYY
           break;
         case 'day':
         default:
-          key = chat.createdAt.split('T')[0]; // YYYY-MM-DD
+          key = chat.updatedAt.split('T')[0]; // YYYY-MM-DD
       }
 
       if (!acc[key]) {
@@ -130,7 +130,7 @@ Example API response
           variant="ghost"
           size="icon"
           class="group"
-          @click="drawer.hide()"
+          @click="() => drawer.hide()"
         >
           <XIcon class="size-4 stroke-2 group-hover:stroke-2 opacity-75" />
         </Button>
@@ -153,9 +153,10 @@ Example API response
             <router-link
               :title="chat.title"
               :to="{ name: RouteName.CHAT_SHOW, params: { id: chat.id } }"
-              class="cursor-pointer hover:bg-stone-200 rounded-lg block py-2 truncate"
+              class="cursor-pointer hover:bg-stone-200 rounded-lg block p-2 truncate"
               :class="{
-                'font-semibold': chat.id === $route.params.id?.toString(),
+                'font-semibold bg-stone-200/75':
+                  chat.id === $route.params.id?.toString(),
               }"
             >
               <span class="text-sm">{{ chat.title }}</span>
