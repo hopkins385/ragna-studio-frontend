@@ -52,12 +52,17 @@ const { setActiveTool, unsetActiveTool, clearActiveTools, activeTools } =
 const route = useRoute();
 const activeChatId = ref('');
 
+const setupChatIsCompleted = ref(false);
+
 const inputMessage = ref('');
 const autoScrollLocked = ref(false);
 const chatInputFormRef = ref<HTMLFormElement | null>(null);
 const chatBoxContainerRef = ref<HTMLElement | null>(null);
 const chatMessagesContainerRef = ref<HTMLElement | null>(null);
 
+const showPresets = computed(
+  () => setupChatIsCompleted.value === true && !hasChatMessages.value,
+);
 const chatTitle = computed(() => chat.value?.title);
 const showAbortButton = computed(
   () => isThinking.value === true || isStreaming.value === true,
@@ -161,12 +166,14 @@ const removeSocketListeners = (chatId: string) => {
 
 const setupChat = async (chatId: string) => {
   // console.log('Setting up chat:', chatId);
+  setupChatIsCompleted.value = false;
   activeChatId.value = chatId;
   await initChat(chatId);
   removeSocketListeners(chatId);
   setupSocketListeners(chatId);
   scrollToBottom({ instant: true });
   focusInput();
+  setupChatIsCompleted.value = true;
 };
 
 const { openFileDialog, readFile, inputImages, allowedFileMimeTypes } =
@@ -288,7 +295,7 @@ useHead({
       class="no-scrollbar relative grow overflow-y-scroll rounded-lg"
     >
       <ChatPresets
-        v-if="!hasChatMessages"
+        v-if="showPresets"
         id="chatPresets"
         class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-0"
         style="width: 100%; max-width: 800px; max-height: 80%"
