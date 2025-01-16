@@ -1,16 +1,17 @@
 import { $axios } from '@/axios/axiosInstance';
+import { BadRequestError } from '@/common/errors/bad-request.error';
+import { ConnectionError } from '@/common/errors/connection.error';
+import { ForbiddenError } from '@/common/errors/forbidden.error';
+import { NotFoundError } from '@/common/errors/not-found.error';
+import { UnauthorizedError } from '@/common/errors/unauthorized.error';
+import { UnknownError } from '@/common/errors/unknown.error';
+import { ValidationError } from '@/common/errors/validation.error';
 import {
   AxiosError,
   type AxiosInstance,
   type AxiosRequestConfig,
   type AxiosResponse,
 } from 'axios';
-import { BadRequestError } from '../errors/bad-request.error';
-import { ConnectionError } from '../errors/connection.error';
-import { ForbiddenError } from '../errors/forbidden.error';
-import { NotFoundError } from '../errors/not-found.error';
-import { UnauthorizedError } from '../errors/unauthorized.error';
-import { UnknownError } from '../errors/unknown.error';
 
 type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 type ResponseType = 'json' | 'text' | 'blob' | 'arraybuffer';
@@ -118,6 +119,8 @@ function defaultErrorHandler(error: AxiosError) {
       throw new ForbiddenError();
     case 404:
       throw new NotFoundError();
+    case 422:
+      throw new ValidationError();
     default:
       throw new UnknownError();
   }

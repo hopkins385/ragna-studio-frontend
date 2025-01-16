@@ -35,7 +35,6 @@ const { handleSubmit } = useForm({
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
   await createAssistant({
     ...values,
-    systemPromptTokenCount: 1,
   })
     .then(() => {
       toast.success({

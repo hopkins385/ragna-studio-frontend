@@ -5,44 +5,20 @@ import {
   type AssistantTemplateCategory,
   type CategoryWithTemplates,
 } from '@/composables/services/useAssistantTemplateService';
+import { useTemplatePreview } from '@/composables/useTemplatePreview';
 import Heading from '@components/heading/Heading.vue';
 import HeadingTitle from '@components/heading/HeadingTitle.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import bgImgUrl from '@images/bg_template_2.png?q=100&format=webp&imagetools';
 
-type ColorMap = {
-  [key: string]: string;
-};
-
-const colorMap: ColorMap = {
-  lime: 'bg-lime-50',
-  orange: 'bg-orange-50',
-  violet: 'bg-violet-50',
-  cyan: 'bg-cyan-50',
-  red: 'bg-red-50',
-  blue: 'bg-blue-50',
-  green: 'bg-green-50',
-  yellow: 'bg-yellow-50',
-  purple: 'bg-purple-50',
-  pink: 'bg-pink-50',
-  indigo: 'bg-indigo-50',
-  teal: 'bg-teal-50',
-  gray: 'bg-gray-50',
-};
-
 const { t } = useI18n();
+const { previewDialog, getBgColor, openPreviewDialog, closePreviewDialog } =
+  useTemplatePreview();
 const { fetchAllCategories, fetchTemplatesByCategoryIds } =
   useAssistantTemplateService();
 
 const categories = ref<AssistantTemplateCategory[]>([]);
 const catsWithTemplates = ref<CategoryWithTemplates[]>([]);
-
-const previewDialog = reactive({
-  open: false,
-  title: '',
-  description: '',
-  bgColor: '',
-});
 
 const initTemplateCategories = async () => {
   const { categories: cats } = await fetchAllCategories();
@@ -54,17 +30,6 @@ const getTemplatesByCategoryIds = async (payload: {
 }) => {
   const { categories } = await fetchTemplatesByCategoryIds(payload);
   catsWithTemplates.value = categories;
-};
-
-const getBgColor = (colorName: string) => {
-  return colorMap[colorName];
-};
-
-const showPreviewDialog = (template: any) => {
-  previewDialog.title = template.title;
-  previewDialog.description = template.description;
-  previewDialog.bgColor = getBgColor(template.config.color);
-  previewDialog.open = true;
 };
 
 onMounted(async () => {
@@ -121,7 +86,7 @@ onMounted(async () => {
             :key="template.id"
             class="border h-60 w-60 p-4 shrink-0 rounded-lg hover:shadow-lg cursor-pointer"
             :class="getBgColor(template.config.color)"
-            @click="() => showPreviewDialog(template)"
+            @click="() => openPreviewDialog(template)"
           >
             {{ template.config.color }}
             <h3 class="text-2xl font-bold uppercase">

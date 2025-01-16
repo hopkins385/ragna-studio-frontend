@@ -277,7 +277,9 @@
     "edit": {
       "title": "Agent bearbeiten",
       "subtitle": "Hier kannst du den Agenten bearbeiten",
-      "button": "Agent aktualisieren"
+      "button": "Agent aktualisieren",
+      "success": "Agent erfolgreich aktualisiert",
+      "error": "Der Agent konnte nicht aktualisiert werden"
     },
     "form": {
       "name_label": "Name",

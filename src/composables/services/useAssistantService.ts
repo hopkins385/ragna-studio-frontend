@@ -10,7 +10,7 @@ enum AssistantRoute {
   HAS_KNOWLEDGE = '/assistant/:assistantId/has-knowledge', // PATCH
 }
 
-export class AssistantDto {
+export class CreateAssistantPayload {
   teamId: string = '';
   llmId: string = '';
   title: string = '';
@@ -19,7 +19,6 @@ export class AssistantDto {
   isShared: boolean = false;
   hasKnowledgeBase: boolean = false;
   hasWorkflow: boolean = false;
-  systemPromptTokenCount: number = 0;
   tools: string[] = [];
 }
 
@@ -58,11 +57,11 @@ interface PaginateParams {
 export default function useAssistantService() {
   const ac = new AbortController();
 
-  const createAssistant = async (payload: AssistantDto) => {
+  const createAssistant = async (payload: CreateAssistantPayload) => {
     const api = newApiRequest();
     const route = getRoute(AssistantRoute.BASE);
     const { status, data } = await api
-      .POST<AssistantResponse, never, AssistantDto>()
+      .POST<AssistantResponse, never, CreateAssistantPayload>()
       .setRoute(route)
       .setData(payload)
       .setSignal(ac.signal)
@@ -126,14 +125,14 @@ export default function useAssistantService() {
 
   const updateAssistant = async (
     assistantId: string,
-    payload: Partial<AssistantDto>,
+    payload: Partial<CreateAssistantPayload>,
   ) => {
     const api = newApiRequest();
     const route = getRoute(AssistantRoute.ASSISTANT, {
       ':assistantId': assistantId,
     });
     const { status, data } = await api
-      .PATCH<AssistantResponse, never, Partial<AssistantDto>>()
+      .PATCH<AssistantResponse, never, Partial<CreateAssistantPayload>>()
       .setRoute(route)
       .setData(payload)
       .setSignal(ac.signal)

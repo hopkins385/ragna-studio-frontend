@@ -63,10 +63,11 @@ const firstCollection = computed(
   () => props.collections?.[0] ?? { id: '-1', name: '+ Add Knowledge' },
 );
 
+const { t } = useI18n();
+const { getToolIcon } = useToolIcons();
 const { updateAssistant, updateHasKnowledgeBase } = useAssistantService();
 
 // form
-
 const { handleSubmit } = useForm({
   validationSchema: assistantFormSchema,
   initialValues: {
@@ -89,16 +90,15 @@ const onSubmit = handleSubmit(async values => {
   try {
     await updateAssistant(props.assistant.id, {
       ...values,
-      systemPromptTokenCount: 1, // TODO: calculate token count
     });
     toast.success({
-      description: 'Agent updated',
+      description: t('assistant.edit.success'),
     });
     // router.back();
   } catch (error: any) {
     console.error(error);
     toast.error({
-      description: 'Failed to update agent',
+      description: t('assistant.edit.error'),
     });
   } finally {
     isLoading.value = false;
@@ -106,7 +106,6 @@ const onSubmit = handleSubmit(async values => {
 });
 
 // collections
-
 const { replaceCollectionTo, detachAllCollectionsFrom } =
   useCollectionAbleService();
 
@@ -137,11 +136,6 @@ async function resetCollections() {
     description: 'Collection updated successfully',
   });
 }
-
-// tool icons
-const { getToolIcon } = useToolIcons();
-
-const { t } = useI18n();
 
 const siderBarTabs = [
   { id: 'tab1', icon: Settings, label: t('assistant.settings.label') },

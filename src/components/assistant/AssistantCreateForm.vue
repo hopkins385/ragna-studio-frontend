@@ -81,8 +81,6 @@ const onSubmit = handleSubmit(async values => {
   try {
     await createAssistant({
       ...values,
-      // TODO: calculate the token count based on the system prompt, but lets do that on the backend!
-      systemPromptTokenCount: 1,
     });
     toast.success({
       description: t('assistant.create.success'),
