@@ -4,11 +4,13 @@ type ColorMap = {
   [key: string]: string;
 };
 
-interface Template {
+interface TemplatePreviewDialog {
+  open: boolean;
+  templateId: string;
   title: string;
   description: string;
-  bgColor: string;
-  free?: boolean;
+  bgColorClass: string;
+  free: boolean;
 }
 
 const colorMap: ColorMap = {
@@ -28,23 +30,25 @@ const colorMap: ColorMap = {
 };
 
 export function useTemplatePreview() {
-  const previewDialog = reactive({
+  const previewDialog = reactive<TemplatePreviewDialog>({
     open: false,
+    templateId: '',
     title: '',
     description: '',
-    bgColor: '',
+    bgColorClass: '',
     free: false,
   });
 
-  const getBgColor = (colorName: string) => {
-    return colorMap[colorName];
+  const getBgColorClass = (colorName: string) => {
+    return colorMap[colorName] || '';
   };
 
   const openPreviewDialog = (template: AssistantTemplate) => {
     previewDialog.open = true;
+    previewDialog.templateId = template.id;
     previewDialog.title = template.title;
     previewDialog.description = template.description;
-    previewDialog.bgColor = template.config.color;
+    previewDialog.bgColorClass = getBgColorClass(template.config.color);
     previewDialog.free = template.config.free;
   };
 
@@ -54,7 +58,7 @@ export function useTemplatePreview() {
 
   return {
     previewDialog,
-    getBgColor,
+    getBgColorClass,
     openPreviewDialog,
     closePreviewDialog,
   };

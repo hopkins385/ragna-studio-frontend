@@ -8,6 +8,7 @@ enum AssistantRoute {
   BASE = '/assistant', // GET, POST
   ASSISTANT = '/assistant/:assistantId', // GET, PATCH, DELETE
   HAS_KNOWLEDGE = '/assistant/:assistantId/has-knowledge', // PATCH
+  FROM_TEMPLATE = '/assistant/from-template', // POST
 }
 
 export class CreateAssistantPayload {
@@ -54,6 +55,11 @@ interface PaginateParams {
   searchQuery?: string;
 }
 
+export interface CreateFromTemplatePayload {
+  templateId: string;
+  language: 'de' | 'en';
+}
+
 export default function useAssistantService() {
   const ac = new AbortController();
 
@@ -62,6 +68,25 @@ export default function useAssistantService() {
     const route = getRoute(AssistantRoute.BASE);
     const { status, data } = await api
       .POST<AssistantResponse, never, CreateAssistantPayload>()
+      .setRoute(route)
+      .setData(payload)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 201) {
+      throw new BadResponseError();
+    }
+
+    return data;
+  };
+
+  const createAssistantFromTemplate = async (
+    payload: CreateFromTemplatePayload,
+  ) => {
+    const api = newApiRequest();
+    const route = getRoute(AssistantRoute.FROM_TEMPLATE);
+    const { status, data } = await api
+      .POST<AssistantResponse, never, CreateFromTemplatePayload>()
       .setRoute(route)
       .setData(payload)
       .setSignal(ac.signal)
@@ -196,5 +221,6 @@ export default function useAssistantService() {
     fetchAssistant,
     deleteAssistant,
     updateHasKnowledgeBase,
+    createAssistantFromTemplate,
   };
 }

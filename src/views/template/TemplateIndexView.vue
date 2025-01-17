@@ -12,7 +12,7 @@ import SectionContainer from '@components/section/SectionContainer.vue';
 import bgImgUrl from '@images/bg_template_2.png?q=100&format=webp&imagetools';
 
 const { t } = useI18n();
-const { previewDialog, getBgColor, openPreviewDialog, closePreviewDialog } =
+const { previewDialog, getBgColorClass, openPreviewDialog } =
   useTemplatePreview();
 const { fetchAllCategories, fetchTemplatesByCategoryIds } =
   useAssistantTemplateService();
@@ -85,7 +85,7 @@ onMounted(async () => {
             v-for="template in cat.templates"
             :key="template.id"
             class="border h-60 w-60 p-4 shrink-0 rounded-lg hover:shadow-lg cursor-pointer"
-            :class="getBgColor(template.config.color)"
+            :class="getBgColorClass(template.config.color)"
             @click="() => openPreviewDialog(template)"
           >
             {{ template.config.color }}

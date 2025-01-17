@@ -1,30 +1,102 @@
 <script setup lang="ts">
-import { Button } from '@ui/button';
+import { RouteName } from '@/router/enums/route-names.enum';
+import ButtonLoading from '@components/button/ButtonLoading.vue';
+import useAssistantService, {
+  type CreateFromTemplatePayload,
+} from '@composables/services/useAssistantService';
+import useToast from '@composables/useToast';
 import { Dialog, DialogContent } from '@ui/dialog';
 
 interface Props {
+  templateId: string;
   title: string;
   description: string;
   free: boolean;
-  bgColor: string;
+  bgColorClass: string;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 const modelValue = defineModel<boolean>({ required: true });
+
+const router = useRouter();
+const toast = useToast();
+
+const { t, locale } = useI18n();
+// const { createChat } = useChatService();
+const { createAssistantFromTemplate } = useAssistantService();
+
+const isLoading = ref(false);
+
+const closeDialog = () => {
+  modelValue.value = false;
+};
+
+const createAssistant = async () => {
+  const payload: CreateFromTemplatePayload = {
+    templateId: props.templateId,
+    language: locale.value === 'en' ? 'en' : 'de',
+  };
+
+  try {
+    // clone the template
+    const { assistant } = await createAssistantFromTemplate(payload);
+    // toast success
+    toast.success({ description: t('assistant.clone.success') });
+    // return the assistant
+    return assistant;
+  } catch (error) {
+    console.error(error);
+    toast.error({ description: t('assistant.clone.error') });
+    throw error;
+  }
+};
+
+const onCloneTemplateClick = async (payload: { startNewChat: boolean }) => {
+  isLoading.value = true;
+
+  try {
+    // create Assistant from template
+    const assistant = await createAssistant();
+    // close the dialog
+    closeDialog();
+    // if start a new chat
+    // if (payload.startNewChat) {
+    //   const { chat } = await createChat(assistant.id);
+    //   router.push({ name: RouteName.CHAT_SHOW, params: { id: chat.id } });
+    // } else {
+    // navigate to the assistant page
+    await router.push({
+      name: RouteName.ASSISTANT_EDIT,
+      params: { id: assistant.id },
+    });
+    //}
+  } catch (error) {
+    console.error(error);
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>
 
 <template>
   <Dialog v-model:open="modelValue">
     <DialogContent class="min-w-[1200px] min-h-[800px]">
+      <!--
+      // TODO: Aria labels for this dialog (which is automatically added by the title and description components)
+      <DialogHeader class="border">
+        <DialogTitle></DialogTitle>
+        <DialogDescription></DialogDescription>
+      </DialogHeader>
+      -->
       <div class="grid grid-cols-2 border-0 bg-white rounded-md">
         <div class="">
-          <div class="size-full rounded-md p-10" :class="bgColor">
+          <div class="size-full rounded-md p-10" :class="bgColorClass">
             <h1 class="text-6xl uppercase font-bold leading-snug">
               {{ title }}
             </h1>
           </div>
         </div>
-        <div class="px-10 pt-3">
+        <div class="px-10 pt-10">
           <div>
             <div class="space-y-2 mb-10">
               <span
@@ -39,7 +111,24 @@ const modelValue = defineModel<boolean>({ required: true });
             <p class="">
               {{ description }}
             </p>
-            <Button class="mt-10 px-10">Use this template</Button>
+            <div class="flex space-x-3">
+              <ButtonLoading
+                :loading="isLoading"
+                class="mt-10 px-10"
+                @click="onCloneTemplateClick"
+              >
+                Use this Template
+              </ButtonLoading>
+              <!--
+              <ButtonLoading
+                :loading="isLoading"
+                class="mt-10 px-10"
+                @click="() => onCloneTemplateClick({ startNewChat: true })"
+              >
+                Clone & Start Chat
+              </ButtonLoading>
+              -->
+            </div>
           </div>
         </div>
       </div>
