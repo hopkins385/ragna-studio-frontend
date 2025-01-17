@@ -92,7 +92,8 @@ useHead({
         :assistant="assistant"
         :assistantTools="assistantTools"
         :collections="collections"
-        @refreshCollections="initCollections"
+        @refresh-collections="async () => await initCollections()"
+        @refresh-assistant="async () => await initAssistant()"
       />
       <div v-else>Agent not found</div>
     </div>

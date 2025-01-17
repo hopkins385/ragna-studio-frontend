@@ -267,6 +267,9 @@
     }
   },
   "assistant": {
+    "button": {
+      "new_chat": "Chat starten"
+    },
     "create": {
       "title": "Agent erstellen",
       "subtitle": "Hier kannst du einen neuen Agenten erstellen",
@@ -395,6 +398,14 @@
     "button": {
       "confirm": "Ja, fortfahren",
       "cancel": "Abbrechen"
+    },
+    "dirty_form": {
+      "title": "Ohne speichern fortfahren?",
+      "description": "Du hast ungespeicherte Änderungen. Bist du sicher, dass du fortfahren möchtest?",
+      "button": {
+        "confirm": "Ja, fortfahren",
+        "cancel": "Abbrechen"
+      }
     }
   },
   "chat": {

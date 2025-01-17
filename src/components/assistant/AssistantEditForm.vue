@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { useChatService } from '@/composables/services/useChatService';
 import { useToolIcons } from '@/composables/useToolIcons';
+import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import CollectionSelectModal from '@components/collection/CollectionSelectModal.vue';
 import LlmSelectModal from '@components/llm/LlmSelectModal.vue';
@@ -35,24 +37,27 @@ import {
   Workflow,
 } from 'lucide-vue-next';
 
-interface AssistantEditFormProps {
+interface Props {
   assistant: Assistant;
   assistantTools: AssistantTool[];
   collections: Collection[];
 }
 
-interface AssistantEditFormEmits {
+interface Emits {
   refreshCollections: [void];
+  refreshAssistant: [void];
 }
 
-const props = defineProps<AssistantEditFormProps>();
-const emit = defineEmits<AssistantEditFormEmits>();
+const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
 
+const router = useRouter();
 const authStore = useAuthStore();
 const toast = useToast();
 
 const currentTab = ref('tab1');
-const isLoading = ref(false);
+const updateIsLoading = ref(false);
+const newChatIsLoading = ref(false);
 
 const initialAssistantName = computed(
   () => props.assistant?.llm.displayName ?? 'Select AI Model',
@@ -66,9 +71,10 @@ const firstCollection = computed(
 const { t } = useI18n();
 const { getToolIcon } = useToolIcons();
 const { updateAssistant, updateHasKnowledgeBase } = useAssistantService();
+const { createChat } = useChatService();
 
 // form
-const { handleSubmit } = useForm({
+const { handleSubmit, meta: formMeta } = useForm({
   validationSchema: assistantFormSchema,
   initialValues: {
     teamId: authStore.user?.firstTeamId || '-1',
@@ -86,7 +92,9 @@ const onSubmit = handleSubmit(async values => {
   if (!props.assistant) {
     throw new Error('Agent not found');
   }
-  isLoading.value = true;
+
+  updateIsLoading.value = true;
+
   try {
     await updateAssistant(props.assistant.id, {
       ...values,
@@ -94,14 +102,14 @@ const onSubmit = handleSubmit(async values => {
     toast.success({
       description: t('assistant.edit.success'),
     });
-    // router.back();
+    formMeta.value.dirty = false;
   } catch (error: any) {
     console.error(error);
     toast.error({
       description: t('assistant.edit.error'),
     });
   } finally {
-    isLoading.value = false;
+    updateIsLoading.value = false;
   }
 });
 
@@ -137,6 +145,41 @@ async function resetCollections() {
   });
 }
 
+const canLeavePage = () => {
+  if (formMeta.value.dirty) {
+    if (!window.confirm(t('confirm.dirty_form.description'))) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const onStartChat = async () => {
+  if (!canLeavePage()) {
+    return;
+  }
+
+  newChatIsLoading.value = true;
+
+  try {
+    const { chat } = await createChat(props.assistant.id);
+    router.push({
+      name: RouteName.CHAT_SHOW,
+      params: { id: chat.id },
+    });
+  } catch (error: any) {
+    console.error(error);
+    toast.error({
+      description: t('assistant.new_chat.error'),
+    });
+  } finally {
+    newChatIsLoading.value = false;
+  }
+};
+
+// onBeforeRouteLeave
+onBeforeRouteLeave(canLeavePage);
+
 const siderBarTabs = [
   { id: 'tab1', icon: Settings, label: t('assistant.settings.label') },
   { id: 'tab2', icon: Stars, label: t('assistant.genai.label') },
@@ -151,10 +194,17 @@ const siderBarTabs = [
 <template>
   <div class="w-full flex justify-end">
     <div class="flex items-center space-x-4">
-      <Button @click="$router.back()" variant="outline">
+      <Button @click="$router.back()" variant="secondary">
         {{ $t('form.button.back') }}
       </Button>
-      <ButtonLoading :loading="isLoading" @click="onSubmit">
+      <ButtonLoading
+        :loading="newChatIsLoading"
+        @click="onStartChat"
+        variant="outline"
+      >
+        {{ $t('assistant.button.new_chat') }}
+      </ButtonLoading>
+      <ButtonLoading :loading="updateIsLoading" @click="onSubmit">
         {{ $t('form.button.save') }}
       </ButtonLoading>
     </div>
