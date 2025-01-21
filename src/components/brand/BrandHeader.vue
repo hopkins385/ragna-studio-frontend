@@ -8,7 +8,7 @@ import IconRagna from '@assets/icons/ragna.svg?component';
       <IconRagna class="size-10 drop-shadow-sm" />
     </span>
     <h1 class="text-2xl font-semibold text-center text-gray-800">
-      RAGNA <span class="font-normal">Studio</span>
+      RAGNA <span class="font-normal">Ai Studio</span>
     </h1>
   </div>
 </template>

@@ -25,7 +25,7 @@ defineProps<ChatMessageBoxProps>();
         </span>
       </div>
       <div class="flex flex-col space-y-2">
-        <div class="select-none font-semibold" style="padding-top: 1.5px">
+        <div class="select-none font-semibold pt-1">
           {{ displayName }}
         </div>
         <slot />

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ChatHistoryDrawerButton from '@/components/chat/ChatHistoryDrawerButton.vue';
+import ChatPresets from '@/components/chat/ChatPresets.vue';
 import { ChatMessageRole } from '@/enums/chat-role.enum';
 import { chatInputTextSchema } from '@/schemas/chat-input-text.schema';
 import { useChatStore } from '@/stores/chat-inference.store';
@@ -8,7 +9,6 @@ import ChatButtonNewChat from '@components/chat/ChatButtonNewChat.vue';
 import ChatImageInput from '@components/chat/ChatImageInput.vue';
 import ChatMessageBox from '@components/chat/ChatMessageBox.vue';
 import ChatMessageChunk from '@components/chat/ChatMessageChunk.vue';
-import ChatPresets from '@components/chat/ChatPresets.vue';
 import ChatSettings from '@components/chat/ChatSettings.vue';
 import ChatToolCallMessage from '@components/chat/ChatToolCallMessage.vue';
 import { useChatImages, type ChatImage } from '@composables/chat/useChatImages';
@@ -265,7 +265,7 @@ useHead({
   <BoxContainer
     id="chatWrapper"
     ref="chatBoxContainerRef"
-    class="relative flex size-full flex-col border-0 px-32 pb-8 pt-16"
+    class="relative flex size-full flex-col px-32 pb-8 pt-16"
   >
     <!-- chat header -->
     <!-- left quick controls -->
@@ -294,13 +294,6 @@ useHead({
       ref="chatMessagesContainerRef"
       class="no-scrollbar relative grow overflow-y-scroll rounded-lg"
     >
-      <ChatPresets
-        v-if="showPresets"
-        id="chatPresets"
-        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-0"
-        style="width: 100%; max-width: 800px; max-height: 80%"
-        @clicked="value => onPresetClick(value)"
-      />
       <!-- chat messages -->
       <ChatMessageBox
         v-for="(message, index) in chatMessages"
@@ -361,68 +354,88 @@ useHead({
       </!-->
     </div>
     <!-- Input wrapper -->
-    <div id="chatInputWrapper" class="relative shrink-0 pt-1">
-      <!-- Image input -->
-      <ChatImageInput v-model:input-images="inputImages" />
-      <div class="flex space-x-1">
-        <!-- vision input -->
-        <div v-if="chatStore.modelWithVision">
-          <Button
-            variant="ghost"
-            size="icon"
-            class="group text-slate-500"
-            :class="{
-              'bg-slate-100 text-green-600': isOverDropZone,
-            }"
-            @click="openFileDialog"
-          >
-            <PaperclipIcon
-              class="!size-5 -rotate-45 stroke-1 group-hover:stroke-1.5"
-              :class="{ 'stroke-2': isOverDropZone }"
-            />
-          </Button>
-        </div>
-        <!-- message input form -->
-        <form
-          id="chatInputForm"
-          ref="chatInputFormRef"
-          class="relative flex w-full items-center space-x-2 border-0"
-          @submit.prevent="() => onSubmit(activeChatId)"
-        >
-          <div class="relative z-10 max-h-96 w-full">
-            <Textarea
-              v-model="inputMessage"
-              :placeholder="$t('chat.input.placeholder')"
-              rows="1"
-              resize="none"
-              class="no-scrollbar min-h-[52px] resize-none rounded-2xl py-4 pr-14 focus:shadow-lg"
-              @keydown.enter="onKeyDownEnter"
-              @input="adjustTextareaHeight"
-            />
+    <div
+      class="w-full"
+      :class="{
+        'px-32 -mt-10 absolute left-0 top-1/2 -translate-y-1/2': showPresets,
+        relative: !showPresets,
+      }"
+    >
+      <div
+        v-if="showPresets"
+        class="h-12 border-0 font-semibold opacity-75 text-3xl text-center"
+      >
+        {{ $t('chat.welcome') }}
+      </div>
+      <div id="chatInputWrapper" class="shrink-0 pt-1">
+        <!-- Image input -->
+        <ChatImageInput v-model:input-images="inputImages" />
+        <div class="flex space-x-1">
+          <!-- vision input -->
+          <div v-if="chatStore.modelWithVision">
+            <Button
+              variant="ghost"
+              size="icon"
+              class="group text-slate-500"
+              :class="{
+                'bg-slate-100 text-green-600': isOverDropZone,
+              }"
+              @click="openFileDialog"
+            >
+              <PaperclipIcon
+                class="!size-5 -rotate-45 stroke-1 group-hover:stroke-1.5"
+                :class="{ 'stroke-2': isOverDropZone }"
+              />
+            </Button>
           </div>
-          <Button
-            v-if="showAbortButton"
-            variant="outline"
-            size="icon"
-            class="group absolute bottom-3 right-3 z-20 mr-1 size-8 rounded-full bg-slate-100"
-            @click="onAbortChatRequest"
+          <!-- message input form -->
+          <form
+            id="chatInputForm"
+            ref="chatInputFormRef"
+            class="relative flex w-full items-center space-x-2 border-0"
+            @submit.prevent="() => onSubmit(activeChatId)"
           >
-            <SquareIcon
-              class="!size-4 stroke-1.5 text-slate-500 group-hover:text-slate-900"
-            />
-          </Button>
-          <Button
-            v-else
-            class="absolute bottom-2 right-2 z-10 size-9"
-            type="submit"
-            size="icon"
-            variant="ghost"
-            :disabled="!inputMessage"
-          >
-            <SendIcon class="!size-5 stroke-1.5" />
-          </Button>
-        </form>
-        <div class="w-10"></div>
+            <div class="relative z-10 max-h-96 w-full">
+              <Textarea
+                v-model="inputMessage"
+                :placeholder="$t('chat.input.placeholder')"
+                rows="1"
+                resize="none"
+                class="no-scrollbar min-h-[6rem] resize-none rounded-2xl py-4 pr-14 focus:shadow-lg bg-stone-50"
+                @keydown.enter="onKeyDownEnter"
+                @input="adjustTextareaHeight"
+              />
+            </div>
+            <Button
+              v-if="showAbortButton"
+              variant="outline"
+              size="icon"
+              class="group absolute bottom-3 right-3 z-20 mr-1 size-8 rounded-full bg-slate-100"
+              @click="onAbortChatRequest"
+            >
+              <SquareIcon
+                class="!size-4 stroke-1.5 text-slate-500 group-hover:text-slate-900"
+              />
+            </Button>
+            <Button
+              v-else
+              class="absolute bottom-2 right-2 z-10 size-9"
+              type="submit"
+              size="icon"
+              variant="ghost"
+              :disabled="!inputMessage"
+            >
+              <SendIcon class="!size-5 stroke-1.5" />
+            </Button>
+          </form>
+          <div class="w-10"></div>
+        </div>
+        <div v-if="showPresets" class="pt-6">
+          <ChatPresets
+            id="chatPresets"
+            @clicked="value => onPresetClick(value)"
+          />
+        </div>
       </div>
     </div>
     <!-- Notification -->

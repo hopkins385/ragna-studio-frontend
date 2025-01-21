@@ -410,6 +410,7 @@
   },
   "chat": {
     "title": "Chat",
+    "welcome": "Wie kann ich Dir helfen?",
     "button": {
       "start": "Chat starten"
     },

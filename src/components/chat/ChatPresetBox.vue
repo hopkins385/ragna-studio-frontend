@@ -15,6 +15,7 @@ import {
 interface ChatPresetBoxProps {
   title: string;
   iconName: string;
+  iconColor: string;
 }
 
 defineProps<ChatPresetBoxProps>();
@@ -35,18 +36,33 @@ function getIcon(name: string) {
     }[name] || {}
   );
 }
+
+function getColor(color: string) {
+  return (
+    {
+      blue: 'stroke-blue-700',
+      green: 'stroke-green-700',
+      red: 'stroke-red-700',
+      yellow: 'stroke-yellow-700',
+      purple: 'stroke-purple-700',
+    }[color] || {}
+  );
+}
 </script>
 
 <template>
   <div
-    class="h-34 max-w-72 cursor-pointer overflow-hidden rounded-lg border bg-white p-5 text-sm shadow-sm hover:shadow-md"
+    class="h-34 max-w-96 cursor-pointer overflow-hidden rounded-full border px-5 py-3 text-sm hover:shadow-md"
   >
-    <div class="flex items-center space-x-3 pb-2">
-      <div>
-        <component :is="getIcon(iconName)" class="size-5 text-gray-500" />
-      </div>
-      <div>{{ title }}</div>
+    <div class="flex items-center space-x-3">
+      <span>
+        <component
+          :is="getIcon(iconName)"
+          :class="getColor(iconColor)"
+          class="size-4 text-gray-500"
+        />
+      </span>
+      <span>{{ title }}</span>
     </div>
-    <slot />
   </div>
 </template>

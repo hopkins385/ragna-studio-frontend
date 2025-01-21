@@ -155,8 +155,7 @@ Example API response
               :to="{ name: RouteName.CHAT_SHOW, params: { id: chat.id } }"
               class="cursor-pointer hover:bg-stone-200 rounded-lg block p-2 truncate"
               :class="{
-                'font-semibold bg-stone-200/75':
-                  chat.id === $route.params.id?.toString(),
+                'font-semibold ': chat.id === $route.params.id?.toString(),
               }"
             >
               <span class="text-sm">{{ chat.title }}</span>
