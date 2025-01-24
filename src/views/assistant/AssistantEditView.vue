@@ -57,6 +57,10 @@ const initAssistantTools = async () => {
   }
 };
 
+const headingTitle = computed(
+  () => `${assistant.value?.title} - ${t('assistant.edit.title')}`,
+);
+
 // noasync = Non-blocking, allows component to render before data is fetched
 onMounted(() => {
   initAssistant();
@@ -80,7 +84,7 @@ useHead({
     <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
         <HeadingTitle
-          :title="$t('assistant.edit.title')"
+          :title="headingTitle"
           :subtitle="$t('assistant.edit.subtitle')"
         />
       </template>
