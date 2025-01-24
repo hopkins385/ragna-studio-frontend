@@ -247,8 +247,7 @@ const siderBarTabs = [
           <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
           <FormControl>
             <LlmSelectModal
-              :id="props.collections?.[0]?.id ?? ''"
-              :initial-display-name="initialAssistantName"
+              :current-llm-id="props.assistant.llm.id"
               @update:id="handleChange"
             />
           </FormControl>

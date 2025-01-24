@@ -178,11 +178,7 @@ onMounted(() => {
         <FormItem>
           <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
           <FormControl>
-            <LlmSelectModal
-              :id="value"
-              :initial-display-name="initialAssistantName"
-              @update:id="handleChange"
-            />
+            <LlmSelectModal :current-llm-id="value" @update:id="handleChange" />
           </FormControl>
           <FormMessage />
         </FormItem>

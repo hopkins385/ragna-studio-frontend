@@ -1,46 +1,24 @@
 <script setup lang="ts">
 import type { LargeLangModel } from '@composables/services/interfaces/large-lang-model.interface';
 import { useLlmService } from '@composables/services/useLlmService';
-import { Button } from '@ui/button';
-import {
-  Dialog,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@ui/dialog';
-import DialogContent from '@ui/dialog/DialogContent.vue';
-import { SettingsIcon } from 'lucide-vue-next';
 import LlmInfoBox from './LlmInfoBox.vue';
 
 const props = defineProps<{
-  initialDisplayName: string;
-  id: string;
+  currentLlmId: string;
 }>();
 
 const emits = defineEmits<{
   'update:id': [string];
 }>();
 
-const initialModel = {
-  id: props.id,
-  displayName: props.initialDisplayName,
-};
-
 const open = ref(false);
 const models = ref<LargeLangModel[] | null>(null);
-const activeModelId = ref(props.id);
+const activeModelId = ref(props.currentLlmId);
 
 const { getAllModels } = useLlmService();
 
-const selectedModel = computed<LargeLangModel | any>(
-  () =>
-    models.value?.find(model => model.id === activeModelId.value) ||
-    initialModel,
-);
-
 const initModels = async () => {
+  if (models.value) return;
   const { llms } = await getAllModels();
   models.value = llms;
 };
@@ -51,22 +29,43 @@ const onModelClick = (id: string) => {
   open.value = false;
 };
 
-watch(open, () => {
+/*watch(open, () => {
   if (open.value === true && !models.value) {
     initModels();
   }
+});*/
+
+onMounted(() => {
+  initModels();
 });
 </script>
 
 <template>
   <div class="flex items-center space-x-3">
+    <div class="grid grid-cols-3 gap-4 mb-4">
+      <LlmInfoBox
+        v-for="model in models"
+        :key="model.id"
+        :display-name="model.displayName"
+        :provider-name="model.provider.name"
+        :host-region="model.host.region"
+        :infos="model.infos"
+        :capability="model.capability"
+        :selected="model.id === activeModelId"
+        @click="() => onModelClick(model.id)"
+      />
+    </div>
+    <!--
     <div
       class="cursor-pointer rounded-lg border px-5 py-2.5 text-sm"
       @click="() => (open = true)"
     >
       {{ selectedModel.displayName }}
     </div>
+    -->
+    <!--
     <Dialog v-model:open="open">
+
       <DialogTrigger as-child>
         <Button variant="outline" size="icon">
           <SettingsIcon class="size-4 stroke-1.5" />
@@ -100,5 +99,6 @@ watch(open, () => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    -->
   </div>
 </template>

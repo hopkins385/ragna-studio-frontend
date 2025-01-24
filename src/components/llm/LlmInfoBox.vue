@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@ui/tooltip';
-import { Hammer, Image, MessageSquareText } from 'lucide-vue-next';
+import { CheckCircle, Hammer, Image, MessageSquareText } from 'lucide-vue-next';
 import CircleFlagEu from '~icons/circle-flags/eu?width=512px&height=512px';
 import CircleFlagUs from '~icons/circle-flags/us?width=512px&height=512px';
 import Button from '../ui/button/Button.vue';
@@ -19,6 +19,7 @@ const props = defineProps<{
   hostRegion: string;
   infos: LargeLangModelInfos;
   capability: Record<string, unknown>;
+  selected: boolean;
 }>();
 
 const { getProviderIcon } = useProviderIcons();
@@ -32,9 +33,15 @@ const showDatacenter = false;
 
 <template>
   <div
-    class="p-4 border rounded-lg text-sm hover:shadow-md cursor-pointer relative group"
+    class="p-4 border rounded-lg text-sm hover:shadow-md cursor-pointer relative group w-64"
   >
-    <div>
+    <div class="w-full relative">
+      <div
+        v-if="selected"
+        class="absolute -top-1 -right-1 rounded-full flex items-center justify-center bg-green-100 p-1"
+      >
+        <CheckCircle class="stroke-2 size-4 text-green-700 group-hover:block" />
+      </div>
       <h2 class="font-semibold">
         <component
           :is="getProviderIcon(providerName)"
