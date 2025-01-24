@@ -34,6 +34,7 @@ const showDatacenter = false;
 <template>
   <div
     class="p-4 border rounded-lg text-sm hover:shadow-md cursor-pointer relative group w-64"
+    :class="{ 'border-green-500': selected }"
   >
     <div class="w-full relative">
       <div
