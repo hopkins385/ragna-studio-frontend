@@ -15,6 +15,8 @@ const assistant = ref<Assistant | null>(null);
 const assistantTools = ref<AssistantTool[]>([]);
 const collections = ref<Collection[]>([]);
 
+const assistantIsLoading = ref(true);
+
 // assistantId
 const route = useRoute();
 const assistantId = route.params.id.toString();
@@ -62,10 +64,11 @@ const headingTitle = computed(
 );
 
 // noasync = Non-blocking, allows component to render before data is fetched
-onMounted(() => {
-  initAssistant();
-  initAssistantTools();
-  initCollections();
+onMounted(async () => {
+  await initAssistant();
+  await initAssistantTools();
+  await initCollections();
+  assistantIsLoading.value = false;
 });
 
 useHead({
@@ -99,7 +102,8 @@ useHead({
         @refresh-collections="async () => await initCollections()"
         @refresh-assistant="async () => await initAssistant()"
       />
-      <div v-else>Agent not found</div>
+      <div v-else-if="assistantIsLoading">Loading ...</div>
+      <div v-else>Assistant Not Found</div>
     </div>
   </SectionContainer>
 </template>

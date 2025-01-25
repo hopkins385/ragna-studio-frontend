@@ -36,6 +36,7 @@ import {
   Stars,
   Workflow,
 } from 'lucide-vue-next';
+import PromptWizardDialog from '../prompt/PromptWizardDialog.vue';
 
 interface Props {
   assistant: Assistant;
@@ -258,7 +259,16 @@ const siderBarTabs = [
     <!-- TAB 3-->
     <template #tab3>
       <div class="space-y-8">
-        <FormField v-slot="{ componentField }" name="systemPrompt">
+        <FormField
+          v-slot="{ componentField, value, handleChange }"
+          name="systemPrompt"
+        >
+          <div>
+            <PromptWizardDialog
+              :input-prompt="value"
+              @update-prompt="handleChange"
+            />
+          </div>
           <FormItem>
             <FormLabel>{{ $t('assistant.behavior.label') }}</FormLabel>
             <FormDescription>

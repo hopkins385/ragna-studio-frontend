@@ -377,6 +377,16 @@
       "invalid_credentials": "Benutzername oder Passwort falsch"
     }
   },
+  "prompt_wizard": {
+    "input": {
+      "label": "Verhalten",
+      "description": "Beschreibe in deinen eigenen Worten, was du von dem Agenten möchtest"
+    },
+    "button": {
+      "generate": "Prompt verbessern",
+      "take": "Übernehmen"
+    }
+  },
   "onboard": {
     "hello": "Hallo, {name}",
     "subtitle": "Bitte gib einen Namen für deine Organisation ein, den du verwenden möchtest. Du kannst jeden Namen wählen, den du möchtest. Dies kann später nicht geändert werden.",
