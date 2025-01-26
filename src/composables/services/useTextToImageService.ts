@@ -12,7 +12,8 @@ enum ImageGenStatus {
 }
 
 enum ImageGenRoute {
-  GENERATE = '/text-to-image', // POST
+  FLUX_PRO = '/text-to-image/flux-pro', // POST
+  FLUX_ULTRA = '/text-to-image/flux-ultra', // POST
   FOLDERS = '/text-to-image/folders', // GET
   FOLDER_RUNS = '/text-to-image/:id', // GET
   FOLDER_RUNS_PAGINATED = '/text-to-image/:folderId/paginated', // GET
@@ -25,11 +26,40 @@ type JsonArray = JsonValue[];
 type JsonObject = { [key: string]: JsonValue };
 type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
 
+type OutputFormat = 'jpeg' | 'png';
+
 interface ImageGenFolder {
   id: string;
   name: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface FluxProPayload {
+  folderId: string;
+  prompt: string;
+  imgCount: number;
+  width: number;
+  height: number;
+  guidance: number;
+  promptUpsampling?: boolean;
+  safetyTolerance?: number;
+  outputFormat: OutputFormat;
+}
+
+interface FluxUltraPayload {
+  // Required fields
+  folderId: string;
+  imgCount: number;
+  prompt: string;
+  // Optional fields
+  seed?: number;
+  aspectRatio?: string;
+  safetyTolerance?: number;
+  outputFormat?: OutputFormat;
+  raw?: boolean;
+  imagePrompt?: string;
+  imagePromptStrength?: number;
 }
 
 export interface TextToImage {
@@ -39,12 +69,16 @@ export interface TextToImage {
   name: string;
 }
 
+interface ImageRunSettings {
+  provider: string;
+}
+
 export interface ImageRun {
   prompt: string;
   status: string;
   id: string;
   deletedAt: Date;
-  settings: JsonValue;
+  settings: ImageRunSettings;
   images: TextToImage[];
 }
 
@@ -65,16 +99,7 @@ export function useTextToImageService() {
   const ac = new AbortController();
   let acGen: AbortController | null = null;
 
-  const generateImages = async (payload: {
-    folderId: string;
-    prompt: string;
-    imgCount: number;
-    width: number;
-    height: number;
-    guidance: number;
-    prompt_upsampling: boolean;
-    output_format: string;
-  }) => {
+  const generateFluxProImages = async (payload: FluxProPayload) => {
     acGen = new AbortController();
 
     const bodyData = {
@@ -83,9 +108,33 @@ export function useTextToImageService() {
     };
 
     const api = newApiRequest();
-    const route = getRoute(ImageGenRoute.GENERATE);
+    const route = getRoute(ImageGenRoute.FLUX_PRO);
     const { status, data } = await api
-      .POST<ImageGenResponse, never, typeof bodyData>()
+      .POST<ImageGenResponse, never, FluxProPayload>()
+      .setRoute(route)
+      .setData(bodyData)
+      .setSignal(acGen.signal)
+      .send();
+
+    if (status !== 201) {
+      throw new BadResponseError();
+    }
+
+    return data;
+  };
+
+  const generateFluxUltraImages = async (payload: FluxUltraPayload) => {
+    acGen = new AbortController();
+
+    const bodyData = {
+      ...payload,
+      safety_tolerance: 4,
+    };
+
+    const api = newApiRequest();
+    const route = getRoute(ImageGenRoute.FLUX_ULTRA);
+    const { status, data } = await api
+      .POST<ImageGenResponse, never, FluxUltraPayload>()
       .setRoute(route)
       .setData(bodyData)
       .setSignal(acGen.signal)
@@ -157,7 +206,8 @@ export function useTextToImageService() {
 
   return {
     toggleHideRun,
-    generateImages,
+    generateFluxProImages,
+    generateFluxUltraImages,
     fetchFolders,
     fetchRunsPaginated,
   };

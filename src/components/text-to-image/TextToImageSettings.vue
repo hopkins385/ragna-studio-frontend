@@ -17,6 +17,7 @@ import { Separator } from '@ui/separator';
 import { Slider } from '@ui/slider';
 import { Switch } from '@ui/switch';
 import { RotateCcwIcon, SlidersHorizontalIcon } from 'lucide-vue-next';
+import TextToImageDimensions from './TextToImageDimensions.vue';
 
 const show = ref(false);
 const settings = useImgGenSettingsStore();
@@ -55,31 +56,12 @@ const settings = useImgGenSettingsStore();
       </div>
       <div class="mb-5 flex flex-col space-y-4">
         <div class="flex w-full justify-between">
-          <div>Image Width</div>
-          <div>{{ settings.getImageWidth }}</div>
+          <div>Aspect Ratio</div>
+          <div>{{ settings.getImageAspectRatio }}</div>
         </div>
-        <Slider
-          v-model="settings.imageWidth"
-          :default-value="[1024]"
-          :min="512"
-          :max="1440"
-          :step="32"
-          class="slider"
-        />
-      </div>
-      <div class="mb-5 flex flex-col space-y-4">
-        <div class="flex w-full justify-between">
-          <div>Image Height</div>
-          <div>{{ settings.getImageHeight }}</div>
+        <div>
+          <TextToImageDimensions />
         </div>
-        <Slider
-          v-model="settings.imageHeight"
-          :default-value="[1024]"
-          :min="512"
-          :max="1440"
-          :step="32"
-          class="slider"
-        />
       </div>
       <div class="mb-5 flex flex-col space-y-4">
         <div class="flex w-full justify-between">
@@ -113,20 +95,6 @@ const settings = useImgGenSettingsStore();
             <SelectItem value="png"> PNG </SelectItem>
           </SelectContent>
         </Select>
-      </div>
-      <div class="flex flex-col">
-        <div>
-          Prompt Upsampling
-          <QuestionToolTip
-            title="Prompt Upsampling"
-            content="If active, automatically modifies the prompt for more creative generation."
-          />
-        </div>
-        <Switch
-          class="-ml-2 mt-1 scale-75"
-          :checked="settings.getPromptUpsampling"
-          @update:checked="settings.setPromptUpsampling"
-        />
       </div>
       <div class="flex flex-col">
         <div>

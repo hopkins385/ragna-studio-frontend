@@ -1,11 +1,26 @@
 import { defineStore } from 'pinia';
 
+export const SUPPORTED_ASPECT_RATIOS = [
+  '1:1',
+  '2:3',
+  '4:3',
+  '16:9',
+  '9:16',
+] as const;
+
+export const SUPPORTED_IMAGE_GENERATION_PROVIDERS = [
+  'fluxpro',
+  'fluxultra',
+] as const;
+
 export type ImageGenExtension = 'jpeg' | 'png';
+export type ImageGenProvider = 'fluxpro' | 'fluxultra';
+export type ImageAspectRatio = (typeof SUPPORTED_ASPECT_RATIOS)[number];
 
 interface ImgGenSettings {
+  provider: ImageGenProvider;
+  imageAspectRatio: ImageAspectRatio;
   imageCount: number[];
-  imageWidth: number[];
-  imageHeight: number[];
   imageGuidance: number[];
   imageExtension: ImageGenExtension;
   imagePricing: number;
@@ -16,9 +31,9 @@ interface ImgGenSettings {
 
 export const useImgGenSettingsStore = defineStore('img-gen.store', {
   state: (): ImgGenSettings => ({
+    provider: 'fluxpro',
+    imageAspectRatio: '1:1',
     imageCount: [4],
-    imageWidth: [1024],
-    imageHeight: [1024],
     imageGuidance: [2.5],
     imageExtension: 'png',
     imagePricing: 4,
@@ -27,22 +42,37 @@ export const useImgGenSettingsStore = defineStore('img-gen.store', {
     showHidden: false,
   }),
   getters: {
+    getRawProvider(state) {
+      return state.provider;
+    },
+    getProvider(state) {
+      return state.provider === 'fluxpro' ? 'Flux 1.1 Pro' : 'Flux 1.1 Ultra';
+    },
     getImageCount(state) {
       return state.imageCount[0];
     },
-    getImageWidth(state) {
-      // images size must be a multiple of 32
-      return Math.floor(state.imageWidth[0] / 32) * 32;
+    getImageWidthAndHeight(state) {
+      // get image width and height based on aspect ratio
+      switch (state.imageAspectRatio) {
+        case '1:1':
+          return { width: 1440, height: 1440 };
+        case '4:3':
+          return { width: 1024, height: 768 };
+        case '2:3':
+          return { width: 1024, height: 1440 };
+        case '16:9':
+          return { width: 1024, height: 576 };
+        case '9:16':
+          return { width: 576, height: 1024 };
+        default:
+          return { width: 1024, height: 1024 };
+      }
     },
-    getImageHeight(state) {
-      // images size must be a multiple of 32
-      return Math.floor(state.imageHeight[0] / 32) * 32;
+    getImageAspectRatio(state) {
+      return state.imageAspectRatio;
     },
     getImageGuidance(state) {
       return state.imageGuidance[0];
-    },
-    getPromptUpsampling(state) {
-      return state.promptUpsampling;
     },
     getSubmitOnEnter(state) {
       return state.submitOnEnter;
@@ -58,17 +88,17 @@ export const useImgGenSettingsStore = defineStore('img-gen.store', {
     },
   },
   actions: {
+    getProviderDisplayName(provider: ImageGenProvider) {
+      return provider === 'fluxultra' ? 'Flux 1.1 Ultra' : 'Flux 1.1 Pro';
+    },
+    setProvider(provider: ImageGenProvider) {
+      this.provider = provider;
+    },
     setImageCount(imageCount: number[]) {
       this.imageCount = imageCount;
     },
-    setImageWidth(imageWidth: number[]) {
-      this.imageWidth = imageWidth;
-    },
-    setImageHeight(imageHeight: number[]) {
-      this.imageHeight = imageHeight;
-    },
-    setPromptUpsampling(promptUpsampling: boolean) {
-      this.promptUpsampling = Boolean(promptUpsampling);
+    setImageAspectRatio(aspectRatio: ImageAspectRatio) {
+      this.imageAspectRatio = aspectRatio;
     },
     setSubmitOnEnter(submitOnEnter: boolean) {
       this.submitOnEnter = Boolean(submitOnEnter);
@@ -86,11 +116,12 @@ export const useImgGenSettingsStore = defineStore('img-gen.store', {
       this.showHidden = !this.showHidden;
     },
     resetSettings() {
+      this.provider = 'fluxpro';
       this.imageCount = [4];
-      this.imageWidth = [1024];
-      this.imageHeight = [1024];
+      this.imageExtension = 'png';
+      this.imagePricing = 4;
+      this.imageAspectRatio = '1:1';
       this.imageGuidance = [2.5];
-      this.promptUpsampling = false;
       this.submitOnEnter = false;
       this.showHidden = false;
     },

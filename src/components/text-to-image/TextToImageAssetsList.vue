@@ -135,6 +135,7 @@ onMounted(() => {
           </div>
         </div>
         <TextToImageOptionsBar
+          :provider="settings.getProviderDisplayName(run.settings.provider)"
           :prompt="run.prompt"
           :run-id="run.id"
           :is-hidden="run.deletedAt !== null"

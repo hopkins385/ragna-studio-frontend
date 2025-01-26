@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import TextToImagePricingPopover from '@/components/text-to-image/TextToImagePricingPopover.vue';
+import TextToImageProviderPopover from '@/components/text-to-image/TextToImageProviderPopover.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import TextToImageAssetsList from '@components/text-to-image/TextToImageAssetsList.vue';
 import TextToImageCountPopover from '@components/text-to-image/TextToImageCountPopover.vue';
@@ -23,7 +24,12 @@ const promptFormRef = ref<HTMLFormElement | null>(null);
 const settings = useImgGenSettingsStore();
 
 const { t } = useI18n();
-const { generateImages, fetchFolders, toggleHideRun } = useTextToImageService();
+const {
+  generateFluxProImages,
+  generateFluxUltraImages,
+  fetchFolders,
+  toggleHideRun,
+} = useTextToImageService();
 
 async function generateImage(submitPrompt: string) {
   prompt.value = '';
@@ -37,20 +43,36 @@ async function generateImage(submitPrompt: string) {
     if (!folderResult?.folders.length) {
       throw new Error('No folder found');
     }
-    const result = await generateImages({
-      folderId: folderResult.folders[0].id,
-      prompt: submitPrompt,
-      imgCount: settings.getImageCount,
-      width: settings.getImageWidth,
-      height: settings.getImageHeight,
-      guidance: settings.getImageGuidance,
-      prompt_upsampling: settings.getPromptUpsampling,
-      output_format: settings.getImageExtension,
-    });
-    if (!result || !result.imageUrls.length) {
-      throw new Error('No image generated');
+    if (settings.getRawProvider === 'fluxpro') {
+      const { width, height } = settings.getImageWidthAndHeight;
+      const { imageUrls } = await generateFluxProImages({
+        folderId: folderResult.folders[0].id,
+        prompt: submitPrompt,
+        imgCount: settings.getImageCount,
+        width,
+        height,
+        guidance: settings.getImageGuidance,
+        outputFormat: settings.getImageExtension,
+      });
+      if (!imageUrls.length) {
+        throw new Error('No image generated');
+      }
+      return imageUrls;
+    } else if (settings.getRawProvider === 'fluxultra') {
+      const { imageUrls } = await generateFluxUltraImages({
+        folderId: folderResult.folders[0].id,
+        prompt: submitPrompt,
+        imgCount: settings.getImageCount,
+        aspectRatio: settings.getImageAspectRatio,
+        outputFormat: settings.getImageExtension,
+      });
+      if (!imageUrls.length) {
+        throw new Error('No image generated');
+      }
+      return imageUrls;
+    } else {
+      throw new Error('Invalid provider');
     }
-    return result.imageUrls;
   } finally {
     isLoading.value = false;
     loadingPrompt.value = '';
@@ -251,6 +273,7 @@ useHead({
             <TextToImageCountPopover />
             <TextToImageSizePopover />
             <TextToImageMimeTypePopover />
+            <TextToImageProviderPopover />
             <TextToImagePricingPopover />
           </div>
         </div>

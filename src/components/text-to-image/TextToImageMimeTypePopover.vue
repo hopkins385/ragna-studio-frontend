@@ -10,8 +10,6 @@ import {
 } from '@ui/select';
 import { File } from 'lucide-vue-next';
 
-const open = ref(true);
-
 const settings = useImgGenSettingsStore();
 </script>
 
