@@ -29,13 +29,17 @@ interface ImgGenSettings {
   showHidden: boolean;
 }
 
+function getProviderName(provider: ImageGenProvider) {
+  return provider === 'fluxultra' ? 'Flux 1.1 Ultra' : 'Flux 1.1 Pro';
+}
+
 export const useImgGenSettingsStore = defineStore('img-gen.store', {
   state: (): ImgGenSettings => ({
     provider: 'fluxpro',
     imageAspectRatio: '1:1',
     imageCount: [4],
     imageGuidance: [2.5],
-    imageExtension: 'png',
+    imageExtension: 'jpeg',
     imagePricing: 4,
     promptUpsampling: false,
     submitOnEnter: false,
@@ -46,7 +50,7 @@ export const useImgGenSettingsStore = defineStore('img-gen.store', {
       return state.provider;
     },
     getProvider(state) {
-      return state.provider === 'fluxpro' ? 'Flux 1.1 Pro' : 'Flux 1.1 Ultra';
+      return getProviderName(state.provider);
     },
     getImageCount(state) {
       return state.imageCount[0];
@@ -89,7 +93,7 @@ export const useImgGenSettingsStore = defineStore('img-gen.store', {
   },
   actions: {
     getProviderDisplayName(provider: ImageGenProvider) {
-      return provider === 'fluxultra' ? 'Flux 1.1 Ultra' : 'Flux 1.1 Pro';
+      return getProviderName(provider);
     },
     setProvider(provider: ImageGenProvider) {
       this.provider = provider;
@@ -118,8 +122,7 @@ export const useImgGenSettingsStore = defineStore('img-gen.store', {
     resetSettings() {
       this.provider = 'fluxpro';
       this.imageCount = [4];
-      this.imageExtension = 'png';
-      this.imagePricing = 4;
+      this.imageExtension = 'jpeg';
       this.imageAspectRatio = '1:1';
       this.imageGuidance = [2.5];
       this.submitOnEnter = false;
