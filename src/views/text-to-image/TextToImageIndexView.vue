@@ -106,11 +106,11 @@ function reRun(prompt: string) {
   onSubmit();
 }
 
-function onEnter(event: KeyboardEvent) {
+function onKeydownEnter(event: KeyboardEvent) {
   if (!prompt.value.trim() || isLoading.value) {
     return;
   }
-  if (settings.getSubmitOnEnter) {
+  if (event.key === 'Enter' && !event.shiftKey && settings.getSubmitOnEnter) {
     event.preventDefault();
     onSubmit();
   }
@@ -242,9 +242,9 @@ useHead({
               rows="1"
               resize="none"
               class="no-scrollbar min-h-[48px] resize-none rounded-2xl bg-white py-4 pl-4 pr-16 shadow-sm focus:shadow-lg"
+              @keydown.enter="onKeydownEnter"
               @input="adjustTextareaHeight"
               @paste="handlePaste"
-              @keydown.enter="onEnter"
             />
             <div class="absolute bottom-1/2 translate-y-1/2 right-10 p-1">
               <Button
