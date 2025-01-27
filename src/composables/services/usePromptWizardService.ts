@@ -2,9 +2,9 @@ import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
 
-enum PromptWizardRoute {
-  CREATE = '/prompt-wizard/create', // POST
-}
+const PromptWizardRoute = {
+  CREATE: '/prompt-wizard/create', // POST
+} as const;
 
 type Prompt = string;
 

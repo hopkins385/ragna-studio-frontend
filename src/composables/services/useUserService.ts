@@ -3,10 +3,10 @@ import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import { getRoute } from '@/utils/route.util';
 
-enum UserRoute {
-  BASE = 'user', // GET, POST
-  USER = 'user/:userId', // GET, PATCH, DELETE
-}
+const UserRoute = {
+  BASE: 'user', // GET, POST
+  USER: 'user/:userId', // GET, PATCH, DELETE
+} as const;
 
 export interface User {
   id: string;

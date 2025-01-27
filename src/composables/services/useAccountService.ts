@@ -2,12 +2,12 @@ import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
 
-enum AccountRoute {
-  BASE = '/account', // GET
-  NAME = '/account/name', // PATCH
-  PASSWORD = '/account/password', // PATCH
-  DELETE = '/account/delete', // DELETE
-}
+const AccountRoute = {
+  BASE: '/account', // GET
+  NAME: '/account/name', // PATCH
+  PASSWORD: '/account/password', // PATCH
+  DELETE: '/account/delete', // DELETE
+} as const;
 
 export interface AccountData {
   id: string;

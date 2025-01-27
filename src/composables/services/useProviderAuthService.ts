@@ -16,12 +16,12 @@ interface ProviderAuthHasAccess {
 type ProviderAuthConsentURLResponse = ProviderAuthConsentURL;
 type ProviderAuthHasAccessResponse = ProviderAuthHasAccess;
 
-enum ProviderAuthRoute {
-  GOOGLE = '/google-drive',
-  GOOGLE_CONSENT_URL = '/google-drive/consent-url',
-  GOOGLE_CALLBACK = '/google-drive/callback',
-  GOOGLE_HAS_ACCESS = '/google-drive/has-access',
-}
+const ProviderAuthRoute = {
+  GOOGLE: '/google-drive',
+  GOOGLE_CONSENT_URL: '/google-drive/consent-url',
+  GOOGLE_CALLBACK: '/google-drive/callback',
+  GOOGLE_HAS_ACCESS: '/google-drive/has-access',
+} as const;
 
 export function useProviderAuthService() {
   const ac = new AbortController();

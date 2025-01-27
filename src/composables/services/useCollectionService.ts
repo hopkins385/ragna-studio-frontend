@@ -6,12 +6,12 @@ import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
 import type { CollectionAbleModel } from './useCollectionAbleService';
 
-enum CollectionRoute {
-  BASE = '/collection',
-  COLLECTION = '/collection/:collectionId', // GET, PATCH, DELETE
-  ALL = '/collection/all',
-  FOR = '/collection/for',
-}
+const CollectionRoute = {
+  BASE: '/collection',
+  COLLECTION: '/collection/:collectionId', // GET, PATCH, DELETE
+  ALL: '/collection/all',
+  FOR: '/collection/for',
+} as const;
 
 export interface Collection {
   id: string;

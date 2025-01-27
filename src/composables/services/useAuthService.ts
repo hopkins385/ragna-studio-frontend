@@ -5,15 +5,15 @@ import { newApiRequest } from '@/common/http/http-request.builder';
 import type { GoogleAuthCallbackQuery } from '@/interfaces/auth/google-auth-callback.interface';
 import { getRoute } from '@/utils/route.util';
 
-export enum AuthRoute {
-  LOGIN = '/auth/login', // POST
-  LOGOUT = '/auth/logout', // POST
-  REGISTER = '/auth/register', // POST
-  REFRESH = '/auth/refresh', // POST
-  SESSION = '/auth/session', // GET
-  SOCIAL_AUTH_URL = '/auth/:provider/url', // GET
-  CALLBACK_GOOGLE = '/auth/google/callback', // POST
-}
+export const AuthRoute = {
+  LOGIN: '/auth/login', // POST
+  LOGOUT: '/auth/logout', // POST
+  REGISTER: '/auth/register', // POST
+  REFRESH: '/auth/refresh', // POST
+  SESSION: '/auth/session', // GET
+  SOCIAL_AUTH_URL: '/auth/:provider/url', // GET
+  CALLBACK_GOOGLE: '/auth/google/callback', // POST
+} as const;
 
 interface AuthCredentials {
   email: string;

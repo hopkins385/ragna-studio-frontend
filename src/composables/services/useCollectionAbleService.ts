@@ -2,12 +2,12 @@ import { BadRequestError } from '@/common/errors/bad-request.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
 
-enum CollectionAbleRoute {
-  ATTACH = '/collection-able/attach', // POST
-  DETACH = '/collection-able/detach', // POST
-  DETACH_ALL = '/collection-able/detach-all', // POST
-  REPLACE = '/collection-able/replace', // POST
-}
+const CollectionAbleRoute = {
+  ATTACH: '/collection-able/attach', // POST
+  DETACH: '/collection-able/detach', // POST
+  DETACH_ALL: '/collection-able/detach-all', // POST
+  REPLACE: '/collection-able/replace', // POST
+} as const;
 
 export interface CollectionAbleModel {
   id: string;

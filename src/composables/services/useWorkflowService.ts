@@ -2,14 +2,14 @@ import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import { getRoute } from '@/utils/route.util';
 
-enum WorkflowRoute {
-  BASE = '/workflow',
-  WORKFLOW = '/workflow/:workflowId', // GET, PATCH, DELETE
-  WORKFLOW_FULL = '/workflow/:workflowId/full',
-  WORKFLOW_ROW = '/workflow/:workflowId/row', // DELETE
-  EXECUTE = '/workflow/:workflowId/execute',
-  EXPORT = '/workflow/:workflowId/export',
-}
+const WorkflowRoute = {
+  BASE: '/workflow',
+  WORKFLOW: '/workflow/:workflowId', // GET, PATCH, DELETE
+  WORKFLOW_FULL: '/workflow/:workflowId/full',
+  WORKFLOW_ROW: '/workflow/:workflowId/row', // DELETE
+  EXECUTE: '/workflow/:workflowId/execute',
+  EXPORT: '/workflow/:workflowId/export',
+} as const;
 
 interface ICreateWorkflow {
   name: string;

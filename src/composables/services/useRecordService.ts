@@ -3,12 +3,12 @@ import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
 
-enum RecordRoute {
-  BASE = '/record',
-  RECORD = '/record/:recordId',
-  ALL_RECORDS = '/record/:collectionId',
-  ALL_RECORDS_PAGINATED = '/record/:collectionId/paginated',
-}
+const RecordRoute = {
+  BASE: '/record',
+  RECORD: '/record/:recordId',
+  ALL_RECORDS: '/record/:collectionId',
+  ALL_RECORDS_PAGINATED: '/record/:collectionId/paginated',
+} as const;
 
 export interface Record {
   id: string;

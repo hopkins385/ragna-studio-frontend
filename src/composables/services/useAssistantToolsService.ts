@@ -2,9 +2,9 @@ import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
 
-enum AssistantToolRoute {
-  TOOLS = '/assistant-tool/tools', // GET
-}
+const AssistantToolRoute = {
+  TOOLS: '/assistant-tool/tools', // GET
+} as const;
 
 export interface AssistantTool {
   id: string;

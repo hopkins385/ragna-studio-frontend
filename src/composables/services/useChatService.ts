@@ -8,16 +8,16 @@ import { useChatStore } from '@/stores/chat-inference.store';
 import { useChatSettingsStore } from '@/stores/chat-settings.store';
 import { getRoute } from '@/utils/route.util';
 
-enum ChatRoute {
-  BASE = '/chat', // POST
-  CHAT = '/chat/:chatId', // GET, PATCH, DELETE
-  CHAT_ALL = '/chat/all', // GET
-  CHAT_STREAM = '/chat-stream/:chatId', // POST
-  CHAT_HISTORY = '/chat/history', // GET
-  CHAT_LATEST = '/chat/latest', // GET
-  CHAT_MESSAGE = '/chat/:chatId/message', // POST
-  CHAT_MESSAGES = '/chat/:chatId/messages', // DELETE
-}
+const ChatRoute = {
+  BASE: '/chat', // POST
+  CHAT: '/chat/:chatId', // GET, PATCH, DELETE
+  CHAT_ALL: '/chat/all', // GET
+  CHAT_STREAM: '/chat-stream/:chatId', // POST
+  CHAT_HISTORY: '/chat/history', // GET
+  CHAT_LATEST: '/chat/latest', // GET
+  CHAT_MESSAGE: '/chat/:chatId/message', // POST
+  CHAT_MESSAGES: '/chat/:chatId/messages', // DELETE
+} as const;
 
 export type InputChatId = string | null | undefined;
 

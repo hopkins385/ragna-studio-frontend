@@ -11,9 +11,9 @@ interface LargeLangModelListResponse {
   llms: LargeLangModel[];
 }
 
-enum LlmRoute {
-  MODELS = '/llm/models', // GET
-}
+const LlmRoute = {
+  MODELS: '/llm/models', // GET
+} as const;
 
 export function useLlmService() {
   const ac = new AbortController();

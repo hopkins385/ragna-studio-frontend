@@ -4,10 +4,10 @@ import { defineAbilityFor } from '@/services/ability.service';
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
 
-enum UserRoles {
-  ADMIN = 'admin',
+const UserRoles = {
+  ADMIN: 'admin',
   // Additional roles...
-}
+} as const;
 
 interface Team {
   id: string;

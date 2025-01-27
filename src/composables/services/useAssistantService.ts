@@ -4,12 +4,12 @@ import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import { getRoute } from '@/utils/route.util';
 import type { AssistantTool } from './useAssistantToolsService';
 
-enum AssistantRoute {
-  BASE = '/assistant', // GET, POST
-  ASSISTANT = '/assistant/:assistantId', // GET, PATCH, DELETE
-  HAS_KNOWLEDGE = '/assistant/:assistantId/has-knowledge', // PATCH
-  FROM_TEMPLATE = '/assistant/from-template', // POST
-}
+const AssistantRoute = {
+  BASE: '/assistant', // GET, POST
+  ASSISTANT: '/assistant/:assistantId', // GET, PATCH, DELETE
+  HAS_KNOWLEDGE: '/assistant/:assistantId/has-knowledge', // PATCH
+  FROM_TEMPLATE: '/assistant/from-template', // POST
+};
 
 export class CreateAssistantPayload {
   teamId: string = '';

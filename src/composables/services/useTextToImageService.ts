@@ -4,21 +4,14 @@ import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
 
-enum ImageGenStatus {
-  IDLE = 'idle',
-  LOADING = 'loading',
-  ERROR = 'error',
-  SUCCESS = 'success',
-}
-
-enum ImageGenRoute {
-  FLUX_PRO = '/text-to-image/flux-pro', // POST
-  FLUX_ULTRA = '/text-to-image/flux-ultra', // POST
-  FOLDERS = '/text-to-image/folders', // GET
-  FOLDER_RUNS = '/text-to-image/:id', // GET
-  FOLDER_RUNS_PAGINATED = '/text-to-image/:folderId/paginated', // GET
-  TOGGLE_HIDE = '/text-to-image/:runId/toggle-hide', // POST
-}
+const ImageGenRoute = {
+  FLUX_PRO: '/text-to-image/flux-pro', // POST
+  FLUX_ULTRA: '/text-to-image/flux-ultra', // POST
+  FOLDERS: '/text-to-image/folders', // GET
+  FOLDER_RUNS: '/text-to-image/:id', // GET
+  FOLDER_RUNS_PAGINATED: '/text-to-image/:folderId/paginated', // GET
+  TOGGLE_HIDE: '/text-to-image/:runId/toggle-hide', // POST
+} as const;
 
 type ImageUrl = string;
 

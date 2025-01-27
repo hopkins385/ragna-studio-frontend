@@ -3,13 +3,13 @@ import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
 
-enum MediaRoute {
-  UPLOAD = '/upload',
-  BASE = '/media', // POST
-  MEDIA = '/media/:mediaId', // GET, PATCH, DELETE
-  FOR = '/media/for', // POST
-  FOR_PAGINATE = '/media/for/paginate', // POST
-}
+const MediaRoute = {
+  UPLOAD: '/upload',
+  BASE: '/media', // POST
+  MEDIA: '/media/:mediaId', // GET, PATCH, DELETE
+  FOR: '/media/for', // POST
+  FOR_PAGINATE: '/media/for/paginate', // POST
+} as const;
 
 export function useMediaService() {
   const ac = new AbortController();

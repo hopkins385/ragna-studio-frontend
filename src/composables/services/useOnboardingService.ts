@@ -2,9 +2,9 @@ import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
 
-enum OnboardingRoute {
-  USER = '/onboard/user', // POST
-}
+const OnboardingRoute = {
+  USER: '/onboard/user', // POST
+} as const;
 
 interface OnboardingResponse {
   success: boolean;

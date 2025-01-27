@@ -4,17 +4,19 @@ import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
 
-enum AssistantTemplateRoute {
-  ASSISTANT_TEMPLATE = '/assistant-template', // GET
-  ASSISTANT_TEMPLATE_PAGINATED = '/assistant-template/paginated', // GET
-  ASSISTANT_TEMPLATE_RANDOM = '/assistant-template/random', // GET
-  ASSISTANT_TEMPLATE_ID = '/assistant-template/one/:templateId', // GET
-  ASSISTANT_TEMPLATE_BY_CATEGORY = '/assistant-template/category/:categoryId/templates', // GET
-  ASSISTANT_TEMPLATES_BY_CATEGORY_IDS = '/assistant-template/categories/templates', // POST
-  ASSISTANT_CATEGORY_ID = '/assistant-template/category/one/:categoryId', // GET
-  ASSISTANT_CATEGORY = '/assistant-template/category', // GET
-  ASSISTANT_CATEGORY_PAGINATED = '/assistant-template/category/paginated', // GET
-}
+const AssistantTemplateRoute = {
+  ASSISTANT_TEMPLATE: '/assistant-template', // GET
+  ASSISTANT_TEMPLATE_PAGINATED: '/assistant-template/paginated', // GET
+  ASSISTANT_TEMPLATE_RANDOM: '/assistant-template/random', // GET
+  ASSISTANT_TEMPLATE_ID: '/assistant-template/one/:templateId', // GET
+  ASSISTANT_TEMPLATE_BY_CATEGORY:
+    '/assistant-template/category/:categoryId/templates', // GET
+  ASSISTANT_TEMPLATES_BY_CATEGORY_IDS:
+    '/assistant-template/categories/templates', // POST
+  ASSISTANT_CATEGORY_ID: '/assistant-template/category/one/:categoryId', // GET
+  ASSISTANT_CATEGORY: '/assistant-template/category', // GET
+  ASSISTANT_CATEGORY_PAGINATED: '/assistant-template/category/paginated', // GET
+} as const;
 
 interface AssistantTemplatePrompt {
   de: string;

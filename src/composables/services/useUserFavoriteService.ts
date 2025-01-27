@@ -26,13 +26,13 @@ export interface UserFavoritesResponse {
   favorites: UserFavorite[];
 }
 
-export enum UserFavoriteType {}
+export const UserFavoriteType = {};
 
-export enum UserFavoriteRoute {
-  BASE = '/user-favorite', // GET, POST
-  DELETE = '/user-favorite/:entityId', // DELETE
-  TYPE = '/user-favorite/type/:favoriteType', // GET
-}
+export const UserFavoriteRoute = {
+  BASE: '/user-favorite', // GET, POST
+  DELETE: '/user-favorite/:entityId', // DELETE
+  TYPE: '/user-favorite/type/:favoriteType', // GET
+} as const;
 
 class UserFavoriteServiceError extends Error {
   constructor(message: string) {

@@ -2,14 +2,14 @@ import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
 
-enum WorkflowStepRoute {
-  BASE = '/workflow-step',
-  ROW = '/workflow-step/row',
-  STEP = '/workflow-step/:workflowStepId',
-  INPUT_STEPS = '/workflow-step/:workflowStepId/input-steps',
-  STEP_ASSISTANT = '/workflow-step/:workflowStepId/assistant',
-  ITEM = '/workflow-step/:stepId/item/:itemId',
-}
+const WorkflowStepRoute = {
+  BASE: '/workflow-step',
+  ROW: '/workflow-step/row',
+  STEP: '/workflow-step/:workflowStepId',
+  INPUT_STEPS: '/workflow-step/:workflowStepId/input-steps',
+  STEP_ASSISTANT: '/workflow-step/:workflowStepId/assistant',
+  ITEM: '/workflow-step/:stepId/item/:itemId',
+} as const;
 
 interface CreateWorkflowStepDto {
   assistantId: string;

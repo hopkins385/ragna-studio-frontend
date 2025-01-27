@@ -2,9 +2,9 @@ import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
 
-enum GoogleDriveRoute {
-  BASE = '/google-drive',
-}
+const GoogleDriveRoute = {
+  BASE: '/google-drive',
+};
 
 interface DriveParams {
   folderId: string | null;

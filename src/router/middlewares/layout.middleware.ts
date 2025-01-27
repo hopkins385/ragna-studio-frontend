@@ -1,14 +1,13 @@
 import type { RouteLocationNormalized } from 'vue-router';
 
-export enum Layout {
-  App = 'AppLayout',
-  Login = 'LoginLayout',
-  Error = 'ErrorLayout',
-}
+export const Layout = {
+  App: 'AppLayout',
+  Login: 'LoginLayout',
+  Error: 'ErrorLayout',
+} as const;
 
 async function getLayout(layout: string) {
-  // Validate layout name using enum
-  if (!layout || !Object.values(Layout).includes(layout as Layout)) {
+  if (!layout || !Object.values(Layout).includes(layout as any)) {
     throw new Error('Invalid layout specified');
   }
   return {
