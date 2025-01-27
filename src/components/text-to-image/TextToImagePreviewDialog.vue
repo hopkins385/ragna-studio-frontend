@@ -1,21 +1,23 @@
 <script setup lang="ts">
+import { useTextToImageService } from '@/composables/services/useTextToImageService';
 import { Button } from '@ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader } from '@ui/dialog';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@ui/tooltip';
 import {
   ClipboardCheckIcon,
   ClipboardIcon,
   DownloadIcon,
   Loader2Icon,
 } from 'lucide-vue-next';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../ui/tooltip';
 
 const props = defineProps<{
   show: boolean;
+  imgId: string;
   imgUrl: string;
   prompt?: string;
 }>();
@@ -23,6 +25,8 @@ const props = defineProps<{
 defineEmits<{
   'update:show': [value: boolean];
 }>();
+
+const { downloadImage } = useTextToImageService();
 
 const isLoading = ref(false);
 
@@ -63,6 +67,24 @@ const onOpenAutoFocus = (event: Event) => {
     firstFocusableElement.focus();
   }
 };
+
+async function downloadImageFile(): Promise<void> {
+  isLoading.value = true;
+  try {
+    const res = await downloadImage(props.imgId);
+    const url = window.URL.createObjectURL(new Blob([res]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', getFilenameFromUrl(props.imgUrl));
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    isLoading.value = false;
+  }
+}
 </script>
 
 <template>
@@ -121,7 +143,7 @@ const onOpenAutoFocus = (event: Event) => {
                   <Button
                     variant="default"
                     size="icon"
-                    @click="() => openImage(imgUrl)"
+                    @click="() => downloadImageFile()"
                   >
                     <DownloadIcon v-if="!isLoading" class="size-5" />
                     <Loader2Icon v-else class="size-5 animate-spin" />

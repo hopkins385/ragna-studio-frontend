@@ -15,9 +15,12 @@ defineEmits<{
   toggleHide: [runId: string];
 }>();
 
-const showImagePreview = ref(false);
-const imgPreviewUrl = ref('');
-const imgPreviewPrompt = ref<string | undefined>(undefined);
+const imgPreview = reactive({
+  show: false,
+  url: '',
+  id: '',
+  prompt: '',
+});
 
 const page = ref(1);
 const data = ref<any | null>(null);
@@ -48,13 +51,11 @@ const setPage = (value: number) => {
   page.value = value;
 };
 
-function previewImage(url: string, prompt?: string) {
-  if (!url) {
-    return;
-  }
-  imgPreviewPrompt.value = prompt;
-  imgPreviewUrl.value = url;
-  showImagePreview.value = true;
+function previewImage(payload: { url: string; id: string; prompt?: string }) {
+  imgPreview.url = payload.url;
+  imgPreview.id = payload.id;
+  imgPreview.prompt = payload.prompt || '';
+  imgPreview.show = true;
 }
 
 async function resetPageData() {
@@ -107,9 +108,10 @@ onMounted(() => {
 <template>
   <div class="">
     <TextToImagePreviewDialog
-      v-model:show="showImagePreview"
-      :img-url="imgPreviewUrl"
-      :prompt="imgPreviewPrompt"
+      v-model:show="imgPreview.show"
+      :img-id="imgPreview.id"
+      :img-url="imgPreview.url"
+      :prompt="imgPreview.prompt"
     />
     <div v-if="hasRuns" id="runContainer" class="">
       <div v-for="run in runs" :key="run.id" class="my-2 flex">
@@ -118,7 +120,14 @@ onMounted(() => {
             v-for="image in run.images"
             :key="image.id"
             class="mx-1 flex size-56 overflow-hidden rounded-lg border border-transparent hover:cursor-pointer hover:shadow-xl"
-            @click="previewImage(image.path, run.prompt)"
+            @click="
+              () =>
+                previewImage({
+                  url: image.path,
+                  id: image.id,
+                  prompt: run.prompt,
+                })
+            "
           >
             <img
               v-if="image.path"

@@ -11,6 +11,7 @@ const ImageGenRoute = {
   FOLDER_RUNS: '/text-to-image/:id', // GET
   FOLDER_RUNS_PAGINATED: '/text-to-image/:folderId/paginated', // GET
   TOGGLE_HIDE: '/text-to-image/:runId/toggle-hide', // POST
+  DOWNLOAD_IMAGE: '/text-to-image/:imageId/download', // GET
 } as const;
 
 type ImageUrl = string;
@@ -197,11 +198,31 @@ export function useTextToImageService() {
     return data;
   };
 
+  const downloadImage = async (imageId: string) => {
+    const api = newApiRequest();
+    const route = getRoute(ImageGenRoute.DOWNLOAD_IMAGE, {
+      ':imageId': imageId,
+    });
+    const { status, data } = await api
+      .GET<Blob>()
+      .setResponseType('blob')
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .send();
+
+    if (status !== 200) {
+      throw new BadResponseError();
+    }
+
+    return data;
+  };
+
   return {
     toggleHideRun,
     generateFluxProImages,
     generateFluxUltraImages,
     fetchFolders,
     fetchRunsPaginated,
+    downloadImage,
   };
 }
