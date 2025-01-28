@@ -399,9 +399,8 @@ useHead({
               <Textarea
                 v-model="inputMessage"
                 :placeholder="$t('chat.input.placeholder')"
-                rows="1"
                 resize="none"
-                class="no-scrollbar min-h-[6rem] resize-none rounded-2xl py-4 pr-14 focus:shadow-lg bg-stone-50"
+                class="no-scrollbar resize-none rounded-2xl py-4 pr-14 focus:shadow-lg bg-stone-50"
                 @keydown.enter="onKeyDownEnter"
                 @input="adjustTextareaHeight"
               />
