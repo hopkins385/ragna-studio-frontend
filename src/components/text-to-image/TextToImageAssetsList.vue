@@ -22,33 +22,35 @@ const imgPreview = reactive({
   prompt: '',
 });
 
-const page = ref(1);
-const data = ref<any | null>(null);
+const mainContainer = ref<HTMLElement | null>(null);
 
-const runs = computed(() => data.value?.runs || []);
-const meta = computed(() => data.value?.meta || {});
+const folderId = ref('');
+
+const runs = ref<any>([]);
+const meta = ref<any>(null);
 const hasRuns = computed(() => runs.value && runs.value.length > 0);
 
 const settings = useImgGenSettingsStore();
 
 const { fetchFolders, fetchRunsPaginated } = useTextToImageService();
 
-const initRuns = async () => {
+const initFolder = async () => {
   const response = await fetchFolders();
   if (!response?.folders.length) {
     throw new Error('No folder found');
   }
-
-  data.value = await fetchRunsPaginated(
-    {
-      folderId: response.folders[0].id,
-    },
-    { page: page.value, showHidden: settings.getShowHidden },
-  );
+  folderId.value = response.folders[0].id;
 };
 
-const setPage = (value: number) => {
-  page.value = value;
+const fetchRuns = async (payload: { page: number }) => {
+  const response = await fetchRunsPaginated(
+    {
+      folderId: folderId.value,
+    },
+    { page: payload.page, showHidden: settings.getShowHidden },
+  );
+  runs.value.push(...response.runs);
+  meta.value = response.meta;
 };
 
 function previewImage(payload: { url: string; id: string; prompt?: string }) {
@@ -58,24 +60,39 @@ function previewImage(payload: { url: string; id: string; prompt?: string }) {
   imgPreview.show = true;
 }
 
-async function resetPageData() {
-  // setPage(1);
-  // await refresh();
-  // runs.value = data.value?.runs || [];
-  await initRuns();
-}
-
-function handleNextScroll() {
+const handleNextScroll = async () => {
   if (hasRuns.value !== true || !meta.value?.nextPage) return;
-  setPage(meta.value.nextPage);
-}
+  await fetchRuns({ page: meta.value.nextPage });
+};
 
-function initInfiniteScroll() {
-  const mainContainer = document.getElementById('main');
-  if (!mainContainer) return;
-  const { reset } = useInfiniteScroll(mainContainer, handleNextScroll, {
+const { reset: resetInfiniteScroll } = useInfiniteScroll(
+  mainContainer,
+  handleNextScroll,
+  {
     distance: 100,
+  },
+);
+
+const scrollToTop = (options: { instant: boolean } = { instant: false }) => {
+  nextTick(() => {
+    mainContainer.value?.scrollTo({
+      top: 0,
+      behavior: options.instant ? 'instant' : 'smooth',
+    });
   });
+};
+
+const initRuns = async () => {
+  runs.value = [];
+  meta.value = null;
+  await initFolder();
+  await fetchRuns({ page: 1 });
+  scrollToTop({ instant: true });
+};
+
+async function resetPageData() {
+  await initRuns();
+  resetInfiniteScroll();
 }
 
 watch(
@@ -88,25 +105,19 @@ watch(
 );
 
 watch(
-  () => page.value,
-  async () => {
-    // TODO: fix infinite scroll
-  },
-);
-
-watch(
   () => settings.getShowHidden,
   async () => await resetPageData(),
 );
 
 onMounted(() => {
+  const main = document.getElementById('main');
+  mainContainer.value = main;
   initRuns();
-  initInfiniteScroll();
 });
 </script>
 
 <template>
-  <div class="">
+  <div>
     <TextToImagePreviewDialog
       v-model:show="imgPreview.show"
       :img-id="imgPreview.id"

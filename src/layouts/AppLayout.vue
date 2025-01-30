@@ -77,6 +77,7 @@ onUnmounted(() => {
       <!-- Main -->
       <div
         id="main"
+        ref="mainContainer"
         class="relative grow overflow-y-scroll overflow-x-hidden text-slate-800 bg-white shadow-lg border-l border-t rounded-xl"
         style="max-width: calc(100vw - 4.5rem)"
       >
