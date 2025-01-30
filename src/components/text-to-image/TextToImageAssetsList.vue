@@ -2,6 +2,7 @@
 import { useTextToImageService } from '@/composables/services/useTextToImageService';
 import { useImgGenSettingsStore } from '@/stores/image-gen-settings.store';
 import { useInfiniteScroll } from '@vueuse/core';
+import { Loader2Icon } from 'lucide-vue-next';
 import TextToImageOptionsBar from './TextToImageOptionsBar.vue';
 import TextToImagePreviewDialog from './TextToImagePreviewDialog.vue';
 
@@ -24,6 +25,7 @@ const imgPreview = reactive({
 
 const mainContainer = ref<HTMLElement | null>(null);
 
+const isLoading = ref(false);
 const folderId = ref('');
 
 const runs = ref<any>([]);
@@ -43,6 +45,7 @@ const initFolder = async () => {
 };
 
 const fetchRuns = async (payload: { page: number }) => {
+  isLoading.value = true;
   const response = await fetchRunsPaginated(
     {
       folderId: folderId.value,
@@ -51,6 +54,7 @@ const fetchRuns = async (payload: { page: number }) => {
   );
   runs.value.push(...response.runs);
   meta.value = response.meta;
+  isLoading.value = false;
 };
 
 function previewImage(payload: { url: string; id: string; prompt?: string }) {
@@ -69,7 +73,7 @@ const { reset: resetInfiniteScroll } = useInfiniteScroll(
   mainContainer,
   handleNextScroll,
   {
-    distance: 100,
+    distance: 50,
   },
 );
 
@@ -165,7 +169,14 @@ onMounted(() => {
         />
       </div>
     </div>
-    <div v-else>
+
+    <div class="py-10 flex justify-center">
+      <Loader2Icon
+        v-if="(meta && !meta.isLastPage) || isLoading"
+        class="!size-5 animate-spin stroke-1.5 opacity-75"
+      />
+    </div>
+    <div v-if="!hasRuns && !isLoading" class="flex">
       <p class="text-center text-sm opacity-50">Let your creativity flow.</p>
     </div>
   </div>
