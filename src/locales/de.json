@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "Startseite",
+    "documents": "Editor",
     "workflows": "Workflows",
     "agents": "Agenten",
     "agent_templates": "Vorlagen",

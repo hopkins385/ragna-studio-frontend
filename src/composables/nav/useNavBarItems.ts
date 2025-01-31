@@ -6,6 +6,7 @@ import {
   chatRoutes,
   collectionRoutes,
   defaultRoutes,
+  documentRoutes,
   homeNavItem,
   imageGenRoutes,
   mediaManagerRoutes,
@@ -29,6 +30,9 @@ export function useNavBarItems() {
     switch (routePathStartsWith) {
       case 'admin':
         items.push(...adminRoutes);
+        break;
+      case 'document':
+        items.push(...documentRoutes);
         break;
       case 'workflow':
         items.push(...workflowRoutes);

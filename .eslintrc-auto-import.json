@@ -328,6 +328,10 @@
     "useServerHead": true,
     "useServerHeadSafe": true,
     "useServerSeoMeta": true,
-    "useI18n": true
+    "useI18n": true,
+    "onElementRemoval": true,
+    "useCountdown": true,
+    "usePreferredReducedTransparency": true,
+    "useSSRWidth": true
   }
 }

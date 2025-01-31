@@ -1,5 +1,6 @@
 @import '_tailwind.css';
 @import '_chatbox.css';
+@import '_editor.css';
 
 .default-icon {
   @apply shrink-0 stroke-1.5 opacity-90;

@@ -5,6 +5,9 @@ export const RouteName = {
   USER_CREATE: 'user.create',
   USER_SHOW: 'user.show',
   USER_EDIT: 'user.edit',
+  // Document routes
+  DOCUMENT_INDEX: 'document.index',
+  DOCUMENT_SHOW: 'document.show',
   // Chat routes
   CHAT_RECENT: 'chat.recent',
   CHAT_CREATE: 'chat.create',

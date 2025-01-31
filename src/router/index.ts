@@ -259,6 +259,20 @@ const workflowRoutes = {
   ],
 };
 
+const ducumentRoutes = {
+  path: '/document',
+  component: () => import('@views/document/DocumentRootView.vue'),
+  meta: defaultAppMeta,
+  children: [
+    {
+      path: '',
+      name: RouteName.DOCUMENT_INDEX,
+      component: () => import('@views/document/DocumentIndexView.vue'),
+      meta: defaultAppMeta,
+    },
+  ],
+};
+
 const accountRoutes = {
   path: '/account',
   component: () => import('@views/account/AccountRootView.vue'),
@@ -328,6 +342,7 @@ const router = createRouter({
     assistantRoutes,
     collectionRoutes,
     workflowRoutes,
+    ducumentRoutes,
     mediaRoutes,
     textToImageRoutes,
     templateRoutes,

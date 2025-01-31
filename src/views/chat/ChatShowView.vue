@@ -18,7 +18,12 @@ import { useWebsocketGlobal } from '@composables/websocket/useWebsocketGlobal';
 import { useChatSettingsStore } from '@stores/chat-settings.store';
 import { Button } from '@ui/button';
 import { Textarea } from '@ui/textarea';
-import { PaperclipIcon, SendIcon, SquareIcon } from 'lucide-vue-next';
+import {
+  ArrowDownIcon,
+  PaperclipIcon,
+  SendIcon,
+  SquareIcon,
+} from 'lucide-vue-next';
 import ChatAssistantDetails from './ChatAssistantDetails.vue';
 
 const socket = useWebsocketGlobal();
@@ -207,7 +212,11 @@ const focusInput = () => {
   if (textarea) textarea.focus();
 };
 
+// SCROLL
+
 const { arrivedState } = useScroll(chatMessagesContainerRef);
+
+const showScrollToBottomButton = ref(false);
 
 // observer
 useMutationObserver(
@@ -396,6 +405,21 @@ useHead({
             @submit.prevent="() => onSubmit(activeChatId)"
           >
             <div class="relative z-10 max-h-96 w-full">
+              <div
+                v-if="showScrollToBottomButton"
+                class="absolute -top-6 left-1/2 w-fit -translate-x-1/2 text-center bg-transparent"
+              >
+                <Button
+                  variant="outline"
+                  size="icon"
+                  class="group rounded-full border shadow-md size-8"
+                  @click="() => scrollToBottom({ instant: true })"
+                >
+                  <ArrowDownIcon
+                    class="!size-4 stroke-2 group-hover:stroke-2"
+                  />
+                </Button>
+              </div>
               <Textarea
                 v-model="inputMessage"
                 :placeholder="$t('chat.input.placeholder')"

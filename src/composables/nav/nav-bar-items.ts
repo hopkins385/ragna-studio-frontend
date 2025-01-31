@@ -5,6 +5,7 @@ import {
   Building2Icon,
   CloudUploadIcon,
   DatabaseIcon,
+  FileTextIcon,
   FolderIcon,
   FolderKanbanIcon,
   HistoryIcon,
@@ -36,6 +37,13 @@ export const spacerNavItem: NavItem = {
 };
 
 export const defaultRoutes = computed(() => [
+  {
+    icon: FileTextIcon,
+    path: '/document',
+    label: 'nav.documents',
+    hidden: false,
+    children: [],
+  },
   {
     icon: WorkflowIcon,
     path: '/workflow',
@@ -99,6 +107,23 @@ export const workflowRoutes: NavItem[] = [
     icon: WorkflowIcon,
     path: '/workflow',
     label: 'nav.workflows',
+    hidden: false,
+    children: [],
+  },
+];
+
+export const documentRoutes: NavItem[] = [
+  {
+    icon: PlusCircleIcon,
+    path: '/document/create',
+    label: 'nav.create',
+    hidden: false,
+    children: [],
+  },
+  {
+    icon: DatabaseIcon,
+    path: '/document',
+    label: 'nav.documents',
     hidden: false,
     children: [],
   },
