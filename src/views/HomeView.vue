@@ -1,15 +1,14 @@
 <script setup lang="ts">
-// const homeImageSrc = '@/assets/images/home.jpg&q=100&format=webp&imagetools';
 import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
 import HomeAgentTemplates from '@/components/home/HomeAgentTemplates.vue';
 import HomeFavorites from '@/components/home/HomeFavorites.vue';
 import HomeQuickAccess from '@/components/home/HomeQuickAccess.vue';
-import { Workflow } from 'lucide-vue-next';
 
 const backgroundStyles = computed(() => {
   return {
     // backgroundImage: `linear-gradient(rgba(0,0,0,.20),rgba(0,0,0,.20)), url('${imageUrl}')`,
     backgroundImage: `linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.3)), url('${imageUrl}')`,
+    // backgroundImage: `url('${imageUrl}')`,
     backgroundSize: 'cover',
     // opacity: 0.4,
   };
@@ -21,7 +20,7 @@ const backgroundStyles = computed(() => {
   <div class="h-full">
     <div class="p-4 overflow-hidden">
       <div
-        class="bg-blue-200 p-5 bg-center flex items-center h-44 rounded-xl overflow-hidde"
+        class="bg-blue-200 p-5 bg-center flex items-center h-44 rounded-xl overflow-hidden"
         :style="backgroundStyles"
       >
         <!-- Image Overlay -->
