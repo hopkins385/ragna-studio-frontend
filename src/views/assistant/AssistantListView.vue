@@ -13,9 +13,7 @@ const route = useRoute();
 const router = useRouter();
 
 const search = ref('');
-const page = ref(
-  route.query.page ? parseInt(route.query.page as string, 10) : 1,
-);
+const page = ref(parseInt(route.query?.page?.toString() ?? '1', 10));
 
 function setRoutePage(value: number) {
   page.value = value;

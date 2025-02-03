@@ -254,13 +254,15 @@ await initAssistantFavorites();
         <TableMetaCaption :itemsLength="assistantsLength" :meta="meta" />
       </Table>
     </div>
-    <!-- Pagination Controls -->
-    <PaginateControls
-      v-if="meta.totalCount > 10"
-      :page="page || 1"
-      :meta="meta"
-      :limit="10"
-      @update:page="onUpdatePage"
-    />
+    <div class="pb-10 px-10">
+      <!-- Pagination Controls -->
+      <PaginateControls
+        v-if="meta.totalCount > 10"
+        :page="page || 1"
+        :meta="meta"
+        :limit="10"
+        @update:page="onUpdatePage"
+      />
+    </div>
   </div>
 </template>
