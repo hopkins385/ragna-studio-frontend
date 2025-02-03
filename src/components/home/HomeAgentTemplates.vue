@@ -24,9 +24,9 @@ onMounted(() => {
 
 <template>
   <TemplatePreviewDialog v-model="previewDialog.open" v-bind="previewDialog" />
-  <div class="w-full p-5 bg-white">
+  <div class="w-full bg-white">
     <div class="pb-4 flex space-x-2">
-      <BotIcon class="size-6 stroke-1.5 mt-1" />
+      <BotIcon class="size-5 stroke-1.5 mt-1" />
       <div>
         <h2 class="text-2xl font-semibold">
           {{ $t('templates.title_short') }}
@@ -36,11 +36,11 @@ onMounted(() => {
         </p>
       </div>
     </div>
-    <div class="grid grid-cols-3 gap-5">
+    <div class="flex flex-wrap gap-4">
       <div
         v-for="template in templates"
         :key="template.id"
-        class="border w-full bg-white h-24 rounded-lg hover:shadow-md cursor-pointer"
+        class="border bg-white w-60 h-40 rounded-2xl hover:shadow-md cursor-pointer"
         @click="() => openPreviewDialog(template)"
       >
         <h2 class="p-4 font-medium">{{ template.title }}</h2>

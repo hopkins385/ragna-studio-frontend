@@ -90,9 +90,9 @@ onMounted(async () => {
 
 <template>
   <div class="flex flex-col">
-    <div v-if="hasFavoriteAssistants" class="rounded-xl w-full p-6">
+    <div v-if="hasFavoriteAssistants" class="rounded-xl w-full">
       <div class="pb-4 flex items-center space-x-2">
-        <Star class="size-6 stroke-1.5" />
+        <Star class="size-5 stroke-1.5" />
         <h2 class="text-2xl font-semibold">
           {{ $t('favorites.title') }}
         </h2>
@@ -102,15 +102,12 @@ onMounted(async () => {
           id="endGradient"
           class="absolute right-0 top-0 w-2 h-full bg-gradient-to-l from-white/80 to-transparent"
         ></div>
-        <div class="flex space-x-2 overflow-x-auto no-scrollbar w-full pb-2">
+        <div class="flex space-x-4 overflow-x-auto no-scrollbar w-full pb-2">
           <div
             v-for="fav in favoriteAssistants"
             :key="fav.id"
-            class="bg-stone-50 border border-stone-100 shrink-0 rounded-2xl w-96 h-36 p-4 flex space-x-2 hover:shadow-md"
+            class="border shrink-0 rounded-2xl w-80 h-40 p-4 flex space-x-2 hover:shadow-md"
           >
-            <div>
-              <div class="rounded-xl h-full w-24 bg-stone-200/50"></div>
-            </div>
             <div class="py-1 flex flex-col justify-between w-52">
               <div class="space-y-1">
                 <p class="text-sm font-medium truncate">{{ fav?.title }}</p>

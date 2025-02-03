@@ -4,7 +4,6 @@ import {
   CloudUploadIcon,
   DatabaseIcon,
   ImageIcon,
-  LayoutGridIcon,
   LayoutTemplateIcon,
   MessagesSquareIcon,
   WorkflowIcon,
@@ -15,43 +14,50 @@ const { t } = useI18n();
 const quickAccessItems = [
   {
     icon: BotIcon,
-    class: 'bg-blue-50',
+    // class: 'text-blue-600',
+    class: '',
     label: t('nav.agents'),
     route: '/assistant',
   },
   {
     icon: WorkflowIcon,
-    class: 'bg-green-50',
+    // class: 'text-green-600',
+    class: '',
     label: t('nav.workflows'),
     route: '/workflow',
   },
   {
     icon: MessagesSquareIcon,
-    class: 'bg-amber-50',
+    // class: 'text-amber-600',
+    class: '',
     label: t('nav.chat'),
     route: '/chat',
   },
   {
     icon: ImageIcon,
-    class: 'bg-violet-50',
+    // class: 'text-violet-600',
+    class: '',
     label: t('nav.text_to_image'),
     route: '/text-to-image',
   },
   {
     icon: DatabaseIcon,
-    class: 'bg-slate-50',
+    // class: 'text-slate-600',
+    class: '',
     label: t('nav.collections'),
     route: '/collection',
   },
   {
     icon: CloudUploadIcon,
-    class: 'bg-indigo-50',
+    // class: 'text-indigo-600',
+    class: '',
     label: t('nav.uploads'),
     route: '/media/upload',
   },
   {
     icon: LayoutTemplateIcon,
-    class: 'bg-cyan-50',
+    // class: 'text-cyan-600',
+    class: '',
     label: t('nav.agent_templates'),
     route: '/template',
   },
@@ -59,30 +65,23 @@ const quickAccessItems = [
 </script>
 
 <template>
-  <div class="px-20 pt-5">
-    <div class="flex items-center space-x-2">
-      <LayoutGridIcon class="size-5 stroke-1.5" />
-      <h2 class="text-2xl font-semibold">Quick Access</h2>
-    </div>
-  </div>
-  <div class="px-20 py-5 flex flex-wrap gap-4">
+  <div class="flex justify-center space-x-8 p-4">
     <router-link
       v-for="item in quickAccessItems"
       :key="item.route"
       :to="item.route"
-      class="flex flex-col"
+      class="flex flex-col items-center space-y-2 w-24 hover:drop-shadow-md cursor-pointer transition-all group"
     >
       <div
-        class="w-60 h-40 border-0 rounded-2xl p-5 group hover:shadow-md space-y-2"
-        :class="item.class"
+        class="rounded-full size-12 flex justify-center items-center bg-stone-100"
       >
         <component
           :is="item.icon"
           class="size-6 stroke-1.5 group-hover:stroke-2"
           :class="item.class"
         />
-        <p class="text-xs font-medium">{{ item.label }}</p>
       </div>
+      <p class="text-xs font-medium">{{ item.label }}</p>
     </router-link>
   </div>
 </template>
