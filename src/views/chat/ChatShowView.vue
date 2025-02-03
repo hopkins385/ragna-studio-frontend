@@ -90,11 +90,16 @@ const clearVisionContent = () => {
 
 // SUBMIT
 const onSubmit = async (chatId: string) => {
+  clearError();
+
   if (!chatId || !chatId.trim()) {
     console.error('No chatId provided');
     return;
   }
-  if (!inputMessage.value.trim()) return;
+  if (!inputMessage.value.trim()) {
+    return;
+  }
+
   const userMessageContent = inputMessage.value;
   inputMessage.value = '';
 
@@ -122,7 +127,8 @@ const onSubmit = async (chatId: string) => {
       content: userMessageContent,
       visionContent,
     });
-  } catch (e) {
+  } catch (e: any) {
+    setError(e.message);
     console.error('Failed to send message:', e);
   }
 };

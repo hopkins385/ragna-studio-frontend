@@ -282,12 +282,19 @@ export function useChatService() {
       }
       return handleError(error, 'Failed to stream chat message');
     } finally {
-      isStreaming.value = false;
       finalizeStream();
     }
   };
 
   const finalizeStream = () => {
+    isThinking.value = false;
+    isStreaming.value = false;
+    isPending.value = false;
+
+    if (chatTextChunks.value.length === 0) {
+      return;
+    }
+
     const assistantContent = chatTextChunks.value.join('');
     chatTextChunks.value = [];
 
