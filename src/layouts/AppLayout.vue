@@ -34,8 +34,7 @@ useEventListener(document, 'visibilitychange', handleVisibilityChange);
 useEventListener(window, 'focus', handleVisibilityChange);
 
 useHead({
-  titleTemplate: (title?: string) =>
-    !title ? 'RAGNA Studio' : `${title} | RAGNA Studio`,
+  titleTemplate: (title?: string) => (!title ? 'RAGNA' : `${title} | RAGNA`),
 });
 
 const joinUserRoom = () => {

@@ -54,7 +54,7 @@ onBeforeUnmount(() => {
     <div class="max-w-4xl mx-auto">
       <BubbleMenu
         :editor="editor"
-        :tippy-options="{ duration: 100, placement: 'bottom-end' }"
+        :tippy-options="{ duration: 100, placement: 'bottom-start' }"
         v-if="editor"
       >
         <div
