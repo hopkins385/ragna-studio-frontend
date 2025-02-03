@@ -13,6 +13,14 @@
       margin-top: 0.5em;
     }
 
+    p {
+      margin-bottom: 0.5em;
+    }
+
+    > p:last-child {
+      margin-bottom: 0.5em;
+    }
+
     > h1,
     h2,
     h3,
@@ -20,12 +28,8 @@
     h5,
     h6 {
       &:first-child {
-        margin-top: 0.5em;
+        margin-bottom: 0.5em;
       }
-    }
-
-    > p:last-child {
-      margin-bottom: 0.5em;
     }
 
     h1 {

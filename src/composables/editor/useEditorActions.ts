@@ -10,10 +10,7 @@ export default function useEditorActions(editor: Editor) {
     return prompt.trim();
   }
 
-  function aiAction(
-    action: EditorAiActionEnum,
-    prompt: string | undefined = undefined,
-  ) {
+  function aiAction(action: string, prompt: string | undefined = undefined) {
     return editor.chain().focus().aiAction({ action, prompt }).run();
   }
 
@@ -86,6 +83,10 @@ export default function useEditorActions(editor: Editor) {
     editor.chain().focus().redo().run();
   }
 
+  function onToggleCodeClick() {
+    editor.chain().focus().toggleCode().run();
+  }
+
   return {
     onImproveClick,
     onExtendClick,
@@ -104,5 +105,6 @@ export default function useEditorActions(editor: Editor) {
     onHighlightClick,
     onUndoClick,
     onRedoClick,
+    onToggleCodeClick,
   };
 }
