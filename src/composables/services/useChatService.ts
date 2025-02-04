@@ -269,7 +269,8 @@ export function useChatService() {
               if (message) {
                 chatTextChunks.value.push(message);
               }
-              await nextTick();
+              // TODO: check if nextTick is needed
+              // await nextTick();
             }
           } catch (e) {
             console.error('Error parsing JSON:', e);
