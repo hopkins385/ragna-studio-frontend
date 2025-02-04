@@ -43,7 +43,16 @@ app.use(head);
 app.use(pinia);
 app.use(router);
 app.use(veeConfigPlugin);
-app.use(VueDOMPurifyHTML);
+app.use(VueDOMPurifyHTML, {
+  hooks: {
+    afterSanitizeAttributes: (currentNode: any) => {
+      if ('target' in currentNode && currentNode instanceof HTMLElement) {
+        currentNode.setAttribute('target', '_blank');
+        // currentNode.setAttribute('rel', 'noopener');
+      }
+    },
+  },
+});
 app.use(abilitiesPlugin, ability, {
   useGlobalProperties: true,
 });
