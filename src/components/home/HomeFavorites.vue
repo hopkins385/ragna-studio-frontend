@@ -98,11 +98,13 @@ onMounted(async () => {
         </h2>
       </div>
       <div class="overflow-hidden w-full relative">
+        <!--
         <div
           id="endGradient"
           class="absolute right-0 top-0 w-2 h-full bg-gradient-to-l from-white/80 to-transparent"
         ></div>
-        <div class="flex space-x-4 overflow-x-auto no-scrollbar w-full pb-2">
+        -->
+        <div class="flex flex-wrap gap-4 pb-4">
           <div
             v-for="fav in favoriteAssistants"
             :key="fav.id"

@@ -1,7 +1,7 @@
 {
   "nav": {
     "home": "Startseite",
-    "documents": "Editor",
+    "documents": "Dokumente",
     "workflows": "Workflows",
     "agents": "Agenten",
     "agent_templates": "Vorlagen",
@@ -149,6 +149,9 @@
   },
   "favorites": {
     "title": "Meine Favoriten"
+  },
+  "quickaccess": {
+    "title": "Direktzugriff"
   },
   "collections": {
     "title": "Wissensdatenbanken",

@@ -3,6 +3,7 @@ import {
   BotIcon,
   CloudUploadIcon,
   DatabaseIcon,
+  FileTextIcon,
   ImageIcon,
   LayoutGridIcon,
   LayoutTemplateIcon,
@@ -14,11 +15,12 @@ const { t } = useI18n();
 
 const quickAccessItems = [
   {
-    icon: BotIcon,
+    icon: FileTextIcon,
     class: 'bg-blue-50',
-    label: t('nav.agents'),
-    route: '/assistant',
+    label: t('nav.documents'),
+    route: '/document',
   },
+
   {
     icon: WorkflowIcon,
     class: 'bg-green-50',
@@ -30,6 +32,12 @@ const quickAccessItems = [
     class: 'bg-amber-50',
     label: t('nav.chat'),
     route: '/chat',
+  },
+  {
+    icon: BotIcon,
+    class: 'bg-blue-50',
+    label: t('nav.agents'),
+    route: '/assistant',
   },
   {
     icon: ImageIcon,
@@ -62,7 +70,7 @@ const quickAccessItems = [
   <div class="px-20 pt-5">
     <div class="flex items-center space-x-2">
       <LayoutGridIcon class="size-5 stroke-1.5" />
-      <h2 class="text-2xl font-semibold">Quick Access</h2>
+      <h2 class="text-2xl font-semibold">{{ $t('quickaccess.title') }}</h2>
     </div>
   </div>
   <div class="px-20 py-5 flex flex-wrap gap-4">
