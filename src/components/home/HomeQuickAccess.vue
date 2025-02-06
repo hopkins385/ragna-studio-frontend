@@ -86,7 +86,7 @@ const quickAccessItems = [
       >
         <component
           :is="item.icon"
-          class="size-6 stroke-1.5 group-hover:stroke-2"
+          class="size-6 stroke-1.5 group-hover:stroke-2 bg-transparent"
           :class="item.class"
         />
         <p class="text-xs font-medium group-hover:font-semibold">
