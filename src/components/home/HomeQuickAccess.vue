@@ -16,50 +16,50 @@ const { t } = useI18n();
 const quickAccessItems = [
   {
     icon: FileTextIcon,
-    class: 'bg-blue-50',
+    class: 'bg-blue-100/60',
     label: t('nav.documents'),
     route: '/document',
   },
 
   {
     icon: WorkflowIcon,
-    class: 'bg-green-50',
+    class: 'bg-green-100/60',
     label: t('nav.workflows'),
     route: '/workflow',
   },
   {
     icon: MessagesSquareIcon,
-    class: 'bg-amber-50',
+    class: 'bg-amber-100/60',
     label: t('nav.chat'),
     route: '/chat',
   },
   {
     icon: BotIcon,
-    class: 'bg-blue-50',
+    class: 'bg-blue-100/60',
     label: t('nav.agents'),
     route: '/assistant',
   },
   {
     icon: ImageIcon,
-    class: 'bg-violet-50',
+    class: 'bg-violet-100/60',
     label: t('nav.text_to_image'),
     route: '/text-to-image',
   },
   {
     icon: DatabaseIcon,
-    class: 'bg-slate-50',
+    class: 'bg-slate-100/60',
     label: t('nav.collections'),
     route: '/collection',
   },
   {
     icon: CloudUploadIcon,
-    class: 'bg-indigo-50',
+    class: 'bg-indigo-100/60',
     label: t('nav.uploads'),
     route: '/media/upload',
   },
   {
     icon: LayoutTemplateIcon,
-    class: 'bg-cyan-50',
+    class: 'bg-cyan-100/60',
     label: t('nav.agent_templates'),
     route: '/template',
   },
@@ -89,7 +89,9 @@ const quickAccessItems = [
           class="size-6 stroke-1.5 group-hover:stroke-2"
           :class="item.class"
         />
-        <p class="text-xs font-medium">{{ item.label }}</p>
+        <p class="text-xs font-medium group-hover:font-semibold">
+          {{ item.label }}
+        </p>
       </div>
     </router-link>
   </div>

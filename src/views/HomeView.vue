@@ -32,7 +32,7 @@ const backgroundStyles = computed(() => {
         </div>
       </div>
     </div>
-    <div class="lg:container mx-auto">
+    <div class="max-w-[75rem] mx-auto">
       <!-- Home Quick Access  -->
       <HomeQuickAccess />
       <!-- Home Favorites  -->
