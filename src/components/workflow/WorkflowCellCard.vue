@@ -41,12 +41,11 @@ async function updateItem(value: string) {
 }
 
 async function updateAndClose(event: KeyboardEvent) {
-  // event.preventDefault();
   // if key shift + enter
   if (event.shiftKey && event.key === 'Enter') {
     return;
   }
-
+  event.preventDefault();
   await updateItem(text.value);
   emits('close');
 }

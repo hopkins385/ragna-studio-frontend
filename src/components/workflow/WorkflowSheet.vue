@@ -14,7 +14,6 @@ import { vOnClickOutside } from '@vueuse/components';
 import { useDebounceFn, useEventListener } from '@vueuse/core';
 import {
   AlignLeftIcon,
-  LayoutDashboard,
   LoaderIcon,
   PlusIcon,
   Trash2Icon,
@@ -535,6 +534,7 @@ await initWorkflow();
             {{ docItem.content }}
           </div>
           <!-- Row Detail Link -->
+          <!--
           <div
             v-if="columnIndex === 0"
             class="group/link absolute right-1 top-1 z-10 opacity-0 group-hover:opacity-100"
@@ -547,6 +547,7 @@ await initWorkflow();
               <LayoutDashboard class="size-3 stroke-1" />
             </RouterLink>
           </div>
+          -->
           <!-- Cellcard teleport anker -->
           <div
             :id="`cellcard_teleport_anker_x${columnIndex}_y${rowIndex + 1}`"
