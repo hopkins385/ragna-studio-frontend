@@ -5,8 +5,6 @@ import { Highlight } from '@tiptap/extension-highlight';
 import { Underline } from '@tiptap/extension-underline';
 import { StarterKit } from '@tiptap/starter-kit';
 import { BubbleMenu, Editor, EditorContent } from '@tiptap/vue-3';
-import { PanelLeftIcon } from 'lucide-vue-next';
-import { Button } from '../ui/button';
 import EditorMenu from './EditorMenu.vue';
 
 const drawer = useDrawerStore();
@@ -27,13 +25,14 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div id="text-editor" class="rounded-lg bg-white overflow-hidden">
+  <div id="text-editor" class="rounded-lg bg-white overflow-hidden h-full">
     <!-- Menu -->
     <div
       class="border-b flex justify-between items-center rounded-t-lg overflow-hidden h-13"
     >
       <!-- Left Menu -->
       <div class="px-4">
+        <!--
         <Button
           variant="ghost"
           size="icon"
@@ -42,6 +41,7 @@ onBeforeUnmount(() => {
         >
           <PanelLeftIcon class="size-5" />
         </Button>
+        -->
       </div>
       <!-- Center Menu -->
       <div class="">
@@ -51,9 +51,12 @@ onBeforeUnmount(() => {
       <div class="w-20"></div>
     </div>
     <!-- Editor Content -->
-    <div class="overflow-y-auto bg-stone-50 max-h-[calc(100vh-7.5rem)]">
+    <!--
+    min-h-full max-h-[calc(100vh-7.5rem)]
+    -->
+    <div class="overflow-y-auto bg-stone-50 h-[calc(100vh-7.5rem)] pb-20">
       <div
-        class="max-w-5xl mt-8 mx-auto shadow-md border px-32 py-14 rounded-sm bg-white h-full"
+        class="max-w-5xl mt-8 mx-auto shadow-md border px-32 py-14 rounded-sm bg-white min-h-full"
       >
         <BubbleMenu
           :editor="editor"
