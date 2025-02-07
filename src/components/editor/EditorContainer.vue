@@ -27,10 +27,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div id="text-editor" class="space-y-8 rounded-lg bg-white overflow-hidden">
+  <div id="text-editor" class="rounded-lg bg-white overflow-hidden">
     <!-- Menu -->
     <div
-      class="border-b flex justify-between items-center rounded-t-lg overflow-hidden"
+      class="border-b flex justify-between items-center rounded-t-lg overflow-hidden h-13"
     >
       <!-- Left Menu -->
       <div class="px-4">
@@ -51,38 +51,42 @@ onBeforeUnmount(() => {
       <div class="w-20"></div>
     </div>
     <!-- Editor Content -->
-    <div class="max-w-4xl mx-auto">
-      <BubbleMenu
-        :editor="editor"
-        :tippy-options="{ duration: 100, placement: 'bottom-start' }"
-        v-if="editor"
+    <div class="overflow-y-auto bg-stone-50 max-h-[calc(100vh-7.5rem)]">
+      <div
+        class="max-w-5xl mt-8 mx-auto shadow-md border px-32 py-14 rounded-sm bg-white h-full"
       >
-        <div
-          class="bg-white border border-stone-200 rounded-lg shadow-md px-4 py-2 space-x-2"
+        <BubbleMenu
+          :editor="editor"
+          :tippy-options="{ duration: 100, placement: 'bottom-start' }"
+          v-if="editor"
         >
-          <button variant="ghost" class="px-2">Ask AI</button>
-          <button variant="ghost" class="px-2">Image</button>
-          <button
-            @click="editor.chain().focus().toggleBold().run()"
-            :class="{ 'is-active': editor.isActive('bold') }"
+          <div
+            class="bg-white border border-stone-200 rounded-lg shadow-md px-4 py-2 space-x-2"
           >
-            Bold
-          </button>
-          <button
-            @click="editor.chain().focus().toggleItalic().run()"
-            :class="{ 'is-active': editor.isActive('italic') }"
-          >
-            Italic
-          </button>
-          <button
-            @click="editor.chain().focus().toggleStrike().run()"
-            :class="{ 'is-active': editor.isActive('strike') }"
-          >
-            Strike
-          </button>
-        </div>
-      </BubbleMenu>
-      <EditorContent :editor="editor" />
+            <button variant="ghost" class="px-2">Ask AI</button>
+            <button variant="ghost" class="px-2">Image</button>
+            <button
+              @click="editor.chain().focus().toggleBold().run()"
+              :class="{ 'is-active': editor.isActive('bold') }"
+            >
+              Bold
+            </button>
+            <button
+              @click="editor.chain().focus().toggleItalic().run()"
+              :class="{ 'is-active': editor.isActive('italic') }"
+            >
+              Italic
+            </button>
+            <button
+              @click="editor.chain().focus().toggleStrike().run()"
+              :class="{ 'is-active': editor.isActive('strike') }"
+            >
+              Strike
+            </button>
+          </div>
+        </BubbleMenu>
+        <EditorContent :editor="editor" />
+      </div>
     </div>
   </div>
 </template>
