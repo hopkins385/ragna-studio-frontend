@@ -3,18 +3,25 @@ import useEditorActions from '@composables/editor/useEditorActions';
 import type { Editor } from '@tiptap/vue-3';
 import { Button } from '@ui/button';
 import {
+  AlignCenterIcon,
+  AlignJustifyIcon,
+  AlignRightIcon,
   BoldIcon,
   CodeIcon,
   Heading1Icon,
   Heading2Icon,
   HighlighterIcon,
   ItalicIcon,
+  ListIcon,
+  ListOrderedIcon,
   Loader2Icon,
   Redo2Icon,
   StrikethroughIcon,
+  TextIcon,
   UnderlineIcon,
   Undo2Icon,
 } from 'lucide-vue-next';
+import EditorAiMenu from './EditorAiMenu.vue';
 
 const props = defineProps<{
   editor: Editor;
@@ -41,6 +48,10 @@ const {
   onUndoClick,
   onRedoClick,
   onToggleCodeClick,
+  onToggleListClick,
+  onToggleBulletListClick,
+  onToggleOrderedListClick,
+  onToggleTextOrientationClick,
 } = useEditorActions(props.editor);
 
 const hasTextSelected = computed(() => {
@@ -60,6 +71,19 @@ const onTranslateClick = (lang: string) => {
 <template>
   <div v-if="editor" class="relative flex justify-between px-4 py-3">
     <div class="flex space-x-1">
+      <EditorAiMenu
+        :disabled="false"
+        :is-loading="isLoading"
+        @improve-click="() => onImproveClick()"
+        @extend-click="() => onExtendClick()"
+        @shorten-click="() => onShortenClick()"
+        @rephrase-click="() => onRephraseClick()"
+        @summarize-click="() => onSummarizeClick()"
+        @simplify-click="() => onSimplifyClick()"
+        @spelling-grammar-click="() => onSpellingGrammarClick()"
+        @translate-click="lang => onTranslateClick(lang)"
+      />
+
       <Button
         variant="ghost"
         size="icon"
@@ -68,7 +92,7 @@ const onTranslateClick = (lang: string) => {
         }"
         @click="onH1Click()"
       >
-        <Heading1Icon class="size-4" />
+        <Heading1Icon class="!size-5 stroke-1.5" />
       </Button>
       <Button
         variant="ghost"
@@ -78,7 +102,7 @@ const onTranslateClick = (lang: string) => {
         }"
         @click="onH2Click()"
       >
-        <Heading2Icon class="size-4" />
+        <Heading2Icon class="!size-5 stroke-1.5" />
       </Button>
       <Button
         variant="ghost"
@@ -123,6 +147,44 @@ const onTranslateClick = (lang: string) => {
       <Button
         variant="ghost"
         size="icon"
+        @click="onToggleTextOrientationClick()"
+      >
+        <TextIcon
+          v-if="editor.isActive({ textAlign: 'left' })"
+          class="!size-5 stroke-1.5"
+        />
+        <AlignCenterIcon
+          v-else-if="editor.isActive({ textAlign: 'center' })"
+          class="!size-5 stroke-1.5"
+        />
+        <AlignRightIcon
+          v-else-if="editor.isActive({ textAlign: 'right' })"
+          class="!size-5 stroke-1.5"
+        />
+        <AlignJustifyIcon
+          v-else-if="editor.isActive({ textAlign: 'justify' })"
+          class="!size-5 stroke-1.5"
+        />
+        <TextIcon v-else class="!size-5 stroke-1.5" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        :class="{
+          'is-active':
+            editor.isActive('bulletList') || editor.isActive('orderedList'),
+        }"
+        @click="onToggleListClick()"
+      >
+        <ListOrderedIcon
+          v-if="editor.isActive('orderedList')"
+          class="!size-5 stroke-1.5"
+        />
+        <ListIcon v-else class="!size-5 stroke-1.5" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
         :class="{
           'is-active': editor.isActive('highlight'),
         }"
@@ -144,20 +206,6 @@ const onTranslateClick = (lang: string) => {
       <Button variant="ghost" size="icon" @click="onRedoClick()">
         <Redo2Icon class="size-4" />
       </Button>
-      <!--
-      <EditorAiMenu
-        :disabled="false"
-        :is-loading="isLoading"
-        @improve-click="() => onImproveClick()"
-        @extend-click="() => onExtendClick()"
-        @shorten-click="() => onShortenClick()"
-        @rephrase-click="() => onRephraseClick()"
-        @summarize-click="() => onSummarizeClick()"
-        @simplify-click="() => onSimplifyClick()"
-        @spelling-grammar-click="() => onSpellingGrammarClick()"
-        @translate-click="lang => onTranslateClick(lang)"
-      />
-      -->
       <div v-if="isLoading" class="flex items-center justify-center">
         <Loader2Icon class="size-6 animate-spin text-slate-300" />
       </div>

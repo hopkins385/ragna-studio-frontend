@@ -1,3 +1,4 @@
+import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
@@ -29,7 +30,7 @@ export function useEditorService() {
       .setData(payload)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.CREATED) {
       throw new BadResponseError();
     }
 

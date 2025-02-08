@@ -2,10 +2,10 @@
 import useRunCompletion from '@/composables/editor/useRunCompletion';
 import { useDrawerStore } from '@/stores/drawer.store';
 import { Highlight } from '@tiptap/extension-highlight';
+import { TextAlign } from '@tiptap/extension-text-align';
 import { Underline } from '@tiptap/extension-underline';
 import { StarterKit } from '@tiptap/starter-kit';
-import { BubbleMenu, Editor, EditorContent } from '@tiptap/vue-3';
-import EditorBubbleContainer from './EditorBubbleContainer.vue';
+import { Editor, EditorContent } from '@tiptap/vue-3';
 import EditorMenu from './EditorMenu.vue';
 import { AI } from './extensions/ai-extension';
 
@@ -20,6 +20,9 @@ const editor = new Editor({
     StarterKit,
     Highlight,
     Underline,
+    TextAlign.configure({
+      types: ['heading', 'paragraph', 'listItem'],
+    }),
     AI.configure({
       completionHandler: runCompletion,
     }),
@@ -69,6 +72,7 @@ onBeforeUnmount(() => {
       <div
         class="max-w-5xl mt-8 mx-auto shadow-md border px-32 py-14 rounded-sm bg-white min-h-full"
       >
+        <!--
         <BubbleMenu
           v-if="editor"
           :editor="editor"
@@ -76,6 +80,7 @@ onBeforeUnmount(() => {
         >
           <EditorBubbleContainer :is-loading="isLoading" :editor="editor" />
         </BubbleMenu>
+        -->
         <EditorContent :editor="editor" />
       </div>
     </div>

@@ -22,7 +22,6 @@ import {
   SparklesIcon,
   TextCursorInputIcon,
 } from 'lucide-vue-next';
-import { defineEmits, defineProps } from 'vue';
 import EditorButtonBox from './EditorButtonBox.vue';
 
 defineProps<{
@@ -45,12 +44,12 @@ defineEmits<{
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger>
-      <button
-        class="flex items-center justify-center space-x-1 rounded-md px-3 py-1"
+      <div
+        class="flex items-center justify-center shrink-0 space-x-1 rounded-md px-3 py-2 hover:bg-blue-100 text-blue-800"
       >
-        <span>AI</span>
-        <span class="pb-1"><SparklesIcon class="size-3" /></span>
-      </button>
+        <div class="text-sm">Ai&nbsp;Write</div>
+        <div class="pb-1"><SparklesIcon class="size-3" /></div>
+      </div>
     </DropdownMenuTrigger>
     <DropdownMenuContent class="relative w-52 p-2">
       <div

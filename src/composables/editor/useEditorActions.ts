@@ -47,45 +47,82 @@ export default function useEditorActions(editor: Editor) {
     return aiAction(EditorAiActionEnum.CUSTOM, safePrompt);
   }
 
-  function onH1Click() {
-    editor.chain().focus().toggleHeading({ level: 1 }).run();
-  }
+  const defaultChain = editor.chain().focus();
 
-  function onH2Click() {
-    editor.chain().focus().toggleHeading({ level: 2 }).run();
-  }
+  const onH1Click = () => {
+    return editor.chain().focus().toggleHeading({ level: 1 }).run();
+  };
 
-  function onItalicClick() {
-    editor.chain().focus().toggleMark('italic').run();
-  }
+  const onH2Click = () => {
+    return editor.chain().focus().toggleHeading({ level: 2 }).run();
+  };
 
-  function onBoldClick() {
-    editor.chain().focus().toggleMark('bold').run();
-  }
+  const onItalicClick = () => {
+    return editor.chain().focus().toggleMark('italic').run();
+  };
 
-  function onUnderlineClick() {
-    editor.chain().focus().toggleMark('underline').run();
-  }
+  const onBoldClick = () => {
+    return editor.chain().focus().toggleMark('bold').run();
+  };
 
-  function onStrikeClick() {
-    editor.chain().focus().toggleMark('strike').run();
-  }
+  const onUnderlineClick = () => {
+    return editor.chain().focus().toggleMark('underline').run();
+  };
 
-  function onHighlightClick() {
-    editor.chain().focus().toggleMark('highlight').run();
-  }
+  const onStrikeClick = () => {
+    return editor.chain().focus().toggleMark('strike').run();
+  };
 
-  function onUndoClick() {
-    editor.chain().focus().undo().run();
-  }
+  const onHighlightClick = () => {
+    return editor.chain().focus().toggleMark('highlight').run();
+  };
 
-  function onRedoClick() {
-    editor.chain().focus().redo().run();
-  }
+  const onUndoClick = () => {
+    return editor.chain().focus().undo().run();
+  };
 
-  function onToggleCodeClick() {
-    editor.chain().focus().toggleCode().run();
-  }
+  const onRedoClick = () => {
+    return editor.chain().focus().redo().run();
+  };
+
+  const onToggleCodeClick = () => {
+    return editor.chain().focus().toggleCode().run();
+  };
+
+  const onToggleListClick = () => {
+    if (editor.isActive('bulletList')) {
+      // Convert bullet list to ordered list
+      return editor.chain().focus().toggleOrderedList().run();
+    } else if (editor.isActive('orderedList')) {
+      // Remove the ordered list formatting entirely
+      return editor.chain().focus().toggleOrderedList().run();
+    } else {
+      // No list active: start a bullet list
+      return editor.chain().focus().toggleBulletList().run();
+    }
+  };
+
+  const onToggleBulletListClick = () => {
+    return editor.chain().focus().toggleBulletList().run();
+  };
+
+  const onToggleOrderedListClick = () => {
+    return editor.chain().focus().toggleOrderedList().run();
+  };
+
+  const onToggleTextOrientationClick = () => {
+    if (editor.isActive({ textAlign: 'left' })) {
+      return editor.chain().focus().setTextAlign('center').run();
+    } else if (editor.isActive({ textAlign: 'center' })) {
+      return editor.chain().focus().setTextAlign('right').run();
+    } else if (editor.isActive({ textAlign: 'right' })) {
+      return editor.chain().focus().setTextAlign('justify').run();
+    } else if (editor.isActive({ textAlign: 'justify' })) {
+      return editor.chain().focus().setTextAlign('left').run();
+    } else {
+      return editor.chain().focus().setTextAlign('center').run();
+    }
+  };
 
   return {
     onImproveClick,
@@ -106,5 +143,9 @@ export default function useEditorActions(editor: Editor) {
     onUndoClick,
     onRedoClick,
     onToggleCodeClick,
+    onToggleListClick,
+    onToggleBulletListClick,
+    onToggleOrderedListClick,
+    onToggleTextOrientationClick,
   };
 }
