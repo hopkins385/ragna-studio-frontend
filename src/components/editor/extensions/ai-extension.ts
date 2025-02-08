@@ -1,4 +1,3 @@
-import type { Editor } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { Extension } from '@tiptap/vue-3';
 
@@ -9,10 +8,10 @@ interface AiActionOptions {
   prompt?: string;
 }
 
-interface CompletionHandlerOptions {
-  lang: string;
-  action: string;
-  prompt?: string;
+interface CompletionHandlerPayload {
+  context: string;
+  selectedText: string;
+  prompt: string;
 }
 
 declare module '@tiptap/core' {
@@ -22,11 +21,7 @@ declare module '@tiptap/core' {
     };
   }
   interface EditorOptions {
-    lang: string | null;
-    completionHandler: (
-      editor: Editor,
-      options: CompletionHandlerOptions,
-    ) => void;
+    completionHandler: (payload: CompletionHandlerPayload) => Promise<string>;
   }
 }
 
@@ -35,7 +30,9 @@ export const AI = Extension.create({
   addOptions() {
     return {
       lang: null,
-      completionHandler: () => {},
+      completionHandler: async () => {
+        return '';
+      },
     };
   },
   addProseMirrorPlugins() {
@@ -50,15 +47,40 @@ export const AI = Extension.create({
       aiAction:
         (aiActionOptions: AiActionOptions) =>
         ({ editor }) => {
+          const { from, to } = editor.state.selection;
           const { lang, completionHandler } = this.options;
-          const handlerOptions = {
-            lang,
-            action: aiActionOptions.action,
+
+          // Get the selected text and preserve the new line characters such as \n
+          const textBetween = editor.state.doc.textBetween(from, to);
+
+          const handlerPayload = {
+            // lang,
+            // action: aiActionOptions.action,
+            context: editor.getHTML(),
+            selectedText: textBetween,
             prompt: aiActionOptions.prompt,
           };
-          completionHandler(editor, handlerOptions);
+
+          completionHandler(handlerPayload)
+            .then((completion: string) => {
+              editor.commands.insertContentAt({ from, to }, completion);
+              editor.commands.focus();
+            })
+            .catch((error: any) => {
+              console.error('Error while fetching completion', error);
+            });
+
           return true;
         },
     };
   },
 });
+
+/* backup code
+const transaction = editor.state.tr.insertText(
+  completion,
+  from,
+  to,
+);
+editor.view.dispatch(transaction);
+*/

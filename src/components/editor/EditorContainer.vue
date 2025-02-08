@@ -1,18 +1,29 @@
 <script setup lang="ts">
+import useRunCompletion from '@/composables/editor/useRunCompletion';
 import { useDrawerStore } from '@/stores/drawer.store';
-import Document from '@tiptap/extension-document';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Underline } from '@tiptap/extension-underline';
 import { StarterKit } from '@tiptap/starter-kit';
 import { BubbleMenu, Editor, EditorContent } from '@tiptap/vue-3';
+import EditorBubbleContainer from './EditorBubbleContainer.vue';
 import EditorMenu from './EditorMenu.vue';
+import { AI } from './extensions/ai-extension';
+
+const { runCompletion, isLoading } = useRunCompletion();
 
 const drawer = useDrawerStore();
 
-const editorContent = ref('Hello');
+const editorContent = ref('');
 const editor = new Editor({
-  // content: editorContent,
-  extensions: [Document, StarterKit, Highlight, Underline],
+  content: editorContent.value,
+  extensions: [
+    StarterKit,
+    Highlight,
+    Underline,
+    AI.configure({
+      completionHandler: runCompletion,
+    }),
+  ],
   onUpdate: ({ editor }) => {
     // emits('update:modelValue', editor.getHTML())
   },
@@ -54,39 +65,16 @@ onBeforeUnmount(() => {
     <!--
     min-h-full max-h-[calc(100vh-7.5rem)]
     -->
-    <div class="overflow-y-auto bg-stone-50 h-[calc(100vh-7.5rem)] pb-20">
+    <div class="overflow-y-auto bg-stone-50 h-[calc(100vh-7.5rem)] pb-5">
       <div
         class="max-w-5xl mt-8 mx-auto shadow-md border px-32 py-14 rounded-sm bg-white min-h-full"
       >
         <BubbleMenu
+          v-if="editor"
           :editor="editor"
           :tippy-options="{ duration: 100, placement: 'bottom-start' }"
-          v-if="editor"
         >
-          <div
-            class="bg-white border border-stone-200 rounded-lg shadow-md px-4 py-2 space-x-2"
-          >
-            <button variant="ghost" class="px-2">Ask AI</button>
-            <button variant="ghost" class="px-2">Image</button>
-            <button
-              @click="editor.chain().focus().toggleBold().run()"
-              :class="{ 'is-active': editor.isActive('bold') }"
-            >
-              Bold
-            </button>
-            <button
-              @click="editor.chain().focus().toggleItalic().run()"
-              :class="{ 'is-active': editor.isActive('italic') }"
-            >
-              Italic
-            </button>
-            <button
-              @click="editor.chain().focus().toggleStrike().run()"
-              :class="{ 'is-active': editor.isActive('strike') }"
-            >
-              Strike
-            </button>
-          </div>
+          <EditorBubbleContainer :is-loading="isLoading" :editor="editor" />
         </BubbleMenu>
         <EditorContent :editor="editor" />
       </div>
