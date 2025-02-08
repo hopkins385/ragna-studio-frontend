@@ -1,4 +1,5 @@
 import { $axios } from '@/axios/axiosInstance';
+import { HttpStatus } from '@/axios/utils/http-status';
 import { BadRequestError } from '@/common/errors/bad-request.error';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
@@ -153,7 +154,7 @@ export function useChatService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 201) {
+    if (status !== HttpStatus.CREATED) {
       throw new BadResponseError();
     }
 
@@ -174,7 +175,7 @@ export function useChatService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 201) {
+    if (status !== HttpStatus.CREATED) {
       throw new BadResponseError();
     }
 
@@ -233,7 +234,7 @@ export function useChatService() {
         },
       );
 
-      if (response.status !== 200) {
+      if (response.status !== HttpStatus.OK) {
         throw new Error(`Response not ok: ${response.statusText}`);
       }
 
@@ -313,7 +314,7 @@ export function useChatService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -330,7 +331,7 @@ export function useChatService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -346,7 +347,7 @@ export function useChatService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -365,7 +366,7 @@ export function useChatService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -384,7 +385,7 @@ export function useChatService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -413,7 +414,7 @@ export function useChatService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 

@@ -1,3 +1,4 @@
+import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import { getRoute } from '@/utils/route.util';
@@ -33,7 +34,7 @@ export function useAccountService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -53,7 +54,7 @@ export function useAccountService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -73,7 +74,7 @@ export function useAccountService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -90,7 +91,7 @@ export function useAccountService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 

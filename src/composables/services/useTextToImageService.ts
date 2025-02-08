@@ -1,3 +1,4 @@
+import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
@@ -110,7 +111,7 @@ export function useTextToImageService() {
       .setSignal(acGen.signal)
       .send();
 
-    if (status !== 201) {
+    if (status !== HttpStatus.CREATED) {
       throw new BadResponseError();
     }
 
@@ -134,7 +135,7 @@ export function useTextToImageService() {
       .setSignal(acGen.signal)
       .send();
 
-    if (status !== 201) {
+    if (status !== HttpStatus.CREATED) {
       throw new BadResponseError();
     }
 
@@ -153,7 +154,7 @@ export function useTextToImageService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -169,7 +170,7 @@ export function useTextToImageService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -191,7 +192,7 @@ export function useTextToImageService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -210,7 +211,7 @@ export function useTextToImageService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 

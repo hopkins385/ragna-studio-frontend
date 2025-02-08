@@ -1,3 +1,4 @@
+import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
@@ -85,7 +86,7 @@ export function useAssistantTemplateService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -105,7 +106,7 @@ export function useAssistantTemplateService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -125,7 +126,7 @@ export function useAssistantTemplateService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -144,7 +145,7 @@ export function useAssistantTemplateService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -168,7 +169,7 @@ export function useAssistantTemplateService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 
@@ -192,8 +193,8 @@ export function useAssistantTemplateService() {
       .setSignal(ac.signal)
       .send();
 
-    // The expected status code is 200 in this case.
-    if (status !== 200) {
+    // The expected status code is HttpStatus.OK in this case.
+    if (status !== HttpStatus.OK) {
       throw new BadResponseError();
     }
 

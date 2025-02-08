@@ -1,3 +1,4 @@
+import { HttpStatus } from '@/axios/utils/http-status';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import { getRoute } from '@/utils/route.util';
@@ -63,7 +64,7 @@ export function useWorkflowService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 201) {
+    if (status !== HttpStatus.CREATED) {
       throw new Error('Failed to create workflow');
     }
 
@@ -87,7 +88,7 @@ export function useWorkflowService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new Error('Failed to fetch workflow');
     }
 
@@ -105,7 +106,7 @@ export function useWorkflowService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new Error('Failed to fetch workflow');
     }
 
@@ -120,7 +121,7 @@ export function useWorkflowService() {
         signal: ac.signal,
       });
 
-      if (response.status !== 200) {
+      if (response.status !== HttpStatus.OK) {
         throw new Error('Response not ok');
       }
 
@@ -142,7 +143,7 @@ export function useWorkflowService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new Error('Failed to fetch workflows');
     }
 
@@ -168,7 +169,7 @@ export function useWorkflowService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new Error('Failed to update workflow');
     }
 
@@ -186,7 +187,7 @@ export function useWorkflowService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new Error('Failed to delete workflow');
     }
 
@@ -209,7 +210,7 @@ export function useWorkflowService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new Error('Failed to delete workflow rows');
     }
 
@@ -228,7 +229,7 @@ export function useWorkflowService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 200) {
+    if (status !== HttpStatus.OK) {
       throw new Error('Failed to export workflow');
     }
 
@@ -250,7 +251,7 @@ export function useWorkflowService() {
       .setSignal(ac.signal)
       .send();
 
-    if (status !== 201) {
+    if (status !== HttpStatus.CREATED) {
       throw new Error('Failed to execute workflow');
     }
 
