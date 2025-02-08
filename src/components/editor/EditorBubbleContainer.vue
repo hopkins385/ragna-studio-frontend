@@ -22,13 +22,20 @@ const preserveSelection = () => {};
 
 const restoreSelection = () => {};
 
-const focusInput = async () => {};
+const focusInput = async () => {
+  await nextTick();
+  inputRef.value?.focus();
+};
 
 const onSubmit = (event: KeyboardEvent) => {
   event.preventDefault();
   onCustomActionClick(input.value);
   input.value = '';
 };
+
+onMounted(() => {
+  focusInput();
+});
 </script>
 
 <template>

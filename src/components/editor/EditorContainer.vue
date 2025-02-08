@@ -6,8 +6,25 @@ import { TextAlign } from '@tiptap/extension-text-align';
 import { Underline } from '@tiptap/extension-underline';
 import { StarterKit } from '@tiptap/starter-kit';
 import { Editor, EditorContent } from '@tiptap/vue-3';
+import EditorBubbleContainer from './EditorBubbleContainer.vue';
 import EditorMenu from './EditorMenu.vue';
 import { AI } from './extensions/ai-extension';
+
+const editorWrapperRef = ref<HTMLElement | null>(null);
+const bubbleContainerRef = ref<HTMLElement | null>(null);
+
+const bubbleContainer = reactive({
+  show: false,
+  xPosition: 0,
+  yPosition: 0,
+});
+
+const { x: mouseX, y: mouseY, sourceType } = useMouse();
+const {
+  x: xInElement,
+  y: yInElement,
+  isOutside,
+} = useMouseInElement(editorWrapperRef);
 
 const { runCompletion, isLoading } = useRunCompletion();
 
@@ -28,18 +45,90 @@ const editor = new Editor({
     }),
   ],
   onUpdate: ({ editor }) => {
+    editorContent.value = editor.getHTML() || '';
     // emits('update:modelValue', editor.getHTML())
+  },
+  onBlur: ({ event }) => {
+    // If the focused element is inside the bubble container, do nothing.
+    if (
+      bubbleContainerRef.value &&
+      event.relatedTarget &&
+      bubbleContainerRef.value.contains(event.relatedTarget as Node)
+    ) {
+      return;
+    }
+    console.log('editor blur');
+    bubbleContainer.show = false;
   },
   autofocus: 'end',
 });
 
+const hasTextSelected = computed(() => {
+  if (editorContent.value.length < 1) {
+    return false;
+  }
+  const { from, to } = editor.state.selection;
+  return from !== to;
+});
+
+// Handle mouseup event to show the bubble container
+const handleContextMenu = (event: MouseEvent) => {
+  event.preventDefault();
+  // If the click originated inside the bubble container, do nothing.
+  if (
+    bubbleContainerRef.value &&
+    bubbleContainerRef.value.contains(event.target as Node)
+  ) {
+    return;
+  }
+  if (hasTextSelected.value && editorWrapperRef.value && !isOutside.value) {
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const rangeRect = selection.getRangeAt(0).getBoundingClientRect();
+      const containerRect = editorWrapperRef.value.getBoundingClientRect();
+      bubbleContainer.xPosition = event.clientX - containerRect.left;
+      bubbleContainer.yPosition = event.clientY - containerRect.top + 10; // 10px offset
+      bubbleContainer.show = true;
+    } else {
+      bubbleContainer.show = false;
+    }
+  } else {
+    bubbleContainer.show = false;
+  }
+};
+
+watch(
+  () => hasTextSelected.value,
+  newValue => {
+    if (newValue === false) {
+      bubbleContainer.show = false;
+    }
+  },
+);
+
+const handleKeyDown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
+    bubbleContainer.show = false;
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('contextmenu', handleContextMenu);
+  window.addEventListener('keydown', handleKeyDown);
+});
+
 onBeforeUnmount(() => {
+  window.removeEventListener('contextmenu', handleContextMenu);
+  window.removeEventListener('keydown', handleKeyDown);
   editor.destroy();
 });
 </script>
 
 <template>
-  <div id="text-editor" class="rounded-lg bg-white overflow-hidden h-full">
+  <div
+    id="text-editor"
+    class="rounded-lg bg-white overflow-hidden h-full relative"
+  >
     <!-- Menu -->
     <div
       class="border-b flex justify-between items-center rounded-t-lg overflow-hidden h-13"
@@ -70,8 +159,21 @@ onBeforeUnmount(() => {
     -->
     <div class="overflow-y-auto bg-stone-50 h-[calc(100vh-7.5rem)] pb-5">
       <div
-        class="max-w-5xl mt-8 mx-auto shadow-md border px-32 py-14 rounded-sm bg-white min-h-full"
+        id="editorWrapper"
+        ref="editorWrapperRef"
+        class="max-w-5xl mt-8 mx-auto shadow-md border px-32 py-14 rounded-sm bg-white min-h-full relative"
       >
+        <div
+          v-if="bubbleContainer.show"
+          ref="bubbleContainerRef"
+          class="absolute z-10"
+          :style="{
+            top: `${bubbleContainer.yPosition}px`,
+            left: `${bubbleContainer.xPosition}px`,
+          }"
+        >
+          <EditorBubbleContainer :is-loading="isLoading" :editor="editor" />
+        </div>
         <!--
         <BubbleMenu
           v-if="editor"

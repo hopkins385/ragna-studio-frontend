@@ -92,7 +92,7 @@ const onTranslateClick = (lang: string) => {
         }"
         @click="onH1Click()"
       >
-        <Heading1Icon class="!size-5 stroke-1.5" />
+        <Heading1Icon class="!size-5 stroke-1.5 bg-transparent" />
       </Button>
       <Button
         variant="ghost"
@@ -102,7 +102,7 @@ const onTranslateClick = (lang: string) => {
         }"
         @click="onH2Click()"
       >
-        <Heading2Icon class="!size-5 stroke-1.5" />
+        <Heading2Icon class="!size-5 stroke-1.5 bg-transparent" />
       </Button>
       <Button
         variant="ghost"
@@ -112,7 +112,7 @@ const onTranslateClick = (lang: string) => {
         }"
         @click="onBoldClick()"
       >
-        <BoldIcon class="size-4" />
+        <BoldIcon class="size-4 bg-transparent" />
       </Button>
       <Button
         variant="ghost"
@@ -122,7 +122,7 @@ const onTranslateClick = (lang: string) => {
         }"
         @click="onItalicClick()"
       >
-        <ItalicIcon class="size-4" />
+        <ItalicIcon class="size-4 bg-transparent" />
       </Button>
       <Button
         variant="ghost"
@@ -132,7 +132,7 @@ const onTranslateClick = (lang: string) => {
         }"
         @click="onUnderlineClick()"
       >
-        <UnderlineIcon class="size-4" />
+        <UnderlineIcon class="size-4 bg-transparent" />
       </Button>
       <Button
         variant="ghost"
@@ -142,7 +142,7 @@ const onTranslateClick = (lang: string) => {
         }"
         @click="onStrikeClick()"
       >
-        <StrikethroughIcon class="size-4" />
+        <StrikethroughIcon class="size-4 bg-transparent" />
       </Button>
       <Button
         variant="ghost"
@@ -151,21 +151,21 @@ const onTranslateClick = (lang: string) => {
       >
         <TextIcon
           v-if="editor.isActive({ textAlign: 'left' })"
-          class="!size-5 stroke-1.5"
+          class="!size-5 stroke-1.5 bg-transparent"
         />
         <AlignCenterIcon
           v-else-if="editor.isActive({ textAlign: 'center' })"
-          class="!size-5 stroke-1.5"
+          class="!size-5 stroke-1.5 bg-transparent"
         />
         <AlignRightIcon
           v-else-if="editor.isActive({ textAlign: 'right' })"
-          class="!size-5 stroke-1.5"
+          class="!size-5 stroke-1.5 bg-transparent"
         />
         <AlignJustifyIcon
           v-else-if="editor.isActive({ textAlign: 'justify' })"
-          class="!size-5 stroke-1.5"
+          class="!size-5 stroke-1.5 bg-transparent"
         />
-        <TextIcon v-else class="!size-5 stroke-1.5" />
+        <TextIcon v-else class="!size-5 stroke-1.5 bg-transparent" />
       </Button>
       <Button
         variant="ghost"
@@ -178,9 +178,9 @@ const onTranslateClick = (lang: string) => {
       >
         <ListOrderedIcon
           v-if="editor.isActive('orderedList')"
-          class="!size-5 stroke-1.5"
+          class="!size-5 stroke-1.5 bg-transparent"
         />
-        <ListIcon v-else class="!size-5 stroke-1.5" />
+        <ListIcon v-else class="!size-5 stroke-1.5 bg-transparent" />
       </Button>
       <Button
         variant="ghost"
@@ -190,7 +190,7 @@ const onTranslateClick = (lang: string) => {
         }"
         @click="onHighlightClick()"
       >
-        <HighlighterIcon class="size-4" />
+        <HighlighterIcon class="size-4 bg-transparent" />
       </Button>
       <Button
         variant="ghost"
@@ -198,16 +198,18 @@ const onTranslateClick = (lang: string) => {
         @click="onToggleCodeClick()"
         :class="{ 'is-active': editor.isActive('code') }"
       >
-        <CodeIcon class="size-4" />
+        <CodeIcon class="size-4 bg-transparent" />
       </Button>
       <Button variant="ghost" size="icon" @click="onUndoClick()">
-        <Undo2Icon class="size-4" />
+        <Undo2Icon class="size-4 bg-transparent" />
       </Button>
       <Button variant="ghost" size="icon" @click="onRedoClick()">
-        <Redo2Icon class="size-4" />
+        <Redo2Icon class="size-4 bg-transparent" />
       </Button>
       <div v-if="isLoading" class="flex items-center justify-center">
-        <Loader2Icon class="size-6 animate-spin text-slate-300" />
+        <Loader2Icon
+          class="size-6 animate-spin text-slate-300 bg-transparent"
+        />
       </div>
     </div>
     <!-- div v-if="isLoading" class="flex items-center justify-center">
