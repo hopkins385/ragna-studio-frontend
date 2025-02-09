@@ -8,6 +8,7 @@ import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { useChatStore } from '@/stores/chat-inference.store';
 import { useChatSettingsStore } from '@/stores/chat-settings.store';
 import { getRoute } from '@/utils/route.util';
+import { AxiosError, CanceledError } from 'axios';
 
 const ChatRoute = {
   BASE: '/chat', // POST
@@ -111,12 +112,11 @@ export function useChatService() {
 
   const isPending = ref(false);
   const isStreaming = ref(false);
+  const isThinking = ref(false);
 
   const chat = ref<Chat | null>(null);
   const chatMessages = ref<ChatMessage[]>([]);
   const chatTextChunks = ref<string[]>([]);
-
-  const isThinking = ref(false);
 
   const hasChatMessages = computed(() => chatMessages.value.length > 0);
   const chatAssistant = computed(() => chat.value?.assistant);
@@ -124,11 +124,23 @@ export function useChatService() {
   const chatStore = useChatStore();
   const chatSettingsStore = useChatSettingsStore();
 
-  const handleError = (err: unknown, customMessage?: string) => {
+  const handleError = (err: unknown) => {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      console.warn('DOM: Request was aborted');
+      return;
+    }
+    if (
+      err instanceof CanceledError ||
+      (err instanceof AxiosError && err.message === 'AbortError')
+    ) {
+      console.warn('Axios: Request was aborted');
+      return;
+    }
     if (err instanceof Error) {
+      return setError(err.message);
     }
     console.error(err);
-    throw new ChatServiceError(customMessage || 'Failed to fetch data');
+    throw new ChatServiceError('Failed to fetch data');
   };
 
   const setError = (message: string) => {
@@ -179,9 +191,7 @@ export function useChatService() {
       throw new BadResponseError();
     }
 
-    addChatMessage(data);
-
-    return;
+    return data;
   };
 
   const sendChatMessage = async (payload: CreateChatMessageStream) => {
@@ -204,9 +214,10 @@ export function useChatService() {
     };
 
     try {
-      await createChatMessage({ chatId, message: chatMessage });
+      const data = await createChatMessage({ chatId, message: chatMessage });
+      addChatMessage(data);
     } catch (error: unknown) {
-      return handleError(error, 'Failed to send chat message');
+      return handleError(error);
     }
 
     isThinking.value = true;
@@ -249,19 +260,13 @@ export function useChatService() {
         .pipeThrough(new TextDecoderStream())
         .getReader();
 
-      let done = false;
-      let buffer = '';
-
-      while (!done) {
-        const { value, done: _done } = await reader.read();
+      while (true) {
+        const { value, done } = await reader.read();
         if (done) {
           break;
         }
-        done = _done;
-        buffer += value;
 
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
+        const lines = value.split('\n');
 
         for (const line of lines) {
           try {
@@ -277,10 +282,7 @@ export function useChatService() {
         }
       }
     } catch (error: unknown) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        return;
-      }
-      return handleError(error, 'Failed to stream chat message');
+      return handleError(error);
     } finally {
       finalizeStream();
     }
