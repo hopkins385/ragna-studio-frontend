@@ -272,7 +272,6 @@ export function useChatService() {
           try {
             if (line.trim().startsWith('data: ')) {
               const { message } = JSON.parse(line.slice(6).trim());
-              // console.log('message:', JSON.stringify({ message }, null, 2));
               if (message) {
                 chatTextChunks.value.push(message);
               }
