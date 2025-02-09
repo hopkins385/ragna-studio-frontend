@@ -154,9 +154,6 @@ onBeforeUnmount(() => {
       <div class="w-20"></div>
     </div>
     <!-- Editor Content -->
-    <!--
-    min-h-full max-h-[calc(100vh-7.5rem)]
-    -->
     <div class="overflow-y-auto bg-stone-50 h-[calc(100vh-7.5rem)] pb-5">
       <div
         id="editorWrapper"
@@ -183,6 +180,7 @@ onBeforeUnmount(() => {
           <EditorBubbleContainer :is-loading="isLoading" :editor="editor" />
         </BubbleMenu>
         -->
+
         <EditorContent :editor="editor" />
       </div>
     </div>

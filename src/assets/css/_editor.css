@@ -1,6 +1,6 @@
 #text-editor {
   .ProseMirror {
-    @apply min-h-full outline-none;
+    @apply outline-none min-h-[calc(100vh-14rem)];
 
     > p:first-child {
       @apply mt-0;
