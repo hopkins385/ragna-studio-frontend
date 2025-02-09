@@ -82,8 +82,14 @@ export default function useMarkdown() {
     return self.renderToken(tokens, idx, options);
   };
 
+  const preprocessMarkdown = (text: string) => {
+    return text.replace(/\n\n/g, '\n\n<p>&nbsp;</p>\n\n');
+  };
+
   function parseMarkdown(text: string) {
     return md.render(text);
+    // const preprocessedText = preprocessMarkdown(text);
+    // return md.render(preprocessedText);
   }
 
   return {

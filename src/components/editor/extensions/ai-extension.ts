@@ -63,8 +63,17 @@ export const AI = Extension.create({
 
           completionHandler(handlerPayload)
             .then((completion: string) => {
-              editor.commands.insertContentAt({ from, to }, completion);
-              editor.commands.focus();
+              // Insert the completion into the
+              editor
+                .chain()
+                .deleteRange({ from, to }) // First delete the existing content
+                .insertContent(completion, {
+                  parseOptions: {
+                    preserveWhitespace: 'full',
+                  },
+                })
+                .focus()
+                .run();
             })
             .catch((error: any) => {
               console.error('Error while fetching completion', error);
