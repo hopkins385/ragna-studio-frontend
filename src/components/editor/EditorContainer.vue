@@ -113,12 +113,12 @@ const handleKeyDown = (event: KeyboardEvent) => {
 };
 
 onMounted(() => {
-  window.addEventListener('contextmenu', handleContextMenu);
+  // window.addEventListener('contextmenu', handleContextMenu);
   window.addEventListener('keydown', handleKeyDown);
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('contextmenu', handleContextMenu);
+  // window.removeEventListener('contextmenu', handleContextMenu);
   window.removeEventListener('keydown', handleKeyDown);
   editor.destroy();
 });
@@ -158,7 +158,7 @@ onBeforeUnmount(() => {
       <div
         id="editorWrapper"
         ref="editorWrapperRef"
-        class="max-w-5xl mt-8 mx-auto shadow-md border px-32 py-14 rounded-sm bg-white min-h-full relative"
+        class="max-w-5xl mt-8 mx-auto shadow-md border px-32 py-28 rounded-sm bg-white min-h-full relative"
       >
         <div
           v-if="bubbleContainer.show"

@@ -7,30 +7,31 @@
     }
 
     p {
-      @apply border-0;
+      @apply relative;
     }
 
     > p:last-child {
       @apply mb-0;
     }
 
-    > h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
+    > h1 {
+      @apply mb-3;
       &:first-child {
-        @apply mt-0;
+      }
+    }
+
+    > h2 {
+      @apply mb-2;
+      &:first-child {
       }
     }
 
     h1 {
-      @apply text-4xl font-bold;
+      @apply text-3xl font-semibold;
     }
 
     h2 {
-      @apply text-xl font-bold;
+      @apply text-2xl font-semibold;
     }
 
     /* List styles */
@@ -41,6 +42,20 @@
       @apply list-decimal list-outside pl-5;
     }
   }
+}
+
+.ProseMirror {
+  /** formatting marks 
+  p::after {
+    content: '\00b6';
+    color: blue;
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    display: inline-block;
+    margin-left: 0.2em;
+  }
+  */
 }
 
 .editor__menu-button {
