@@ -17,6 +17,7 @@ export const RouteName = {
   ASSISTANT_INDEX: 'assistant.index',
   ASSISTANT_CREATE: 'assistant.create',
   ASSISTANT_EDIT: 'assistant.edit',
+  ASSISTANT_TEMPLATE: 'assistant.template',
   // Collection routes
   COLLECTION_INDEX: 'collection.index',
   COLLECTION_CREATE: 'collection.create',
@@ -37,9 +38,6 @@ export const RouteName = {
   WORKFLOW_CREATE: 'workflow.create',
   WORKFLOW_SHOW: 'workflow.show',
   WORKFLOW_EDIT: 'workflow.edit',
-  // Template routes
-  TEMPLATE_INDEX: 'template.index',
-  TEMPLATE_SHOW: 'template.show',
   // Account routes
   ACCOUNT_INDEX: 'account.index',
   ACCOUNT_SETTINGS: 'account.settings',

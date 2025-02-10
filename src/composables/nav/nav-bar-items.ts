@@ -8,9 +8,11 @@ import {
   FileTextIcon,
   FolderIcon,
   FolderKanbanIcon,
+  HammerIcon,
   HistoryIcon,
   HomeIcon,
   ImageIcon,
+  LayoutTemplateIcon,
   MessagesSquareIcon,
   PaintbrushVerticalIcon,
   PlusCircleIcon,
@@ -113,15 +115,15 @@ export const workflowRoutes: NavItem[] = [
 ];
 
 export const documentRoutes: NavItem[] = [
+  // {
+  //   icon: PlusCircleIcon,
+  //   path: '/document/create',
+  //   label: 'nav.create',
+  //   hidden: false,
+  //   children: [],
+  // },
   {
-    icon: PlusCircleIcon,
-    path: '/document/create',
-    label: 'nav.create',
-    hidden: false,
-    children: [],
-  },
-  {
-    icon: DatabaseIcon,
+    icon: FileTextIcon,
     path: '/document',
     label: 'nav.documents',
     hidden: false,
@@ -162,9 +164,23 @@ export const assistantRoutes: NavItem[] = [
     children: [],
   },
   {
+    icon: LayoutTemplateIcon,
+    path: '/assistant/template',
+    label: 'nav.templates',
+    hidden: false,
+    children: [],
+  },
+  {
     icon: BotIcon,
     path: '/assistant',
     label: 'nav.agents',
+    hidden: false,
+    children: [],
+  },
+  {
+    icon: HammerIcon,
+    path: '/assistant/tool',
+    label: 'nav.tools',
     hidden: false,
     children: [],
   },

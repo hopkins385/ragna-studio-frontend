@@ -89,6 +89,10 @@ export default function useEditorActions(editor: Editor) {
     return editor.chain().focus().toggleCode().run();
   };
 
+  const onToggleTaskListClick = () => {
+    return editor.chain().focus().toggleTaskList().run();
+  };
+
   const onToggleListClick = () => {
     if (editor.isActive('bulletList')) {
       // Convert bullet list to ordered list
@@ -144,6 +148,7 @@ export default function useEditorActions(editor: Editor) {
     onRedoClick,
     onToggleCodeClick,
     onToggleListClick,
+    onToggleTaskListClick,
     onToggleBulletListClick,
     onToggleOrderedListClick,
     onToggleTextOrientationClick,

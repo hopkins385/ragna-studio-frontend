@@ -5,8 +5,10 @@
     "workflows": "Workflows",
     "agents": "Agenten",
     "agent_templates": "Vorlagen",
+    "tools": "Werkzeuge",
     "chat": "Chat",
     "chats": "Chats",
+    "templates": "Vorlagen",
     "last_chat": "Letzter Chat",
     "textToImage": "KI Bilder",
     "text_to_image": "Bild Generator",
@@ -288,6 +290,9 @@
       "success": "Agent erfolgreich aktualisiert",
       "error": "Der Agent konnte nicht aktualisiert werden"
     },
+    "clone": {
+      "success": "Template erfolgreich übernommen"
+    },
     "form": {
       "name_label": "Name",
       "name_description": "Dies ist der Anzeigename des Agenten",
@@ -324,6 +329,11 @@
     "privacy": {
       "label": "Privatsphäre",
       "description": "Wähle die Privatsphäre Einstellungen für den Agenten"
+    },
+    "templates": {
+      "title_short": "Agenten Vorlagen",
+      "title": "Passende Vorlagen für deine Bedürfnisse",
+      "subtitle": "Lass dich von den besten Vorlagen des RAGNA Ai Studio Teams inspirieren."
     }
   },
   "medias": {
@@ -468,11 +478,6 @@
         "show": "Historie"
       }
     }
-  },
-  "templates": {
-    "title_short": "Vorlagen",
-    "title": "Passende Vorlagen für deine Bedürfnisse",
-    "subtitle": "Lass dich von den besten Vorlagen des RAGNA Ai Studio Teams inspirieren."
   },
   "template": {
     "title": "Vorlage",

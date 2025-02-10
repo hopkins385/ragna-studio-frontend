@@ -46,7 +46,7 @@ watch(pressed, isPressed => {
     >
       <div id="spacer" class="h-2"></div>
       <div class="flex h-full flex-col">
-        <ul class="space-y-2">
+        <ul class="space-y-4">
           <template v-for="item in dynamicNavItems" :key="item.path">
             <li v-if="item.path" class="nav-item">
               <NavLink

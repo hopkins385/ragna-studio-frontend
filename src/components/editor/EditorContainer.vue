@@ -2,6 +2,11 @@
 import useRunCompletion from '@/composables/editor/useRunCompletion';
 import { useDrawerStore } from '@/stores/drawer.store';
 import { Highlight } from '@tiptap/extension-highlight';
+import { Image } from '@tiptap/extension-image';
+import { Placeholder } from '@tiptap/extension-placeholder';
+
+import { TaskItem } from '@tiptap/extension-task-item';
+import { TaskList } from '@tiptap/extension-task-list';
 import { TextAlign } from '@tiptap/extension-text-align';
 import { Underline } from '@tiptap/extension-underline';
 import { StarterKit } from '@tiptap/starter-kit';
@@ -35,6 +40,18 @@ const editor = new Editor({
   content: editorContent.value,
   extensions: [
     StarterKit,
+    Placeholder.configure({
+      // Use a placeholder:
+      placeholder: 'Write something …',
+      // Use different placeholders depending on the node type:
+      // placeholder: ({ node }) => {
+      //   if (node.type.name === 'heading') {
+      //     return 'What’s the title?'
+      //   }
+
+      //   return 'Can you add some further context?'
+      // },
+    }),
     Highlight,
     Underline,
     TextAlign.configure({
@@ -43,6 +60,9 @@ const editor = new Editor({
     AI.configure({
       completionHandler: runCompletion,
     }),
+    TaskList,
+    TaskItem,
+    Image,
   ],
   onUpdate: ({ editor }) => {
     editorContent.value = editor.getHTML() || '';
@@ -57,7 +77,7 @@ const editor = new Editor({
     ) {
       return;
     }
-    console.log('editor blur');
+    // console.log('editor blur');
     bubbleContainer.show = false;
   },
   autofocus: 'end',
@@ -73,7 +93,6 @@ const hasTextSelected = computed(() => {
 
 // Handle mouseup event to show the bubble container
 const handleContextMenu = (event: MouseEvent) => {
-  event.preventDefault();
   // If the click originated inside the bubble container, do nothing.
   if (
     bubbleContainerRef.value &&
@@ -82,9 +101,10 @@ const handleContextMenu = (event: MouseEvent) => {
     return;
   }
   if (hasTextSelected.value && editorWrapperRef.value && !isOutside.value) {
+    event.preventDefault();
     const selection = window.getSelection();
     if (selection && selection.rangeCount > 0) {
-      const rangeRect = selection.getRangeAt(0).getBoundingClientRect();
+      // const rangeRect = selection.getRangeAt(0).getBoundingClientRect();
       const containerRect = editorWrapperRef.value.getBoundingClientRect();
       bubbleContainer.xPosition = event.clientX - containerRect.left;
       bubbleContainer.yPosition = event.clientY - containerRect.top + 10; // 10px offset
@@ -113,12 +133,12 @@ const handleKeyDown = (event: KeyboardEvent) => {
 };
 
 onMounted(() => {
-  // window.addEventListener('contextmenu', handleContextMenu);
+  window.addEventListener('contextmenu', handleContextMenu);
   window.addEventListener('keydown', handleKeyDown);
 });
 
 onBeforeUnmount(() => {
-  // window.removeEventListener('contextmenu', handleContextMenu);
+  window.removeEventListener('contextmenu', handleContextMenu);
   window.removeEventListener('keydown', handleKeyDown);
   editor.destroy();
 });

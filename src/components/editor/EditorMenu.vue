@@ -12,6 +12,7 @@ import {
   Heading2Icon,
   HighlighterIcon,
   ItalicIcon,
+  ListChecksIcon,
   ListIcon,
   ListOrderedIcon,
   Loader2Icon,
@@ -49,6 +50,7 @@ const {
   onRedoClick,
   onToggleCodeClick,
   onToggleListClick,
+  onToggleTaskListClick,
   onToggleBulletListClick,
   onToggleOrderedListClick,
   onToggleTextOrientationClick,
@@ -181,6 +183,16 @@ const onTranslateClick = (lang: string) => {
           class="!size-5 stroke-1.5 bg-transparent"
         />
         <ListIcon v-else class="!size-5 stroke-1.5 bg-transparent" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        :class="{
+          'is-active': editor.isActive('taskList'),
+        }"
+        @click="onToggleTaskListClick()"
+      >
+        <ListChecksIcon class="!size-5 stroke-1.5 bg-transparent" />
       </Button>
       <Button
         variant="ghost"

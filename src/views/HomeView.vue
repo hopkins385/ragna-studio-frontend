@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import imageUrl from '@/assets/images/bg_robots.png';
-import HomeAgentTemplates from '@/components/home/HomeAgentTemplates.vue';
 import HomeFavorites from '@/components/home/HomeFavorites.vue';
 import HomeQuickAccess from '@/components/home/HomeQuickAccess.vue';
 
@@ -38,8 +37,12 @@ const backgroundStyles = computed(() => {
       <!-- Home Favorites  -->
       <div class="px-20 py-10">
         <div class="space-y-10">
+          <!-- Home Favorites  -->
           <HomeFavorites />
+          <!-- Home Agent Templates  -->
+          <!--
           <HomeAgentTemplates />
+          -->
         </div>
       </div>
     </div>

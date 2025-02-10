@@ -111,6 +111,12 @@ const assistantRoutes = {
       meta: defaultAppMeta,
     },
     {
+      path: 'template',
+      name: RouteName.ASSISTANT_TEMPLATE,
+      component: () => import('@views/assistant/AssistantTemplateView.vue'),
+      meta: defaultAppMeta,
+    },
+    {
       path: ':id/edit',
       name: RouteName.ASSISTANT_EDIT,
       beforeEnter: [hasValidRouteId],
@@ -318,20 +324,6 @@ const onboardingRoutes = {
   ],
 };
 
-const templateRoutes = {
-  path: '/template',
-  component: () => import('@views/template/TemplateRootView.vue'),
-  meta: defaultAppMeta,
-  children: [
-    {
-      path: '',
-      name: RouteName.TEMPLATE_INDEX,
-      component: () => import('@views/template/TemplateIndexView.vue'),
-      meta: defaultAppMeta,
-    },
-  ],
-};
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -345,7 +337,6 @@ const router = createRouter({
     ducumentRoutes,
     mediaRoutes,
     textToImageRoutes,
-    templateRoutes,
     accountRoutes,
     socialAuthCallbackRoutes,
     {

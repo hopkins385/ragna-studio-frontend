@@ -41,6 +41,45 @@
     ol {
       @apply list-decimal list-outside pl-5;
     }
+
+    /* Placeholder (at the top) */
+    p.is-editor-empty:first-child::before {
+      @apply text-stone-400;
+      content: attr(data-placeholder);
+      float: left;
+      height: 0;
+      pointer-events: none;
+    }
+
+    /* Task list specific styles */
+    ul[data-type='taskList'] {
+      list-style: none;
+      margin-left: 0;
+      padding: 0;
+
+      li {
+        align-items: flex-start;
+        display: flex;
+
+        > label {
+          flex: 0 0 auto;
+          margin-right: 0.5rem;
+          user-select: none;
+        }
+
+        > div {
+          flex: 1 1 auto;
+        }
+      }
+
+      input[type='checkbox'] {
+        @apply cursor-pointer;
+      }
+
+      ul[data-type='taskList'] {
+        @apply m-0;
+      }
+    }
   }
 }
 

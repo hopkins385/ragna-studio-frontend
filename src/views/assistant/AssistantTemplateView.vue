@@ -49,8 +49,8 @@ onMounted(async () => {
     <Heading :img-url="bgImgUrl" bg-position="center">
       <template #top>
         <HeadingTitle
-          :title="$t('templates.title')"
-          :subtitle="$t('templates.subtitle')"
+          :title="$t('assistant.templates.title')"
+          :subtitle="$t('assistant.templates.subtitle')"
         />
       </template>
       <template #bottom> </template>

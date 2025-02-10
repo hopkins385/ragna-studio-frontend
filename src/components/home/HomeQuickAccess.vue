@@ -20,13 +20,6 @@ const quickAccessItems = [
     label: t('nav.documents'),
     route: '/document',
   },
-
-  {
-    icon: WorkflowIcon,
-    class: 'bg-green-100/60',
-    label: t('nav.workflows'),
-    route: '/workflow',
-  },
   {
     icon: MessagesSquareIcon,
     class: 'bg-amber-100/60',
@@ -46,6 +39,12 @@ const quickAccessItems = [
     route: '/text-to-image',
   },
   {
+    icon: WorkflowIcon,
+    class: 'bg-green-100/60',
+    label: t('nav.workflows'),
+    route: '/workflow',
+  },
+  {
     icon: DatabaseIcon,
     class: 'bg-slate-100/60',
     label: t('nav.collections'),
@@ -61,7 +60,7 @@ const quickAccessItems = [
     icon: LayoutTemplateIcon,
     class: 'bg-cyan-100/60',
     label: t('nav.agent_templates'),
-    route: '/template',
+    route: '/assistant/template',
   },
 ];
 </script>
