@@ -144,13 +144,24 @@ onMounted(() => {
                 })
             "
           >
-            <img
-              v-if="image.path"
-              :src="image.path"
-              alt="image"
-              class="size-full rounded-lg object-contain"
-              loading="lazy"
-            />
+            <picture v-if="image.path">
+              <source
+                v-if="image.thumb?.avif"
+                :srcset="image.thumb.avif.path"
+                type="image/avif"
+              />
+              <source
+                v-if="image.thumb?.webp"
+                :srcset="image.thumb.webp.path"
+                type="image/webp"
+              />
+              <img
+                :src="image.path"
+                alt="image"
+                class="size-full rounded-lg object-contain"
+                loading="lazy"
+              />
+            </picture>
             <div v-else class="group size-full bg-stone-100 p-2">
               <p class="hidden text-xs lowercase opacity-50 group-hover:block">
                 {{ image.status }}
