@@ -1,19 +1,23 @@
 <script setup lang="ts">
 import useRunCompletion from '@/composables/editor/useRunCompletion';
-import { useDrawerStore } from '@/stores/drawer.store';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Image } from '@tiptap/extension-image';
+import { ListKeymap } from '@tiptap/extension-list-keymap';
 import { Placeholder } from '@tiptap/extension-placeholder';
-
 import { TaskItem } from '@tiptap/extension-task-item';
 import { TaskList } from '@tiptap/extension-task-list';
 import { TextAlign } from '@tiptap/extension-text-align';
 import { Underline } from '@tiptap/extension-underline';
 import { StarterKit } from '@tiptap/starter-kit';
-import { Editor, EditorContent } from '@tiptap/vue-3';
+import { Editor, EditorContent, type JSONContent } from '@tiptap/vue-3';
 import EditorBubbleContainer from './EditorBubbleContainer.vue';
 import EditorMenu from './EditorMenu.vue';
 import { AI } from './extensions/ai-extension';
+import { Comment, type CommentData } from './extensions/comment-extension';
+import { JSONExtended } from './extensions/json-extension';
+
+const documentId = ref('aaaabbbbccccdddeeefffgggghhhh');
+const editorContent = ref<JSONContent | undefined>(undefined);
 
 const editorWrapperRef = ref<HTMLElement | null>(null);
 const bubbleContainerRef = ref<HTMLElement | null>(null);
@@ -24,33 +28,75 @@ const bubbleContainer = reactive({
   yPosition: 0,
 });
 
-const { x: mouseX, y: mouseY, sourceType } = useMouse();
-const {
-  x: xInElement,
-  y: yInElement,
-  isOutside,
-} = useMouseInElement(editorWrapperRef);
+const { isOutside } = useMouseInElement(editorWrapperRef);
 
 const { runCompletion, isLoading } = useRunCompletion();
 
-const drawer = useDrawerStore();
+const creatCommentHandler = async (comment: any) => {
+  console.log('create comment', comment);
+  return await new Promise(resolve => {
+    setTimeout(() => {
+      resolve(comment);
+    }, 1000);
+  });
+};
 
-const editorContent = ref('');
+const deleteCommentHandler = async (id: string) => {
+  console.log('delete comment', id);
+  return await new Promise(resolve => {
+    setTimeout(() => {
+      resolve(id);
+    }, 1000);
+  });
+};
+
+const dummyCommentsData: CommentData[] = [
+  {
+    id: '1',
+    documentId: 'aaaabbbbccccdddeeefffgggghhhh',
+    text: 'This is a comment',
+    anchor: {
+      type: 'paragraph',
+      from: 0,
+      to: 10,
+    },
+  },
+  {
+    id: '1',
+    documentId: 'aaaabbbbccccdddeeefffgggghhhh',
+    text: 'This is a comment',
+    anchor: {
+      type: 'paragraph',
+      from: 88,
+      to: 281,
+    },
+  },
+  {
+    id: '1',
+    documentId: 'aaaabbbbccccdddeeefffgggghhhh',
+    text: 'This is a comment',
+    anchor: {
+      type: 'paragraph',
+      from: 88,
+      to: 111,
+    },
+  },
+];
+
+const loadCommentsHandler = async (documentId: string) => {
+  return await new Promise(resolve => {
+    setTimeout(() => {
+      resolve(dummyCommentsData);
+    }, 1000);
+  });
+};
+
 const editor = new Editor({
   content: editorContent.value,
   extensions: [
     StarterKit,
     Placeholder.configure({
-      // Use a placeholder:
       placeholder: 'Write something …',
-      // Use different placeholders depending on the node type:
-      // placeholder: ({ node }) => {
-      //   if (node.type.name === 'heading') {
-      //     return 'What’s the title?'
-      //   }
-
-      //   return 'Can you add some further context?'
-      // },
     }),
     Highlight,
     Underline,
@@ -62,12 +108,20 @@ const editor = new Editor({
     }),
     TaskList,
     TaskItem,
+    ListKeymap,
     Image,
+    Comment.configure({
+      documentId: documentId.value,
+      onCreateComment: creatCommentHandler,
+      onDeleteComment: deleteCommentHandler,
+      onLoadComments: loadCommentsHandler,
+    }),
+    JSONExtended.configure({
+      onUpdate: json => {
+        editorContent.value = json;
+      },
+    }),
   ],
-  onUpdate: ({ editor }) => {
-    editorContent.value = editor.getHTML() || '';
-    // emits('update:modelValue', editor.getHTML())
-  },
   onBlur: ({ event }) => {
     // If the focused element is inside the bubble container, do nothing.
     if (
@@ -84,7 +138,7 @@ const editor = new Editor({
 });
 
 const hasTextSelected = computed(() => {
-  if (editorContent.value.length < 1) {
+  if (editorContent.value && editorContent.value.length < 1) {
     return false;
   }
   const { from, to } = editor.state.selection;
@@ -145,6 +199,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  {{ editorContent }}
   <div
     id="text-editor"
     class="rounded-lg bg-white overflow-hidden h-full relative"

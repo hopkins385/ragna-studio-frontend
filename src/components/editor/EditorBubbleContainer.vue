@@ -77,6 +77,13 @@ onMounted(() => {
       >
         <ItalicIcon class="size-4" />
       </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        @click="editor.chain().focus().setComment('some').run()"
+      >
+        <ItalicIcon class="size-4" />
+      </Button>
     </div>
   </div>
 </template>
