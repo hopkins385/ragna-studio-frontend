@@ -7,8 +7,8 @@ export interface CommentData {
   text: string;
   anchor: {
     type: 'paragraph' | 'heading' | 'text' | 'listItem' | 'taskItem' | string;
-    from: number;
-    to: number;
+    posStart: number;
+    posEnd: number;
     // Optional: Add level for headings
     attrs?: Record<string, any>;
   };
@@ -63,6 +63,17 @@ export const Comment = Extension.create({
   },
 
   onCreate() {
+    // Ensure NodeTracker extension is enabled
+    if (
+      !this.editor.extensionManager.extensions.find(
+        ext => ext.name === 'nodeTracker',
+      )
+    ) {
+      console.warn(
+        'Comment extension requires NodeTracker extension to be enabled',
+      );
+    }
+
     // Load initial comments if handler is provided
     if (this.options.onLoadComments) {
       this.options
@@ -92,8 +103,8 @@ export const Comment = Extension.create({
             text: comment,
             anchor: {
               type: nodeType,
-              from,
-              to,
+              posStart: from,
+              posEnd: to,
               attrs: nodeAttrs,
             },
             documentId: this.options.documentId,
@@ -163,27 +174,27 @@ export const Comment = Extension.create({
   },
 
   addProseMirrorPlugins() {
-    const extension = this;
-
     return [
       new Plugin({
         key: new PluginKey('comment'),
         props: {
-          decorations(state) {
+          decorations: state => {
             const decorations: Decoration[] = [];
 
-            extension.storage.comments.forEach((comment: CommentData) => {
-              // Add the highlight decoration
+            this.storage.comments.forEach((comment: CommentData) => {
               decorations.push(
-                Decoration.inline(comment.anchor.from, comment.anchor.to, {
-                  class: 'comment-highlighted',
-                }),
+                Decoration.inline(
+                  comment.anchor.posStart,
+                  comment.anchor.posEnd,
+                  {
+                    class: 'comment-highlighted',
+                  },
+                ),
               );
 
-              // Add the widget decoration for the comment box
               decorations.push(
                 Decoration.widget(
-                  comment.anchor.to,
+                  comment.anchor.posEnd,
                   (view: EditorView, getPos) => {
                     const commentBox = document.createElement('div');
                     commentBox.className = 'comment-box';
@@ -196,12 +207,9 @@ export const Comment = Extension.create({
                     deleteButton.className = 'comment-delete';
                     deleteButton.innerHTML = '×';
                     deleteButton.onclick = () => {
-                      // Direct storage manipulation and view update
-                      extension.storage.comments =
-                        extension.storage.comments.filter(
-                          (c: CommentData) => c.id !== comment.id,
-                        );
-                      // Force a state update to refresh decorations
+                      this.storage.comments = this.storage.comments.filter(
+                        (c: CommentData) => c.id !== comment.id,
+                      );
                       view.dispatch(view.state.tr);
                     };
 

@@ -15,7 +15,7 @@ import EditorMenu from './EditorMenu.vue';
 import { AI } from './extensions/ai-extension';
 import { Comment, type CommentData } from './extensions/comment-extension';
 import { InvisibleCharacters } from './extensions/invisible-characters';
-import { UniqueId } from './extensions/unique-id';
+import { NodeTracker } from './extensions/node-tracker';
 
 const documentId = ref('aaaabbbbccccdddeeefffgggghhhh');
 const editorContent = ref<JSONContent | undefined>(undefined);
@@ -58,28 +58,28 @@ const dummyCommentsData: CommentData[] = [
     text: 'This is a comment',
     anchor: {
       type: 'paragraph',
-      from: 0,
-      to: 10,
+      posStart: 0,
+      posEnd: 10,
     },
   },
   {
-    id: '1',
+    id: '2',
     documentId: 'aaaabbbbccccdddeeefffgggghhhh',
     text: 'This is a comment',
     anchor: {
       type: 'paragraph',
-      from: 88,
-      to: 281,
+      posStart: 88,
+      posEnd: 281,
     },
   },
   {
-    id: '1',
+    id: '3',
     documentId: 'aaaabbbbccccdddeeefffgggghhhh',
     text: 'This is a comment',
     anchor: {
       type: 'paragraph',
-      from: 88,
-      to: 111,
+      posStart: 2210,
+      posEnd: 2264,
     },
   },
 ];
@@ -96,6 +96,13 @@ const editor = new Editor({
   content: editorContent.value,
   extensions: [
     StarterKit,
+    NodeTracker.configure({
+      types: ['paragraph', 'heading', 'listItem', 'taskItem', 'taskList'],
+      generateId: true,
+      onUpdate: json => {
+        editorContent.value = json;
+      },
+    }),
     Placeholder.configure({
       placeholder: 'Write something …',
     }),
@@ -116,15 +123,6 @@ const editor = new Editor({
       onCreateComment: creatCommentHandler,
       onDeleteComment: deleteCommentHandler,
       onLoadComments: loadCommentsHandler,
-    }),
-    /*JSONExtended.configure({
-      onUpdate: json => {
-        editorContent.value = json;
-      },
-    }),*/
-    UniqueId.configure({
-      types: ['paragraph', 'heading'], // Add node types that should receive IDs
-      attributeName: 'id', // Optional: customize the attribute name
     }),
     InvisibleCharacters.configure({
       injectCSS: false,
