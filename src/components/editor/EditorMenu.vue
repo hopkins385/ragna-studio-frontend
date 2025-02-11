@@ -7,7 +7,6 @@ import {
   AlignJustifyIcon,
   AlignRightIcon,
   BoldIcon,
-  CodeIcon,
   Heading1Icon,
   Heading2Icon,
   HighlighterIcon,
@@ -206,6 +205,7 @@ const onTranslateClick = (lang: string) => {
       >
         <HighlighterIcon class="size-4 bg-transparent" />
       </Button>
+      <!--
       <Button
         variant="ghost"
         size="icon"
@@ -214,6 +214,7 @@ const onTranslateClick = (lang: string) => {
       >
         <CodeIcon class="size-4 bg-transparent" />
       </Button>
+      -->
       <Button
         variant="ghost"
         size="icon"

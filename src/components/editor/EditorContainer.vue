@@ -126,8 +126,6 @@ const editor = new Editor({
     }),
   ],
   onUpdate: ({ editor }) => {
-    // console.log('editor update');
-    // editor.commands.updatePositions();
     editorContent.value = editor.getJSON();
   },
   onCreate: ({ editor }) => {
@@ -211,7 +209,6 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  here: {{ editorContent }}
   <div
     id="text-editor"
     class="rounded-lg bg-white overflow-hidden h-full relative"
