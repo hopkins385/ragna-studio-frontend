@@ -128,6 +128,10 @@ export default function useEditorActions(editor: Editor) {
     }
   };
 
+  const onToggleInvisibleCharactersClick = () => {
+    return editor.chain().focus().toggleInvisibleCharacters().run();
+  };
+
   return {
     onImproveClick,
     onExtendClick,
@@ -152,5 +156,6 @@ export default function useEditorActions(editor: Editor) {
     onToggleBulletListClick,
     onToggleOrderedListClick,
     onToggleTextOrientationClick,
+    onToggleInvisibleCharactersClick,
   };
 }

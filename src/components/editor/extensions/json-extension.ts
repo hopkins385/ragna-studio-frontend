@@ -1,7 +1,7 @@
 import type { Editor } from '@tiptap/core';
 import { Extension } from '@tiptap/core';
+import type { Node } from '@tiptap/pm/model';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
-import { EditorView } from '@tiptap/pm/view';
 import type { JSONContent } from '@tiptap/vue-3';
 
 export interface JSONExtendedOptions {
@@ -36,7 +36,10 @@ export const JSONExtended = Extension.create<JSONExtendedOptions>({
         () =>
         ({ editor }) => {
           const json = editor.getJSON();
-          const jsonWithPositions = calculatePositions(json, editor.view);
+          const jsonWithPositions = addPositionsToJSON(
+            editor.view.state.doc,
+            json,
+          );
           this.options.onUpdate(jsonWithPositions);
           return true;
         },
@@ -50,7 +53,10 @@ export const JSONExtended = Extension.create<JSONExtendedOptions>({
         view: () => ({
           update: view => {
             const json = view.state.doc.toJSON();
-            const jsonWithPositions = calculatePositions(json, view);
+            const jsonWithPositions = addPositionsToJSON(
+              view.state.tr.doc,
+              json,
+            );
             this.options.onUpdate(jsonWithPositions);
           },
         }),
@@ -59,67 +65,28 @@ export const JSONExtended = Extension.create<JSONExtendedOptions>({
   },
 });
 
-// Helper function moved outside the extension
-function calculatePositions(
-  node: PositionNode,
-  view: EditorView,
-  pos = 0,
-): PositionNode {
-  node.from = pos;
+function addPositionsToJSON(doc: Node, json: JSONContent): PositionNode {
+  let pos = 0;
 
-  let currentPos = pos + 1;
+  function processNode(node: JSONContent): PositionNode {
+    const start = pos + 1;
+    const result: PositionNode = { ...node };
 
-  if (node.text) {
-    node.to = currentPos + node.text.length;
-    currentPos += node.text.length;
+    if (node.content) {
+      result.content = node.content.map((child: JSONContent) => {
+        pos++;
+        return processNode(child);
+      });
+    }
+
+    const size = doc.nodeAt(start - 1)?.nodeSize || 0;
+    pos += size - 1;
+
+    result.from = start - 1;
+    result.to = pos;
+
+    return result;
   }
 
-  if (node.content) {
-    node.content = node.content.map((child: PositionNode) => {
-      const augmentedChild = calculatePositions(child, view, currentPos);
-      currentPos += view.state.doc.nodeAt(augmentedChild.from!)?.nodeSize || 0;
-      return augmentedChild;
-    });
-    node.to = currentPos;
-  }
-
-  return node;
+  return processNode(json);
 }
-
-/*function calculatePositions(
-  node: PositionNode,
-  view: EditorView,
-  pos = 0,
-): PositionNode {
-  node.from = pos;
-
-  // Get the ProseMirror node at the current position
-  const pmNode = view.state.doc.nodeAt(pos);
-  const nodeSize = pmNode?.nodeSize ?? 0;
-
-  let currentPos = pos;
-
-  if (node.text) {
-    // For text nodes, we want the actual text length
-    node.to = currentPos + node.text.length;
-    currentPos += node.text.length;
-  }
-
-  if (node.content) {
-    // For nodes with content, process each child
-    currentPos += 1; // Account for the opening tag
-    node.content = node.content.map((child: PositionNode) => {
-      const augmentedChild = calculatePositions(child, view, currentPos);
-      // Move position by the size of the processed node
-      const childNode = view.state.doc.nodeAt(currentPos);
-      currentPos += childNode?.nodeSize ?? 0;
-      return augmentedChild;
-    });
-    node.to = currentPos;
-  } else {
-    // For leaf nodes without content
-    node.to = currentPos + nodeSize;
-  }
-
-  return node;
-}*/

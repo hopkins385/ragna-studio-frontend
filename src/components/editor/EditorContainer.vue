@@ -14,7 +14,8 @@ import EditorBubbleContainer from './EditorBubbleContainer.vue';
 import EditorMenu from './EditorMenu.vue';
 import { AI } from './extensions/ai-extension';
 import { Comment, type CommentData } from './extensions/comment-extension';
-import { JSONExtended } from './extensions/json-extension';
+import { InvisibleCharacters } from './extensions/invisible-characters';
+import { UniqueId } from './extensions/unique-id';
 
 const documentId = ref('aaaabbbbccccdddeeefffgggghhhh');
 const editorContent = ref<JSONContent | undefined>(undefined);
@@ -116,12 +117,22 @@ const editor = new Editor({
       onDeleteComment: deleteCommentHandler,
       onLoadComments: loadCommentsHandler,
     }),
-    JSONExtended.configure({
+    /*JSONExtended.configure({
       onUpdate: json => {
         editorContent.value = json;
       },
+    }),*/
+    UniqueId.configure({
+      types: ['paragraph', 'heading'], // Add node types that should receive IDs
+      attributeName: 'id', // Optional: customize the attribute name
+    }),
+    InvisibleCharacters.configure({
+      injectCSS: false,
     }),
   ],
+  onUpdate: ({ editor }) => {
+    editorContent.value = editor.getJSON();
+  },
   onBlur: ({ event }) => {
     // If the focused element is inside the bubble container, do nothing.
     if (

@@ -16,6 +16,7 @@ import {
   ListIcon,
   ListOrderedIcon,
   Loader2Icon,
+  PilcrowIcon,
   Redo2Icon,
   StrikethroughIcon,
   TextIcon,
@@ -54,6 +55,7 @@ const {
   onToggleBulletListClick,
   onToggleOrderedListClick,
   onToggleTextOrientationClick,
+  onToggleInvisibleCharactersClick,
 } = useEditorActions(props.editor);
 
 const hasTextSelected = computed(() => {
@@ -211,6 +213,16 @@ const onTranslateClick = (lang: string) => {
         :class="{ 'is-active': editor.isActive('code') }"
       >
         <CodeIcon class="size-4 bg-transparent" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        @click="onToggleInvisibleCharactersClick()"
+        :class="{
+          'is-active': editor.storage.invisibleCharacters.visibility(),
+        }"
+      >
+        <PilcrowIcon class="size-4 bg-transparent" />
       </Button>
       <Button variant="ghost" size="icon" @click="onUndoClick()">
         <Undo2Icon class="size-4 bg-transparent" />
