@@ -55,39 +55,39 @@ const dummyCommentsData: CommentData[] = [
   {
     id: '1',
     documentId: 'aaaabbbbccccdddeeefffgggghhhh',
-    text: 'This is a comment',
+    text: 'This is a comment on the first paragraph',
     anchor: {
       type: 'paragraph',
-      posStart: 0,
-      posEnd: 10,
+      posStart: 1,
+      posEnd: 45,
+      attrs: {
+        posStart: 1,
+        posEnd: 45,
+      },
     },
+    createdAt: new Date(),
   },
   {
     id: '2',
     documentId: 'aaaabbbbccccdddeeefffgggghhhh',
-    text: 'This is a comment',
+    text: 'This is a comment on the middle section',
     anchor: {
       type: 'paragraph',
-      posStart: 88,
-      posEnd: 281,
+      posStart: 46,
+      posEnd: 120,
+      attrs: {
+        posStart: 46,
+        posEnd: 120,
+      },
     },
-  },
-  {
-    id: '3',
-    documentId: 'aaaabbbbccccdddeeefffgggghhhh',
-    text: 'This is a comment',
-    anchor: {
-      type: 'paragraph',
-      posStart: 2210,
-      posEnd: 2264,
-    },
+    createdAt: new Date(),
   },
 ];
 
 const loadCommentsHandler = async (documentId: string) => {
   return await new Promise(resolve => {
     setTimeout(() => {
-      resolve(dummyCommentsData);
+      resolve([]);
     }, 1000);
   });
 };
@@ -96,13 +96,6 @@ const editor = new Editor({
   content: editorContent.value,
   extensions: [
     StarterKit,
-    NodeTracker.configure({
-      types: ['paragraph', 'heading', 'listItem', 'taskItem', 'taskList'],
-      generateId: true,
-      onUpdate: json => {
-        editorContent.value = json;
-      },
-    }),
     Placeholder.configure({
       placeholder: 'Write something …',
     }),
@@ -127,9 +120,19 @@ const editor = new Editor({
     InvisibleCharacters.configure({
       injectCSS: false,
     }),
+    NodeTracker.configure({
+      types: ['paragraph', 'heading', 'listItem', 'taskItem', 'taskList'],
+      generateId: true,
+    }),
   ],
   onUpdate: ({ editor }) => {
+    // console.log('editor update');
+    // editor.commands.updatePositions();
     editorContent.value = editor.getJSON();
+  },
+  onCreate: ({ editor }) => {
+    // Initial position update
+    editor.commands.updatePositions();
   },
   onBlur: ({ event }) => {
     // If the focused element is inside the bubble container, do nothing.
@@ -208,7 +211,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  {{ editorContent }}
+  here: {{ editorContent }}
   <div
     id="text-editor"
     class="rounded-lg bg-white overflow-hidden h-full relative"

@@ -93,18 +93,22 @@ export const Comment = Extension.create({
           const { from, to } = state.selection;
           if (from === to) return false;
 
-          // Get the node type at the selection
+          const slice = state.doc.slice(from, to);
           const nodeAtStart = state.doc.nodeAt(from);
           const nodeType = nodeAtStart ? nodeAtStart.type.name : 'text';
           const nodeAttrs = nodeAtStart ? nodeAtStart.attrs : undefined;
+
+          // Get accurate positions from node attributes if available
+          const posStart = nodeAtStart?.attrs?.posStart ?? from;
+          const posEnd = nodeAtStart?.attrs?.posEnd ?? to;
 
           const commentData: CommentData = {
             id: Math.random().toString(36).substr(2, 9),
             text: comment,
             anchor: {
               type: nodeType,
-              posStart: from,
-              posEnd: to,
+              posStart: posStart,
+              posEnd: posEnd,
               attrs: nodeAttrs,
             },
             documentId: this.options.documentId,
@@ -182,42 +186,43 @@ export const Comment = Extension.create({
             const decorations: Decoration[] = [];
 
             this.storage.comments.forEach((comment: CommentData) => {
+              // Get the node at the comment's start position
+              const node = state.doc.nodeAt(comment.anchor.posStart);
+              if (!node) return;
+
+              // Use node's actual positions if they differ from stored positions
+              const startPos = node.attrs?.posStart ?? comment.anchor.posStart;
+              const endPos = node.attrs?.posEnd ?? comment.anchor.posEnd;
+
               decorations.push(
-                Decoration.inline(
-                  comment.anchor.posStart,
-                  comment.anchor.posEnd,
-                  {
-                    class: 'comment-highlighted',
-                  },
-                ),
+                Decoration.inline(startPos, endPos, {
+                  class: 'comment-highlighted',
+                }),
               );
 
               decorations.push(
-                Decoration.widget(
-                  comment.anchor.posEnd,
-                  (view: EditorView, getPos) => {
-                    const commentBox = document.createElement('div');
-                    commentBox.className = 'comment-box';
+                Decoration.widget(endPos, (view: EditorView) => {
+                  const commentBox = document.createElement('div');
+                  commentBox.className = 'comment-box';
 
-                    const commentContent = document.createElement('div');
-                    commentContent.className = 'comment-content';
-                    commentContent.textContent = comment.text;
+                  const commentContent = document.createElement('div');
+                  commentContent.className = 'comment-content';
+                  commentContent.textContent = comment.text;
 
-                    const deleteButton = document.createElement('button');
-                    deleteButton.className = 'comment-delete';
-                    deleteButton.innerHTML = '×';
-                    deleteButton.onclick = () => {
-                      this.storage.comments = this.storage.comments.filter(
-                        (c: CommentData) => c.id !== comment.id,
-                      );
-                      view.dispatch(view.state.tr);
-                    };
+                  const deleteButton = document.createElement('button');
+                  deleteButton.className = 'comment-delete';
+                  deleteButton.innerHTML = '×';
+                  deleteButton.onclick = () => {
+                    this.storage.comments = this.storage.comments.filter(
+                      (c: CommentData) => c.id !== comment.id,
+                    );
+                    view.dispatch(view.state.tr);
+                  };
 
-                    commentBox.appendChild(commentContent);
-                    commentBox.appendChild(deleteButton);
-                    return commentBox;
-                  },
-                ),
+                  commentBox.appendChild(commentContent);
+                  commentBox.appendChild(deleteButton);
+                  return commentBox;
+                }),
               );
             });
 
