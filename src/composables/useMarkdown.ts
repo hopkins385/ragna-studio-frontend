@@ -55,6 +55,38 @@ export default function useMarkdown() {
 
   md.use(mk, katexOptions);
 
+  // TODO: keep track of the side effects of this code
+  const defaultParagraphRenderer =
+    md.renderer.rules.paragraph_open ||
+    ((tokens, idx, options, env, self) =>
+      self.renderToken(tokens, idx, options));
+  md.renderer.rules.paragraph_open = function (
+    tokens,
+    idx,
+    options,
+    env,
+    self,
+  ) {
+    let result = '';
+    if (idx > 1) {
+      const inline = tokens[idx - 2];
+      const paragraph = tokens[idx];
+      if (
+        inline.type === 'inline' &&
+        inline.map &&
+        inline.map[1] &&
+        paragraph.map &&
+        paragraph.map[0]
+      ) {
+        const diff = paragraph.map[0] - inline.map[1];
+        if (diff > 0) {
+          result = '<p class="empty">&nbsp;</p>'.repeat(diff);
+        }
+      }
+    }
+    return result + defaultParagraphRenderer(tokens, idx, options, env, self);
+  };
+
   // Add a renderer rule to make links external
   md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
     const token = tokens[idx];
@@ -82,14 +114,8 @@ export default function useMarkdown() {
     return self.renderToken(tokens, idx, options);
   };
 
-  const preprocessMarkdown = (text: string) => {
-    return text.replace(/\n\n/g, '\n\n<p>&nbsp;</p>\n\n');
-  };
-
   function parseMarkdown(text: string) {
     return md.render(text);
-    // const preprocessedText = preprocessMarkdown(text);
-    // return md.render(preprocessedText);
   }
 
   return {

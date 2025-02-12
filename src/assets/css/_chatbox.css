@@ -11,15 +11,18 @@
 }
 
 .chatbox__text-box p {
-  @apply my-2;
+}
+
+.chatbox__text-box p.empty {
+  line-height: 0.75rem;
 }
 
 .chatbox__text-box ol {
-  @apply my-5 ml-5 list-decimal space-y-4;
+  @apply my-4 ml-8 list-decimal space-y-3;
 }
 
 .chatbox__text-box ul {
-  @apply my-4 ml-4 list-disc space-y-1;
+  @apply my-4 ml-8 list-disc space-y-3;
 }
 
 .chatbox__text-box pre {

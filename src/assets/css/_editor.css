@@ -36,10 +36,13 @@
 
     /* List styles */
     ul {
-      @apply list-disc list-outside pl-5;
+      @apply list-disc list-outside ml-10;
     }
     ol {
-      @apply list-decimal list-outside pl-5;
+      @apply list-decimal list-outside ml-10;
+    }
+
+    .ProseMirror-trailingBreak {
     }
 
     /* Placeholder (at the top) */
@@ -168,20 +171,6 @@
       display: none;
     }
   }
-}
-
-.ProseMirror {
-  /** formatting marks 
-  p::after {
-    content: '\00b6';
-    color: blue;
-    opacity: 0.5;
-    position: absolute;
-    top: 0;
-    display: inline-block;
-    margin-left: 0.2em;
-  }
-  */
 }
 
 .editor__menu-button {
