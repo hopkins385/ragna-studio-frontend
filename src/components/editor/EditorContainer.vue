@@ -12,12 +12,13 @@ import { Editor, EditorContent, type JSONContent } from '@tiptap/vue-3';
 import EditorAssistantDropdownMenu from './EditorAssistantDropdownMenu.vue';
 import EditorAssistantPromptContainer from './EditorAssistantPromptContainer.vue';
 import EditorMenu from './EditorMenu.vue';
-import { Comment, type CommentData } from './extensions/comment-extension';
+import { type CommentData } from './extensions/comment-extension';
 import { InvisibleCharacters } from './extensions/invisible-characters';
 import { NodeTracker } from './extensions/node-tracker';
 import { SetSelection } from './extensions/set-selection';
 
 const editorWrapperRef = ref<HTMLElement | null>(null);
+const editorContentRef = ref<HTMLElement | null>(null);
 const assistantPromptContainerRef = ref<HTMLElement | null>(null);
 
 const assistantPromptContainer = reactive({
@@ -32,7 +33,8 @@ const assistantDropdownMenu = reactive({
   yPosition: 0,
 });
 
-const { isOutside } = useMouseInElement(editorWrapperRef);
+const { isOutside: isOutsideWrapper } = useMouseInElement(editorWrapperRef);
+const { isOutside: isOutsideContent } = useMouseInElement(editorContentRef);
 
 const creatCommentHandler = async (comment: any) => {
   console.log('create comment', comment);
@@ -108,19 +110,10 @@ const editor = new Editor({
     TextAlign.configure({
       types: ['heading', 'paragraph', 'listItem'],
     }),
-    // AI.configure({
-    //   completionHandler: runCompletion,
-    // }),
     TaskList,
     TaskItem,
     ListKeymap,
     Image,
-    Comment.configure({
-      documentId: documentId.value,
-      onCreateComment: creatCommentHandler,
-      onDeleteComment: deleteCommentHandler,
-      onLoadComments: loadCommentsHandler,
-    }),
     InvisibleCharacters.configure({
       injectCSS: false,
     }),
@@ -138,20 +131,78 @@ const editor = new Editor({
     editor.commands.updatePositions();
   },
   onBlur: ({ event }) => {
-    // event.preventDefault();
-    // If the focused element is inside the bubble container, do nothing.
-    if (
-      assistantPromptContainerRef.value &&
-      event.relatedTarget &&
-      assistantPromptContainerRef.value.contains(event.relatedTarget as Node)
-    ) {
-      return;
-    }
-    // console.log('editor blur');
-    assistantPromptContainer.show = false;
+    handleEditorBlurEvent(event);
   },
   autofocus: 'end',
 });
+
+const handleEditorBlurEvent = (event: FocusEvent) => {
+  // event.preventDefault();
+  // If the focused element is inside the bubble container, do nothing.
+  if (
+    assistantPromptContainerRef.value &&
+    event.relatedTarget &&
+    assistantPromptContainerRef.value.contains(event.relatedTarget as Node)
+  ) {
+    return;
+  }
+  // console.log('editor blur');
+  assistantPromptContainer.show = false;
+};
+
+const updatePromptContainerPosition = () => {
+  const selection = window.getSelection();
+  if (!selection || selection.rangeCount < 1 || !editorWrapperRef.value) {
+    return;
+  }
+  const rangeRect = selection.getRangeAt(0).getBoundingClientRect();
+  const containerRect = editorWrapperRef.value.getBoundingClientRect();
+  // show the container below the selected text on the left side
+  const xPosition = 140; //rangeRect.x - containerRect.x;
+  const yPosition = rangeRect.y - containerRect.y + rangeRect.height + 10;
+  assistantPromptContainer.xPosition = xPosition;
+  assistantPromptContainer.yPosition = yPosition;
+};
+
+const handleOpenPromptContainer = () => {
+  if (hasTextSelected.value && !isOutsideWrapper.value) {
+    updatePromptContainerPosition();
+    assistantPromptContainer.show = true;
+  } else {
+    assistantPromptContainer.show = false;
+  }
+};
+
+const updateAssistantDropdownMenuPosition = () => {
+  const selection = window.getSelection();
+  if (!editorWrapperRef.value || !selection || selection.rangeCount < 1) {
+    return;
+  }
+  const rangeRect = selection.getRangeAt(0).getBoundingClientRect();
+  const containerRect = editorWrapperRef.value.getBoundingClientRect();
+  const yPosition = rangeRect.y - containerRect.top;
+  assistantDropdownMenu.yPosition = yPosition - 2;
+};
+
+// Handle mouseup event to show the assistant dropdown menu
+const handleMouseUp = async (event: MouseEvent) => {
+  await nextTick();
+  if (
+    hasTextSelected.value &&
+    editorWrapperRef.value &&
+    !isOutsideWrapper.value
+  ) {
+    updateAssistantDropdownMenuPosition();
+    assistantDropdownMenu.show = true;
+  } else {
+    assistantDropdownMenu.show = false;
+  }
+};
+
+const handleContextMenu = (event: MouseEvent) => {
+  event.preventDefault();
+  handleOpenPromptContainer();
+};
 
 const hasTextSelected = computed(() => {
   if (editorContent.value && editorContent.value.length < 1) {
@@ -160,39 +211,6 @@ const hasTextSelected = computed(() => {
   const { from, to } = editor.state.selection;
   return from !== to;
 });
-
-// Handle mouseup event to show the bubble container
-const handleOpenPromptContainer = () => {
-  // If the click originated inside the bubble container, do nothing.
-  if (
-    assistantPromptContainerRef.value
-    // && assistantPromptContainerRef.value.contains(event.target as Node)
-  ) {
-    return;
-  }
-  if (hasTextSelected.value && editorWrapperRef.value && !isOutside.value) {
-    const selection = window.getSelection();
-    if (selection && selection.rangeCount > 0) {
-      const rangeRect = selection.getRangeAt(0).getBoundingClientRect();
-      const containerRect = editorWrapperRef.value.getBoundingClientRect();
-      // show the bubble container below the selected text on the left side
-      const xPosition = 140; //rangeRect.x - containerRect.x;
-      const yPosition = rangeRect.y - containerRect.y + rangeRect.height + 10;
-      assistantPromptContainer.xPosition = xPosition;
-      assistantPromptContainer.yPosition = yPosition;
-      assistantPromptContainer.show = true;
-    } else {
-      assistantPromptContainer.show = false;
-    }
-  } else {
-    assistantPromptContainer.show = false;
-  }
-};
-
-const handleContextMenu = (event: MouseEvent) => {
-  event.preventDefault();
-  handleOpenPromptContainer();
-};
 
 watch(
   () => hasTextSelected.value,
@@ -203,31 +221,6 @@ watch(
     }
   },
 );
-
-/*
-&&
-    !isOutside.value
-    */
-
-const handleMouseUp = async (event: MouseEvent) => {
-  await nextTick();
-  const selection = window.getSelection();
-
-  if (
-    selection &&
-    selection.rangeCount > 0 &&
-    hasTextSelected.value &&
-    editorWrapperRef.value
-  ) {
-    const rangeRect = selection.getRangeAt(0).getBoundingClientRect();
-    const containerRect = editorWrapperRef.value.getBoundingClientRect();
-    const yPosition = rangeRect.y - containerRect.top;
-    assistantDropdownMenu.yPosition = yPosition - 2;
-    assistantDropdownMenu.show = true;
-  } else {
-    assistantDropdownMenu.show = false;
-  }
-};
 
 onMounted(() => {
   window.addEventListener('mouseup', handleMouseUp);
@@ -287,6 +280,7 @@ onBeforeUnmount(() => {
           <EditorAssistantDropdownMenu
             @close="assistantDropdownMenu.show = false"
             @prompt="() => handleOpenPromptContainer()"
+            @refresh-position="() => updatePromptContainerPosition()"
           />
         </div>
 
@@ -314,7 +308,7 @@ onBeforeUnmount(() => {
         </BubbleMenu>
         -->
 
-        <EditorContent :editor="editor" />
+        <EditorContent ref="editorContentRef" :editor="editor" />
       </div>
     </div>
   </div>
