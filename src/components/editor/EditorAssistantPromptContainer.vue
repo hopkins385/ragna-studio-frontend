@@ -11,9 +11,7 @@ const props = defineProps<{
   editor: Editor;
 }>();
 
-const emit = defineEmits<{
-  close: [void];
-}>();
+const emit = defineEmits(['close', 'refreshPosition']);
 
 const { fetchPromptCompletion, abortCompletion } = useEditorService();
 const { parseMarkdown } = useMarkdown();
@@ -22,6 +20,7 @@ const input = ref('');
 const isLoading = ref(false);
 const originalTextBetween = ref('');
 const rawCompletion = ref('');
+const originalSelection = ref({ from: 0, to: 0 });
 
 const textareaContainerRef = ref<HTMLDivElement | null>(null);
 
@@ -34,42 +33,48 @@ const runCompletion = async () => {
     return;
   }
   isLoading.value = true;
-  const { from, to } = props.editor.state.selection;
-  const textBetween = props.editor.state.doc.textBetween(from, to);
-
-  originalTextBetween.value = textBetween;
-
-  const completionPayload = {
-    // lang,
-    context: props.editor.getHTML(),
-    selectedText: textBetween,
-    prompt: input.value,
-  };
 
   try {
+    const completionPayload = {
+      context: props.editor.getHTML(),
+      selectedText: originalTextBetween.value,
+      prompt: input.value,
+    };
+
     const { completion } = await fetchPromptCompletion(completionPayload);
     if (!completion) {
       return;
     }
     rawCompletion.value = completion;
 
-    // parse markdown
-    const parsed = parseMarkdown(completion);
+    // parse markdown to html
+    const htmlContent = parseMarkdown(completion);
 
-    // insert the completion into the editor
+    // Create a temporary div to calculate the actual text length
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    const actualTextLength = tempDiv.textContent?.length || 0;
+    tempDiv.remove();
+
+    // Store the current position before deletion
+    const startPos = originalSelection.value.from;
+
+    // Replace text at the original selection range and select the new content
     props.editor
       .chain()
-      .deleteRange({ from, to }) // First delete the existing content
-      .insertContent(parsed, {
-        parseOptions: {
-          // preserveWhitespace: 'full',
-        },
+      .deleteRange({
+        from: startPos,
+        to: originalSelection.value.to,
       })
-      // add again the selection so the text is highlighted
-      // .setSelection({ from, to: from + completion.trim().length })
-      // .focus()
+      .insertContent(htmlContent)
+      .setTextSelection({
+        from: startPos,
+        to: startPos + actualTextLength - 1,
+      })
+      .focus()
       .run();
-    //
+
+    emit('refreshPosition');
   } catch (error) {
     console.error(error);
   } finally {
@@ -83,7 +88,15 @@ const resetCompletionVars = () => {
 
 const discardChanges = () => {
   resetCompletionVars();
-  props.editor.chain().focus().undo().run();
+  props.editor
+    .chain()
+    .focus()
+    .undo()
+    .setTextSelection({
+      from: originalSelection.value.from,
+      to: originalSelection.value.to,
+    })
+    .run();
 };
 
 // HANDLERS
@@ -101,7 +114,17 @@ const handleAbort = () => {
 };
 
 const handleReGenerate = () => {
-  discardChanges();
+  // First restore original selection before regenerating
+  props.editor
+    .chain()
+    .focus()
+    .undo()
+    .setTextSelection({
+      from: originalSelection.value.from,
+      to: originalSelection.value.to,
+    })
+    .run();
+
   runCompletion();
 };
 
@@ -132,6 +155,10 @@ const focusInput = () => {
 onMounted(() => {
   focusInput();
   window.addEventListener('keydown', handleKeyDown);
+  // Store initial selection range
+  const { from, to } = props.editor.state.selection;
+  originalSelection.value = { from, to };
+  originalTextBetween.value = props.editor.state.doc.textBetween(from, to);
 });
 
 onBeforeUnmount(() => {

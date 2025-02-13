@@ -15,7 +15,6 @@ import EditorMenu from './EditorMenu.vue';
 import { type CommentData } from './extensions/comment-extension';
 import { InvisibleCharacters } from './extensions/invisible-characters';
 import { NodeTracker } from './extensions/node-tracker';
-import { SetSelection } from './extensions/set-selection';
 
 const editorWrapperRef = ref<HTMLElement | null>(null);
 const editorContentRef = ref<HTMLElement | null>(null);
@@ -121,12 +120,11 @@ const editor = new Editor({
       types: ['paragraph', 'heading', 'listItem', 'taskItem', 'taskList'],
       generateId: true,
     }),
-    SetSelection,
   ],
   onUpdate: ({ editor }) => {
     editorContent.value = editor.getJSON();
     if (assistantPromptContainer.show) {
-      updatePromptContainerPosition();
+      updateAssistantPromptContainerPosition();
     }
     if (assistantDropdownMenu.show) {
       updateAssistantDropdownMenuPosition();
@@ -151,20 +149,29 @@ const handleCloseAssistantPromptContainer = () => {
 };
 
 const handleEditorBlurEvent = (event: FocusEvent) => {
-  // event.preventDefault();
-  // If the focused element is inside the bubble container, do nothing.
+  // If the focused element is inside the prompt container or dropdown menu, do nothing
   if (
-    assistantPromptContainerRef.value &&
-    event.relatedTarget &&
-    assistantPromptContainerRef.value.contains(event.relatedTarget as Node)
+    (assistantPromptContainerRef.value &&
+      event.relatedTarget &&
+      assistantPromptContainerRef.value.contains(
+        event.relatedTarget as Node,
+      )) ||
+    (assistantDropdownMenu.show &&
+      event.relatedTarget &&
+      (event.relatedTarget as HTMLElement).closest(
+        '.editor-assistant-dropdown-menu',
+      ))
   ) {
     return;
   }
-  // console.log('editor blur');
-  assistantPromptContainer.show = false;
+
+  // Only hide the prompt container if we're not clicking inside the editor content
+  if (!editorContentRef.value?.contains(event.relatedTarget as Node)) {
+    assistantPromptContainer.show = false;
+  }
 };
 
-const updatePromptContainerPosition = () => {
+const updateAssistantPromptContainerPosition = () => {
   const { from, to } = editor.state.selection;
   if (from === to || !editorWrapperRef.value) {
     return;
@@ -182,7 +189,7 @@ const updatePromptContainerPosition = () => {
 
 const handleShowPromptContainer = () => {
   if (hasTextSelected.value && !isOutsideWrapper.value) {
-    updatePromptContainerPosition();
+    updateAssistantPromptContainerPosition();
     assistantPromptContainer.show = true;
   } else {
     assistantPromptContainer.show = false;
@@ -231,7 +238,11 @@ watch(
   () => hasTextSelected.value,
   newValue => {
     if (newValue === false) {
-      assistantPromptContainer.show = false;
+      // Only hide if there's really no selection
+      const { from, to } = editor.state.selection;
+      if (from === to) {
+        assistantPromptContainer.show = false;
+      }
       assistantDropdownMenu.show = false;
     }
   },
@@ -311,6 +322,7 @@ onBeforeUnmount(() => {
           <EditorAssistantPromptContainer
             :editor="editor"
             @close="() => handleCloseAssistantPromptContainer()"
+            @refresh-position="updateAssistantPromptContainerPosition"
           />
         </div>
         <!-- Editor Content -->
