@@ -13,7 +13,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   close: [void];
-  refreshPosition: [void];
 }>();
 
 const { fetchPromptCompletion, abortCompletion } = useEditorService();
@@ -67,7 +66,7 @@ const runCompletion = async () => {
         },
       })
       // add again the selection so the text is highlighted
-      .setSelection({ from, to: from + completion.trim().length })
+      // .setSelection({ from, to: from + completion.trim().length })
       // .focus()
       .run();
     //
@@ -75,7 +74,6 @@ const runCompletion = async () => {
     console.error(error);
   } finally {
     isLoading.value = false;
-    emit('refreshPosition');
   }
 };
 

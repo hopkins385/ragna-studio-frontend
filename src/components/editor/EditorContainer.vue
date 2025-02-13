@@ -125,6 +125,12 @@ const editor = new Editor({
   ],
   onUpdate: ({ editor }) => {
     editorContent.value = editor.getJSON();
+    if (assistantPromptContainer.show) {
+      updatePromptContainerPosition();
+    }
+    if (assistantDropdownMenu.show) {
+      updateAssistantDropdownMenuPosition();
+    }
   },
   onCreate: ({ editor }) => {
     // Initial position update
@@ -135,6 +141,14 @@ const editor = new Editor({
   },
   autofocus: 'end',
 });
+
+const handleCloseAssistantDropdownMenu = () => {
+  assistantDropdownMenu.show = false;
+};
+
+const handleCloseAssistantPromptContainer = () => {
+  assistantPromptContainer.show = false;
+};
 
 const handleEditorBlurEvent = (event: FocusEvent) => {
   // event.preventDefault();
@@ -151,20 +165,22 @@ const handleEditorBlurEvent = (event: FocusEvent) => {
 };
 
 const updatePromptContainerPosition = () => {
-  const selection = window.getSelection();
-  if (!selection || selection.rangeCount < 1 || !editorWrapperRef.value) {
+  const { from, to } = editor.state.selection;
+  if (from === to || !editorWrapperRef.value) {
     return;
   }
-  const rangeRect = selection.getRangeAt(0).getBoundingClientRect();
+
+  const coords = editor.view.coordsAtPos(to);
   const containerRect = editorWrapperRef.value.getBoundingClientRect();
-  // show the container below the selected text on the left side
-  const xPosition = 140; //rangeRect.x - containerRect.x;
-  const yPosition = rangeRect.y - containerRect.y + rangeRect.height + 10;
+
+  const xPosition = 140;
+  const yPosition = coords.bottom - containerRect.y + 10;
+
   assistantPromptContainer.xPosition = xPosition;
   assistantPromptContainer.yPosition = yPosition;
 };
 
-const handleOpenPromptContainer = () => {
+const handleShowPromptContainer = () => {
   if (hasTextSelected.value && !isOutsideWrapper.value) {
     updatePromptContainerPosition();
     assistantPromptContainer.show = true;
@@ -174,24 +190,21 @@ const handleOpenPromptContainer = () => {
 };
 
 const updateAssistantDropdownMenuPosition = () => {
-  const selection = window.getSelection();
-  if (!editorWrapperRef.value || !selection || selection.rangeCount < 1) {
+  const { from } = editor.state.selection;
+  if (!editorWrapperRef.value) {
     return;
   }
-  const rangeRect = selection.getRangeAt(0).getBoundingClientRect();
+
+  const coords = editor.view.coordsAtPos(from);
   const containerRect = editorWrapperRef.value.getBoundingClientRect();
-  const yPosition = rangeRect.y - containerRect.top;
-  assistantDropdownMenu.yPosition = yPosition - 2;
+
+  assistantDropdownMenu.yPosition = coords.top - containerRect.top - 2;
 };
 
 // Handle mouseup event to show the assistant dropdown menu
-const handleMouseUp = async (event: MouseEvent) => {
-  await nextTick();
-  if (
-    hasTextSelected.value &&
-    editorWrapperRef.value &&
-    !isOutsideWrapper.value
-  ) {
+const handleMouseUp = () => {
+  const { from, to } = editor.state.selection;
+  if (from !== to && editorWrapperRef.value && !isOutsideWrapper.value) {
     updateAssistantDropdownMenuPosition();
     assistantDropdownMenu.show = true;
   } else {
@@ -201,8 +214,10 @@ const handleMouseUp = async (event: MouseEvent) => {
 
 const handleContextMenu = (event: MouseEvent) => {
   event.preventDefault();
-  handleOpenPromptContainer();
+  handleShowPromptContainer();
 };
+
+//
 
 const hasTextSelected = computed(() => {
   if (editorContent.value && editorContent.value.length < 1) {
@@ -263,13 +278,14 @@ onBeforeUnmount(() => {
       <!-- Right Menu -->
       <div class="w-20"></div>
     </div>
-    <!-- Editor Content -->
+    <!-- Editor Content Wrapper (Sheet)-->
     <div class="overflow-y-auto bg-stone-50 h-[calc(100vh-7.5rem)] pb-5">
       <div
         id="editorWrapper"
         ref="editorWrapperRef"
         class="max-w-5xl mt-8 mx-auto shadow-md border px-32 py-28 rounded-sm bg-white min-h-full relative"
       >
+        <!-- Assistant Dropdown Menu -->
         <div
           v-if="assistantDropdownMenu.show"
           class="absolute left-14 z-10"
@@ -278,12 +294,11 @@ onBeforeUnmount(() => {
           }"
         >
           <EditorAssistantDropdownMenu
-            @close="assistantDropdownMenu.show = false"
-            @prompt="() => handleOpenPromptContainer()"
-            @refresh-position="() => updatePromptContainerPosition()"
+            @close="() => handleCloseAssistantDropdownMenu()"
+            @prompt="() => handleShowPromptContainer()"
           />
         </div>
-
+        <!-- Assistant Prompt Container -->
         <div
           v-if="assistantPromptContainer.show"
           ref="assistantPromptContainerRef"
@@ -295,19 +310,10 @@ onBeforeUnmount(() => {
         >
           <EditorAssistantPromptContainer
             :editor="editor"
-            @close="assistantPromptContainer.show = false"
+            @close="() => handleCloseAssistantPromptContainer()"
           />
         </div>
-        <!--
-        <BubbleMenu
-          v-if="editor"
-          :editor="editor"
-          :tippy-options="{ duration: 100, placement: 'bottom-start' }"
-        >
-          <EditorassistantPromptContainer :is-loading="isLoading" :editor="editor" />
-        </BubbleMenu>
-        -->
-
+        <!-- Editor Content -->
         <EditorContent ref="editorContentRef" :editor="editor" />
       </div>
     </div>
