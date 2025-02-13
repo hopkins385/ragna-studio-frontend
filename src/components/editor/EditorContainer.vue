@@ -326,7 +326,9 @@ onBeforeUnmount(() => {
           />
         </div>
         <!-- Editor Content -->
-        <EditorContent ref="editorContentRef" :editor="editor" />
+        <div id="editorContent" ref="editorContentRef">
+          <EditorContent :editor="editor" />
+        </div>
       </div>
     </div>
   </div>
