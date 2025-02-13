@@ -6,6 +6,11 @@ export interface ChatImage {
   status: 'loading' | 'loaded' | 'error';
 }
 
+const dummyImage = {
+  src: 'https://dummyimage.com/600x400/000/fff',
+  status: 'loaded',
+};
+
 export function useChatImages() {
   const allowedFileMimeTypes = [
     'image/jpg',

@@ -162,6 +162,7 @@ const onAbortChatRequest = () => {
 const onResetChat = async () => {
   await clearChatMessages();
   clearActiveTools();
+  clearError();
   await initChat(activeChatId.value);
 };
 
@@ -280,7 +281,7 @@ useHead({
   <BoxContainer
     id="chatWrapper"
     ref="chatBoxContainerRef"
-    class="relative flex size-full flex-col px-32 pb-8 pt-16"
+    class="relative flex size-full flex-col px-14 lg:px-32 pb-8 pt-16"
   >
     <!-- chat header -->
     <!-- left quick controls -->
@@ -307,7 +308,7 @@ useHead({
     <div
       id="chatMessagesContainer"
       ref="chatMessagesContainerRef"
-      class="no-scrollbar relative grow overflow-y-scroll rounded-lg"
+      class="no-scrollbar relative grow overflow-y-scroll rounded-lg w-full max-w-[70rem] mx-auto"
     >
       <!-- chat messages -->
       <ChatMessageBox
@@ -370,9 +371,10 @@ useHead({
     </div>
     <!-- Input wrapper -->
     <div
-      class="w-full"
+      class="w-full max-w-[70rem] mx-auto"
       :class="{
-        'px-32 -mt-10 absolute left-0 top-1/2 -translate-y-1/2': showPresets,
+        'px-10 -mt-10 absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2':
+          showPresets,
         relative: !showPresets,
       }"
     >
@@ -384,7 +386,9 @@ useHead({
       </div>
       <div id="chatInputWrapper" class="shrink-0 pt-1">
         <!-- Image input -->
-        <ChatImageInput v-model:input-images="inputImages" />
+        <div class="flex space-x-1 mb-2 ml-12">
+          <ChatImageInput v-model:input-images="inputImages" />
+        </div>
         <div class="flex space-x-1">
           <!-- vision input -->
           <div v-if="chatStore.modelWithVision">
