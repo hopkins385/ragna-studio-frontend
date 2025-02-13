@@ -22,7 +22,6 @@ import {
   UnderlineIcon,
   Undo2Icon,
 } from 'lucide-vue-next';
-import EditorAiMenu from './EditorAiMenu.vue';
 
 const props = defineProps<{
   editor: Editor;
@@ -74,6 +73,7 @@ const onTranslateClick = (lang: string) => {
 <template>
   <div v-if="editor" class="relative flex justify-between px-4 py-3">
     <div class="flex space-x-1">
+      <!--
       <EditorAiMenu
         :disabled="false"
         :is-loading="isLoading"
@@ -86,7 +86,7 @@ const onTranslateClick = (lang: string) => {
         @spelling-grammar-click="() => onSpellingGrammarClick()"
         @translate-click="lang => onTranslateClick(lang)"
       />
-
+      -->
       <Button
         variant="ghost"
         size="icon"

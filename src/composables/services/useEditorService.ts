@@ -18,9 +18,19 @@ interface PromptCompletionResponse {
 }
 
 export function useEditorService() {
-  const ac = new AbortController();
+  let ac: AbortController | null = null;
+
+  const abortCompletion = () => {
+    if (ac) {
+      ac.abort();
+    }
+  };
 
   const fetchPromptCompletion = async (payload: PromptCompletionPayload) => {
+    if (ac) {
+      ac.abort();
+    }
+    ac = new AbortController();
     const api = newApiRequest();
     const route = getRoute(EditorRoute.PROMPT_COMPLETION);
     const { status, data } = await api
@@ -28,6 +38,7 @@ export function useEditorService() {
       .setRoute(route)
       .setSignal(ac.signal)
       .setData(payload)
+      .setSignal(ac.signal)
       .send();
 
     if (status !== HttpStatus.CREATED) {
@@ -39,5 +50,6 @@ export function useEditorService() {
 
   return {
     fetchPromptCompletion,
+    abortCompletion,
   };
 }
