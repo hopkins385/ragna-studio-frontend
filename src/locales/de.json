@@ -143,8 +143,8 @@
     },
     "toast": {
       "error": "Ups, es ist etwas schiefgelaufen",
-      "password_updated": "Passwort erfolgreich aktualisiert",
-      "name_updated": "Name erfolgreich aktualisiert"
+      "password_updated": "Passwort aktualisiert",
+      "name_updated": "Name aktualisiert"
     },
     "tooltip": {
       "email_info": "Mit deiner E-Mail-Adresse kannst du dich anmelden. Deine E-Mail Adresse kannst du nicht ändern"
@@ -231,9 +231,9 @@
       "new_step_description": "Beschreibung"
     },
     "toast": {
-      "created": "Workflow erfolgreich erstellt",
-      "updated": "Workflow erfolgreich aktualisiert",
-      "deleted": "Workflow erfolgreich gelöscht",
+      "created": "Workflow erstellt",
+      "updated": "Workflow aktualisiert",
+      "deleted": "Workflow gelöscht",
       "error": "Ups, es ist etwas schiefgelaufen",
       "error_max_steps": "Maximale Anzahl an Schritten erreicht",
       "error_max_rows": "Maximale Anzahl an Zeilen erreicht"
@@ -281,18 +281,18 @@
       "title": "Agent erstellen",
       "subtitle": "Hier kannst du einen neuen Agenten erstellen",
       "button": "Agent erstellen",
-      "success": "Agent erfolgreich erstellt",
+      "success": "Agent erstellt",
       "error": "Der Agent konnte nicht erstellt werden"
     },
     "edit": {
       "title": "Agent bearbeiten",
       "subtitle": "Hier kannst du den Agenten bearbeiten",
       "button": "Agent aktualisieren",
-      "success": "Agent erfolgreich aktualisiert",
+      "success": "Agent aktualisiert",
       "error": "Der Agent konnte nicht aktualisiert werden"
     },
     "clone": {
-      "success": "Template erfolgreich übernommen"
+      "success": "Template übernommen"
     },
     "form": {
       "name_label": "Name",
