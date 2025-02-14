@@ -343,6 +343,19 @@ const adminRoutes = {
       component: () => import('@views/admin/AdminIndexView.vue'),
       meta: defaultAdminMeta,
     },
+    {
+      path: 'user',
+      name: AdminRouteName.ADMIN_USER,
+      component: () => import('@views/admin/user/AdminUserIndexView.vue'),
+      meta: defaultAdminMeta,
+    },
+    {
+      path: 'user/:id/edit',
+      name: AdminRouteName.ADMIN_USER_EDIT,
+      beforeEnter: [hasValidRouteId],
+      component: () => import('@views/admin/user/AdminUserEditView.vue'),
+      meta: defaultAdminMeta,
+    },
   ],
 };
 

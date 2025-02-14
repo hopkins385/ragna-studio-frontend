@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import AssistantAllTable from '@components/assistant/AssistantAllTable.vue';
-import BoxContainer from '@components/box/BoxContainer.vue';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import Heading from '@components/heading/Heading.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
@@ -38,18 +37,12 @@ useHead({
   <SectionContainer>
     <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
-        <HeadingTitle
-          :title="$t('assistants.title')"
-          :subtitle="$t('assistants.subtitle')"
-        />
+        <HeadingTitle :title="$t('assistants.title')" :subtitle="$t('assistants.subtitle')" />
       </template>
       <template #bottom>
         <div class="flex w-full justify-end space-x-4">
           <div class="whitespace-nowrap">
-            <ButtonLink
-              v-if="$ability.can('create', 'Assistant')"
-              to="/assistant/create"
-            >
+            <ButtonLink v-if="$ability.can('create', 'Assistant')" to="/assistant/create">
               {{ $t('assistant.create.button') }}
               <PlusIcon class="ml-2 size-4 stroke-2" />
             </ButtonLink>
@@ -57,19 +50,13 @@ useHead({
         </div>
       </template>
     </Heading>
-    <BoxContainer class="!p-0">
-      <div>
-        <Suspense>
-          <AssistantAllTable
-            :page="page"
-            :search="search"
-            @update:page="setRoutePage"
-          />
-          <template #fallback>
-            <TableSkeleton />
-          </template>
-        </Suspense>
-      </div>
-    </BoxContainer>
+    <div class="px-10">
+      <Suspense>
+        <AssistantAllTable :page="page" :search="search" @update:page="setRoutePage" />
+        <template #fallback>
+          <TableSkeleton />
+        </template>
+      </Suspense>
+    </div>
   </SectionContainer>
 </template>

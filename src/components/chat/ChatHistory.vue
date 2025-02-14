@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Imports
+import { useConfirmDialog } from '@/composables/useConfirmDialog';
+import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useProviderIcons } from '@/composables/useProviderIcons';
 import useToast from '@/composables/useToast';
 import ButtonLink from '@components/button/ButtonLink.vue';
@@ -6,48 +9,39 @@ import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
-import {
-  useChatService,
-  type ChatsPaginated,
-} from '@composables/services/useChatService';
+import { useChatService, type ChatsPaginated } from '@composables/services/useChatService';
 import useForHumans from '@composables/useForHumans';
 import { Button } from '@ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@ui/table';
-import {
-  MessageCircleMoreIcon,
-  MessagesSquareIcon,
-  Trash2Icon,
-} from 'lucide-vue-next';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
+import { MessageCircleMoreIcon, MessagesSquareIcon, Trash2Icon } from 'lucide-vue-next';
 
-interface ChatHistoryProps {
+// Props
+const props = defineProps<{
   page: number;
   limit?: number;
   search?: string;
-}
+}>();
 
-interface ChatHistoryEmits {
+// Emits
+const emit = defineEmits<{
   'update:page': [number];
-}
+}>();
 
-const props = defineProps<ChatHistoryProps>();
-const emit = defineEmits<ChatHistoryEmits>();
-
+// Refs
 const data = ref<ChatsPaginated | null>(null);
+const chatIdToDelete = ref('');
 
+// Composables
+const { t } = useI18n();
 const { success } = useToast();
 const { getDateTimeForHumans } = useForHumans();
 const { fetchAllChatsPaginated, deleteChat } = useChatService();
 const { getProviderIcon } = useProviderIcons();
+const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
+const { confirmDialog, setConfirmDialog, unsetConfirmDialog } = useConfirmDialog();
 
+// Computed
 const queryPage = computed(() => props.page || 1);
-
 const chats = computed(() => data.value?.chats || []);
 const chatsLength = computed(() => chats.value.length);
 const meta = computed(() => {
@@ -57,38 +51,38 @@ const meta = computed(() => {
   };
 });
 
-const errorAlert = reactive({
-  show: false,
-  message: '',
-});
-const showConfirmDialog = ref(false);
-const chatIdToDelete = ref('');
-
+// Functions
 const initChatHistory = async ({ page }: { page: number }) => {
   try {
     data.value = await fetchAllChatsPaginated({ page });
-  } catch (error: any) {
-    errorAlert.show = true;
-    errorAlert.message = error?.message ?? 'Unknown error occurred';
+  } catch (error) {
+    setErrorAlert(error);
   }
 };
 
-function onDelete(chatId: string) {
-  showConfirmDialog.value = true;
-  chatIdToDelete.value = chatId;
-}
-
-async function handleDelete() {
-  showConfirmDialog.value = false;
+const handleDelete = async () => {
   try {
     const result = await deleteChat(chatIdToDelete.value);
-    success({ description: 'Chat deleted' });
-  } catch (error: any) {
-    errorAlert.show = true;
-    errorAlert.message = error?.message ?? 'Unknown error occurred';
+  } catch (error) {
+    setErrorAlert(error);
+  } finally {
+    unsetConfirmDialog();
   }
+
   chatIdToDelete.value = '';
+  success({ description: 'Chat deleted' });
   await initChatHistory({ page: props.page });
+};
+
+function onDelete(chatId: string) {
+  unsetErrorAlert();
+  chatIdToDelete.value = chatId;
+  setConfirmDialog({
+    title: t('chat.confirm.delete.title'),
+    description: t('chat.confirm.delete.description'),
+    confirmButtonText: t('chat.confirm.delete.confirm'),
+    onConfirm: handleDelete,
+  });
 }
 
 const updatePage = async (value: number) => {
@@ -109,72 +103,58 @@ await initChatHistory({ page: queryPage.value });
 
 <template>
   <div v-if="chats.length > 0">
-    <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
-    <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
-    <div class="px-10">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead></TableHead>
-            <TableHead>{{ $t('table.title') }}</TableHead>
-            <TableHead>{{ $t('table.assistant') }}</TableHead>
-            <TableHead>{{ $t('table.ai_model') }}</TableHead>
-            <TableHead>{{ $t('table.updated_at') }}</TableHead>
-            <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow v-for="chat in data?.chats || []" :key="chat.id">
-            <TableCell class="w-12">
-              <MessagesSquareIcon class="size-4 stroke-1.5" />
-            </TableCell>
-            <TableCell class="min-w-[20rem] font-semibold">
-              {{ chat.title }}
-            </TableCell>
-            <TableCell class="max-w-[10rem] truncate">
-              {{ chat.assistant?.title }}
-            </TableCell>
-            <TableCell>
-              <div class="flex items-center space-x-2">
-                <div class="" v-if="chat.assistant?.llm.provider">
-                  <component
-                    :is="getProviderIcon(chat.assistant?.llm.provider)"
-                    class="size-4 text-slate-500"
-                  />
-                </div>
-                <span>{{ chat.assistant?.llm.displayName }}</span>
-              </div>
-            </TableCell>
-            <TableCell>
-              {{ getDateTimeForHumans(chat.updatedAt) }}
-            </TableCell>
-            <TableCell class="space-x-2 whitespace-nowrap text-right">
-              <ButtonLink
-                :to="`/chat/${chat.id}`"
-                class="group"
-                variant="outline"
-                size="icon"
-              >
-                <MessageCircleMoreIcon class="size-4 stroke-1.5 text-primary" />
-              </ButtonLink>
-              <Button
-                variant="outline"
-                size="icon"
-                class="group"
-                @click="onDelete(chat.id)"
-              >
-                <Trash2Icon
-                  class="size-4 stroke-1.5 text-destructive group-hover:stroke-1.5"
+    <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
+    <ConfirmDialog v-model="confirmDialog.open" v-bind="confirmDialog" />
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead></TableHead>
+          <TableHead>{{ $t('table.title') }}</TableHead>
+          <TableHead>{{ $t('table.assistant') }}</TableHead>
+          <TableHead>{{ $t('table.ai_model') }}</TableHead>
+          <TableHead>{{ $t('table.updated_at') }}</TableHead>
+          <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow v-for="chat in data?.chats || []" :key="chat.id">
+          <TableCell class="w-12">
+            <MessagesSquareIcon class="size-4 stroke-1.5" />
+          </TableCell>
+          <TableCell class="min-w-[20rem] font-semibold">
+            {{ chat.title }}
+          </TableCell>
+          <TableCell class="max-w-[10rem] truncate">
+            {{ chat.assistant?.title }}
+          </TableCell>
+          <TableCell>
+            <div class="flex items-center space-x-2">
+              <div class="" v-if="chat.assistant?.llm.provider">
+                <component
+                  :is="getProviderIcon(chat.assistant?.llm.provider)"
+                  class="size-4 text-slate-500"
                 />
-              </Button>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-        <!-- Meta Caption -->
-        <TableMetaCaption :itemsLength="chatsLength" :meta="meta" />
-      </Table>
-    </div>
-    <div class="pb-10 px-10">
+              </div>
+              <span>{{ chat.assistant?.llm.displayName }}</span>
+            </div>
+          </TableCell>
+          <TableCell>
+            {{ getDateTimeForHumans(chat.updatedAt) }}
+          </TableCell>
+          <TableCell class="space-x-2 whitespace-nowrap text-right">
+            <ButtonLink :to="`/chat/${chat.id}`" class="group" variant="outline" size="icon">
+              <MessageCircleMoreIcon class="size-4 stroke-1.5 text-primary" />
+            </ButtonLink>
+            <Button variant="outline" size="icon" class="group" @click="onDelete(chat.id)">
+              <Trash2Icon class="size-4 stroke-1.5 text-destructive group-hover:stroke-1.5" />
+            </Button>
+          </TableCell>
+        </TableRow>
+      </TableBody>
+      <!-- Meta Caption -->
+      <TableMetaCaption :itemsLength="chatsLength" :meta="meta" />
+    </Table>
+    <div class="pb-10">
       <!-- Pagination Controls -->
       <PaginateControls :page="page" :meta="meta" @update:page="updatePage" />
     </div>

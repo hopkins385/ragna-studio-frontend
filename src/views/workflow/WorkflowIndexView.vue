@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
-import BoxContainer from '@components/box/BoxContainer.vue';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import Heading from '@components/heading/Heading.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
@@ -26,10 +25,7 @@ useHead({
   <SectionContainer>
     <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
-        <HeadingTitle
-          :title="$t('workflows.title')"
-          :subtitle="$t('workflows.subtitle')"
-        />
+        <HeadingTitle :title="$t('workflows.title')" :subtitle="$t('workflows.subtitle')" />
       </template>
       <template #bottom>
         <div class="flex w-full justify-between space-x-4">
@@ -41,13 +37,13 @@ useHead({
         </div>
       </template>
     </Heading>
-    <BoxContainer class="!p-0">
+    <div class="px-10">
       <Suspense>
         <WorkflowListAll />
         <template #fallback>
           <TableSkeleton />
         </template>
       </Suspense>
-    </BoxContainer>
+    </div>
   </SectionContainer>
 </template>

@@ -56,7 +56,7 @@ export const useAuthStore = defineStore('auth-store', {
     userHasAdminRole(state): boolean {
       return !!state.user?.roles?.includes(UserRoles.ADMIN);
     },
-    getUser(state): AuthUser | null {
+    currentUser(state): AuthUser | null {
       return state.user;
     },
     userCredits(state): number {

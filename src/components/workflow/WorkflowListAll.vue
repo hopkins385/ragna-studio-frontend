@@ -1,5 +1,8 @@
 <script setup lang="ts">
+// Imports
 import { useUserFavoriteService } from '@/composables/services/useUserFavoriteService';
+import { useConfirmDialog } from '@/composables/useConfirmDialog';
+import { useErrorAlert } from '@/composables/useErrorAlert';
 import useToast from '@/composables/useToast';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
@@ -17,23 +20,26 @@ import TableCell from '@ui/table/TableCell.vue';
 import TableHead from '@ui/table/TableHead.vue';
 import TableHeader from '@ui/table/TableHeader.vue';
 import TableRow from '@ui/table/TableRow.vue';
-import {
-  SquareArrowOutUpRightIcon,
-  StarIcon,
-  Trash2Icon,
-} from 'lucide-vue-next';
+import { StarIcon, Trash2Icon, WorkflowIcon } from 'lucide-vue-next';
 
-const { t } = useI18n();
-const { fetchWorkflowsPaginated, deleteWorkflow } = useWorkflowService();
-const { addFavorite, deleteFavorite, fetchAllFavoritesByType } =
-  useUserFavoriteService();
+// Props
+// Emits
 
-const toast = useToast();
-
+// Refs
 const page = ref(1);
 const data = ref<WorkflowsPaginatedResponse | null>(null);
 const workflowFavorites = ref<any>([]); // TODO: type
+const deleteId = ref('');
 
+// Composables
+const { t } = useI18n();
+const { success } = useToast();
+const { fetchWorkflowsPaginated, deleteWorkflow } = useWorkflowService();
+const { addFavorite, deleteFavorite, fetchAllFavoritesByType } = useUserFavoriteService();
+const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
+const { confirmDialog, setConfirmDialog, unsetConfirmDialog } = useConfirmDialog();
+
+// Computed
 const workflows = computed(() => data.value?.workflows || []);
 const workflowsLength = computed(() => workflows.value.length);
 const meta = computed(() => {
@@ -43,38 +49,41 @@ const meta = computed(() => {
   };
 });
 
+// Functions
 const initWorkflows = async () => {
   data.value = await fetchWorkflowsPaginated();
 };
 
-const errorAlert = reactive({ show: false, message: '' });
-const showConfirmDialog = ref(false);
-const deleteId = ref('');
-
 const setPage = (value: number) => {
   page.value = value;
-};
-
-const onDelete = (id: string) => {
-  showConfirmDialog.value = true;
-  deleteId.value = id;
 };
 
 const handleDelete = async () => {
   if (!deleteId.value) return;
   try {
     await deleteWorkflow(deleteId.value);
-    await initWorkflows();
-    toast.success({
-      description: t('workflow.toast.deleted'),
-    });
-  } catch (error: any) {
-    errorAlert.show = true;
-    errorAlert.message = error?.message;
+  } catch (error) {
+    setErrorAlert(error);
   } finally {
-    showConfirmDialog.value = false;
-    deleteId.value = '';
+    unsetConfirmDialog();
   }
+
+  deleteId.value = '';
+  success({
+    description: t('workflow.toast.deleted'),
+  });
+  await initWorkflows();
+};
+
+const onDelete = (id: string) => {
+  unsetErrorAlert();
+  deleteId.value = id;
+  setConfirmDialog({
+    title: t('workflow.confirm.delete.title'),
+    description: t('workflow.confirm.delete.description'),
+    confirmButtonText: t('workflow.confirm.delete.confirm'),
+    onConfirm: handleDelete,
+  });
 };
 
 const onAddFavorite = async (workflowId: string) => {
@@ -82,21 +91,17 @@ const onAddFavorite = async (workflowId: string) => {
     await addFavorite({ id: workflowId, type: 'workflow' });
     await initWorkflowFavorites();
   } catch (error: any) {
-    errorAlert.show = true;
-    errorAlert.message = error?.message;
+    setErrorAlert(error);
   }
 };
 
 const onDeleteFavorite = async (workflowId: string) => {
-  const entityId = workflowFavorites.value.find(
-    (f: any) => f.favoriteId === workflowId,
-  ).id;
+  const entityId = workflowFavorites.value.find((f: any) => f.favoriteId === workflowId).id;
   try {
     await deleteFavorite({ entityId, favoriteType: 'workflow' });
     await initWorkflowFavorites();
   } catch (error: any) {
-    errorAlert.show = true;
-    errorAlert.message = error?.message;
+    setErrorAlert(error);
   }
 };
 
@@ -113,70 +118,50 @@ onMounted(() => {
 
 <template>
   <div>
-    <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
-    <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
-    <div class="px-10">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{{ $t('table.favorit') }}</TableHead>
-            <TableHead>{{ $t('table.name') }}</TableHead>
-            <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow v-for="workflow in workflows || []" :key="workflow.id">
-            <TableCell class="w-12">
-              <Button
-                v-if="workflowFavorites.some(f => f.favoriteId === workflow.id)"
-                variant="ghost"
-                size="icon"
-                @click="onDeleteFavorite(workflow.id)"
-              >
-                <StarIcon
-                  class="!size-6 stroke-1.5 stroke-none fill-blue-500"
-                />
-              </Button>
-              <Button
-                v-else
-                variant="ghost"
-                size="icon"
-                @click="onAddFavorite(workflow.id)"
-              >
-                <StarIcon class="!size-5 stroke-1.5 stroke-stone-400" />
-              </Button>
-            </TableCell>
-            <TableCell class="font-semibold">
-              {{ workflow.name }}
-            </TableCell>
-            <TableCell class="space-x-2 text-right">
-              <ButtonLink
-                class="group"
-                variant="outline"
-                size="icon"
-                :to="`workflow/${workflow.id}`"
-              >
-                <SquareArrowOutUpRightIcon
-                  class="size-4 stroke-1.5 text-primary group-hover:stroke-2"
-                />
-              </ButtonLink>
-              <Button
-                variant="outline"
-                size="icon"
-                @click="onDelete(workflow.id)"
-              >
-                <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
-              </Button>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-        <!-- Meta Caption -->
-        <TableMetaCaption :itemsLength="workflowsLength" :meta="meta" />
-      </Table>
-    </div>
-    <div class="pb-10 px-10">
-      <!-- Pagination Controls -->
-      <PaginateControls :page="page" :meta="meta" @update:page="setPage" />
-    </div>
+    <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
+    <ConfirmDialog v-model="confirmDialog.open" v-bind="confirmDialog" />
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>{{ $t('table.favorit') }}</TableHead>
+          <TableHead>{{ $t('table.name') }}</TableHead>
+          <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow v-for="workflow in workflows || []" :key="workflow.id">
+          <TableCell class="w-12">
+            <Button
+              v-if="workflowFavorites.some((f: any) => f.favoriteId === workflow.id)"
+              variant="ghost"
+              size="icon"
+              @click="onDeleteFavorite(workflow.id)"
+            >
+              <StarIcon class="!size-6 stroke-1.5 stroke-none fill-blue-500" />
+            </Button>
+            <Button v-else variant="ghost" size="icon" @click="onAddFavorite(workflow.id)">
+              <StarIcon class="!size-5 stroke-1.5 stroke-stone-400" />
+            </Button>
+          </TableCell>
+          <TableCell class="font-semibold">
+            {{ workflow.name }}
+          </TableCell>
+          <TableCell class="space-x-2 text-right">
+            <ButtonLink class="group" variant="outline" size="icon" :to="`workflow/${workflow.id}`">
+              <WorkflowIcon class="size-4 stroke-1.5 text-primary group-hover:stroke-2" />
+            </ButtonLink>
+            <Button variant="outline" size="icon" @click="onDelete(workflow.id)">
+              <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
+            </Button>
+          </TableCell>
+        </TableRow>
+      </TableBody>
+      <!-- Meta Caption -->
+      <TableMetaCaption :itemsLength="workflowsLength" :meta="meta" />
+    </Table>
+  </div>
+  <div class="pb-10">
+    <!-- Pagination Controls -->
+    <PaginateControls :page="page" :meta="meta" @update:page="setPage" />
   </div>
 </template>

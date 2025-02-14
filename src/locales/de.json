@@ -134,7 +134,7 @@
     },
     "delete": {
       "title": "Account löschen",
-      "description": "Bist du sicher, dass du deinen Account löschen möchtest? Dein Account wird unwiderruflich gelöscht. Alle Daten gehen verloren",
+      "description": "Bist du sicher, dass du deinen Account löschen möchtest? Dein Account wird unwiderruflich gelöscht.",
       "confirm": "Account löschen",
       "cancel": "Abbrechen",
       "enter_password": "Bitte gib dein Passwort ein, um fortzufahren",
@@ -238,6 +238,13 @@
       "error_max_steps": "Maximale Anzahl an Schritten erreicht",
       "error_max_rows": "Maximale Anzahl an Zeilen erreicht"
     },
+    "confirm": {
+      "delete": {
+        "title": "Workflow löschen",
+        "description": "Bist du sicher, dass du den Workflow löschen möchtest? Der Workflow wird unwiderruflich gelöscht.",
+        "confirm": "Workflow löschen"
+      }
+    },
     "button": {
       "refresh": "Aktualisieren",
       "run": "Flow Starten"
@@ -290,6 +297,13 @@
       "button": "Agent aktualisieren",
       "success": "Agent aktualisiert",
       "error": "Der Agent konnte nicht aktualisiert werden"
+    },
+    "confirm": {
+      "delete": {
+        "title": "Agent löschen",
+        "description": "Bist du sicher, dass du den Agenten löschen möchtest? Der Agent wird unwiderruflich gelöscht.",
+        "confirm": "Agent löschen"
+      }
     },
     "clone": {
       "success": "Template übernommen"
@@ -448,6 +462,13 @@
     "create": {
       "tooltip": {
         "new": "Neuer Chat"
+      }
+    },
+    "confirm": {
+      "delete": {
+        "title": "Chat löschen",
+        "description": "Bist du sicher, dass du den Chat löschen möchtest? Der Chat wird unwiderruflich gelöscht.",
+        "confirm": "Chat löschen"
       }
     },
     "settings": {

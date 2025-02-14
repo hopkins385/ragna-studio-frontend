@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// Imports
+import { useErrorAlert } from '@/composables/useErrorAlert';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { assistantFormSchema } from '@/schemas/assistant.form';
 import ButtonLink from '@components/button/ButtonLink.vue';
@@ -34,24 +36,28 @@ import {
 } from 'lucide-vue-next';
 import PromptWizardDialog from '../prompt/PromptWizardDialog.vue';
 
-const { t } = useI18n();
-const { fetchAllTools } = useAssistantToolsService();
-const { createAssistant } = useAssistantService();
+// Props
+// Emits
 
+// Refs
 const currentTab = ref('tab1');
 const isLoading = ref(false);
 const assistantTools = ref<AssistantTool[] | null>(null);
 
-const showErrorAlert = ref(false);
-const errorAlertMessage = ref('');
-
+// Composables
 const authStore = useAuthStore();
 const toast = useToast();
 const router = useRouter();
+const { t } = useI18n();
+const { fetchAllTools } = useAssistantToolsService();
+const { createAssistant } = useAssistantService();
+const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 
+// Computed
 const initialAssistantName = computed(() => t('assistant.genai.select'));
 const initialCollectionName = computed(() => t('assistant.knowledge.select'));
 
+// Functions
 const initAssistantTools = async () => {
   const { tools } = await fetchAllTools();
   assistantTools.value = tools;
@@ -104,11 +110,9 @@ watch(
   () => formErrors.value,
   errors => {
     if (Object.keys(errors).length > 0) {
-      showErrorAlert.value = true;
-      errorAlertMessage.value = errors[Object.keys(errors)[0] as any] as string;
+      setErrorAlert(errors[Object.keys(errors)[0] as any] as string);
     } else {
-      showErrorAlert.value = false;
-      errorAlertMessage.value = '';
+      unsetErrorAlert();
     }
   },
 );
@@ -129,7 +133,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <ErrorAlert v-model="showErrorAlert" :message="errorAlertMessage" />
+  <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
   <div class="w-full flex justify-end">
     <div class="flex items-center space-x-4">
       <ButtonLink to="/assistant" variant="secondary">
@@ -188,15 +192,9 @@ onMounted(() => {
     <!-- TAB 3-->
     <template #tab3>
       <div class="space-y-8">
-        <FormField
-          v-slot="{ componentField, value, handleChange }"
-          name="systemPrompt"
-        >
+        <FormField v-slot="{ componentField, value, handleChange }" name="systemPrompt">
           <div>
-            <PromptWizardDialog
-              :input-prompt="value"
-              @update-prompt="handleChange"
-            />
+            <PromptWizardDialog :input-prompt="value" @update-prompt="handleChange" />
           </div>
           <FormItem>
             <FormLabel>{{ $t('assistant.behavior.label') }}</FormLabel>

@@ -4,5 +4,6 @@
   "singleQuote": true,
   "tabWidth": 2,
   "vueIndentScriptAndStyle": false,
-  "arrowParens": "avoid"
+  "arrowParens": "avoid",
+  "printWidth": 100
 }

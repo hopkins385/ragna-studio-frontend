@@ -35,23 +35,22 @@ useHead({
   <SectionContainer>
     <Heading>
       <template #top>
-        <HeadingTitle
-          :title="$t('chat.history.title')"
-          :subtitle="$t('chat.history.subtitle')"
-        />
+        <HeadingTitle :title="$t('chat.history.title')" :subtitle="$t('chat.history.subtitle')" />
       </template>
       <template #bottom> </template>
     </Heading>
     <div class="pb-6 hidden">
       <Input v-model="search" placeholder="Search chat title ..." />
     </div>
-    <Suspense>
-      <ChatHistory :search="search" :page="page" @update:page="setRoutePage" />
-      <template #fallback>
-        <BoxContainer>
-          <TableSkeleton />
-        </BoxContainer>
-      </template>
-    </Suspense>
+    <div class="px-10">
+      <Suspense>
+        <ChatHistory :search="search" :page="page" @update:page="setRoutePage" />
+        <template #fallback>
+          <BoxContainer>
+            <TableSkeleton />
+          </BoxContainer>
+        </template>
+      </Suspense>
+    </div>
   </SectionContainer>
 </template>

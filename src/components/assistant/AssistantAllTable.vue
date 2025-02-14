@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Imports
+import { useConfirmDialog } from '@/composables/useConfirmDialog';
+import { useErrorAlert } from '@/composables/useErrorAlert';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
@@ -11,47 +14,37 @@ import { useUserFavoriteService } from '@composables/services/useUserFavoriteSer
 import { useProviderIcons } from '@composables/useProviderIcons';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@ui/table';
-import {
-  MessageSquareIcon,
-  SettingsIcon,
-  StarIcon,
-  Trash2Icon,
-} from 'lucide-vue-next';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
+import { MessageSquareIcon, SettingsIcon, StarIcon, Trash2Icon } from 'lucide-vue-next';
 
-const page = defineModel<number>('page');
-
+// Props
 const props = defineProps<{
   limit?: number;
   search?: string;
 }>();
 
+// Emits
 const emit = defineEmits<{
   newChat: [string];
 }>();
 
-const router = useRouter();
-const toast = useToast();
-
+// Refs
 const data = ref();
 const assistantFavorites = ref<any>([]); // TODO: type
-
-const { createChat } = useChatService();
-
-const showConfirmDialog = ref(false);
-const errorAlert = reactive({
-  show: false,
-  message: '',
-});
 const deleteAssistantId = ref('');
+const page = defineModel<number>('page');
 
+// Composables
+const router = useRouter();
+const toast = useToast();
+const { t } = useI18n();
+const { createChat } = useChatService();
+const { fetchAllAssistants, deleteAssistant } = useAssistantService();
+const { getProviderIcon } = useProviderIcons();
+const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
+const { confirmDialog, setConfirmDialog } = useConfirmDialog();
+
+// Computed
 const assistants = computed(() => data.value?.assistants || []);
 const assistantsLength = computed(() => assistants.value.length);
 const meta = computed(() => {
@@ -61,36 +54,29 @@ const meta = computed(() => {
   };
 });
 
-const { fetchAllAssistants, deleteAssistant } = useAssistantService();
-const { getProviderIcon } = useProviderIcons();
-
 const initAllAssistants = async ({ page }: { page: number }) => {
   data.value = await fetchAllAssistants({ page });
 };
 
+// Functions
 const handleDelete = async () => {
-  const assistantId = deleteAssistantId.value;
-  if (!assistantId) {
-    throw new Error('Assistant ID missing');
-  }
   try {
-    await deleteAssistant(assistantId);
-    deleteAssistantId.value = '';
-    toast.success({
-      description: 'Assistant has been deleted.',
-    });
-    await initAllAssistants({ page: page.value ?? 1 });
-  } catch (error: any) {
-    errorAlert.show = true;
-    errorAlert.message = error?.message;
+    await deleteAssistant(deleteAssistantId.value);
+  } catch (error) {
+    setErrorAlert(error);
   }
+
+  deleteAssistantId.value = '';
+  toast.success({
+    description: 'Assistant has been deleted.',
+  });
+  await initAllAssistants({ page: page.value ?? 1 });
 };
 
 const onStart = async (assistantId: string) => {
   const { chat } = await createChat(assistantId);
   if (!chat) {
-    errorAlert.message = 'Failed to create chat';
-    errorAlert.show = true;
+    setErrorAlert('Failed to create chat');
     return;
   }
   emit('newChat', chat.id);
@@ -98,8 +84,14 @@ const onStart = async (assistantId: string) => {
 };
 
 const onDelete = (id: string) => {
+  unsetErrorAlert();
   deleteAssistantId.value = id;
-  showConfirmDialog.value = true;
+  setConfirmDialog({
+    title: t('assistant.confirm.delete.title'),
+    description: t('assistant.confirm.delete.description'),
+    confirmButtonText: t('assistant.confirm.delete.confirm'),
+    onConfirm: handleDelete,
+  });
 };
 
 const onUpdatePage = async (currentPage: number) => {
@@ -116,37 +108,26 @@ watch(
 );
 
 // favorite
-const { addFavorite, deleteFavorite, fetchAllFavoritesByType } =
-  useUserFavoriteService();
+const { addFavorite, deleteFavorite, fetchAllFavoritesByType } = useUserFavoriteService();
 
 const onAddFavorite = async (assistantId: string) => {
+  unsetErrorAlert();
   try {
     await addFavorite({ id: assistantId, type: 'assistant' });
     await initAssistantFavorites();
-  } catch (error: unknown) {
-    errorAlert.show = true;
-    if (error instanceof Error) {
-      errorAlert.message = error.message;
-    } else {
-      errorAlert.message = 'An error occurred';
-    }
+  } catch (error) {
+    setErrorAlert(error);
   }
 };
 
 const onDeleteFavorite = async (assistantId: string) => {
-  const entityId = assistantFavorites.value.find(
-    (f: any) => f.favoriteId === assistantId,
-  ).id;
+  unsetErrorAlert();
+  const entityId = assistantFavorites.value.find((f: any) => f.favoriteId === assistantId).id;
   try {
     await deleteFavorite({ entityId, favoriteType: 'assistant' });
     await initAssistantFavorites();
-  } catch (error: unknown) {
-    errorAlert.show = true;
-    if (error instanceof Error) {
-      errorAlert.message = error.message;
-    } else {
-      errorAlert.message = 'An error occurred';
-    }
+  } catch (error) {
+    setErrorAlert(error);
   }
 };
 
@@ -161,108 +142,87 @@ await initAssistantFavorites();
 
 <template>
   <div v-if="assistants && assistants.length > 0">
-    <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
-    <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
-    <div class="px-10">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{{ $t('table.favorit') }}</TableHead>
-            <TableHead>{{ $t('table.avatar') }}</TableHead>
-            <TableHead>{{ $t('table.title') }}</TableHead>
-            <TableHead class="whitespace-nowrap">
-              {{ $t('table.ai_model') }}
-            </TableHead>
-            <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow
-            v-for="assistant in data?.assistants || []"
-            :key="assistant.id"
-          >
-            <TableCell class="w-12">
-              <div class="border-0">
-                <Button
-                  v-if="
-                    assistantFavorites.some(f => f.favoriteId === assistant.id)
-                  "
-                  variant="ghost"
-                  size="icon"
-                  @click="() => onDeleteFavorite(assistant.id)"
-                >
-                  <StarIcon
-                    class="!size-6 stroke-1.5 stroke-none fill-blue-500"
-                  />
-                </Button>
-                <Button
-                  v-else
-                  variant="ghost"
-                  size="icon"
-                  @click="() => onAddFavorite(assistant.id)"
-                >
-                  <StarIcon class="!size-5 stroke-1.5 stroke-stone-400" />
-                </Button>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div class="size-8 rounded-full bg-slate-200"></div>
-            </TableCell>
-            <TableCell class="">
-              <div class="text-sm font-semibold">
-                {{ assistant.title }}
-              </div>
-            </TableCell>
-            <TableCell class="whitespace-nowrap">
-              <div class="flex space-x-2 items-center">
-                <component
-                  :is="getProviderIcon(assistant.llm.provider)"
-                  class="stroke-1.5 size-4"
-                />
-                <span>{{ assistant.llm.displayName }}</span>
-              </div>
-            </TableCell>
-            <TableCell
-              class="flex justify-end space-x-2 whitespace-nowrap text-right"
-            >
-              <Button variant="outline" @click="() => onStart(assistant.id)">
-                Chat
-                <MessageSquareIcon
-                  class="ml-2 size-4 shrink-0 stroke-1.5 text-primary"
-                />
-              </Button>
-              <ButtonLink
-                v-if="$ability.can('edit', 'Assistant')"
-                :to="`/assistant/${assistant.id}/edit`"
-                variant="outline"
-                size="icon"
-              >
-                <SettingsIcon class="size-4 stroke-1.5 text-primary" />
-              </ButtonLink>
+    <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
+    <ConfirmDialog v-model="confirmDialog.open" v-bind="confirmDialog" />
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>{{ $t('table.favorit') }}</TableHead>
+          <TableHead>{{ $t('table.avatar') }}</TableHead>
+          <TableHead>{{ $t('table.title') }}</TableHead>
+          <TableHead class="whitespace-nowrap">
+            {{ $t('table.ai_model') }}
+          </TableHead>
+          <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow v-for="assistant in data?.assistants || []" :key="assistant.id">
+          <TableCell class="w-12">
+            <div class="border-0">
               <Button
-                v-if="$ability.can('delete', 'Assistant')"
-                variant="outline"
+                v-if="assistantFavorites.some((f: any) => f.favoriteId === assistant.id)"
+                variant="ghost"
                 size="icon"
-                @click="onDelete(assistant.id)"
+                @click="() => onDeleteFavorite(assistant.id)"
               >
-                <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
+                <StarIcon class="!size-6 stroke-1.5 stroke-none fill-blue-500" />
               </Button>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-        <!-- Meta Caption -->
-        <TableMetaCaption :itemsLength="assistantsLength" :meta="meta" />
-      </Table>
-    </div>
-    <div class="pb-10 px-10">
-      <!-- Pagination Controls -->
-      <PaginateControls
-        v-if="meta.totalCount > 10"
-        :page="page || 1"
-        :meta="meta"
-        :limit="10"
-        @update:page="onUpdatePage"
-      />
-    </div>
+              <Button v-else variant="ghost" size="icon" @click="() => onAddFavorite(assistant.id)">
+                <StarIcon class="!size-5 stroke-1.5 stroke-stone-400" />
+              </Button>
+            </div>
+          </TableCell>
+          <TableCell>
+            <div class="size-8 rounded-full bg-slate-200"></div>
+          </TableCell>
+          <TableCell class="">
+            <div class="text-sm font-semibold">
+              {{ assistant.title }}
+            </div>
+          </TableCell>
+          <TableCell class="whitespace-nowrap">
+            <div class="flex space-x-2 items-center">
+              <component :is="getProviderIcon(assistant.llm.provider)" class="stroke-1.5 size-4" />
+              <span>{{ assistant.llm.displayName }}</span>
+            </div>
+          </TableCell>
+          <TableCell class="flex justify-end space-x-2 whitespace-nowrap text-right">
+            <Button variant="outline" @click="() => onStart(assistant.id)">
+              Chat
+              <MessageSquareIcon class="ml-2 size-4 shrink-0 stroke-1.5 text-primary" />
+            </Button>
+            <ButtonLink
+              v-if="$ability.can('edit', 'Assistant')"
+              :to="`/assistant/${assistant.id}/edit`"
+              variant="outline"
+              size="icon"
+            >
+              <SettingsIcon class="size-4 stroke-1.5 text-primary" />
+            </ButtonLink>
+            <Button
+              v-if="$ability.can('delete', 'Assistant')"
+              variant="outline"
+              size="icon"
+              @click="onDelete(assistant.id)"
+            >
+              <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
+            </Button>
+          </TableCell>
+        </TableRow>
+      </TableBody>
+      <!-- Meta Caption -->
+      <TableMetaCaption :itemsLength="assistantsLength" :meta="meta" />
+    </Table>
+  </div>
+  <div class="pb-10">
+    <!-- Pagination Controls -->
+    <PaginateControls
+      v-if="meta.totalCount > 10"
+      :page="page || 1"
+      :meta="meta"
+      :limit="10"
+      @update:page="onUpdatePage"
+    />
   </div>
 </template>
