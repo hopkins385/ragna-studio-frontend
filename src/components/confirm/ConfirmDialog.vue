@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ConfirmDialogOptions } from '@/composables/useConfirmDialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,19 +10,45 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@ui/alert-dialog';
+import ButtonLoading from '../button/ButtonLoading.vue';
+import { Button } from '../ui/button';
 
-defineProps<{
-  title?: string;
-  description?: string;
-  confirmButtonText?: string;
-  onConfirm: () => void;
-}>();
-
+const props = defineProps<ConfirmDialogOptions>();
 const modelValue = defineModel<boolean>({ required: true });
+
+const isLoading = ref(false);
+
+const onSubmitClick = async () => {
+  isLoading.value = true;
+  try {
+    await props.onConfirm?.();
+  } finally {
+    modelValue.value = false;
+    isLoading.value = false;
+  }
+};
+
+const onCancelClick = () => {
+  modelValue.value = false;
+};
+
+const onKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
+    onCancelClick();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', onKeydown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKeydown);
+});
 </script>
 
 <template>
-  <AlertDialog v-model:open="modelValue">
+  <AlertDialog :open="modelValue">
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>{{ title ?? $t('confirm.title') }}</AlertDialogTitle>
@@ -30,11 +57,15 @@ const modelValue = defineModel<boolean>({ required: true });
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel>
-          {{ $t('confirm.button.cancel') }}
+        <AlertDialogCancel as-child>
+          <Button variant="outline" @click="onCancelClick">
+            {{ $t('confirm.button.cancel') }}
+          </Button>
         </AlertDialogCancel>
-        <AlertDialogAction @click="onConfirm()">
-          {{ confirmButtonText ?? $t('confirm.button.confirm') }}
+        <AlertDialogAction as-child>
+          <ButtonLoading :loading="isLoading" @click="onSubmitClick">
+            {{ confirmButtonText ?? $t('confirm.button.confirm') }}
+          </ButtonLoading>
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>

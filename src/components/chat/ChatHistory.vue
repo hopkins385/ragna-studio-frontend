@@ -56,7 +56,7 @@ const initChatHistory = async ({ page }: { page: number }) => {
   try {
     data.value = await fetchAllChatsPaginated({ page });
   } catch (error) {
-    setErrorAlert(error);
+    return setErrorAlert(error);
   }
 };
 
@@ -64,7 +64,7 @@ const handleDelete = async () => {
   try {
     const result = await deleteChat(chatIdToDelete.value);
   } catch (error) {
-    setErrorAlert(error);
+    return setErrorAlert(error);
   } finally {
     unsetConfirmDialog();
   }

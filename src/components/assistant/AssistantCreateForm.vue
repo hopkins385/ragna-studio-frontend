@@ -84,7 +84,9 @@ const {
 });
 
 const onSubmit = handleSubmit(async values => {
+  unsetErrorAlert();
   isLoading.value = true;
+
   try {
     await createAssistant({
       ...values,
@@ -96,11 +98,8 @@ const onSubmit = handleSubmit(async values => {
       name: RouteName.ASSISTANT_INDEX,
     });
     resetForm();
-  } catch (error: any) {
-    console.error(error);
-    toast.error({
-      description: t('assistant.create.error'),
-    });
+  } catch (error) {
+    return setErrorAlert(error);
   } finally {
     isLoading.value = false;
   }
@@ -110,7 +109,7 @@ watch(
   () => formErrors.value,
   errors => {
     if (Object.keys(errors).length > 0) {
-      setErrorAlert(errors[Object.keys(errors)[0] as any] as string);
+      return setErrorAlert(errors[Object.keys(errors)[0] as any] as string);
     } else {
       unsetErrorAlert();
     }

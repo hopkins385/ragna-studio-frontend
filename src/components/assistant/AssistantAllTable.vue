@@ -63,7 +63,7 @@ const handleDelete = async () => {
   try {
     await deleteAssistant(deleteAssistantId.value);
   } catch (error) {
-    setErrorAlert(error);
+    return setErrorAlert(error);
   }
 
   deleteAssistantId.value = '';
@@ -76,8 +76,7 @@ const handleDelete = async () => {
 const onStart = async (assistantId: string) => {
   const { chat } = await createChat(assistantId);
   if (!chat) {
-    setErrorAlert('Failed to create chat');
-    return;
+    return setErrorAlert('Failed to create chat');
   }
   emit('newChat', chat.id);
   router.push({ name: RouteName.CHAT_SHOW, params: { id: chat.id } });
@@ -116,7 +115,7 @@ const onAddFavorite = async (assistantId: string) => {
     await addFavorite({ id: assistantId, type: 'assistant' });
     await initAssistantFavorites();
   } catch (error) {
-    setErrorAlert(error);
+    return setErrorAlert(error);
   }
 };
 
@@ -127,7 +126,7 @@ const onDeleteFavorite = async (assistantId: string) => {
     await deleteFavorite({ entityId, favoriteType: 'assistant' });
     await initAssistantFavorites();
   } catch (error) {
-    setErrorAlert(error);
+    return setErrorAlert(error);
   }
 };
 

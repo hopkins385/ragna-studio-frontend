@@ -45,25 +45,14 @@ const initAllUsers = async (params: { page: number }) => {
   try {
     data.value = await fetchAllUsers(params);
   } catch (error: unknown) {
-    setErrorAlert(error);
+    return setErrorAlert(error);
   }
 };
 
-const onDelete = (id: string) => {
-  deleteUserId.value = id;
-  setConfirmDialog({
-    title: 'Delete User',
-    message: 'Are you sure you want to delete this user?',
-  });
-};
-
 const handleDelete = async () => {
-  unsetErrorAlert();
-
   if (auth.currentUser?.id === deleteUserId.value) {
     unsetConfirmDialog();
-    setErrorAlert('You cannot delete yourself');
-    return;
+    return setErrorAlert('You cannot delete yourself');
   }
 
   try {
@@ -72,8 +61,19 @@ const handleDelete = async () => {
     toast.success({ description: 'User deleted successfully' });
     await initAllUsers({ page: page.value });
   } catch (error) {
-    setErrorAlert(error);
+    return setErrorAlert(error);
   }
+};
+
+const onDelete = (id: string) => {
+  unsetErrorAlert();
+  deleteUserId.value = id;
+  setConfirmDialog({
+    title: 'Delete User',
+    description: 'Are you sure you want to delete this user?',
+    confirmButtonText: 'Delete',
+    onConfirm: handleDelete,
+  });
 };
 
 const onUpdatePage = async (currentPage: number) => {

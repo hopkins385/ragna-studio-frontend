@@ -384,6 +384,13 @@
       "dropzone": {
         "drag_and_drop": "Dateien hierher ziehen oder klicken, um Dateien hochzuladen"
       }
+    },
+    "confirm": {
+      "delete": {
+        "title": "Datei löschen",
+        "description": "Bist du sicher, dass du die Datei löschen möchtest? Die Datei wird unwiderruflich gelöscht.",
+        "confirm": "Datei löschen"
+      }
     }
   },
   "textToImages": {

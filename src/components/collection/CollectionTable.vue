@@ -66,7 +66,7 @@ async function handleDelete() {
     });
     await initCollections();
   } catch (error) {
-    setErrorAlert(error);
+    return setErrorAlert(error);
   } finally {
     unsetConfirmDialog();
   }

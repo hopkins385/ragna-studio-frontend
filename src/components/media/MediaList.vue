@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Imports
+import { useConfirmDialog } from '@/composables/useConfirmDialog';
+import { useErrorAlert } from '@/composables/useErrorAlert';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
@@ -7,40 +10,39 @@ import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
 import { useAuthStore } from '@stores/auth.store';
 import { Button } from '@ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { FileIcon, Trash2Icon } from 'lucide-vue-next';
 import TableMetaCaption from '../table/TableMetaCaption.vue';
 
+// Props
 const props = defineProps<{
   refresh: boolean;
   page: number;
 }>();
 
+// Emits
 const emits = defineEmits<{
   'update:refresh': [boolean];
   'update:page': [number];
 }>();
 
-const toast = useToast();
-const authStore = useAuthStore();
-
-const { fetchAllMediaFor, deleteMedia } = useMediaService();
-const { getFileSizeForHumans } = useForHumans();
-
-const showConfirmDialog = ref(false);
+// Refs
 const showAddToCollectionDialog = ref(false);
 const deleteMediaId = ref('');
-const errorAlert = reactive({ show: false, message: '' });
-
 const mediaData = ref<any | null>(null);
 
+// Composables
+const toast = useToast();
+const authStore = useAuthStore();
+const { t } = useI18n();
+const { fetchAllMediaFor, deleteMedia } = useMediaService();
+const { getFileSizeForHumans } = useForHumans();
+const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
+const { confirmDialog, setConfirmDialog } = useConfirmDialog();
+
+// Computed
+
+// Functions
 const initMedia = async () => {
   if (!authStore.user?.id) return;
   const response = await fetchAllMediaFor(
@@ -63,29 +65,32 @@ function onEdit(id: string) {
   //
 }
 
-function onDelete(id: string) {
-  deleteMediaId.value = id;
-  showConfirmDialog.value = true;
-}
-
 function onPlusClick(id: string) {
   showAddToCollectionDialog.value = true;
 }
 
-function handleDelete() {
-  const id = deleteMediaId.value;
-  deleteMedia(id)
-    .then(() => {
-      deleteMediaId.value = '';
-      toast.success({
-        description: 'Media has been deleted successfully.',
-      });
-      initMedia();
-    })
-    .catch((error: any) => {
-      errorAlert.show = true;
-      errorAlert.message = error?.message;
-    });
+const handleDelete = async () => {
+  try {
+    await deleteMedia(deleteMediaId.value);
+  } catch (error) {
+    return setErrorAlert(error);
+  }
+
+  deleteMediaId.value = '';
+  toast.success({
+    description: 'Media has been deleted successfully.',
+  });
+  await initMedia();
+};
+
+function onDelete(id: string) {
+  deleteMediaId.value = id;
+  setConfirmDialog({
+    title: t('media.confirm.delete.title'),
+    description: t('media.confirm.delete.description'),
+    confirmButtonText: t('media.confirm.delete.confirm'),
+    onConfirm: handleDelete,
+  });
 }
 
 watch(
@@ -117,8 +122,8 @@ onMounted(() => {
 
 <template>
   <div>
-    <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
-    <ConfirmDialog v-model="showConfirmDialog" @confirm="handleDelete" />
+    <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
+    <ConfirmDialog v-model="confirmDialog.open" v-bind="confirmDialog" />
     <RecordAddFileDialog v-model="showAddToCollectionDialog" />
     <div class="px-10">
       <Table>

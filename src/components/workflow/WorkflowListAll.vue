@@ -63,7 +63,7 @@ const handleDelete = async () => {
   try {
     await deleteWorkflow(deleteId.value);
   } catch (error) {
-    setErrorAlert(error);
+    return setErrorAlert(error);
   } finally {
     unsetConfirmDialog();
   }
@@ -91,7 +91,7 @@ const onAddFavorite = async (workflowId: string) => {
     await addFavorite({ id: workflowId, type: 'workflow' });
     await initWorkflowFavorites();
   } catch (error: any) {
-    setErrorAlert(error);
+    return setErrorAlert(error);
   }
 };
 
@@ -101,7 +101,7 @@ const onDeleteFavorite = async (workflowId: string) => {
     await deleteFavorite({ entityId, favoriteType: 'workflow' });
     await initWorkflowFavorites();
   } catch (error: any) {
-    setErrorAlert(error);
+    return setErrorAlert(error);
   }
 };
 

@@ -1,7 +1,9 @@
 <script setup lang="ts">
+// Imports
 import ButtonLink from '@/components/button/ButtonLink.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import { useErrorAlert } from '@/composables/useErrorAlert';
 import { RouteName } from '@/router/enums/route-names.enum';
 import {
   allowedMimeTypes,
@@ -29,20 +31,21 @@ import {
 import { Input } from '@ui/input';
 import { toTypedSchema } from '@vee-validate/zod';
 
+// Props
+// Emits
+
+// Refs
+const isLoading = ref(false);
+
+// Composables
 const router = useRouter();
 const toast = useToast();
 const { t } = useI18n();
 
-const isLoading = ref(false);
-
 const { createWorkflow, reCreateWorkflowFromMedia } = useWorkflowService();
 const { uploadFiles } = useMediaService();
 const { attachMediaTo } = useMediaAbleService();
-
-const errorAlert = reactive({
-  show: false,
-  message: '',
-});
+const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 
 const { handleSubmit } = useForm({
   validationSchema: toTypedSchema(createWorkflowSchema),
@@ -52,9 +55,15 @@ const { handleSubmit } = useForm({
   },
 });
 
+// Computed
+
+// Functions
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
+  unsetErrorAlert();
+
   isLoading.value = true;
   const file = values.file;
+
   try {
     const { workflow } = await createWorkflow({
       name: values.name,
@@ -88,9 +97,8 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     });
 
     resetForm();
-  } catch (error: any) {
-    errorAlert.show = true;
-    errorAlert.message = error.message;
+  } catch (error) {
+    return setErrorAlert(error);
   } finally {
     isLoading.value = false;
   }
@@ -114,7 +122,7 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
     </Heading>
 
     <!-- Alerts -->
-    <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
+    <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
 
     <div class="rounded-lg px-10">
       <!-- Form -->
@@ -158,10 +166,7 @@ const acceptMimeTypes = allowedMimeTypes.join(',');
               <Input
                 type="file"
                 :accept="acceptMimeTypes"
-                @change="
-                  (event: any) =>
-                    handleChange(event.target.files && event.target.files[0])
-                "
+                @change="(event: any) => handleChange(event.target.files && event.target.files[0])"
               />
             </FormControl>
             <FormDescription>
