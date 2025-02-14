@@ -187,7 +187,7 @@ onMounted(() => {
         class="!size-5 animate-spin stroke-1.5 opacity-75"
       />
     </div>
-    <div v-if="!hasRuns && !isLoading" class="flex">
+    <div v-if="!hasRuns && !isLoading">
       <p class="text-center text-sm opacity-50">Let your creativity flow.</p>
     </div>
   </div>

@@ -1,5 +1,6 @@
 import { useAuthStore } from '@/stores/auth.store';
 import type { RouteLocationNormalized } from 'vue-router';
+import { RouteName } from '../enums/route-names.enum';
 
 export async function authMiddleware(to: RouteLocationNormalized) {
   const authStore = useAuthStore();
@@ -9,7 +10,7 @@ export async function authMiddleware(to: RouteLocationNormalized) {
     !authStore.isAuthenticated &&
     !authStore.hasRefreshToken
   ) {
-    return { name: 'login' };
+    return { name: RouteName.LOGIN };
   }
 
   if (
@@ -20,13 +21,13 @@ export async function authMiddleware(to: RouteLocationNormalized) {
     try {
       await authStore.refreshAuth();
       if (!authStore.isAuthenticated) {
-        return { name: 'login' };
+        return { name: RouteName.LOGIN };
       } else {
         return true;
       }
     } catch (error: unknown) {
       console.error('[middleware] Failed to refresh auth', error);
-      return { name: 'login' };
+      return { name: RouteName.LOGIN };
     }
   }
 
@@ -34,13 +35,12 @@ export async function authMiddleware(to: RouteLocationNormalized) {
     to.meta.requiresAuth &&
     authStore.isAuthenticated &&
     !authStore.onboardingIsComplete &&
-    to.name !== 'onboarding.index'
+    to.name !== RouteName.ONBOARDING_INDEX
   ) {
-    console.log('onboarding not complete');
-    return { name: 'onboarding.index' };
+    return { name: RouteName.ONBOARDING_INDEX };
   }
 
-  if (to.name === 'login' && authStore.isAuthenticated) {
-    return { name: 'home' };
+  if (to.name === RouteName.LOGIN && authStore.isAuthenticated) {
+    return { name: RouteName.HOME };
   }
 }

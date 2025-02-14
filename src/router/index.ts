@@ -4,7 +4,9 @@ import {
   hasValidRouteQuery,
 } from '@/utils/route-validation.util';
 import { createRouter, createWebHistory } from 'vue-router';
+import { AdminRouteName } from './enums/admin-route-names.enum';
 import { RouteName } from './enums/route-names.enum';
+import { adminMiddleware } from './middlewares/admin.middleware';
 import { authMiddleware } from './middlewares/auth.middleware';
 import { Layout, layoutMiddleware } from './middlewares/layout.middleware';
 import { NProgressPlugin } from './plugins/nprogress.router.plugin';
@@ -12,6 +14,12 @@ import { NProgressPlugin } from './plugins/nprogress.router.plugin';
 const progressPlugin = new NProgressPlugin();
 
 const defaultAppMeta = {
+  requiresAuth: true,
+  layout: Layout.App,
+};
+
+const defaultAdminMeta = {
+  requiresAdmin: true,
   requiresAuth: true,
   layout: Layout.App,
 };
@@ -324,6 +332,20 @@ const onboardingRoutes = {
   ],
 };
 
+const adminRoutes = {
+  path: '/admin',
+  component: () => import('@views/admin/AdminRootView.vue'),
+  meta: defaultAdminMeta,
+  children: [
+    {
+      path: '',
+      name: AdminRouteName.ADMIN_INDEX,
+      component: () => import('@views/admin/AdminIndexView.vue'),
+      meta: defaultAdminMeta,
+    },
+  ],
+};
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -339,6 +361,7 @@ const router = createRouter({
     textToImageRoutes,
     accountRoutes,
     socialAuthCallbackRoutes,
+    adminRoutes,
     {
       path: '/login',
       name: RouteName.LOGIN,
@@ -376,10 +399,10 @@ const router = createRouter({
   ],
 });
 
-// Order matters: layout first, then csrf, then auth
+// Order matters: layout first, then auth, then admin
 router.beforeEach(layoutMiddleware);
-// router.beforeEach(csrfMiddleware);
 router.beforeEach(authMiddleware);
+router.beforeEach(adminMiddleware);
 
 // Install NProgress plugin
 progressPlugin.install(router);

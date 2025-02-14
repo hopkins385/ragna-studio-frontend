@@ -1,5 +1,4 @@
 import type { NavItem } from '@/interfaces/nav/nav-item.interface';
-import { useAuthStore } from '@/stores/auth.store';
 import {
   adminRoutes,
   assistantRoutes,
@@ -16,7 +15,6 @@ import {
 
 export function useNavBarItems() {
   const route = useRoute();
-  const authStore = useAuthStore();
 
   const getDefaultItems = (): NavItem[] => {
     return defaultRoutes.value;
@@ -57,11 +55,6 @@ export function useNavBarItems() {
         break;
       default:
         items.push(...defaultRoutes.value);
-      /*
-        if (authStore.userHasAdminRole) {
-          items.push(...adminRoutes);
-        }
-          */
     }
 
     return items;

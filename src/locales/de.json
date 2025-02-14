@@ -22,7 +22,8 @@
     "account": "Account",
     "settings": "Einstellungen",
     "notifications": "Benachrichtigungen",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "more": "Mehr"
   },
   "toast": {
     "error": {
@@ -506,6 +507,12 @@
         "title": "Persönlich",
         "description": ""
       }
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "subtitle": "Hier kannst du die Plattform verwalten"
     }
   }
 }

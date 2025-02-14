@@ -1,10 +1,12 @@
 import type { NavItem } from '@/interfaces/nav/nav-item.interface';
+import { useAuthStore } from '@/stores/auth.store';
 import {
   BotIcon,
   BriefcaseBusinessIcon,
   Building2Icon,
   CloudUploadIcon,
   DatabaseIcon,
+  EllipsisIcon,
   FileTextIcon,
   FolderIcon,
   FolderKanbanIcon,
@@ -14,6 +16,7 @@ import {
   ImageIcon,
   LayoutTemplateIcon,
   MessagesSquareIcon,
+  MonitorCogIcon,
   PaintbrushVerticalIcon,
   PlusCircleIcon,
   SettingsIcon,
@@ -21,6 +24,8 @@ import {
   UsersIcon,
   WorkflowIcon,
 } from 'lucide-vue-next';
+
+const authStore = useAuthStore();
 
 export const homeNavItem: NavItem = {
   icon: HomeIcon,
@@ -38,7 +43,24 @@ export const spacerNavItem: NavItem = {
   children: [],
 };
 
-export const defaultRoutes = computed(() => [
+const baseMoreMenuItems: NavItem[] = [
+  {
+    icon: DatabaseIcon,
+    path: '/collection',
+    label: 'nav.collections',
+    hidden: false,
+    children: [],
+  },
+  {
+    icon: FolderIcon,
+    path: '/media',
+    label: 'nav.media',
+    hidden: false,
+    children: [],
+  },
+];
+
+export const defaultRoutes = computed((): NavItem[] => [
   {
     icon: FileTextIcon,
     path: '/document',
@@ -74,20 +96,6 @@ export const defaultRoutes = computed(() => [
     hidden: false,
     children: [],
   },
-  {
-    icon: DatabaseIcon,
-    path: '/collection',
-    label: 'nav.collections',
-    hidden: false,
-    children: [],
-  },
-  {
-    icon: FolderIcon,
-    path: '/media',
-    label: 'nav.media',
-    hidden: false,
-    children: [],
-  },
   /*{
     icon: SpeechIcon,
     path: '/speech',
@@ -95,6 +103,15 @@ export const defaultRoutes = computed(() => [
     hidden: false,
     children: [],
   },*/
+  {
+    icon: EllipsisIcon,
+    path: '',
+    label: 'More',
+    hidden: false,
+    children: authStore.userHasAdminRole
+      ? [...baseMoreMenuItems, ...adminRoutes]
+      : baseMoreMenuItems,
+  },
 ]);
 
 export const workflowRoutes: NavItem[] = [
@@ -335,7 +352,7 @@ export const settingsRoutes: NavItem[] = [
 export const adminRoutes: NavItem[] = [
   // spacerNavItem,
   {
-    icon: SettingsIcon,
+    icon: MonitorCogIcon,
     path: '/admin',
     label: 'Admin',
     hidden: false,
