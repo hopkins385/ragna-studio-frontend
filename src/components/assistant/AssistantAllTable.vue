@@ -54,11 +54,11 @@ const meta = computed(() => {
   };
 });
 
+// Functions
 const initAllAssistants = async ({ page }: { page: number }) => {
   data.value = await fetchAllAssistants({ page });
 };
 
-// Functions
 const handleDelete = async () => {
   try {
     await deleteAssistant(deleteAssistantId.value);

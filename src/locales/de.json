@@ -200,6 +200,17 @@
     "tooltip": {
       "view": "Anzeigen",
       "delete": "Löschen"
+    },
+    "confirm": {
+      "delete": {
+        "title": "Wissensdatenbank löschen",
+        "description": "Bist du sicher, dass du die Wissensdatenbank löschen möchtest? Die Wissensdatenbank wird unwiderruflich gelöscht.",
+        "confirm": "Wissensdatenbank löschen"
+      }
+    },
+    "empty": {
+      "title": "Keine Einträge",
+      "subtitle": "Es gibt noch keine Einträge in dieser Wissensdatenbank"
     }
   },
   "records": {},
@@ -270,6 +281,10 @@
       "button": {
         "save": "Speichern"
       }
+    },
+    "empty": {
+      "title": "Keine Workflows",
+      "subtitle": "Es gibt noch keine Workflows"
     }
   },
   "assistants": {

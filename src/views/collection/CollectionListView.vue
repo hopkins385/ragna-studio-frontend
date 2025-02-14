@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
-import BoxContainer from '@components/box/BoxContainer.vue';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import CollectionTable from '@components/collection/CollectionTable.vue';
 import Heading from '@components/heading/Heading.vue';
@@ -24,12 +23,10 @@ useHead({
 
 <template>
   <SectionContainer>
+    <!-- Header -->
     <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
-        <HeadingTitle
-          :title="$t('collections.title')"
-          :subtitle="$t('collections.subtitle')"
-        />
+        <HeadingTitle :title="$t('collections.title')" :subtitle="$t('collections.subtitle')" />
       </template>
       <template #bottom>
         <div class="flex w-full justify-between space-x-4">
@@ -41,13 +38,14 @@ useHead({
         </div>
       </template>
     </Heading>
-    <BoxContainer class="!p-0">
+    <!-- Table -->
+    <div class="px-10">
       <Suspense>
         <CollectionTable />
         <template #fallback>
           <TableSkeleton />
         </template>
       </Suspense>
-    </BoxContainer>
+    </div>
   </SectionContainer>
 </template>

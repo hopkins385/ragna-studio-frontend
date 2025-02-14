@@ -117,7 +117,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <div v-if="workflows && workflows.length > 0">
     <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
     <ConfirmDialog v-model="confirmDialog.open" v-bind="confirmDialog" />
     <Table>
@@ -159,9 +159,15 @@ onMounted(() => {
       <!-- Meta Caption -->
       <TableMetaCaption :itemsLength="workflowsLength" :meta="meta" />
     </Table>
+
+    <div class="pb-10">
+      <!-- Pagination Controls -->
+      <PaginateControls :page="page" :meta="meta" @update:page="setPage" />
+    </div>
   </div>
-  <div class="pb-10">
-    <!-- Pagination Controls -->
-    <PaginateControls :page="page" :meta="meta" @update:page="setPage" />
+  <div v-else>
+    <div class="flex items-center justify-center h-96">
+      <p class="text-base text-slate-500">{{ $t('workflow.empty.title') }}</p>
+    </div>
   </div>
 </template>
