@@ -31,7 +31,6 @@ const emit = defineEmits<{
 // Refs
 const data = ref();
 const assistantFavorites = ref<any>([]); // TODO: type
-const deleteAssistantId = ref('');
 const page = defineModel<number>('page');
 
 // Composables
@@ -59,18 +58,14 @@ const initAllAssistants = async ({ page }: { page: number }) => {
   data.value = await fetchAllAssistants({ page });
 };
 
-const handleDelete = async () => {
+const handleDelete = async (assistantId: string) => {
   try {
-    await deleteAssistant(deleteAssistantId.value);
-  } catch (error) {
+    await deleteAssistant(assistantId);
+    await initAllAssistants({ page: page.value ?? 1 });
+    toast.success({ description: t('assistant.delete.success') });
+  } catch (error: unknown) {
     return setErrorAlert(error);
   }
-
-  deleteAssistantId.value = '';
-  toast.success({
-    description: 'Assistant has been deleted.',
-  });
-  await initAllAssistants({ page: page.value ?? 1 });
 };
 
 const onStart = async (assistantId: string) => {
@@ -82,14 +77,13 @@ const onStart = async (assistantId: string) => {
   router.push({ name: RouteName.CHAT_SHOW, params: { id: chat.id } });
 };
 
-const onDelete = (id: string) => {
+const onDelete = (assistantId: string) => {
   unsetErrorAlert();
-  deleteAssistantId.value = id;
   setConfirmDialog({
-    title: t('assistant.confirm.delete.title'),
-    description: t('assistant.confirm.delete.description'),
-    confirmButtonText: t('assistant.confirm.delete.confirm'),
-    onConfirm: handleDelete,
+    title: t('assistant.delete.confirm.title'),
+    description: t('assistant.delete.confirm.description'),
+    confirmButtonText: t('assistant.delete.confirm.submit'),
+    onConfirm: () => handleDelete(assistantId),
   });
 };
 

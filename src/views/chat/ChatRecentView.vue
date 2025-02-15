@@ -5,10 +5,10 @@ import { useChatService } from '@composables/services/useChatService';
 const router = useRouter();
 const { fetchLatestChat } = useChatService();
 
-onMounted(async () => {
+const forwardToChat = async () => {
   const { chat } = await fetchLatestChat();
-  if (!chat.id) {
-    router.push({
+  if (!chat || !chat?.id) {
+    return router.push({
       name: RouteName.CHAT_CREATE,
     });
   }
@@ -16,6 +16,10 @@ onMounted(async () => {
     name: RouteName.CHAT_SHOW,
     params: { id: chat.id },
   });
+};
+
+onMounted(async () => {
+  await forwardToChat();
 });
 </script>
 

@@ -176,6 +176,14 @@
         "error": "Ups, es ist etwas schiefgelaufen"
       }
     },
+    "delete": {
+      "confirm": {
+        "title": "Wissensdatenbank löschen",
+        "description": "Bist du sicher, dass du die Wissensdatenbank löschen möchtest? Die Wissensdatenbank wird unwiderruflich gelöscht.",
+        "submit": "Wissensdatenbank löschen"
+      },
+      "success": "Wissensdatenbank gelöscht"
+    },
     "settings": {
       "title": "Wissensdatenbank Einstellungen",
       "tooltip": "Einstellungen",
@@ -200,13 +208,6 @@
     "tooltip": {
       "view": "Anzeigen",
       "delete": "Löschen"
-    },
-    "confirm": {
-      "delete": {
-        "title": "Wissensdatenbank löschen",
-        "description": "Bist du sicher, dass du die Wissensdatenbank löschen möchtest? Die Wissensdatenbank wird unwiderruflich gelöscht.",
-        "confirm": "Wissensdatenbank löschen"
-      }
     },
     "empty": {
       "title": "Keine Einträge",
@@ -244,17 +245,17 @@
     "toast": {
       "created": "Workflow erstellt",
       "updated": "Workflow aktualisiert",
-      "deleted": "Workflow gelöscht",
       "error": "Ups, es ist etwas schiefgelaufen",
       "error_max_steps": "Maximale Anzahl an Schritten erreicht",
       "error_max_rows": "Maximale Anzahl an Zeilen erreicht"
     },
-    "confirm": {
-      "delete": {
+    "delete": {
+      "confirm": {
         "title": "Workflow löschen",
         "description": "Bist du sicher, dass du den Workflow löschen möchtest? Der Workflow wird unwiderruflich gelöscht.",
-        "confirm": "Workflow löschen"
-      }
+        "submit": "Workflow löschen"
+      },
+      "success": "Workflow gelöscht"
     },
     "button": {
       "refresh": "Aktualisieren",
@@ -313,13 +314,15 @@
       "success": "Agent aktualisiert",
       "error": "Der Agent konnte nicht aktualisiert werden"
     },
-    "confirm": {
-      "delete": {
+    "delete": {
+      "confirm": {
         "title": "Agent löschen",
         "description": "Bist du sicher, dass du den Agenten löschen möchtest? Der Agent wird unwiderruflich gelöscht.",
-        "confirm": "Agent löschen"
-      }
+        "submit": "Agent löschen"
+      },
+      "success": "Agent gelöscht"
     },
+
     "clone": {
       "success": "Template übernommen"
     },
@@ -385,12 +388,13 @@
         "drag_and_drop": "Dateien hierher ziehen oder klicken, um Dateien hochzuladen"
       }
     },
-    "confirm": {
-      "delete": {
+    "delete": {
+      "confirm": {
         "title": "Datei löschen",
         "description": "Bist du sicher, dass du die Datei löschen möchtest? Die Datei wird unwiderruflich gelöscht.",
-        "confirm": "Datei löschen"
-      }
+        "submit": "Datei löschen"
+      },
+      "success": "Datei gelöscht"
     }
   },
   "textToImages": {
@@ -486,12 +490,13 @@
         "new": "Neuer Chat"
       }
     },
-    "confirm": {
-      "delete": {
+    "delete": {
+      "confirm": {
         "title": "Chat löschen",
         "description": "Bist du sicher, dass du den Chat löschen möchtest? Der Chat wird unwiderruflich gelöscht.",
-        "confirm": "Chat löschen"
-      }
+        "submit": "Chat löschen"
+      },
+      "success": "Chat gelöscht"
     },
     "settings": {
       "title": "Chat Einstellungen",
@@ -556,6 +561,20 @@
     "dashboard": {
       "title": "Admin Dashboard",
       "subtitle": "Hier kannst du die Plattform verwalten"
+    },
+    "user": {
+      "title": "Benutzer",
+      "subtitle": "Hier kannst du Benutzer verwalten",
+      "delete": {
+        "title": "Benutzer löschen",
+        "description": "Bist du sicher, dass du den Benutzer löschen möchtest? Der Benutzer wird unwiderruflich gelöscht.",
+        "confirm": {
+          "title": "Benutzer löschen",
+          "description": "Bist du sicher, dass du den Benutzer löschen möchtest? Der Benutzer wird unwiderruflich gelöscht.",
+          "submit": "Benutzer löschen"
+        },
+        "success": "Benutzer gelöscht"
+      }
     }
   }
 }

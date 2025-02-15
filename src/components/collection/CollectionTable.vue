@@ -26,14 +26,13 @@ const toast = useToast();
 
 const page = ref(route.query.page ? parseInt(route.query.page.toString(), 10) : 1);
 const limit = ref(route.query.limit ? parseInt(route.query.limit.toString(), 10) : 10);
-const deleteCollectionId = ref('');
 const allCollections = ref<CollectionsPaginatedResponse | null>(null);
 
 // Composables
 const { t } = useI18n();
 const { fetchAllPaginated, deleteCollection } = useCollectionService();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
-const { confirmDialog, setConfirmDialog, unsetConfirmDialog } = useConfirmDialog();
+const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
 // Computed
 const collections = computed(() => allCollections.value?.collections || []);
@@ -46,30 +45,24 @@ const meta = computed(() => {
 });
 
 // Functions
-function onDelete(id: string) {
-  unsetErrorAlert();
-  deleteCollectionId.value = id;
-  setConfirmDialog({
-    title: t('collection.confirm.delete.title'),
-    description: t('collection.confirm.delete.description'),
-    confirmButtonText: t('collection.confirm.delete.confirm'),
-    onConfirm: handleDelete,
-  });
+async function handleDelete(collectionId: string) {
+  try {
+    await deleteCollection(collectionId);
+    await initCollections();
+    toast.success({ description: t('collection.delete.success') });
+  } catch (error: unknown) {
+    return setErrorAlert(error);
+  }
 }
 
-async function handleDelete() {
-  try {
-    await deleteCollection(deleteCollectionId.value);
-    deleteCollectionId.value = '';
-    toast.success({
-      description: 'Collection deleted.',
-    });
-    await initCollections();
-  } catch (error) {
-    return setErrorAlert(error);
-  } finally {
-    unsetConfirmDialog();
-  }
+function onDelete(collectionId: string) {
+  unsetErrorAlert();
+  setConfirmDialog({
+    title: t('collection.delete.confirm.title'),
+    description: t('collection.delete.confirm.description'),
+    confirmButtonText: t('collection.delete.confirm.submit'),
+    onConfirm: () => handleDelete(collectionId),
+  });
 }
 
 const onUpdatePage = async (val: number) => {

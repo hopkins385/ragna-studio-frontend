@@ -27,9 +27,8 @@ const emits = defineEmits<{
 }>();
 
 // Refs
-const showAddToCollectionDialog = ref(false);
-const deleteMediaId = ref('');
 const mediaData = ref<any | null>(null);
+const showAddToCollectionDialog = ref(false);
 
 // Composables
 const toast = useToast();
@@ -69,27 +68,22 @@ function onPlusClick(id: string) {
   showAddToCollectionDialog.value = true;
 }
 
-const handleDelete = async () => {
+const handleDelete = async (mediaId: string) => {
   try {
-    await deleteMedia(deleteMediaId.value);
+    await deleteMedia(mediaId);
+    await initMedia();
+    toast.success({ description: t('media.delete.success') });
   } catch (error) {
     return setErrorAlert(error);
   }
-
-  deleteMediaId.value = '';
-  toast.success({
-    description: 'Media has been deleted successfully.',
-  });
-  await initMedia();
 };
 
-function onDelete(id: string) {
-  deleteMediaId.value = id;
+function onDelete(mediaId: string) {
   setConfirmDialog({
-    title: t('media.confirm.delete.title'),
-    description: t('media.confirm.delete.description'),
-    confirmButtonText: t('media.confirm.delete.confirm'),
-    onConfirm: handleDelete,
+    title: t('media.delete.confirm.title'),
+    description: t('media.delete.confirm.description'),
+    confirmButtonText: t('media.delete.confirm.submit'),
+    onConfirm: () => handleDelete(mediaId),
   });
 }
 
@@ -125,45 +119,44 @@ onMounted(() => {
     <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
     <ConfirmDialog v-model="confirmDialog.open" v-bind="confirmDialog" />
     <RecordAddFileDialog v-model="showAddToCollectionDialog" />
-    <div class="px-10">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{{ $t('table.file') }}</TableHead>
-            <TableHead>{{ $t('table.name') }}</TableHead>
-            <TableHead>{{ $t('table.file_size') }}</TableHead>
-            <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow v-for="media in medias || []" :key="media.id">
-            <TableCell class="w-12">
-              <div class="flex items-center justify-center">
-                <FileIcon class="size-4 stroke-1.5" />
-              </div>
-            </TableCell>
-            <TableCell class="max-w-sm truncate font-semibold">
-              {{ decodeURIComponent(media.name) }}
-            </TableCell>
-            <TableCell>
-              {{ getFileSizeForHumans(media.fileSize) }}
-            </TableCell>
-            <TableCell class="space-x-2 text-right">
-              <!-- Button variant="outline" size="icon" @click="onPlusClick(item.id)">
+
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>{{ $t('table.file') }}</TableHead>
+          <TableHead>{{ $t('table.name') }}</TableHead>
+          <TableHead>{{ $t('table.file_size') }}</TableHead>
+          <TableHead class="text-right">{{ $t('table.actions') }}</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow v-for="media in medias || []" :key="media.id">
+          <TableCell class="w-12">
+            <div class="flex items-center justify-center">
+              <FileIcon class="size-4 stroke-1.5" />
+            </div>
+          </TableCell>
+          <TableCell class="max-w-sm truncate font-semibold">
+            {{ decodeURIComponent(media.name) }}
+          </TableCell>
+          <TableCell>
+            {{ getFileSizeForHumans(media.fileSize) }}
+          </TableCell>
+          <TableCell class="space-x-2 text-right">
+            <!-- Button variant="outline" size="icon" @click="onPlusClick(item.id)">
               <PlusIcon class="size-4" />
             </!-->
-              <Button variant="outline" size="icon" @click="onDelete(media.id)">
-                <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
-              </Button>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-        <!-- Meta Caption -->
-        <TableMetaCaption :itemsLength="mediasLength" :meta="meta" />
-      </Table>
-    </div>
-    <div class="pb-10 px-10">
-      <!-- Pagination Controls -->
+            <Button variant="outline" size="icon" @click="onDelete(media.id)">
+              <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
+            </Button>
+          </TableCell>
+        </TableRow>
+      </TableBody>
+      <!-- Meta Caption -->
+      <TableMetaCaption :itemsLength="mediasLength" :meta="meta" />
+    </Table>
+    <!-- Pagination Controls -->
+    <div class="pb-10">
       <PaginateControls
         :page="page"
         :meta="meta"

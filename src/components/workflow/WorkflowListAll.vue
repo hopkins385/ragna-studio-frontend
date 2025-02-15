@@ -29,15 +29,14 @@ import { StarIcon, Trash2Icon, WorkflowIcon } from 'lucide-vue-next';
 const page = ref(1);
 const data = ref<WorkflowsPaginatedResponse | null>(null);
 const workflowFavorites = ref<any>([]); // TODO: type
-const deleteId = ref('');
 
 // Composables
+const toast = useToast();
 const { t } = useI18n();
-const { success } = useToast();
 const { fetchWorkflowsPaginated, deleteWorkflow } = useWorkflowService();
 const { addFavorite, deleteFavorite, fetchAllFavoritesByType } = useUserFavoriteService();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
-const { confirmDialog, setConfirmDialog, unsetConfirmDialog } = useConfirmDialog();
+const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
 // Computed
 const workflows = computed(() => data.value?.workflows || []);
@@ -58,31 +57,23 @@ const setPage = (value: number) => {
   page.value = value;
 };
 
-const handleDelete = async () => {
-  if (!deleteId.value) return;
+const handleDelete = async (workflowId: string) => {
   try {
-    await deleteWorkflow(deleteId.value);
-  } catch (error) {
+    await deleteWorkflow(workflowId);
+    await initWorkflows();
+    toast.success({ description: t('workflow.delete.success') });
+  } catch (error: unknown) {
     return setErrorAlert(error);
-  } finally {
-    unsetConfirmDialog();
   }
-
-  deleteId.value = '';
-  success({
-    description: t('workflow.toast.deleted'),
-  });
-  await initWorkflows();
 };
 
-const onDelete = (id: string) => {
+const onDelete = (workflowId: string) => {
   unsetErrorAlert();
-  deleteId.value = id;
   setConfirmDialog({
-    title: t('workflow.confirm.delete.title'),
-    description: t('workflow.confirm.delete.description'),
-    confirmButtonText: t('workflow.confirm.delete.confirm'),
-    onConfirm: handleDelete,
+    title: t('workflow.delete.confirm.title'),
+    description: t('workflow.delete.confirm.description'),
+    confirmButtonText: t('workflow.delete.confirm.submit'),
+    onConfirm: () => handleDelete(workflowId),
   });
 };
 

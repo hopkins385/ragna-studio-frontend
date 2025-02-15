@@ -71,9 +71,7 @@ export function useWorkflowService() {
     return data;
   };
 
-  const reCreateWorkflowFromMedia = async (
-    payload: IReCreateWorkflowFromMedia,
-  ) => {
+  const reCreateWorkflowFromMedia = async (payload: IReCreateWorkflowFromMedia) => {
     throw new Error('Not implemented');
   };
 
@@ -154,10 +152,7 @@ export function useWorkflowService() {
     throw new Error('Not implemented');
   };
 
-  const updateWorkflow = async (
-    workflowId: string,
-    payload: Partial<UpdateWorkflowDto>,
-  ) => {
+  const updateWorkflow = async (workflowId: string, payload: Partial<UpdateWorkflowDto>) => {
     const api = newApiRequest();
     const route = getRoute(WorkflowRoute.WORKFLOW, {
       ':workflowId': workflowId,
@@ -181,6 +176,7 @@ export function useWorkflowService() {
     const route = getRoute(WorkflowRoute.WORKFLOW, {
       ':workflowId': workflowId,
     });
+
     const { status, data } = await api
       .DELETE<WorkflowResponse>()
       .setRoute(route)
@@ -194,10 +190,7 @@ export function useWorkflowService() {
     return data;
   };
 
-  const deleteWorkflowRows = async (
-    workflowId: string,
-    orderColumns: number[],
-  ) => {
+  const deleteWorkflowRows = async (workflowId: string, orderColumns: number[]) => {
     const api = newApiRequest();
     const route = getRoute(WorkflowRoute.WORKFLOW_ROW, {
       ':workflowId': workflowId,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// Imports
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import MediaList from '@/components/media/MediaList.vue';
@@ -9,23 +10,24 @@ import { useMediaService } from '@composables/services/useMediaService';
 import bgImgUrl from '@images/bg_upload.png?q=100&format=webp&imagetools';
 import Button from '@ui/button/Button.vue';
 
-interface MediaUploadViewEmits {
+// Props
+// Emits
+defineEmits<{
   refresh: [void];
-}
+}>();
 
-defineEmits<MediaUploadViewEmits>();
-
-const router = useRouter();
-const route = useRoute();
-
+// Refs
 const page = ref(1);
-
 const refreshData = ref(false);
 const openFileDialog = ref(false);
 
+// Composables
+const router = useRouter();
+const route = useRoute();
 const { t } = useI18n();
 const { dropzoneFiles, isLoading, uploadFiles } = useMediaService();
 
+// Functions
 function setRoutePage(value: number) {
   page.value = value;
   const query = { ...route.query, page: value.toString() };
@@ -73,49 +75,31 @@ useHead({
   <SectionContainer class="space-y-4">
     <Heading :img-url="bgImgUrl" bg-position="center">
       <template #top>
-        <HeadingTitle
-          :title="t('media.uploads.title')"
-          :subtitle="t('media.uploads.subtitle')"
-        />
+        <HeadingTitle :title="t('media.uploads.title')" :subtitle="t('media.uploads.subtitle')" />
       </template>
       <template #bottom> </template>
     </Heading>
     <BoxContainer>
-      <FileDropzone
-        v-model="dropzoneFiles"
-        :max-files="10"
-        :open-file-dialog="openFileDialog"
-      />
+      <FileDropzone v-model="dropzoneFiles" :max-files="10" :open-file-dialog="openFileDialog" />
       <div class="flex justify-end">
         <div class="flex items-center justify-center pt-4">
           <div v-if="isLoading" class="pr-5 text-sm">
             {{ t('media.uploads.status.processing') }}
           </div>
           <div class="flex justify-center items-center space-x-2">
-            <Button
-              :disabled="isLoading"
-              variant="outline"
-              @click.prevent="onBrowseFiles"
-            >
+            <Button :disabled="isLoading" variant="outline" @click.prevent="onBrowseFiles">
               {{ t('media.uploads.button.browse') }}
             </Button>
-            <Button
-              :disabled="isLoading || !dropzoneFiles.length"
-              @click.prevent="onSubmit"
-            >
+            <Button :disabled="isLoading || !dropzoneFiles.length" @click.prevent="onSubmit">
               {{ t('media.uploads.button.upload') }}
             </Button>
           </div>
         </div>
       </div>
     </BoxContainer>
-    <BoxContainer class="!p-0">
-      <MediaList
-        :page="page"
-        @update:page="setRoutePage"
-        v-model:refresh="refreshData"
-      />
-    </BoxContainer>
+    <div class="px-10">
+      <MediaList :page="page" @update:page="setRoutePage" v-model:refresh="refreshData" />
+    </div>
     <div class="h-1"></div>
   </SectionContainer>
 </template>

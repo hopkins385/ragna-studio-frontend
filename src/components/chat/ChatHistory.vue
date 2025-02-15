@@ -29,16 +29,15 @@ const emit = defineEmits<{
 
 // Refs
 const data = ref<ChatsPaginated | null>(null);
-const chatIdToDelete = ref('');
 
 // Composables
+const toast = useToast();
 const { t } = useI18n();
-const { success } = useToast();
 const { getDateTimeForHumans } = useForHumans();
 const { fetchAllChatsPaginated, deleteChat } = useChatService();
 const { getProviderIcon } = useProviderIcons();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
-const { confirmDialog, setConfirmDialog, unsetConfirmDialog } = useConfirmDialog();
+const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
 // Computed
 const queryPage = computed(() => props.page || 1);
@@ -60,28 +59,23 @@ const initChatHistory = async ({ page }: { page: number }) => {
   }
 };
 
-const handleDelete = async () => {
+const handleDelete = async (chatId: string) => {
   try {
-    const result = await deleteChat(chatIdToDelete.value);
+    await deleteChat(chatId);
+    await initChatHistory({ page: props.page });
+    toast.success({ description: t('chat.delete.success') });
   } catch (error) {
     return setErrorAlert(error);
-  } finally {
-    unsetConfirmDialog();
   }
-
-  chatIdToDelete.value = '';
-  success({ description: 'Chat deleted' });
-  await initChatHistory({ page: props.page });
 };
 
 function onDelete(chatId: string) {
   unsetErrorAlert();
-  chatIdToDelete.value = chatId;
   setConfirmDialog({
-    title: t('chat.confirm.delete.title'),
-    description: t('chat.confirm.delete.description'),
-    confirmButtonText: t('chat.confirm.delete.confirm'),
-    onConfirm: handleDelete,
+    title: t('chat.delete.confirm.title'),
+    description: t('chat.delete.confirm.description'),
+    confirmButtonText: t('chat.delete.confirm.submit'),
+    onConfirm: () => handleDelete(chatId),
   });
 }
 
