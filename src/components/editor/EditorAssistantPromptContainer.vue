@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// Imports
 import { useEditorService } from '@/composables/services/useEditorService';
 import useMarkdown from '@/composables/useMarkdown';
 import type { Editor } from '@tiptap/vue-3';
@@ -7,27 +8,35 @@ import { Textarea } from '@ui/textarea';
 import { RefreshCcwIcon, SquareIcon, Trash2Icon } from 'lucide-vue-next';
 import ButtonLoading from '../button/ButtonLoading.vue';
 
+// Props
 const props = defineProps<{
   editor: Editor;
 }>();
 
-const emit = defineEmits(['close', 'refreshPosition']);
+// Emits
+const emit = defineEmits<{
+  close: [];
+  refreshPosition: [];
+}>();
 
-const { fetchPromptCompletion, abortCompletion } = useEditorService();
-const { parseMarkdown } = useMarkdown();
-
+// Refs
 const input = ref('');
 const isLoading = ref(false);
 const originalTextBetween = ref('');
 const rawCompletion = ref('');
 const originalSelection = ref({ from: 0, to: 0 });
-
 const textareaContainerRef = ref<HTMLDivElement | null>(null);
 
+// Composables
+const { fetchPromptCompletion, abortCompletion } = useEditorService();
+const { parseMarkdown } = useMarkdown();
+
+// Computed
 const hasInput = computed(() => input.value.length > 1);
 const hasRawCompletion = computed(() => !!rawCompletion.value);
 const disableInput = computed(() => isLoading.value || !hasInput.value);
 
+// Functions
 const runCompletion = async () => {
   if (disableInput.value) {
     return;
@@ -167,9 +176,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div
-    class="bg-white border border-stone-200 rounded-lg shadow-md p-4 space-y-2 w-[35rem]"
-  >
+  <div class="bg-white border border-stone-200 rounded-lg shadow-md p-4 space-y-2 w-[35rem]">
     <div ref="textareaContainerRef">
       <Textarea
         placeholder="Schilder kurz, was du erreichen möchtest ..."
@@ -181,11 +188,7 @@ onBeforeUnmount(() => {
       />
     </div>
     <div class="flex items-center space-x-2">
-      <ButtonLoading
-        :disabled="disableInput"
-        :loading="isLoading"
-        @click="() => handleGenerate()"
-      >
+      <ButtonLoading :disabled="disableInput" :loading="isLoading" @click="() => handleGenerate()">
         Generieren
       </ButtonLoading>
       <Button
@@ -215,9 +218,7 @@ onBeforeUnmount(() => {
         class="group"
         @click="() => handleDiscard()"
       >
-        <Trash2Icon
-          class="size-4 stroke-1.5 group-hover:stroke-2 group-hover:text-destructive"
-        />
+        <Trash2Icon class="size-4 stroke-1.5 group-hover:stroke-2 group-hover:text-destructive" />
       </Button>
     </div>
   </div>

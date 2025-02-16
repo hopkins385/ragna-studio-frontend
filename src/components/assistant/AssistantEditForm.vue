@@ -25,7 +25,6 @@ import {
   FormMessage,
 } from '@ui/form';
 import { Input } from '@ui/input';
-import { Slider } from '@ui/slider';
 import { Textarea } from '@ui/textarea';
 import {
   Book,
@@ -60,9 +59,7 @@ const currentTab = ref('tab1');
 const updateIsLoading = ref(false);
 const newChatIsLoading = ref(false);
 
-const initialAssistantName = computed(
-  () => props.assistant?.llm.displayName ?? 'Select AI Model',
-);
+const initialAssistantName = computed(() => props.assistant?.llm.displayName ?? 'Select AI Model');
 
 // TODO: why is the first collection the one that is selected?
 const firstCollection = computed(
@@ -115,8 +112,7 @@ const onSubmit = handleSubmit(async values => {
 });
 
 // collections
-const { replaceCollectionTo, detachAllCollectionsFrom } =
-  useCollectionAbleService();
+const { replaceCollectionTo, detachAllCollectionsFrom } = useCollectionAbleService();
 
 async function updateCollection(collectionId: string) {
   const model = {
@@ -198,11 +194,7 @@ const siderBarTabs = [
       <Button @click="$router.back()" variant="secondary">
         {{ $t('form.button.back') }}
       </Button>
-      <ButtonLoading
-        :loading="newChatIsLoading"
-        @click="onStartChat"
-        variant="outline"
-      >
+      <ButtonLoading :loading="newChatIsLoading" @click="onStartChat" variant="outline">
         {{ $t('assistant.button.new_chat') }}
       </ButtonLoading>
       <ButtonLoading :loading="updateIsLoading" @click="onSubmit">
@@ -247,10 +239,7 @@ const siderBarTabs = [
         <FormItem>
           <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
           <FormControl>
-            <LlmSelectModal
-              :current-llm-id="props.assistant.llm.id"
-              @update:id="handleChange"
-            />
+            <LlmSelectModal :current-llm-id="props.assistant.llm.id" @update:id="handleChange" />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -259,15 +248,9 @@ const siderBarTabs = [
     <!-- TAB 3-->
     <template #tab3>
       <div class="space-y-8">
-        <FormField
-          v-slot="{ componentField, value, handleChange }"
-          name="systemPrompt"
-        >
+        <FormField v-slot="{ componentField, value, handleChange }" name="systemPrompt">
           <div>
-            <PromptWizardDialog
-              :input-prompt="value"
-              @update-prompt="handleChange"
-            />
+            <PromptWizardDialog :input-prompt="value" @update-prompt="handleChange" />
           </div>
           <FormItem>
             <FormLabel>{{ $t('assistant.behavior.label') }}</FormLabel>
@@ -330,21 +313,20 @@ const siderBarTabs = [
               class="flex flex-row items-center space-x-3 border border-transparent space-y-4 w-fit"
             >
               <FormControl>
-                <Checkbox
-                  :checked="value?.includes(tool.id)"
-                  @update:checked="handleChange"
-                />
+                <Checkbox :checked="value?.includes(tool.id)" @update:checked="handleChange" />
               </FormControl>
               <FormLabel class="font-normal flex space-x-3">
                 <div class="size-8 flex justify-center">
                   <component
                     :is="getToolIcon(tool?.iconName)"
-                    class="size-5 stroke-1.5 text-gray-500"
+                    class="size-5 stroke-1.5 text-gray-500 shrink-0"
                   />
                 </div>
                 <div class="space-y-1">
-                  <h2 class="text-sm">{{ tool.name }}</h2>
-                  <p class="opacity-75 text-xs">{{ tool.description }}</p>
+                  <h2 class="text-sm">{{ $t(`assistant.tools.${tool.name}.label`) }}</h2>
+                  <p class="opacity-75 text-xs">
+                    {{ $t(`assistant.tools.${tool.name}.description`) }}
+                  </p>
                 </div>
               </FormLabel>
             </FormItem>
@@ -380,34 +362,6 @@ const siderBarTabs = [
             <div class="text-sm border px-5 py-3 w-fit">Under Construction</div>
           </FormControl>
           <FormMessage />
-        </FormItem>
-      </FormField>
-    </template>
-    <!-- TAB 8 -->
-    <template #tab8>
-      <FormField v-slot="{ componentField, value }" name="temperature">
-        <FormItem>
-          <FormLabel> Creativity </FormLabel>
-          <FormDescription>
-            A higher creativity typically makes the output of the agent more
-            diverse and creative.<br />We recommend a value between 0.7 and 0.9
-          </FormDescription>
-          <FormControl>
-            <div clasS=" max-w-sm">
-              <Slider
-                v-bind="componentField"
-                :default-value="[80]"
-                :max="100"
-                :step="1"
-                class="slider"
-                :disabled="true"
-              />
-            </div>
-          </FormControl>
-          <FormMessage />
-          <FormDescription>
-            {{ value[0] / 100 }}
-          </FormDescription>
         </FormItem>
       </FormField>
     </template>

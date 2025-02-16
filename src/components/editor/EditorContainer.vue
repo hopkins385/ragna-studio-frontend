@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useErrorAlert } from '@/composables/useErrorAlert';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Image } from '@tiptap/extension-image';
 import { ListKeymap } from '@tiptap/extension-list-keymap';
@@ -9,6 +10,7 @@ import { TextAlign } from '@tiptap/extension-text-align';
 import { Underline } from '@tiptap/extension-underline';
 import { StarterKit } from '@tiptap/starter-kit';
 import { Editor, EditorContent, type JSONContent } from '@tiptap/vue-3';
+import ErrorAlert from '../error/ErrorAlert.vue';
 import EditorAssistantDropdownMenu from './EditorAssistantDropdownMenu.vue';
 import EditorAssistantPromptContainer from './EditorAssistantPromptContainer.vue';
 import EditorMenu from './EditorMenu.vue';
@@ -34,6 +36,7 @@ const assistantDropdownMenu = reactive({
 
 const { isOutside: isOutsideWrapper } = useMouseInElement(editorWrapperRef);
 const { isOutside: isOutsideContent } = useMouseInElement(editorContentRef);
+const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 
 const creatCommentHandler = async (comment: any) => {
   console.log('create comment', comment);
@@ -153,14 +156,10 @@ const handleEditorBlurEvent = (event: FocusEvent) => {
   if (
     (assistantPromptContainerRef.value &&
       event.relatedTarget &&
-      assistantPromptContainerRef.value.contains(
-        event.relatedTarget as Node,
-      )) ||
+      assistantPromptContainerRef.value.contains(event.relatedTarget as Node)) ||
     (assistantDropdownMenu.show &&
       event.relatedTarget &&
-      (event.relatedTarget as HTMLElement).closest(
-        '.editor-assistant-dropdown-menu',
-      ))
+      (event.relatedTarget as HTMLElement).closest('.editor-assistant-dropdown-menu'))
   ) {
     return;
   }
@@ -261,14 +260,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div
-    id="text-editor"
-    class="rounded-lg bg-white overflow-hidden h-full relative"
-  >
+  <div id="text-editor" class="rounded-lg bg-white overflow-hidden h-full relative">
     <!-- Menu -->
-    <div
-      class="border-b flex justify-between items-center rounded-t-lg overflow-hidden h-13"
-    >
+    <div class="border-b flex justify-between items-center rounded-t-lg overflow-hidden h-13">
       <!-- Left Menu -->
       <div class="px-4">
         <!--
@@ -289,8 +283,13 @@ onBeforeUnmount(() => {
       <!-- Right Menu -->
       <div class="w-20"></div>
     </div>
-    <!-- Editor Content Wrapper (Sheet)-->
+    <!-- (Sheet) Editor Content Wrapper -->
     <div class="overflow-y-auto bg-stone-50 h-[calc(100vh-7.5rem)] pb-5">
+      <!-- Error Alert -->
+      <div class="pt-10 max-w-4xl mx-auto" v-if="errorAlert.open">
+        <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
+      </div>
+      <!-- Editor Wrapper -->
       <div
         id="editorWrapper"
         ref="editorWrapperRef"
