@@ -348,7 +348,7 @@
     },
     "knowledge": {
       "label": "Wissen",
-      "description": "Dies ist die Wissenssammlung, die vom Agenten verwendet werden kann"
+      "description": "Dies ist die Wissensdatenbank, die vom Agenten verwendet werden kann"
     },
     "tools": {
       "label": "Werkzeuge",
