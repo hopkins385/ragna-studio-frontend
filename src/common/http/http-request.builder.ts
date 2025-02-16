@@ -6,12 +6,8 @@ import { NotFoundError } from '@/common/errors/not-found.error';
 import { UnauthorizedError } from '@/common/errors/unauthorized.error';
 import { UnknownError } from '@/common/errors/unknown.error';
 import { ValidationError } from '@/common/errors/validation.error';
-import {
-  AxiosError,
-  type AxiosInstance,
-  type AxiosRequestConfig,
-  type AxiosResponse,
-} from 'axios';
+import { AxiosError, type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import { AbortError } from '../errors/abort.error';
 
 type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 type ResponseType = 'json' | 'text' | 'blob' | 'arraybuffer';
@@ -95,6 +91,9 @@ class RequestBuilder<TResponse, TParams = never, TData = never> {
       return await this.instance.request<TResponse>(axiosConfig);
     } catch (error) {
       if (error instanceof AxiosError) {
+        if (error.name === 'AbortError') {
+          throw new AbortError();
+        }
         if (error.code === 'ERR_NETWORK') {
           throw new ConnectionError();
         }
@@ -102,6 +101,11 @@ class RequestBuilder<TResponse, TParams = never, TData = never> {
           this.errorHandler(error);
         } else {
           defaultErrorHandler(error);
+        }
+      }
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          throw new AbortError();
         }
       }
       throw error;
@@ -122,7 +126,7 @@ function defaultErrorHandler(error: AxiosError) {
     case 422:
       throw new ValidationError();
     default:
-      throw new UnknownError();
+      throw new UnknownError(error.message);
   }
 }
 

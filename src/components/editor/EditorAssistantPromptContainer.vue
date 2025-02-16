@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // Imports
+import { UnknownError } from '@/common/errors/unknown.error';
 import { useEditorService } from '@/composables/services/useEditorService';
 import useMarkdown from '@/composables/useMarkdown';
 import type { Editor } from '@tiptap/vue-3';
@@ -17,6 +18,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   close: [];
   refreshPosition: [];
+  submit: [];
+  error: [error: unknown];
 }>();
 
 // Refs
@@ -42,6 +45,7 @@ const runCompletion = async () => {
     return;
   }
   isLoading.value = true;
+  emit('submit');
 
   try {
     const completionPayload = {
@@ -84,8 +88,13 @@ const runCompletion = async () => {
       .run();
 
     emit('refreshPosition');
-  } catch (error) {
+  } catch (error: unknown) {
+    // if abortCompletion was called, do not show error
+    if (error instanceof UnknownError) {
+      return;
+    }
     console.error(error);
+    emit('error', error);
   } finally {
     isLoading.value = false;
   }

@@ -223,6 +223,20 @@ const handleContextMenu = (event: MouseEvent) => {
   handleShowPromptContainer();
 };
 
+const handleError = (error: unknown) => {
+  const message = error instanceof Error ? error.message : 'An error occurred';
+  setErrorAlert(message);
+};
+
+const onAssistantPromptError = (error: unknown) => {
+  handleError(error);
+  assistantPromptContainer.show = false;
+};
+
+const onAssistantPromptSubmit = () => {
+  unsetErrorAlert();
+};
+
 //
 
 const hasTextSelected = computed(() => {
@@ -286,7 +300,7 @@ onBeforeUnmount(() => {
     <!-- (Sheet) Editor Content Wrapper -->
     <div class="overflow-y-auto bg-stone-50 h-[calc(100vh-7.5rem)] pb-5">
       <!-- Error Alert -->
-      <div class="pt-10 max-w-4xl mx-auto" v-if="errorAlert.open">
+      <div class="pt-5 -mb-10 max-w-4xl mx-auto" v-if="errorAlert.open">
         <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
       </div>
       <!-- Editor Wrapper -->
@@ -322,6 +336,8 @@ onBeforeUnmount(() => {
             :editor="editor"
             @close="() => handleCloseAssistantPromptContainer()"
             @refresh-position="updateAssistantPromptContainerPosition"
+            @submit="onAssistantPromptSubmit"
+            @error="onAssistantPromptError"
           />
         </div>
         <!-- Editor Content -->
