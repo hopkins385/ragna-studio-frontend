@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ChatHistoryDrawerButton from '@/components/chat/ChatHistoryDrawerButton.vue';
 import ChatPresets from '@/components/chat/ChatPresets.vue';
+import ChatThinkingBox from '@/components/chat/ChatThinkingBox.vue';
 import { ChatMessageRole } from '@/enums/chat-role.enum';
 import { chatInputTextSchema } from '@/schemas/chat-input-text.schema';
 import { useChatStore } from '@/stores/chat-inference.store';
@@ -18,12 +19,7 @@ import { useWebsocketGlobal } from '@composables/websocket/useWebsocketGlobal';
 import { useChatSettingsStore } from '@stores/chat-settings.store';
 import { Button } from '@ui/button';
 import { Textarea } from '@ui/textarea';
-import {
-  ArrowDownIcon,
-  PaperclipIcon,
-  SendIcon,
-  SquareIcon,
-} from 'lucide-vue-next';
+import { ArrowDownIcon, PaperclipIcon, SendIcon, SquareIcon } from 'lucide-vue-next';
 import ChatAssistantDetails from './ChatAssistantDetails.vue';
 
 const socket = useWebsocketGlobal();
@@ -50,8 +46,7 @@ const {
   clearError,
 } = useChatService();
 
-const { setActiveTool, unsetActiveTool, clearActiveTools, activeTools } =
-  useChatTools();
+const { setActiveTool, unsetActiveTool, clearActiveTools, activeTools } = useChatTools();
 
 // activeChatId
 const route = useRoute();
@@ -65,13 +60,9 @@ const chatInputFormRef = ref<HTMLFormElement | null>(null);
 const chatBoxContainerRef = ref<HTMLElement | null>(null);
 const chatMessagesContainerRef = ref<HTMLElement | null>(null);
 
-const showPresets = computed(
-  () => setupChatIsCompleted.value === true && !hasChatMessages.value,
-);
+const showPresets = computed(() => setupChatIsCompleted.value === true && !hasChatMessages.value);
 const chatTitle = computed(() => chat.value?.title);
-const showAbortButton = computed(
-  () => isThinking.value === true || isStreaming.value === true,
-);
+const showAbortButton = computed(() => isThinking.value === true || isStreaming.value === true);
 const streamText = computed(() => chatTextChunks.value.join(''));
 
 function getVisionContent(images: ChatImage[]): any {
@@ -188,8 +179,7 @@ const setupChat = async (chatId: string) => {
   setupChatIsCompleted.value = true;
 };
 
-const { openFileDialog, readFile, inputImages, allowedFileMimeTypes } =
-  useChatImages();
+const { openFileDialog, readFile, inputImages, allowedFileMimeTypes } = useChatImages();
 
 const { isOverDropZone } = useDropZone(chatBoxContainerRef, {
   onDrop: files => {
@@ -318,20 +308,10 @@ useHead({
         :content="message.content"
         :vision-contents="message.visionContent"
         :display-name="message.role === 'user' ? 'User' : assistant?.title"
-        :role="
-          message.role === 'user'
-            ? ChatMessageRole.USER
-            : ChatMessageRole.ASSISTANT
-        "
+        :role="message.role === 'user' ? ChatMessageRole.USER : ChatMessageRole.ASSISTANT"
       />
       <!-- thinking message -->
-      <ChatMessageBox
-        v-if="isThinking"
-        type="text"
-        :display-name="assistant?.title"
-        :role="ChatMessageRole.ASSISTANT"
-        content="..."
-      />
+      <ChatThinkingBox v-if="isThinking" :display-name="assistant?.title" />
       <!-- streaming message -->
       <ChatMessageChunk
         v-if="streamText.length > 0"
@@ -373,15 +353,11 @@ useHead({
     <div
       class="w-full max-w-[70rem] mx-auto"
       :class="{
-        'px-10 -mt-10 absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2':
-          showPresets,
+        'px-10 -mt-10 absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2': showPresets,
         relative: !showPresets,
       }"
     >
-      <div
-        v-if="showPresets"
-        class="h-12 border-0 font-semibold opacity-75 text-3xl text-center"
-      >
+      <div v-if="showPresets" class="h-12 border-0 font-semibold opacity-75 text-3xl text-center">
         {{ $t('chat.welcome') }}
       </div>
       <div id="chatInputWrapper" class="shrink-0 pt-1">
@@ -425,9 +401,7 @@ useHead({
                   class="group rounded-full border shadow-md size-8"
                   @click="() => scrollToBottom({ instant: true })"
                 >
-                  <ArrowDownIcon
-                    class="!size-4 stroke-2 group-hover:stroke-2"
-                  />
+                  <ArrowDownIcon class="!size-4 stroke-2 group-hover:stroke-2" />
                 </Button>
               </div>
               <Textarea
@@ -446,9 +420,7 @@ useHead({
               class="group absolute bottom-3 right-3 z-20 mr-1 size-8 rounded-full bg-slate-100"
               @click="onAbortChatRequest"
             >
-              <SquareIcon
-                class="!size-4 stroke-1.5 text-slate-500 group-hover:text-slate-900"
-              />
+              <SquareIcon class="!size-4 stroke-1.5 text-slate-500 group-hover:text-slate-900" />
             </Button>
             <Button
               v-else
@@ -464,10 +436,7 @@ useHead({
           <div class="w-10"></div>
         </div>
         <div v-if="showPresets" class="pt-6">
-          <ChatPresets
-            id="chatPresets"
-            @clicked="value => onPresetClick(value)"
-          />
+          <ChatPresets id="chatPresets" @clicked="value => onPresetClick(value)" />
         </div>
       </div>
     </div>
