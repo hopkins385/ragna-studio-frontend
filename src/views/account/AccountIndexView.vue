@@ -6,10 +6,7 @@ import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import AccountProfileForm from '@components/account/AccountProfileForm.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import {
-  useAccountService,
-  type AccountData,
-} from '@composables/services/useAccountService';
+import { useAccountService, type AccountData } from '@composables/services/useAccountService';
 import AccountEditLoginForm from './AccountEditLoginForm.vue';
 
 const isLoading = ref(false);
@@ -42,10 +39,7 @@ onBeforeMount(() => {
   <SectionContainer>
     <Heading>
       <template #top>
-        <HeadingTitle
-          :title="$t('account.title')"
-          :subtitle="$t('account.subtitle')"
-        />
+        <HeadingTitle :title="$t('account.title')" :subtitle="$t('account.subtitle')" />
       </template>
       <template #bottom> </template>
     </Heading>
@@ -71,7 +65,7 @@ onBeforeMount(() => {
             <h2 class="pb-2 font-semibold">Plan</h2>
             <p>Preview</p>
             <h2 class="mt-2 py-2 font-semibold">Credits</h2>
-            <p>{{ account?.credit[0]?.amount }}</p>
+            <p>{{ account?.totalCredits }}</p>
           </BoxContainer>
         </div>
       </div>
@@ -96,11 +90,7 @@ onBeforeMount(() => {
       </div>
       <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
         <h2 class="pb-5">Subscription</h2>
-        <ButtonLoading
-          :loading="isLoading"
-          variant="outline"
-          @click="onManageSubscriptionClick"
-        >
+        <ButtonLoading :loading="isLoading" variant="outline" @click="onManageSubscriptionClick">
           Manage Subscription
         </ButtonLoading>
       </BoxContainer>

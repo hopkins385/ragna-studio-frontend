@@ -15,11 +15,14 @@ export interface AccountData {
   name: string;
   firstName: string;
   lastName: string;
+  totalCredits: number;
   email: string;
   emailVerified: boolean;
-  credit: any;
   organisation: any;
-  team: any;
+  roles: any;
+  teams: any;
+  firstTeamId: string;
+  onboardedAt: string | null;
 }
 
 export function useAccountService() {
@@ -41,10 +44,7 @@ export function useAccountService() {
     return data;
   };
 
-  const updateName = async (payload: {
-    firstName: string;
-    lastName: string;
-  }) => {
+  const updateName = async (payload: { firstName: string; lastName: string }) => {
     const api = newApiRequest();
     const route = getRoute(AccountRoute.NAME);
     const { status, data } = await api
@@ -61,10 +61,7 @@ export function useAccountService() {
     return data;
   };
 
-  const updatePassword = async (payload: {
-    oldPassword: string;
-    newPassword: string;
-  }) => {
+  const updatePassword = async (payload: { oldPassword: string; newPassword: string }) => {
     const api = newApiRequest();
     const route = getRoute(AccountRoute.PASSWORD);
     const { status, data } = await api

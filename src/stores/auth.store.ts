@@ -17,16 +17,15 @@ interface Team {
 
 interface AuthUser {
   id: string;
+  firstTeamId: string;
   name: string;
   firstName: string;
   lastName: string;
   email: string;
+  totalCredits: number;
   onboardedAt: string | null;
-  credit: any;
   teams: Team[];
   roles: string[];
-  firstTeamId: string;
-  totalCredits: number;
 }
 
 interface IAuthState {
@@ -60,10 +59,7 @@ export const useAuthStore = defineStore('auth-store', {
       return state.user;
     },
     userCredits(state): number {
-      // @ts-ignore
-      const amounts = state.user?.credit.map(c => c.amount) || [];
-      // @ts-ignore
-      return amounts.reduce((a, b) => a + b, 0);
+      return state.user?.totalCredits || 0;
     },
     onboardingIsComplete(state): boolean {
       return !!state.user?.onboardedAt;
@@ -78,9 +74,7 @@ export const useAuthStore = defineStore('auth-store', {
       return state.accessTokenExpiresAt;
     },
     accessTokenExpired(state): boolean {
-      return (
-        !!state.accessTokenExpiresAt && state.accessTokenExpiresAt < Date.now()
-      );
+      return !!state.accessTokenExpiresAt && state.accessTokenExpiresAt < Date.now();
     },
     hasRefreshToken(): boolean {
       const token = useStorage('refreshToken', null, localStorage);
@@ -109,20 +103,13 @@ export const useAuthStore = defineStore('auth-store', {
      * @param email User's email address.
      * @param password User's password.
      */
-    async login({
-      email,
-      password,
-    }: {
-      email: string;
-      password: string;
-    }): Promise<void> {
+    async login({ email, password }: { email: string; password: string }): Promise<void> {
       const { loginUser } = useAuthService();
       try {
-        const { refreshToken, accessToken, accessTokenExpiresAt } =
-          await loginUser({
-            email,
-            password,
-          });
+        const { refreshToken, accessToken, accessTokenExpiresAt } = await loginUser({
+          email,
+          password,
+        });
         this.setAccessToken(accessToken, accessTokenExpiresAt);
         this.setRefreshToken(refreshToken);
         await this.fetchUser();
@@ -158,9 +145,7 @@ export const useAuthStore = defineStore('auth-store', {
       } finally {
       }
     },
-    async socialGoogleLogin(query: {
-      code: string | undefined;
-    }): Promise<void> {
+    async socialGoogleLogin(query: { code: string | undefined }): Promise<void> {
       if (!query.code) {
         throw new Error('No code provided');
       }
@@ -208,8 +193,7 @@ export const useAuthStore = defineStore('auth-store', {
       }
       try {
         const { refreshTokens } = useAuthService();
-        const { refreshToken, accessToken, accessTokenExpiresAt } =
-          await refreshTokens();
+        const { refreshToken, accessToken, accessTokenExpiresAt } = await refreshTokens();
         this.setAccessToken(accessToken, accessTokenExpiresAt);
         this.setRefreshToken(refreshToken);
         await this.fetchUser();
@@ -228,8 +212,18 @@ export const useAuthStore = defineStore('auth-store', {
       this.isFetchingUser = true;
       try {
         const data = await fetchAccountData();
-        // @ts-ignore
-        this.user = data;
+        this.user = {
+          id: data.id,
+          firstTeamId: data.firstTeamId,
+          name: data.name,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          totalCredits: data.totalCredits,
+          onboardedAt: data.onboardedAt,
+          teams: data.teams,
+          roles: data.roles,
+        };
         defineAbilityFor(this.user);
       } catch (error) {
         this.clearUser();
