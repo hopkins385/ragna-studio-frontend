@@ -17,7 +17,7 @@ const account = ref<AccountData | null>(null);
 const { fetchAccountData } = useAccountService();
 
 const org = computed(() => account.value?.organisation ?? null);
-const team = computed(() => account.value?.team ?? null);
+const teams = computed(() => account.value?.teams ?? null);
 
 const initAccountData = async () => {
   const data = await fetchAccountData();
@@ -46,7 +46,7 @@ onBeforeMount(() => {
       </template>
       <template #bottom> </template>
     </Heading>
-    <div class="px-6">
+    <div class="px-6 pb-5">
       <div class="grid grid-cols-4 gap-5">
         <BoxContainer class="col-span-3 border border-stone-100 bg-stone-50">
           <AccountProfileForm
@@ -62,7 +62,7 @@ onBeforeMount(() => {
         <div class="col-span-1 grid grid-cols-1 space-y-6 text-sm">
           <BoxContainer class="border border-stone-100 bg-stone-50">
             <h2 class="pb-5 font-semibold">Account Security</h2>
-            <UserEmailVerified :verified-at="account?.emailVerified ?? null" />
+            Email Verified: {{ account?.hasEmailVerified ? 'Yes' : 'No' }}
           </BoxContainer>
           <BoxContainer class="border border-stone-100 bg-stone-50">
             <h2 class="pb-2 font-semibold">Plan</h2>
@@ -82,13 +82,13 @@ onBeforeMount(() => {
       </BoxContainer>
       <div class="grid grid-cols-2 gap-5">
         <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
-          <h2 class="pb-5">Organization</h2>
+          <h2 class="pb-5">Organisation</h2>
           <p class="w-fit text-sm">{{ org?.name }}</p>
-          <p class="mt-4 w-fit text-sm opacity-50">ID: org_{{ org?.id }}</p>
+          <p class="mt-4 w-fit text-sm opacity-50">ID: org_{{ account?.organisationId }}</p>
         </BoxContainer>
         <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
           <h2 class="pb-5">Team</h2>
-          <p class="w-fit text-sm">{{ team?.name }}</p>
+          <p class="w-fit text-sm">{{ teams?.[0]?.team.name }}</p>
         </BoxContainer>
       </div>
       <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
