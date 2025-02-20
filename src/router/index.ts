@@ -197,8 +197,7 @@ const mediaRoutes = {
     {
       path: 'google-drive/callback',
       name: RouteName.MEDIA_GOOGLE_DRIVE_CALLBACK,
-      component: () =>
-        import('@views/media/google/MediaGoogleCallbackView.vue'),
+      component: () => import('@views/media/google/MediaGoogleCallbackView.vue'),
       meta: defaultAppMeta,
     },
     {
@@ -232,8 +231,7 @@ const textToImageRoutes = {
     {
       path: 'explore',
       name: RouteName.TEXT_TO_IMAGE_EXPLORE,
-      component: () =>
-        import('@views/text-to-image/TextToImageExploreView.vue'),
+      component: () => import('@views/text-to-image/TextToImageExploreView.vue'),
       meta: defaultAppMeta,
     },
   ],
@@ -302,6 +300,12 @@ const accountRoutes = {
       path: 'settings',
       name: RouteName.ACCOUNT_SETTINGS,
       component: () => import('@views/account/AccountSettingsView.vue'),
+      meta: defaultAppMeta,
+    },
+    {
+      path: 'statistics',
+      name: RouteName.ACCOUNT_STATISTICS,
+      component: () => import('@views/account/stats/AccountStatsIndexView.vue'),
       meta: defaultAppMeta,
     },
   ],

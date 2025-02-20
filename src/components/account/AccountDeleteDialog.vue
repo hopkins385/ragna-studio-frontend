@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAccountService } from '@/composables/services/useAccountService';
+import { useAccountService } from '@/composables/services/account/useAccountService';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import { Button } from '@ui/button';
@@ -12,13 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@ui/dialog';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';
 import { Input } from '@ui/input';
 import { toTypedSchema } from '@vee-validate/zod';
 import { Trash2Icon } from 'lucide-vue-next';
@@ -136,11 +130,7 @@ function onDelete() {
           <Button variant="outline" @click="onCancel">
             {{ $t('form.button.cancel') }}
           </Button>
-          <Button
-            variant="ghost"
-            @click="onDelete"
-            class="text-destructive hover:text-destructive"
-          >
+          <Button variant="ghost" @click="onDelete" class="text-destructive hover:text-destructive">
             {{ $t('form.button.delete') }}
           </Button>
         </div>

@@ -7,14 +7,11 @@ import {
   CommandList,
   CommandSeparator,
 } from '@components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover';
 import { useAuthStore } from '@stores/auth.store';
 import {
   Bell,
+  ChartColumnIcon,
   ChevronsUpDown,
   LogOut,
   Settings,
@@ -53,9 +50,13 @@ function onSelect(value: string) {
   router.push({ name: value });
 }
 
-onMounted(() => {});
-
-onUnmounted(() => {});
+const navItems = {
+  icon: ChartColumnIcon,
+  path: '/account/statistics',
+  label: 'nav.statistics',
+  hidden: false,
+  children: [],
+};
 </script>
 
 <template>
@@ -81,10 +82,7 @@ onUnmounted(() => {});
             <span class="text-sm font-medium">{{ initials }}</span>
           </div>
 
-          <div
-            v-if="sizeFull"
-            class="pl-3 flex items-center justify-between w-full"
-          >
+          <div v-if="sizeFull" class="pl-3 flex items-center justify-between w-full">
             <div class="">
               <div class="flex flex-col items-start">
                 <span class="text-xs text-muted-foreground truncate">
@@ -102,10 +100,7 @@ onUnmounted(() => {});
         </div>
       </Button>
     </PopoverTrigger>
-    <PopoverContent
-      class="w-[250px] rounded-2xl overflow-hidden p-0"
-      align="center"
-    >
+    <PopoverContent class="w-[250px] rounded-2xl overflow-hidden p-0" side="bottom" align="end">
       <Command>
         <div class="flex items-center gap-3 p-4">
           <div
@@ -134,11 +129,7 @@ onUnmounted(() => {});
         <CommandList class="">
           <CommandGroup class="p-0">
             <CommandSeparator />
-            <CommandItem
-              class="px-4 py-2 hover:cursor-pointer"
-              value="upgrade"
-              @select="() => {}"
-            >
+            <CommandItem class="px-4 py-2 hover:cursor-pointer" value="upgrade" @select="() => {}">
               <Sparkles class="mr-2 size-4 stroke-1.5" />
               <span>
                 {{ $t('subscription.upgrade') }}
@@ -152,6 +143,16 @@ onUnmounted(() => {});
             >
               <User class="mr-2 size-4 stroke-1.5" />
               <span>{{ $t('nav.account') }}</span>
+            </CommandItem>
+            <CommandItem
+              class="px-4 py-2 hover:cursor-pointer"
+              value="statistics"
+              @select="() => onSelect('account.statistics')"
+            >
+              <ChartColumnIcon class="mr-2 size-4 stroke-1.5" />
+              <span>
+                {{ $t('nav.statistics') }}
+              </span>
             </CommandItem>
             <CommandItem
               class="px-4 py-2 hover:cursor-pointer"

@@ -41,6 +41,7 @@ export const RouteName = {
   // Account routes
   ACCOUNT_INDEX: 'account.index',
   ACCOUNT_SETTINGS: 'account.settings',
+  ACCOUNT_STATISTICS: 'account.statistics',
   // Social auth callback route
   SOCIAL_AUTH_CALLBACK: 'social-auth-callback',
   // Onboarding routes

@@ -1,14 +1,8 @@
 <script setup lang="ts">
-import { useAccountService } from '@/composables/services/useAccountService';
+import { useAccountService } from '@/composables/services/account/useAccountService';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import useToast from '@composables/useToast';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';
 import { Input } from '@ui/input';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
@@ -68,11 +62,7 @@ const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
 
 <template>
   <form class="space-y-8" @submit="onSubmit">
-    <FormField
-      v-slot="{ componentField }"
-      name="name"
-      :model-value="user?.name ?? ''"
-    >
+    <FormField v-slot="{ componentField }" name="name" :model-value="user?.name ?? ''">
       <FormItem>
         <FormLabel>
           {{ $t('account.form.name') }}
@@ -84,11 +74,7 @@ const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
       </FormItem>
     </FormField>
 
-    <FormField
-      v-slot="{ componentField }"
-      name="firstName"
-      :model-value="user?.firstName ?? ''"
-    >
+    <FormField v-slot="{ componentField }" name="firstName" :model-value="user?.firstName ?? ''">
       <FormItem>
         <FormLabel>
           {{ $t('account.form.firstName') }}
@@ -100,11 +86,7 @@ const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
       </FormItem>
     </FormField>
 
-    <FormField
-      v-slot="{ componentField }"
-      name="lastName"
-      :model-value="user?.lastName ?? ''"
-    >
+    <FormField v-slot="{ componentField }" name="lastName" :model-value="user?.lastName ?? ''">
       <FormItem>
         <FormLabel>
           {{ $t('account.form.lastName') }}

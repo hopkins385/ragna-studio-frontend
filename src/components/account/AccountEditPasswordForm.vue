@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAccountService } from '@/composables/services/useAccountService';
+import { useAccountService } from '@/composables/services/account/useAccountService';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
 import { FormControl, FormField, FormLabel, FormMessage } from '@ui/form';
@@ -63,20 +63,14 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 
 <template>
   <form class="mt-3 space-y-5" @submit="onSubmit">
-    <div v-if="error !== ''" class="text-sm text-destructive">
-      Error: {{ error }}
-    </div>
+    <div v-if="error !== ''" class="text-sm text-destructive">Error: {{ error }}</div>
     <FormField v-slot="{ componentField }" name="password">
       <FormItem>
         <FormLabel>
           {{ t('account.new_password.current') }}
         </FormLabel>
         <FormControl>
-          <Input
-            type="password"
-            autocomplete="current-password"
-            v-bind="componentField"
-          />
+          <Input type="password" autocomplete="current-password" v-bind="componentField" />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -87,11 +81,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
           {{ t('account.new_password.new') }}
         </FormLabel>
         <FormControl>
-          <Input
-            type="password"
-            autocomplete="new-password"
-            v-bind="componentField"
-          />
+          <Input type="password" autocomplete="new-password" v-bind="componentField" />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -102,11 +92,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
           {{ t('account.new_password.confirm') }}
         </FormLabel>
         <FormControl>
-          <Input
-            type="password"
-            autocomplete="new-password"
-            v-bind="componentField"
-          />
+          <Input type="password" autocomplete="new-password" v-bind="componentField" />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -122,10 +108,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         {{ t('account.form.cancel') }}
       </Button>
       <Button class="whitespace-nowrap" variant="outline" :disabled="isLoading">
-        <LoaderCircleIcon
-          v-if="isLoading"
-          class="mr-2 size-4 animate-spin opacity-80"
-        />
+        <LoaderCircleIcon v-if="isLoading" class="mr-2 size-4 animate-spin opacity-80" />
         {{ t('account.new_password.submit') }}
       </Button>
     </div>

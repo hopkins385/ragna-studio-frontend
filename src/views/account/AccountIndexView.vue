@@ -3,10 +3,13 @@ import AccountDeleteDialog from '@/components/account/AccountDeleteDialog.vue';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import {
+  useAccountService,
+  type AccountData,
+} from '@/composables/services/account/useAccountService';
 import AccountProfileForm from '@components/account/AccountProfileForm.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import { useAccountService, type AccountData } from '@composables/services/useAccountService';
 import AccountEditLoginForm from './AccountEditLoginForm.vue';
 
 const isLoading = ref(false);

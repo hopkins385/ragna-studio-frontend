@@ -23,7 +23,9 @@
     "settings": "Einstellungen",
     "notifications": "Benachrichtigungen",
     "logout": "Abmelden",
-    "more": "Mehr"
+    "more": "Mehr",
+    "statistics": "Statistiken",
+    "admin": "Manager"
   },
   "toast": {
     "error": {
@@ -570,8 +572,8 @@
   },
   "admin": {
     "dashboard": {
-      "title": "Admin Dashboard",
-      "subtitle": "Hier kannst du die Plattform verwalten"
+      "title": "Manager Dashboard",
+      "subtitle": "Hier kannst du die Aktivitäten deiner Organisation verfolgen und verwalten"
     },
     "user": {
       "title": "Benutzer",

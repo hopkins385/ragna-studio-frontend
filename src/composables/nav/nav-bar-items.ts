@@ -354,7 +354,7 @@ export const adminRoutes: NavItem[] = [
   {
     icon: MonitorCogIcon,
     path: '/admin',
-    label: 'Admin',
+    label: 'nav.admin',
     hidden: false,
     children: [],
   },

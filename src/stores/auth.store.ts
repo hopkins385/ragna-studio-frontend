@@ -1,4 +1,4 @@
-import { useAccountService } from '@/composables/services/useAccountService';
+import { useAccountService } from '@/composables/services/account/useAccountService';
 import { useAuthService } from '@/composables/services/useAuthService';
 import { defineAbilityFor } from '@/services/ability.service';
 import { useStorage } from '@vueuse/core';
