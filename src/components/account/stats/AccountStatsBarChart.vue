@@ -28,7 +28,7 @@ const grid = {
   bottom: 50,
 };
 
-const defaultCategories = ['GPT-3.5', 'GPT-4', 'GPT-4 Turbo', 'DALL-E', 'Whisper'];
+const defaultCategories = ['Claude 3.5 Sonnet', 'Mistral Large', 'GPT-4o', 'GPT-4o Mini'];
 const barColorScheme = ['#5470C6', '#91CC75', '#FAC858', '#EE6666', '#73C0DE'];
 
 // Props
