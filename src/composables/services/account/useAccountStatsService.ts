@@ -22,6 +22,11 @@ interface TokenUsageHistoryResponse {
   tokenUsages: TokenUsage[];
 }
 
+interface TokenUsageHistoryParams {
+  month: string;
+  year: string;
+}
+
 export function useAccountStatsService() {
   let ac = new AbortController();
 
@@ -30,12 +35,13 @@ export function useAccountStatsService() {
     ac = new AbortController();
   };
 
-  const fetchTokenHistory = async (payload: { month: string; year: string }) => {
+  const fetchTokenHistory = async (params: TokenUsageHistoryParams) => {
     const api = newApiRequest();
     const route = getRoute(AccountStatsRoute.TOKEN_HISTORY);
     const { status, data } = await api
-      .GET<TokenUsageHistoryResponse>()
+      .GET<TokenUsageHistoryResponse, TokenUsageHistoryParams>()
       .setRoute(route)
+      .setParams(params)
       .setSignal(ac.signal)
       .send();
 

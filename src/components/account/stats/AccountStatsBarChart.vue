@@ -128,6 +128,7 @@ const option = computed(() => ({
 // Functions
 const initData = async (payload: { month: string; year: string }) => {
   isLoading.value = true;
+  await new Promise(resolve => setTimeout(resolve, 1000));
   try {
     const { tokenUsages } = await fetchTokenHistory(payload);
     data.value = tokenUsages;
