@@ -186,7 +186,9 @@ watch(
   </div>
   <div class="flex items-center justify-between">
     <div>
-      <h2 class="text-2xl font-semibold">{{ $t('account.stats.tokenUsage') }}</h2>
+      <h2 class="text-2xl font-semibold">
+        {{ $t('account.stats.tokenUsage') }}
+      </h2>
     </div>
   </div>
   <Chart
