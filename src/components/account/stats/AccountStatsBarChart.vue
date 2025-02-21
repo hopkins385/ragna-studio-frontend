@@ -12,8 +12,14 @@ import {
   type TokenUsage,
 } from '@/composables/services/account/useAccountStatsService';
 import getDaysInMonth from '@/utils/date';
-import 'echarts';
+import { BarChart, type BarSeriesOption } from 'echarts/charts';
+import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
+import { use } from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
 import Chart from 'vue-echarts';
+// import 'echarts';
+
+use([GridComponent, LegendComponent, TooltipComponent, BarChart, CanvasRenderer]);
 
 const grid = {
   left: 80,
@@ -79,7 +85,7 @@ const daysOfMonth = computed(() => {
   return daysArrayString;
 });
 
-const series = computed<echarts.BarSeriesOption[]>(() =>
+const series = computed<BarSeriesOption[]>(() =>
   categories.value.map((name, sid) => {
     return {
       name,
