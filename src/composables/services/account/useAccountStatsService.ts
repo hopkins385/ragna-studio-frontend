@@ -30,7 +30,7 @@ export function useAccountStatsService() {
     ac = new AbortController();
   };
 
-  const fetchTokenHistory = async () => {
+  const fetchTokenHistory = async (payload: { month: string; year: string }) => {
     const api = newApiRequest();
     const route = getRoute(AccountStatsRoute.TOKEN_HISTORY);
     const { status, data } = await api

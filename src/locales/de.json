@@ -150,6 +150,11 @@
     },
     "tooltip": {
       "email_info": "Mit deiner E-Mail-Adresse kannst du dich anmelden. Deine E-Mail Adresse kannst du nicht ändern"
+    },
+    "stats": {
+      "title": "Statistiken",
+      "subtitle": "Hier kannst du deine Statistiken einsehen",
+      "tokenUsage": "Token Nutzung"
     }
   },
   "favorites": {
