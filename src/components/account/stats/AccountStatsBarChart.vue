@@ -117,8 +117,11 @@ const option = computed(() => ({
     formatter: (params: any) => {
       let tooltipText = params[0].axisValue + '<br/>';
       params.forEach((item: any) => {
-        tooltipText +=
-          item.marker + ' ' + item.seriesName + ': ' + Math.round(item.value * 1) + '<br/>';
+        const value = Math.round(item.value);
+        if (value === 0) {
+          return;
+        }
+        tooltipText += item.marker + ' ' + item.seriesName + ': ' + value + '<br/>';
       });
       return tooltipText;
     },
@@ -156,7 +159,7 @@ watch(
 <template>
   <div class="items-center pb-5">
     <div></div>
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 pl-4">
       <div class="w-16">
         <!-- Change year -->
         <Select v-model:model-value="monthYear.month">
@@ -184,7 +187,7 @@ watch(
       </div>
     </div>
   </div>
-  <div class="flex items-center justify-between">
+  <div class="flex items-center justify-between pb-8 pl-4">
     <div>
       <h2 class="text-2xl font-semibold">
         {{ $t('account.stats.tokenUsage') }}
@@ -192,7 +195,7 @@ watch(
     </div>
   </div>
   <Chart
-    class="h-96 w-full max-w-4xl"
+    class="h-80 w-full max-w-3xl"
     :option="option"
     :loading="isLoading"
     theme="light"
