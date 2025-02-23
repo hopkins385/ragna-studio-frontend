@@ -10,11 +10,14 @@ import { TextAlign } from '@tiptap/extension-text-align';
 import { Underline } from '@tiptap/extension-underline';
 import { StarterKit } from '@tiptap/starter-kit';
 import { Editor, EditorContent, type JSONContent } from '@tiptap/vue-3';
+import { type CommentData } from '../../../_backup/comment-extension';
 import ErrorAlert from '../error/ErrorAlert.vue';
 import EditorAssistantDropdownMenu from './EditorAssistantDropdownMenu.vue';
 import EditorAssistantPromptContainer from './EditorAssistantPromptContainer.vue';
+import EditorComments from './EditorComments.vue';
 import EditorMenu from './EditorMenu.vue';
-import { type CommentData } from './extensions/comment-extension';
+import { CommentsExtension } from './extensions/comments-extension';
+import { HighlightSelection } from './extensions/highlight-selection.extension';
 import { InvisibleCharacters } from './extensions/invisible-characters';
 import { NodeTracker } from './extensions/node-tracker';
 
@@ -108,6 +111,7 @@ const editor = new Editor({
       placeholder: 'Write something …',
     }),
     Highlight,
+    HighlightSelection,
     Underline,
     TextAlign.configure({
       types: ['heading', 'paragraph', 'listItem'],
@@ -123,6 +127,7 @@ const editor = new Editor({
       types: ['paragraph', 'heading', 'listItem', 'taskItem', 'taskList'],
       generateId: true,
     }),
+    CommentsExtension,
   ],
   onUpdate: ({ editor }) => {
     editorContent.value = editor.getJSON();
@@ -263,12 +268,12 @@ watch(
 
 onMounted(() => {
   window.addEventListener('mouseup', handleMouseUp);
-  window.addEventListener('contextmenu', handleContextMenu);
+  // window.addEventListener('contextmenu', handleContextMenu);
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('mouseup', handleMouseUp);
-  window.removeEventListener('contextmenu', handleContextMenu);
+  // window.removeEventListener('contextmenu', handleContextMenu);
   editor.destroy();
 });
 </script>
@@ -343,8 +348,17 @@ onBeforeUnmount(() => {
         <!-- Editor Content -->
         <div id="editorContent" ref="editorContentRef">
           <EditorContent :editor="editor" />
+          <div clasS=" absolute top-0 right-0">
+            <EditorComments :editor="editor" />
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style>
+.comment-highlight {
+  background-color: yellow;
+}
+</style>

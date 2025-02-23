@@ -2,6 +2,15 @@
   .ProseMirror {
     @apply outline-none min-h-[calc(100vh-14rem)];
 
+    /* Disable browser's default selection highlight */
+    &::selection {
+      background: transparent;
+    }
+
+    *::selection {
+      background: transparent;
+    }
+
     > p:first-child {
       @apply mt-0;
     }
@@ -87,6 +96,14 @@
     .comment-highlighted {
       background-color: rgba(255, 235, 59, 0.2);
       border-bottom: 2px dashed #ffd700;
+    }
+
+    .highlight-selection {
+      background-color: #accef7c1; /* Standard browser selection blue */
+      border-radius: 0;
+      padding: 2px 0;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     .comment-box {
