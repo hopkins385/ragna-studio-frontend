@@ -74,8 +74,6 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
           return;
         }
 
-        console.log('Inline completion response:', data);
-
         // Remove the context we already have from the completion
         const suggestion = data.completion.replace(context, '') || '';
 
@@ -98,8 +96,9 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
           decorationSet,
           basePos: pos,
         });
-        console.log('Inline completion transaction:', tr);
+        //
         view.dispatch(tr);
+        //
       } catch (error: unknown) {
         if (error instanceof Error && error.name === 'AbortError') {
           return;
@@ -134,13 +133,19 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
           decorations(state) {
             return this.getState(state)?.decorationSet;
           },
-          // Updated handleTextInput to clear suggestion and fetch new completion based on activation triggers
+          // Updated handleTextInput with fetch abort and debounce delay
           handleTextInput(view, from, to, text) {
             const pluginState = inlineCompletionPluginKey.getState(view.state);
             // Clear any existing suggestion
             if (pluginState && pluginState.suggestion) {
               const trClear = view.state.tr.setMeta(inlineCompletionPluginKey, { clear: true });
               view.dispatch(trClear);
+            }
+
+            // Abort any ongoing fetch if user continues typing
+            if (currentAbortController) {
+              currentAbortController.abort();
+              currentAbortController = null;
             }
 
             // Only trigger new completion fetch on activation triggers
@@ -152,6 +157,7 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
               if (debounceTimer) {
                 window.clearTimeout(debounceTimer);
               }
+              // Start a debounce timer that waits for the user to stop typing
               debounceTimer = window.setTimeout(() => {
                 fetchCompletion(view);
               }, extOptions.delay);

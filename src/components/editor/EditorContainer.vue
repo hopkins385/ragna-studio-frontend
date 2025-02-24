@@ -109,10 +109,20 @@ const completionFetchHandler = async (params: {
   signal: AbortSignal;
 }): Promise<CompletionResponseDTO> => {
   console.log('fetching completion', params);
-  return await new Promise(resolve => {
-    setTimeout(() => {
-      resolve({ completion: 'this is some text' });
+  if (!params.context) {
+    return { completion: '' };
+  }
+
+  // Simulate a network request incl. abort
+  return await new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      resolve({ completion: 'This is a simulated completion.' });
     }, 350);
+
+    params.signal.addEventListener('abort', () => {
+      clearTimeout(timeoutId);
+      // reject(new Error('Request aborted'));
+    });
   });
 };
 
