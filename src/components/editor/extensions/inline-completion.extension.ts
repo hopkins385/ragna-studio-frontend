@@ -9,20 +9,19 @@ export interface CompletionResponseDTO {
 
 // Options for the inline completion extension
 export interface InlineCompletionOptionsDTO {
-  fetchUrl: string; // API endpoint for completions (unused when using external handler exclusively)
   delay: number; // Debounce delay in milliseconds
   activationTriggers: string[]; // Characters triggering the fetch
   timeout: number; // Timeout for fetch in milliseconds
   completionHandler: (params: {
     context: string;
     timeout: number;
+    signal: AbortSignal;
   }) => Promise<CompletionResponseDTO>;
 }
 
 // Default options
 const defaultOptions: InlineCompletionOptionsDTO = {
-  fetchUrl: '',
-  delay: 300,
+  delay: 500,
   activationTriggers: [' '],
   timeout: 5000,
   completionHandler: async () => {
@@ -43,21 +42,90 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
     const extOptions = this.options; // capture extension options to avoid undefined 'this' in callbacks
     let debounceTimer: number | undefined;
     let currentRequest = 0;
+    let currentAbortController: AbortController | null = null;
+
+    // Helper function to fetch completion
+    const fetchCompletion = async (view: any) => {
+      if (currentAbortController) {
+        currentAbortController.abort();
+      }
+      currentAbortController = new AbortController();
+      const { state } = view;
+      const $from = state.selection.$from;
+      const lineStart = $from.start();
+      const context = state.doc.textBetween(lineStart, $from.pos, ' ');
+      const requestId = ++currentRequest;
+
+      try {
+        if (!extOptions.completionHandler) {
+          throw new Error('No completionHandler provided');
+        }
+        const data: CompletionResponseDTO = await extOptions.completionHandler({
+          context,
+          timeout: extOptions.timeout,
+          signal: currentAbortController.signal,
+        });
+
+        if (requestId !== currentRequest) {
+          return;
+        }
+
+        if (!data.completion || data.completion.length === 0) {
+          return;
+        }
+
+        console.log('Inline completion response:', data);
+
+        // Remove the context we already have from the completion
+        const suggestion = data.completion.replace(context, '') || '';
+
+        const pos = state.selection.from;
+        const deco = Decoration.widget(
+          pos,
+          () => {
+            const span = document.createElement('span');
+            span.className = 'inline-completion-suggestion';
+            span.textContent = suggestion;
+            return span;
+          },
+          { side: 1 },
+        );
+
+        const decorationSet = DecorationSet.create(state.doc, [deco]);
+
+        const tr = state.tr.setMeta(inlineCompletionPluginKey, {
+          suggestion,
+          decorationSet,
+          basePos: pos,
+        });
+        console.log('Inline completion transaction:', tr);
+        view.dispatch(tr);
+      } catch (error: unknown) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          return;
+        }
+        console.error('Inline completion fetch error:', error);
+      }
+    };
 
     return [
       new Plugin({
         key: inlineCompletionPluginKey,
         state: {
           init() {
-            return { suggestion: '', decorationSet: DecorationSet.empty };
+            return { suggestion: '', decorationSet: DecorationSet.empty, basePos: undefined };
           },
           apply(tr, value, oldState, newState) {
             const meta = tr.getMeta(inlineCompletionPluginKey);
             if (meta && meta.clear) {
-              return { suggestion: '', decorationSet: DecorationSet.empty };
+              return { suggestion: '', decorationSet: DecorationSet.empty, basePos: undefined };
             }
             if (meta && meta.suggestion !== undefined && meta.decorationSet !== undefined) {
-              return { suggestion: meta.suggestion, decorationSet: meta.decorationSet };
+              return {
+                suggestion: meta.suggestion,
+                decorationSet: meta.decorationSet,
+                basePos: meta.basePos,
+              };
             }
             return value;
           },
@@ -66,128 +134,108 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
           decorations(state) {
             return this.getState(state)?.decorationSet;
           },
+          // Updated handleTextInput to clear suggestion and fetch new completion based on activation triggers
           handleTextInput(view, from, to, text) {
-            // Clear any existing suggestion to avoid blocking further typing
             const pluginState = inlineCompletionPluginKey.getState(view.state);
+            // Clear any existing suggestion
             if (pluginState && pluginState.suggestion) {
               const trClear = view.state.tr.setMeta(inlineCompletionPluginKey, { clear: true });
               view.dispatch(trClear);
             }
 
-            // Only trigger on activation characters using captured extOptions
+            // Only trigger new completion fetch on activation triggers
             if (!extOptions.activationTriggers.some(trigger => text.includes(trigger))) {
               return false;
             }
-            if (debounceTimer) {
-              window.clearTimeout(debounceTimer);
+
+            if (typeof window !== 'undefined' && window.clearTimeout && window.setTimeout) {
+              if (debounceTimer) {
+                window.clearTimeout(debounceTimer);
+              }
+              debounceTimer = window.setTimeout(() => {
+                fetchCompletion(view);
+              }, extOptions.delay);
             }
-            debounceTimer = window.setTimeout(() => {
-              (async () => {
-                // Extract context from the current line
-                const { state } = view;
-                const $from = state.selection.$from;
-                const lineStart = $from.start();
-                const context = state.doc.textBetween(lineStart, $from.pos, ' ');
 
-                // Increment request counter and capture the current request id
-                const requestId = ++currentRequest;
-
-                try {
-                  // Use solely the external completionHandler
-                  if (!extOptions.completionHandler) {
-                    throw new Error('No completionHandler provided');
-                  }
-                  const data: CompletionResponseDTO = await extOptions.completionHandler({
-                    context,
-                    timeout: extOptions.timeout,
-                  });
-
-                  console.log('Inline completion response:', data);
-
-                  // Ensure response belongs to the latest request
-                  if (requestId !== currentRequest) {
-                    return;
-                  }
-
-                  // Derive suggestion by stripping context if needed
-                  const suggestion = data.completion.replace(context, '') || '';
-
-                  // Re-read the current state to get up-to-date cursor position
-                  const { state } = view;
-                  const pos = state.selection.from;
-
-                  // Replace the inline decoration with a widget decoration for suggestion display
+            return false;
+          },
+          handleKeyDown(view, event) {
+            const pluginState = inlineCompletionPluginKey.getState(view.state);
+            if (pluginState && pluginState.suggestion && pluginState.basePos !== undefined) {
+              // Accept next word with cmd/ctrl+ArrowRight
+              if (event.key === 'ArrowRight' && (event.metaKey || event.ctrlKey)) {
+                const match = pluginState.suggestion.match(/^((\S+\s*)?)/);
+                if (!match || match[0] === '') {
+                  return false;
+                }
+                const acceptedWord = match[0];
+                const newSuggestion = pluginState.suggestion.slice(acceptedWord.length);
+                const basePos = pluginState.basePos;
+                const newBasePos = basePos + acceptedWord.length;
+                let tr = view.state.tr.insertText(
+                  acceptedWord,
+                  view.state.selection.from,
+                  view.state.selection.to,
+                );
+                if (newSuggestion) {
                   const deco = Decoration.widget(
-                    pos,
+                    newBasePos,
                     () => {
                       const span = document.createElement('span');
                       span.className = 'inline-completion-suggestion';
-                      span.textContent = suggestion;
+                      span.textContent = newSuggestion;
                       return span;
                     },
                     { side: 1 },
                   );
-
-                  const decorationSet = DecorationSet.create(state.doc, [deco]);
-
-                  const tr = state.tr.setMeta(inlineCompletionPluginKey, {
-                    suggestion,
+                  const decorationSet = DecorationSet.create(tr.doc, [deco]);
+                  tr = tr.setMeta(inlineCompletionPluginKey, {
+                    suggestion: newSuggestion,
                     decorationSet,
+                    basePos: newBasePos,
                   });
-                  console.log('Inline completion transaction:', tr);
-
-                  view.dispatch(tr);
-                } catch (error) {
-                  console.error('Inline completion fetch error:', error);
+                } else {
+                  tr = tr.setMeta(inlineCompletionPluginKey, {
+                    suggestion: '',
+                    decorationSet: DecorationSet.empty,
+                    basePos: undefined,
+                  });
                 }
-              })();
-            }, extOptions.delay);
-
-            return false; // Allow the text input to proceed
-          },
-          handleKeyDown(view, event) {
-            const pluginState = inlineCompletionPluginKey.getState(view.state);
-            // Accept suggestion on Tab if available
-            if (
-              pluginState &&
-              pluginState.suggestion &&
-              event.key === 'Tab'
-            ) {
-              const { state } = view;
-              const { from, to } = state.selection;
-              const tr = state.tr
-                .insertText(pluginState.suggestion, from, to)
-                .setMeta(inlineCompletionPluginKey, { clear: true });
-              view.dispatch(tr);
-              event.preventDefault();
-              return true;
-            }
-            // Cancel suggestion on Escape
-            if (event.key === 'Escape') {
-              const tr = view.state.tr.setMeta(inlineCompletionPluginKey, { clear: true });
-              view.dispatch(tr);
-              return true;
-            }
-            return false;
-          },
-          // New view update handler that clears the suggestion if the cursor moves away from its position
-          handleDOMEvents: {
-            keyup: (view, event) => {
-              const pluginState = inlineCompletionPluginKey.getState(view.state);
-              if (pluginState && pluginState.suggestion && pluginState.decorationSet) {
-                const decos = pluginState.decorationSet.find();
-                if (decos.length > 0) {
-                  const suggestionPos = decos[0].from;
-                  const cursorPos = view.state.selection.from;
-                  if (cursorPos !== suggestionPos) {
-                    const tr = view.state.tr.setMeta(inlineCompletionPluginKey, { clear: true });
-                    view.dispatch(tr);
-                  }
-                }
+                view.dispatch(tr);
+                event.preventDefault();
+                return true;
               }
+
+              // Accept full suggestion on Tab
+              if (pluginState.suggestion && event.key === 'Tab') {
+                const { state } = view;
+                const { from, to } = state.selection;
+                const tr = state.tr
+                  .insertText(pluginState.suggestion, from, to)
+                  .setMeta(inlineCompletionPluginKey, { clear: true });
+                view.dispatch(tr);
+                event.preventDefault();
+                return true;
+              }
+
+              // Cancel suggestion on Escape
+              if (event.key === 'Escape') {
+                const tr = view.state.tr.setMeta(inlineCompletionPluginKey, { clear: true });
+                view.dispatch(tr);
+                return true;
+              }
+            }
+
+            // NEW: If user presses Enter or Shift+Enter, reset the suggestion without fetching a new completion
+            if (event.key === 'Enter' || (event.shiftKey && event.key === 'Enter')) {
+              const trClear = view.state.tr.setMeta(inlineCompletionPluginKey, { clear: true });
+              view.dispatch(trClear);
+              // Do not prevent default to allow newline insertion
               return false;
             }
-          }
+
+            return false;
+          },
         },
         appendTransaction(transactions, oldState, newState) {
           let tr = newState.tr;

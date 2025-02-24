@@ -106,12 +106,13 @@ const loadCommentsHandler = async (documentId: string) => {
 const completionFetchHandler = async (params: {
   context: string;
   timeout: number;
+  signal: AbortSignal;
 }): Promise<CompletionResponseDTO> => {
   console.log('fetching completion', params);
   return await new Promise(resolve => {
     setTimeout(() => {
       resolve({ completion: 'this is some text' });
-    }, 250);
+    }, 350);
   });
 };
 
@@ -123,7 +124,7 @@ const editor = new Editor({
   extensions: [
     StarterKit,
     Placeholder.configure({
-      placeholder: 'Write something …',
+      placeholder: 'Schreibe etwas …',
     }),
     Highlight,
     HighlightSelection,
