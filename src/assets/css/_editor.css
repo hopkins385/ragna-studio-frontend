@@ -205,3 +205,13 @@
 .is-active {
   @apply bg-stone-100 text-stone-900 border border-stone-200;
 }
+
+/* Inline Completion Suggestion styling */
+.inline-completion-suggestion {
+  color: #6b7280; /* Tailwind gray-500 */
+  opacity: 0.7;
+  font-style: italic;
+  pointer-events: none;
+  display: inline-block;
+  margin-left: 2px;
+}

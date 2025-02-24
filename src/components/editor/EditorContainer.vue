@@ -10,7 +10,6 @@ import { TextAlign } from '@tiptap/extension-text-align';
 import { Underline } from '@tiptap/extension-underline';
 import { StarterKit } from '@tiptap/starter-kit';
 import { Editor, EditorContent, type JSONContent } from '@tiptap/vue-3';
-import { type CommentData } from '../../../_backup/comment-extension';
 import ErrorAlert from '../error/ErrorAlert.vue';
 import EditorAssistantDropdownMenu from './EditorAssistantDropdownMenu.vue';
 import EditorAssistantPromptContainer from './EditorAssistantPromptContainer.vue';
@@ -18,6 +17,10 @@ import EditorComments from './EditorComments.vue';
 import EditorMenu from './EditorMenu.vue';
 import { CommentsExtension } from './extensions/comments-extension';
 import { HighlightSelection } from './extensions/highlight-selection.extension';
+import {
+  InlineCompletionExtension,
+  type CompletionResponseDTO,
+} from './extensions/inline-completion.extension';
 import { InvisibleCharacters } from './extensions/invisible-characters';
 import { NodeTracker } from './extensions/node-tracker';
 
@@ -59,7 +62,7 @@ const deleteCommentHandler = async (id: string) => {
   });
 };
 
-const dummyCommentsData: CommentData[] = [
+const dummyCommentsData = [
   {
     id: '1',
     documentId: 'aaaabbbbccccdddeeefffgggghhhh',
@@ -100,6 +103,18 @@ const loadCommentsHandler = async (documentId: string) => {
   });
 };
 
+const completionFetchHandler = async (params: {
+  context: string;
+  timeout: number;
+}): Promise<CompletionResponseDTO> => {
+  console.log('fetching completion', params);
+  return await new Promise(resolve => {
+    setTimeout(() => {
+      resolve({ completion: 'this is some text' });
+    }, 250);
+  });
+};
+
 const documentId = ref('aaaabbbbccccdddeeefffgggghhhh');
 const editorContent = ref<JSONContent | undefined>(undefined);
 
@@ -128,6 +143,9 @@ const editor = new Editor({
       generateId: true,
     }),
     CommentsExtension,
+    InlineCompletionExtension.configure({
+      completionHandler: completionFetchHandler,
+    }),
   ],
   onUpdate: ({ editor }) => {
     editorContent.value = editor.getJSON();
