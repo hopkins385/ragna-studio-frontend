@@ -108,7 +108,7 @@ const completionFetchHandler = async (params: {
   timeout: number;
   signal: AbortSignal;
 }): Promise<CompletionResponseDTO> => {
-  console.log('fetching completion', params);
+  // console.log('fetching completion', params);
   if (!params.context) {
     return { completion: '' };
   }
