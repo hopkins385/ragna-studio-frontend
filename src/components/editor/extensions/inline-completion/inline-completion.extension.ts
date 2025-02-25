@@ -256,7 +256,6 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
           decorationSet,
           basePos: pos,
         });
-        //
         view.dispatch(tr);
         //
       } catch (error: unknown) {
