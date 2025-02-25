@@ -19,8 +19,9 @@ import { CommentsExtension } from './extensions/comments-extension';
 import { HighlightSelection } from './extensions/highlight-selection.extension';
 import {
   InlineCompletionExtension,
-  type CompletionResponseDTO,
-} from './extensions/inline-completion.extension';
+  type CompletionRequestContext,
+  type InlineCompletionResponse,
+} from './extensions/inline-completion/inline-completion.extension';
 import { InvisibleCharacters } from './extensions/invisible-characters';
 import { NodeTracker } from './extensions/node-tracker';
 
@@ -103,12 +104,12 @@ const loadCommentsHandler = async (documentId: string) => {
   });
 };
 
-const completionFetchHandler = async (params: {
-  context: string;
+const fetchInlineCompletionHandler = async (params: {
+  context: CompletionRequestContext;
   timeout: number;
   signal: AbortSignal;
-}): Promise<CompletionResponseDTO> => {
-  // console.log('fetching completion', params);
+}): Promise<InlineCompletionResponse> => {
+  console.log('fetching completion', params.context);
   if (!params.context) {
     return { completion: '' };
   }
@@ -155,7 +156,7 @@ const editor = new Editor({
     }),
     CommentsExtension,
     InlineCompletionExtension.configure({
-      completionHandler: completionFetchHandler,
+      completionHandler: fetchInlineCompletionHandler,
     }),
   ],
   onUpdate: ({ editor }) => {

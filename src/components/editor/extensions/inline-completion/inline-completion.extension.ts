@@ -1,68 +1,226 @@
 import { Extension } from '@tiptap/core';
-import { Plugin, PluginKey } from 'prosemirror-state';
-import { Decoration, DecorationSet } from 'prosemirror-view';
+import { useDebounceFn } from '@vueuse/core';
+import { Slice } from 'prosemirror-model';
+import { Plugin, PluginKey, Transaction } from 'prosemirror-state';
+import { ReplaceStep } from 'prosemirror-transform';
+import { Decoration, DecorationSet, EditorView } from 'prosemirror-view';
+import {
+  getCurrentLineText,
+  getCurrentWord,
+  getParagraphIndex,
+  getPrecedingText,
+  getPrecedingWords,
+  getSentenceIndex,
+  getWordIndex,
+} from './utils/helpers';
 
-// DTO for the external API response
-export interface CompletionResponseDTO {
+// Interface for the external API response
+export interface InlineCompletionResponse {
   completion: string;
 }
 
+interface TextContext {
+  precedingText: string; // More than just current line (previous 3-5 paragraphs)
+  followingText?: string; // Text after cursor position (next paragraph)
+  currentLineText: string; // The immediate line text for local context
+  currentWord: string; // The word being typed
+  precedingWords: string[]; // Previous 5-10 words for immediate context
+}
+
+interface DocumentContext {
+  documentType: string; // Article, code, email, etc.
+  language?: string; // Programming language or natural language
+  headings?: string[]; // Document section headings
+  currentSectionTitle?: string; // Current section user is editing
+  documentSummary?: string; // Brief semantic summary of the document
+}
+
+interface EditorContext {
+  cursorPosition: number; // Absolute position in document
+  relativePosition: {
+    // Position relative to structures
+    paragraphIndex: number;
+    sentenceIndex: number;
+    wordIndex: number;
+  };
+  recentEdits: Array<{
+    // Recent edit history
+    timestamp: number;
+    text: string;
+    position: number;
+    operation: 'insert' | 'delete' | 'replace';
+  }>;
+  acceptedCompletions?: string[]; // Previously accepted suggestions
+}
+
+export interface CompletionRequestContext {
+  textContext: TextContext;
+  documentContext?: DocumentContext;
+  editorContext: EditorContext;
+  timeout: number;
+  maxTokens?: number; // Control response length
+  temperature?: number; // Control randomness
+}
+
 // Options for the inline completion extension
-export interface InlineCompletionOptionsDTO {
+export interface InlineCompletionOptions {
   delay: number; // Debounce delay in milliseconds
   activationTriggers: string[]; // Characters triggering the fetch
   timeout: number; // Timeout for fetch in milliseconds
   completionHandler: (params: {
-    context: string;
+    context: CompletionRequestContext;
     timeout: number;
     signal: AbortSignal;
-  }) => Promise<CompletionResponseDTO>;
+  }) => Promise<InlineCompletionResponse>;
+  suggestionClass?: string;
+  renderSuggestion?: (suggestion: string) => HTMLElement;
 }
 
 // Default options
-const defaultOptions: InlineCompletionOptionsDTO = {
+const defaultOptions: InlineCompletionOptions = {
   delay: 500,
   activationTriggers: [' '],
   timeout: 5000,
   completionHandler: async () => {
     throw new Error('No completionHandler provided');
   },
+  suggestionClass: 'inline-completion-suggestion',
 };
 
-export const inlineCompletionPluginKey = new PluginKey('inlineCompletion');
+// Interface for tracking edit history
+export interface EditHistoryEntry {
+  timestamp: number;
+  text: string;
+  position: number;
+  operation: 'insert' | 'delete' | 'replace';
+}
 
-export const InlineCompletionExtension = Extension.create<InlineCompletionOptionsDTO>({
+export const inlineCompletionPluginKey = new PluginKey('inlineCompletion');
+// Key for storing edit history
+export const editHistoryPluginKey = new PluginKey('editHistory');
+
+export const InlineCompletionExtension = Extension.create<InlineCompletionOptions>({
   name: 'inlineCompletion',
 
   addOptions() {
     return { ...defaultOptions };
   },
 
+  addStorage() {
+    return {
+      recentEdits: [] as EditHistoryEntry[],
+    };
+  },
+
   addProseMirrorPlugins() {
-    const extOptions = this.options; // capture extension options to avoid undefined 'this' in callbacks
-    let debounceTimer: number | undefined;
+    const { options } = this; // Use destructuring instead of aliasing this
     let currentRequest = 0;
     let currentAbortController: AbortController | null = null;
 
-    // Helper function to fetch completion
-    const fetchCompletion = async (view: any) => {
+    // Maximum number of edit history entries to keep
+    const MAX_HISTORY_ENTRIES = 50;
+
+    // Track edit history - use arrow function to preserve this context
+    const trackEditHistory = (tr: Transaction) => {
+      if (!tr.docChanged) return;
+
+      // Skip tracking meta transactions (like clearing suggestions)
+      if (tr.getMeta(inlineCompletionPluginKey)) return;
+
+      const now = Date.now();
+      const editEntry: EditHistoryEntry = {
+        timestamp: now,
+        text: '',
+        position: 0,
+        operation: 'insert',
+      };
+
+      // Determine operation type and extract details
+      if (tr.steps.length > 0) {
+        tr.steps.forEach(step => {
+          // Type guard for ReplaceStep which has slice property
+          if (step instanceof ReplaceStep) {
+            const { from, to, slice } = step as ReplaceStep & { slice: Slice };
+            // Replace operation
+            if (from !== to && slice.content.size > 0) {
+              editEntry.operation = 'replace';
+              editEntry.position = from;
+              editEntry.text = slice.content.textBetween(0, slice.content.size, ' ');
+            }
+            // Insert operation
+            else if (from === to && slice.content.size > 0) {
+              editEntry.operation = 'insert';
+              editEntry.position = from;
+              editEntry.text = slice.content.textBetween(0, slice.content.size, ' ');
+            }
+            // Delete operation
+            else if (from !== to && slice.content.size === 0) {
+              editEntry.operation = 'delete';
+              editEntry.position = from;
+              editEntry.text = '';
+            }
+          }
+        });
+
+        // Only track meaningful edits
+        if (
+          editEntry.operation === 'insert' ||
+          editEntry.operation === 'replace' ||
+          editEntry.operation === 'delete'
+        ) {
+          const recentEdits = [...this.storage.recentEdits];
+          recentEdits.push(editEntry);
+
+          // Keep only the latest MAX_HISTORY_ENTRIES
+          if (recentEdits.length > MAX_HISTORY_ENTRIES) {
+            recentEdits.shift();
+          }
+
+          this.storage.recentEdits = recentEdits;
+        }
+      }
+    };
+
+    // Helper function to fetch completion - use arrow function to preserve this context
+    const fetchCompletion = async (view: EditorView) => {
       if (currentAbortController) {
         currentAbortController.abort();
       }
       currentAbortController = new AbortController();
+
       const { state } = view;
       const $from = state.selection.$from;
-      const lineStart = $from.start();
-      const context = state.doc.textBetween(lineStart, $from.pos, ' ');
+
+      // Build comprehensive context
+      const requestContext: CompletionRequestContext = {
+        textContext: {
+          // Get more preceding text (not just current line)
+          precedingText: getPrecedingText(state, $from, 500), // Get 500 chars before cursor
+          currentLineText: getCurrentLineText(state, $from),
+          currentWord: getCurrentWord(state, $from),
+          precedingWords: getPrecedingWords(state, $from, 10),
+        },
+        editorContext: {
+          cursorPosition: $from.pos,
+          relativePosition: {
+            paragraphIndex: getParagraphIndex(state, $from),
+            sentenceIndex: getSentenceIndex(state, $from),
+            wordIndex: getWordIndex(state, $from),
+          },
+          recentEdits: this.storage.recentEdits || [],
+        },
+        timeout: options.timeout,
+      };
+
       const requestId = ++currentRequest;
 
       try {
-        if (!extOptions.completionHandler) {
+        if (!options.completionHandler) {
           throw new Error('No completionHandler provided');
         }
-        const data: CompletionResponseDTO = await extOptions.completionHandler({
-          context,
-          timeout: extOptions.timeout,
+        const data: InlineCompletionResponse = await options.completionHandler({
+          context: requestContext,
+          timeout: options.timeout,
           signal: currentAbortController.signal,
         });
 
@@ -74,8 +232,8 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
           return;
         }
 
-        // Remove the context we already have from the completion
-        const suggestion = data.completion.replace(context, '') || '';
+        // Trim whitespace
+        const suggestion = data.completion.trim();
 
         const pos = state.selection.from;
         const deco = Decoration.widget(
@@ -84,6 +242,8 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
             const span = document.createElement('span');
             span.className = 'inline-completion-suggestion';
             span.textContent = suggestion;
+            span.setAttribute('role', 'status');
+            span.setAttribute('aria-live', 'polite');
             return span;
           },
           { side: 1 },
@@ -106,6 +266,10 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
         console.error('Inline completion fetch error:', error);
       }
     };
+
+    const debouncedFetchCompletion = useDebounceFn(async (view: EditorView) => {
+      await fetchCompletion(view);
+    }, options.delay);
 
     return [
       new Plugin({
@@ -149,19 +313,11 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
             }
 
             // Only trigger new completion fetch on activation triggers
-            if (!extOptions.activationTriggers.some(trigger => text.includes(trigger))) {
+            if (!options.activationTriggers.some(trigger => text.includes(trigger))) {
               return false;
             }
 
-            if (typeof window !== 'undefined' && window.clearTimeout && window.setTimeout) {
-              if (debounceTimer) {
-                window.clearTimeout(debounceTimer);
-              }
-              // Start a debounce timer that waits for the user to stop typing
-              debounceTimer = window.setTimeout(() => {
-                fetchCompletion(view);
-              }, extOptions.delay);
-            }
+            debouncedFetchCompletion(view);
 
             return false;
           },
@@ -243,7 +399,12 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
             return false;
           },
         },
-        appendTransaction(transactions, oldState, newState) {
+        appendTransaction: (transactions, oldState, newState) => {
+          // Use a function that doesn't capture this to avoid the need for binding
+          // Track edit history for each transaction
+          transactions.forEach(tr => trackEditHistory.call(this, tr));
+
+          // Original logic for suggestion clearing
           let tr = newState.tr;
           transactions.forEach(tx => {
             const meta = tx.getMeta(inlineCompletionPluginKey);
