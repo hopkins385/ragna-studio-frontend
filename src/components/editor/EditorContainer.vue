@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useEditorService } from '@/composables/services/useEditorService';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Image } from '@tiptap/extension-image';
@@ -13,9 +14,7 @@ import { Editor, EditorContent, type JSONContent } from '@tiptap/vue-3';
 import ErrorAlert from '../error/ErrorAlert.vue';
 import EditorAssistantDropdownMenu from './EditorAssistantDropdownMenu.vue';
 import EditorAssistantPromptContainer from './EditorAssistantPromptContainer.vue';
-import EditorComments from './EditorComments.vue';
 import EditorMenu from './EditorMenu.vue';
-import { CommentsExtension } from './extensions/comments-extension';
 import { HighlightSelection } from './extensions/highlight-selection.extension';
 import {
   InlineCompletionExtension,
@@ -24,6 +23,9 @@ import {
 } from './extensions/inline-completion/inline-completion.extension';
 import { InvisibleCharacters } from './extensions/invisible-characters';
 import { NodeTracker } from './extensions/node-tracker';
+
+const isLoading = ref(false);
+const spinnerPosition = ref({ x: 0, y: 0 });
 
 const editorWrapperRef = ref<HTMLElement | null>(null);
 const editorContentRef = ref<HTMLElement | null>(null);
@@ -44,6 +46,7 @@ const assistantDropdownMenu = reactive({
 const { isOutside: isOutsideWrapper } = useMouseInElement(editorWrapperRef);
 const { isOutside: isOutsideContent } = useMouseInElement(editorContentRef);
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
+const { fetchInlineCompletion, abortCompletion } = useEditorService();
 
 const creatCommentHandler = async (comment: any) => {
   console.log('create comment', comment);
@@ -109,23 +112,47 @@ const fetchInlineCompletionHandler = async (params: {
   timeout: number;
   signal: AbortSignal;
 }): Promise<InlineCompletionResponse> => {
-  console.log('fetching completion', params.context);
+  // console.log('fetching completion', params.context);
   if (!params.context) {
-    return { completion: '' };
+    return { inlineCompletion: '' };
   }
 
-  // Simulate a network request incl. abort
-  return await new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      resolve({ completion: 'This is a simulated completion.' });
-    }, 350);
+  isLoading.value = true;
 
-    params.signal.addEventListener('abort', () => {
-      clearTimeout(timeoutId);
-      // reject(new Error('Request aborted'));
-    });
-  });
+  // listen for abort signal and abort the request via abortCompletion
+  params.signal.addEventListener('abort', abortCompletion);
+
+  try {
+    const { inlineCompletion } = await fetchInlineCompletion({ context: params.context });
+    return { inlineCompletion };
+  } catch (error) {
+    console.error('Error fetching inline completion:', error);
+    return { inlineCompletion: '' };
+  } finally {
+    isLoading.value = false;
+    // remove abort signal listener
+    params.signal.removeEventListener('abort', abortCompletion);
+  }
 };
+
+// watch the isLoading value and show/hide a loading spinner
+watch(isLoading, newValue => {
+  if (newValue) {
+    // Show loading spinner at cursor position
+    if (editor && editor.view) {
+      const { from } = editor.state.selection;
+      const coords = editor.view.coordsAtPos(from);
+      const editorRect = editorContentRef.value?.getBoundingClientRect();
+
+      if (editorRect) {
+        spinnerPosition.value = {
+          x: coords.left - editorRect.left,
+          y: coords.top - editorRect.top,
+        };
+      }
+    }
+  }
+});
 
 const documentId = ref('aaaabbbbccccdddeeefffgggghhhh');
 const editorContent = ref<JSONContent | undefined>(undefined);
@@ -154,7 +181,7 @@ const editor = new Editor({
       types: ['paragraph', 'heading', 'listItem', 'taskItem', 'taskList'],
       generateId: true,
     }),
-    CommentsExtension,
+    // CommentsExtension,
     InlineCompletionExtension.configure({
       completionHandler: fetchInlineCompletionHandler,
     }),
@@ -376,10 +403,26 @@ onBeforeUnmount(() => {
           />
         </div>
         <!-- Editor Content -->
-        <div id="editorContent" ref="editorContentRef">
+        <div id="editorContent" ref="editorContentRef" class="relative">
           <EditorContent :editor="editor" />
-          <div clasS=" absolute top-0 right-0">
+          <!--
+          <div class="absolute top-0 right-0">
             <EditorComments :editor="editor" />
+          </div>
+          -->
+
+          <!-- Loading spinner -->
+          <div
+            v-if="isLoading"
+            class="absolute z-20 pointer-events-none"
+            :style="{
+              left: `${spinnerPosition.x}px`,
+              top: `${spinnerPosition.y}px`,
+            }"
+          >
+            <div
+              class="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin opacity-75"
+            ></div>
           </div>
         </div>
       </div>
@@ -387,8 +430,4 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style>
-.comment-highlight {
-  background-color: yellow;
-}
-</style>
+<style></style>

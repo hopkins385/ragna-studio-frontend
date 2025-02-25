@@ -4,7 +4,7 @@ import useMarkdown from '../useMarkdown';
 export default function useEditorCompletion() {
   let ac: AbortController | null = null;
   const isLoading = ref(false);
-  // const { toMarkdown } = useTurndown()
+
   const { fetchPromptCompletion } = useEditorService();
   const { parseMarkdown } = useMarkdown();
 

@@ -16,7 +16,7 @@ import {
 
 // Interface for the external API response
 export interface InlineCompletionResponse {
-  completion: string;
+  inlineCompletion: string;
 }
 
 interface TextContext {
@@ -228,12 +228,12 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
           return;
         }
 
-        if (!data.completion || data.completion.length === 0) {
+        if (!data.inlineCompletion || data.inlineCompletion.length === 0) {
           return;
         }
 
         // Trim whitespace
-        const suggestion = data.completion.trim();
+        const suggestion = data.inlineCompletion.trim();
 
         const pos = state.selection.from;
         const deco = Decoration.widget(

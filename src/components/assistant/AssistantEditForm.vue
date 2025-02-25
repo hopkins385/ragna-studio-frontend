@@ -4,7 +4,6 @@ import { useToolIcons } from '@/composables/useToolIcons';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import CollectionSelectModal from '@components/collection/CollectionSelectModal.vue';
-import LlmSelectModal from '@components/llm/LlmSelectModal.vue';
 import TabSidebar from '@components/tab/TabSidebar.vue';
 import type { Assistant } from '@composables/services/useAssistantService';
 import useAssistantService from '@composables/services/useAssistantService';
@@ -35,6 +34,7 @@ import {
   Stars,
   Workflow,
 } from 'lucide-vue-next';
+import LlmProviderBox from '../llm/LlmProviderBox.vue';
 import PromptWizardDialog from '../prompt/PromptWizardDialog.vue';
 
 interface Props {
@@ -179,12 +179,29 @@ onBeforeRouteLeave(canLeavePage);
 
 const siderBarTabs = [
   { id: 'tab1', icon: Settings, label: t('assistant.settings.label') },
-  { id: 'tab2', icon: Stars, label: t('assistant.genai.label') },
   { id: 'tab3', icon: CircleUserRound, label: t('assistant.behavior.label') },
+  { id: 'tab2', icon: Stars, label: t('assistant.genai.label') },
   { id: 'tab5', icon: BriefcaseBusiness, label: t('assistant.tools.label') },
   { id: 'tab4', icon: Book, label: t('assistant.knowledge.label') },
   { id: 'tab6', icon: Workflow, label: t('assistant.workflow.label') },
   { id: 'tab7', icon: ShieldCheck, label: t('assistant.privacy.label') },
+];
+
+const supportedProviders = [
+  {
+    name: 'Anthropic',
+    region: 'EU',
+    infos: {
+      qualityIndex: 90,
+    },
+  },
+  {
+    name: 'OpenAI',
+    region: 'EU',
+    infos: {
+      qualityIndex: 85,
+    },
+  },
 ];
 </script>
 
@@ -239,7 +256,18 @@ const siderBarTabs = [
         <FormItem>
           <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
           <FormControl>
-            <LlmSelectModal :current-llm-id="props.assistant.llm.id" @update:id="handleChange" />
+            <!-- -->
+            <div class="flex items-center space-x-3">
+              <LlmProviderBox
+                v-for="provider in supportedProviders"
+                :key="provider.name"
+                :provider-name="provider.name"
+                :host-region="provider.region"
+                :infos="provider.infos"
+                :selected="props.assistant?.llm.provider.name === provider.name"
+                @click="() => handleChange(provider.name)"
+              />
+            </div>
           </FormControl>
           <FormMessage />
         </FormItem>

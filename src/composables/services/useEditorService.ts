@@ -5,6 +5,7 @@ import { getRoute } from '@/utils/route.util';
 
 const EditorRoute = {
   PROMPT_COMPLETION: '/editor/completion',
+  INLINE_COMPLETION: '/editor/inline-completion',
 } as const;
 
 interface PromptCompletionPayload {
@@ -15,6 +16,12 @@ interface PromptCompletionPayload {
 
 interface PromptCompletionResponse {
   completion: string;
+}
+
+interface InlineCompletionPayload {}
+
+interface InlineCompletionResponse {
+  inlineCompletion: string;
 }
 
 export function useEditorService() {
@@ -45,8 +52,27 @@ export function useEditorService() {
     return data;
   };
 
+  const fetchInlineCompletion = async ({ context }: any) => {
+    abortCompletion();
+    const api = newApiRequest();
+    const route = getRoute(EditorRoute.INLINE_COMPLETION);
+    const { status, data } = await api
+      .POST<InlineCompletionResponse, never, InlineCompletionPayload>()
+      .setRoute(route)
+      .setSignal(ac.signal)
+      .setData(context)
+      .send();
+
+    if (status !== HttpStatus.CREATED) {
+      throw new BadResponseError();
+    }
+
+    return data;
+  };
+
   return {
     fetchPromptCompletion,
+    fetchInlineCompletion,
     abortCompletion,
   };
 }
