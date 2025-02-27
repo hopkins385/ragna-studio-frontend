@@ -232,6 +232,7 @@ export function useChatService() {
           provider: payload.provider || chatStore.provider,
           model: payload.model || chatStore.model,
           messages: chatMessages.value,
+          reasoningEffort: chatSettingsStore.thinkLevel[0],
           maxTokens: chatSettingsStore.maxTokens[0],
           temperature: chatSettingsStore.temperature[0],
         },
@@ -256,9 +257,7 @@ export function useChatService() {
       isThinking.value = false;
       isStreaming.value = true;
 
-      const reader = response.data
-        .pipeThrough(new TextDecoderStream())
-        .getReader();
+      const reader = response.data.pipeThrough(new TextDecoderStream()).getReader();
 
       while (true) {
         const { value, done } = await reader.read();
@@ -310,11 +309,7 @@ export function useChatService() {
   const fetchAllChats = async () => {
     const api = newApiRequest();
     const route = getRoute(ChatRoute.CHAT_ALL);
-    const { status, data } = await api
-      .GET<Chat[]>()
-      .setRoute(route)
-      .setSignal(ac.signal)
-      .send();
+    const { status, data } = await api.GET<Chat[]>().setRoute(route).setSignal(ac.signal).send();
 
     if (status !== HttpStatus.OK) {
       throw new BadResponseError();
@@ -362,11 +357,7 @@ export function useChatService() {
     }
     const api = newApiRequest();
     const route = getRoute(ChatRoute.CHAT_MESSAGES, { ':chatId': chatId });
-    const { status } = await api
-      .DELETE()
-      .setRoute(route)
-      .setSignal(ac.signal)
-      .send();
+    const { status } = await api.DELETE().setRoute(route).setSignal(ac.signal).send();
 
     if (status !== HttpStatus.OK) {
       throw new BadResponseError();
@@ -381,11 +372,7 @@ export function useChatService() {
     }
     const api = newApiRequest();
     const route = getRoute(ChatRoute.CHAT, { ':chatId': chatId });
-    const { status } = await api
-      .DELETE()
-      .setRoute(route)
-      .setSignal(ac.signal)
-      .send();
+    const { status } = await api.DELETE().setRoute(route).setSignal(ac.signal).send();
 
     if (status !== HttpStatus.OK) {
       throw new BadResponseError();

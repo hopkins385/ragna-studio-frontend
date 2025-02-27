@@ -47,9 +47,7 @@ function onDeleteChatMessages() {
   <Popover v-model:open="show">
     <PopoverTrigger as-child>
       <Button variant="outline" size="icon" class="group">
-        <SlidersHorizontalIcon
-          class="size-4 stroke-1.5 text-primary/70 group-hover:stroke-2"
-        />
+        <SlidersHorizontalIcon class="size-4 stroke-1.5 text-primary/70 group-hover:stroke-2" />
       </Button>
     </PopoverTrigger>
 
@@ -70,12 +68,7 @@ function onDeleteChatMessages() {
       </div>
       <Separator class="my-3" />
       -->
-      <Button
-        variant="outline"
-        size="sm"
-        class="w-full"
-        @click="onEditAssistantClick"
-      >
+      <Button variant="outline" size="sm" class="w-full" @click="onEditAssistantClick">
         {{ $t('chat.settings.button.edit_assistant') }}
       </Button>
       <Separator class="my-3" />
@@ -88,6 +81,25 @@ function onDeleteChatMessages() {
         {{ $t('chat.settings.button.reset_chat') }}
       </Button>
       <Separator class="my-3" />
+      <div class="my-5 flex flex-col space-y-4">
+        <div class="flex w-full justify-between">
+          <div>
+            {{ $t('chat.settings.think.title') }}
+            <QuestionToolTip
+              :title="$t('chat.settings.think.title')"
+              :content="$t('chat.settings.think.description')"
+            />
+          </div>
+          <div>{{ $t(settings.getThinkLevelLabel) }}</div>
+        </div>
+        <Slider
+          v-model="settings.thinkLevel"
+          :default-value="[0]"
+          :max="3"
+          :step="1"
+          class="slider"
+        />
+      </div>
       <div class="my-5 flex flex-col space-y-4">
         <div class="flex w-full justify-between">
           <div>
