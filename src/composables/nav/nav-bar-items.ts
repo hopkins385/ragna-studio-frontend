@@ -70,6 +70,13 @@ export const defaultRoutes = computed((): NavItem[] => [
   },
   {
     icon: WorkflowIcon,
+    path: '/flow',
+    label: 'nav.flow',
+    hidden: false,
+    children: [],
+  },
+  {
+    icon: WorkflowIcon,
     path: '/workflow',
     label: 'nav.workflows',
     hidden: false,

@@ -34,7 +34,7 @@ import {
   Stars,
   Workflow,
 } from 'lucide-vue-next';
-import LlmProviderBox from '../llm/LlmProviderBox.vue';
+import LlmSelectModal from '../llm/LlmSelectModal.vue';
 import PromptWizardDialog from '../prompt/PromptWizardDialog.vue';
 
 interface Props {
@@ -256,7 +256,12 @@ const supportedProviders = [
         <FormItem>
           <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
           <FormControl>
-            <!-- -->
+            <LlmSelectModal
+              :initial-display-name="initialAssistantName"
+              :current-llm-id="props.assistant?.llm.id"
+              @update:id="handleChange"
+            />
+            <!--
             <div class="flex items-center space-x-3">
               <LlmProviderBox
                 v-for="provider in supportedProviders"
@@ -268,6 +273,7 @@ const supportedProviders = [
                 @click="() => handleChange(provider.name)"
               />
             </div>
+            -->
           </FormControl>
           <FormMessage />
         </FormItem>

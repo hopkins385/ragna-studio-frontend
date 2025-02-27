@@ -363,6 +363,20 @@ const adminRoutes = {
   ],
 };
 
+const flowRoutes = {
+  path: '/flow',
+  component: () => import('@views/flow/FlowRootView.vue'),
+  meta: defaultAppMeta,
+  children: [
+    {
+      path: '',
+      name: RouteName.FLOW_INDEX,
+      component: () => import('@views/flow/FlowIndexView.vue'),
+      meta: defaultAppMeta,
+    },
+  ],
+};
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -379,6 +393,7 @@ const router = createRouter({
     accountRoutes,
     socialAuthCallbackRoutes,
     adminRoutes,
+    flowRoutes,
     {
       path: '/login',
       name: RouteName.LOGIN,

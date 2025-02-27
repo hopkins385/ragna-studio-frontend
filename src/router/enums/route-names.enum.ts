@@ -38,6 +38,9 @@ export const RouteName = {
   WORKFLOW_CREATE: 'workflow.create',
   WORKFLOW_SHOW: 'workflow.show',
   WORKFLOW_EDIT: 'workflow.edit',
+  // Flow routes
+  FLOW_INDEX: 'flow.index',
+
   // Account routes
   ACCOUNT_INDEX: 'account.index',
   ACCOUNT_SETTINGS: 'account.settings',
