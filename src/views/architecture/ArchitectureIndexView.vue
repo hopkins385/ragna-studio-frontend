@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import FlowCanvas from '@/components/flow/FlowCanvas.vue';
+
 // Imports
 
 // Props
@@ -15,5 +17,7 @@
 </script>
 
 <template>
-  <div class="p-10">Architecture</div>
+  <div class="size-full p-10">
+    <FlowCanvas />
+  </div>
 </template>

@@ -38,8 +38,6 @@ export const RouteName = {
   WORKFLOW_CREATE: 'workflow.create',
   WORKFLOW_SHOW: 'workflow.show',
   WORKFLOW_EDIT: 'workflow.edit',
-  // Flow routes
-  FLOW_INDEX: 'flow.index',
 
   // Kanban routes
   KANBAN_INDEX: 'kanban.index',
