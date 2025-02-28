@@ -2,6 +2,8 @@
 import { useAuthStore } from '@/stores/auth.store';
 import { Bell, Expand } from 'lucide-vue-next';
 import BrandLogo from '../brand/BrandLogo.vue';
+import NavBarProject from './NavBarProject.vue';
+import NavBarTeam from './NavBarTeam.vue';
 import NavTopPopover from './NavTopPopover.vue';
 import NavUserMenu from './NavUserMenu.vue';
 
@@ -27,8 +29,18 @@ const onExpandClick = () => {
       <div class="px-6 mt-1">
         <NavTopPopover />
       </div>
-      <div class="pl-2">
-        <BrandLogo class="" :text-visible="true" />
+      <div class="pl-2 flex items-center space-x-2 text-sm">
+        <div class="">
+          <BrandLogo class="" :text-visible="true" />
+        </div>
+        <div></div>
+        <div>
+          <NavBarTeam />
+        </div>
+        <div></div>
+        <div>
+          <NavBarProject />
+        </div>
       </div>
     </div>
     <div class="flex h-full items-center space-x-5">

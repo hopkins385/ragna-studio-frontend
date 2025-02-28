@@ -41,6 +41,21 @@ export const RouteName = {
   // Flow routes
   FLOW_INDEX: 'flow.index',
 
+  // Kanban routes
+  KANBAN_INDEX: 'kanban.index',
+
+  // Architecture routes
+  ARCHITECTURE_INDEX: 'architecture.index',
+
+  // Test routes
+  TEST_INDEX: 'test.index',
+  TEST_SHOW: 'test.show',
+  TEST_CREATE: 'test.create',
+  TEST_EDIT: 'test.edit',
+
+  // Analytics routes
+  ANALYTICS_INDEX: 'analytics.index',
+
   // Account routes
   ACCOUNT_INDEX: 'account.index',
   ACCOUNT_SETTINGS: 'account.settings',

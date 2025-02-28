@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useNavBarItems } from '@/composables/nav/useNavBarItems';
 import { Grip } from 'lucide-vue-next';
 
@@ -28,9 +24,7 @@ const setClose = () => (open.value = false);
             class="size-20 border-0 flex flex-col items-center justify-center space-y-2"
             @click="setClose"
           >
-            <div
-              class="size-12 border rounded-sm flex flex-col items-center justify-center"
-            >
+            <div class="size-12 border rounded-sm flex flex-col items-center justify-center">
               <component :is="item.icon" class="stroke-1.5 size-5" />
             </div>
             <span class="text-xs">

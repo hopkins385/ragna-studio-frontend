@@ -1,65 +1,63 @@
 <script setup lang="ts">
 import {
-  BotIcon,
-  CloudUploadIcon,
-  DatabaseIcon,
   FileTextIcon,
-  ImageIcon,
+  KanbanSquareIcon,
   LayoutGridIcon,
   LayoutTemplateIcon,
+  ListTodoIcon,
   MessagesSquareIcon,
+  NetworkIcon,
+  PieChartIcon,
   WorkflowIcon,
 } from 'lucide-vue-next';
 
-const { t } = useI18n();
-
 const quickAccessItems = [
   {
+    icon: KanbanSquareIcon,
+    class: 'bg-red-200/50',
+    label: 'nav.kanban',
+    route: '/kanban',
+  },
+  {
+    icon: NetworkIcon,
+    class: 'bg-green-200/50',
+    label: 'nav.architecture',
+    route: '/architecture',
+  },
+  {
     icon: FileTextIcon,
-    class: 'bg-blue-100/60',
-    label: t('nav.documents'),
+    class: 'bg-yellow-200/50',
+    label: 'nav.documents',
     route: '/document',
   },
   {
+    icon: ListTodoIcon,
+    class: 'bg-orange-200/50',
+    label: 'nav.tests',
+    route: '/test',
+  },
+  {
     icon: MessagesSquareIcon,
-    class: 'bg-amber-100/60',
-    label: t('nav.chat'),
+    class: 'bg-purple-200/50',
+    label: 'nav.chat',
     route: '/chat',
   },
   {
-    icon: BotIcon,
-    class: 'bg-blue-100/60',
-    label: t('nav.agents'),
-    route: '/assistant',
-  },
-  {
-    icon: ImageIcon,
-    class: 'bg-violet-100/60',
-    label: t('nav.text_to_image'),
-    route: '/text-to-image',
-  },
-  {
     icon: WorkflowIcon,
-    class: 'bg-green-100/60',
-    label: t('nav.workflows'),
+    class: 'bg-teal-200/50',
+    label: 'nav.workflows',
     route: '/workflow',
   },
   {
-    icon: DatabaseIcon,
-    class: 'bg-slate-100/60',
-    label: t('nav.collections'),
-    route: '/collection',
-  },
-  {
-    icon: CloudUploadIcon,
-    class: 'bg-indigo-100/60',
-    label: t('nav.uploads'),
-    route: '/media/upload',
+    icon: PieChartIcon,
+    class: 'bg-blue-200/50',
+    label: 'nav.analytics',
+    route: '/analytics',
   },
   {
     icon: LayoutTemplateIcon,
-    class: 'bg-cyan-100/60',
-    label: t('nav.agent_templates'),
+    class: 'bg-cyan-200/50',
+    label: 'nav.agent_templates',
     route: '/assistant/template',
   },
 ];
@@ -85,11 +83,11 @@ const quickAccessItems = [
       >
         <component
           :is="item.icon"
-          class="size-6 stroke-1.5 group-hover:stroke-2 bg-transparent"
+          class="size-6 stroke-1.5 group-hover:stroke-2 !bg-transparent"
           :class="item.class"
         />
         <p class="text-xs font-medium group-hover:font-semibold">
-          {{ item.label }}
+          {{ $t(item.label) }}
         </p>
       </div>
     </router-link>

@@ -7,6 +7,7 @@ import {
   CloudUploadIcon,
   DatabaseIcon,
   EllipsisIcon,
+  FilePenIcon,
   FileTextIcon,
   FolderIcon,
   FolderKanbanIcon,
@@ -14,10 +15,14 @@ import {
   HistoryIcon,
   HomeIcon,
   ImageIcon,
+  KanbanSquareIcon,
   LayoutTemplateIcon,
+  ListTodoIcon,
   MessagesSquareIcon,
   MonitorCogIcon,
+  NetworkIcon,
   PaintbrushVerticalIcon,
+  PieChartIcon,
   PlusCircleIcon,
   SettingsIcon,
   UserIcon,
@@ -45,44 +50,6 @@ export const spacerNavItem: NavItem = {
 
 const baseMoreMenuItems: NavItem[] = [
   {
-    icon: DatabaseIcon,
-    path: '/collection',
-    label: 'nav.collections',
-    hidden: false,
-    children: [],
-  },
-  {
-    icon: FolderIcon,
-    path: '/media',
-    label: 'nav.media',
-    hidden: false,
-    children: [],
-  },
-];
-
-export const defaultRoutes = computed((): NavItem[] => [
-  {
-    icon: FileTextIcon,
-    path: '/document',
-    label: 'nav.documents',
-    hidden: false,
-    children: [],
-  },
-  {
-    icon: WorkflowIcon,
-    path: '/flow',
-    label: 'nav.flow',
-    hidden: false,
-    children: [],
-  },
-  {
-    icon: WorkflowIcon,
-    path: '/workflow',
-    label: 'nav.workflows',
-    hidden: false,
-    children: [],
-  },
-  {
     icon: BotIcon,
     path: '/assistant',
     label: 'nav.agents',
@@ -103,6 +70,65 @@ export const defaultRoutes = computed((): NavItem[] => [
     hidden: false,
     children: [],
   },
+  {
+    icon: DatabaseIcon,
+    path: '/collection',
+    label: 'nav.collections',
+    hidden: false,
+    children: [],
+  },
+  {
+    icon: FolderIcon,
+    path: '/media',
+    label: 'nav.media',
+    hidden: false,
+    children: [],
+  },
+];
+
+export const defaultItems = computed((): NavItem[] => [
+  {
+    icon: KanbanSquareIcon,
+    path: '/kanban',
+    label: 'nav.kanban',
+    hidden: false,
+    children: [],
+  },
+  {
+    icon: NetworkIcon,
+    path: '/architecture',
+    label: 'nav.architecture',
+    hidden: false,
+    children: [],
+  },
+  {
+    icon: FileTextIcon,
+    path: '/document',
+    label: 'nav.documents',
+    hidden: false,
+    children: [],
+  },
+  {
+    icon: ListTodoIcon,
+    path: '/test',
+    label: 'nav.tests',
+    hidden: false,
+    children: [],
+  },
+  {
+    icon: WorkflowIcon,
+    path: '/workflow',
+    label: 'nav.workflows',
+    hidden: false,
+    children: [],
+  },
+  {
+    icon: PieChartIcon,
+    path: '/analytics',
+    label: 'nav.analytics',
+    hidden: false,
+    children: [],
+  },
   /*{
     icon: SpeechIcon,
     path: '/speech',
@@ -116,12 +142,12 @@ export const defaultRoutes = computed((): NavItem[] => [
     label: 'More',
     hidden: false,
     children: authStore.userHasAdminRole
-      ? [...baseMoreMenuItems, ...adminRoutes]
+      ? [...baseMoreMenuItems, ...adminItems]
       : baseMoreMenuItems,
   },
 ]);
 
-export const workflowRoutes: NavItem[] = [
+export const workflowItems: NavItem[] = [
   {
     icon: PlusCircleIcon,
     path: '/workflow/create',
@@ -138,24 +164,31 @@ export const workflowRoutes: NavItem[] = [
   },
 ];
 
-export const documentRoutes: NavItem[] = [
-  // {
-  //   icon: PlusCircleIcon,
-  //   path: '/document/create',
-  //   label: 'nav.create',
-  //   hidden: false,
-  //   children: [],
-  // },
+export const documentItems: NavItem[] = [
   {
-    icon: FileTextIcon,
+    icon: PlusCircleIcon,
+    path: '/document/create',
+    label: 'nav.create',
+    hidden: false,
+    children: [],
+  },
+  {
+    icon: FolderIcon,
+    path: '/document/folders',
+    label: 'nav.folders',
+    hidden: false,
+    children: [],
+  },
+  {
+    icon: FilePenIcon,
     path: '/document',
-    label: 'nav.documents',
+    label: 'nav.editor',
     hidden: false,
     children: [],
   },
 ];
 
-export const chatRoutes: NavItem[] = [
+export const chatItems: NavItem[] = [
   {
     icon: PlusCircleIcon,
     path: '/assistant',
@@ -179,7 +212,7 @@ export const chatRoutes: NavItem[] = [
   },
 ];
 
-export const assistantRoutes: NavItem[] = [
+export const assistantItems: NavItem[] = [
   {
     icon: PlusCircleIcon,
     path: '/assistant/create',
@@ -210,7 +243,7 @@ export const assistantRoutes: NavItem[] = [
   },
 ];
 
-export const collectionRoutes: NavItem[] = [
+export const collectionItems: NavItem[] = [
   {
     icon: PlusCircleIcon,
     path: '/collection/create',
@@ -227,7 +260,7 @@ export const collectionRoutes: NavItem[] = [
   },
 ];
 
-export const mediaManagerRoutes: NavItem[] = [
+export const mediaManagerItems: NavItem[] = [
   {
     icon: FolderIcon,
     path: '/media',
@@ -244,7 +277,7 @@ export const mediaManagerRoutes: NavItem[] = [
   },
 ];
 
-export const settingsRoutes: NavItem[] = [
+export const settingsItems: NavItem[] = [
   {
     icon: SettingsIcon,
     path: '/settings',
@@ -356,7 +389,7 @@ export const settingsRoutes: NavItem[] = [
   },
 ];
 
-export const adminRoutes: NavItem[] = [
+export const adminItems: NavItem[] = [
   // spacerNavItem,
   {
     icon: MonitorCogIcon,
@@ -367,7 +400,7 @@ export const adminRoutes: NavItem[] = [
   },
 ];
 
-export const imageGenRoutes: NavItem[] = [
+export const imageGenItems: NavItem[] = [
   {
     icon: PaintbrushVerticalIcon,
     path: '/text-to-image',
@@ -391,4 +424,34 @@ export const imageGenRoutes: NavItem[] = [
       hidden: false,
       children: [],
     },*/
+];
+
+export const kanbanItems: NavItem[] = [
+  {
+    icon: FolderKanbanIcon,
+    path: '/kanban',
+    label: 'nav.kanban',
+    hidden: false,
+    children: [],
+  },
+];
+
+export const architectureItems: NavItem[] = [
+  {
+    icon: NetworkIcon,
+    path: '/architecture',
+    label: 'nav.architecture',
+    hidden: false,
+    children: [],
+  },
+];
+
+export const testItems: NavItem[] = [
+  {
+    icon: ListTodoIcon,
+    path: '/test',
+    label: 'nav.tests',
+    hidden: false,
+    children: [],
+  },
 ];

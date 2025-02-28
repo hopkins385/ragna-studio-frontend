@@ -377,11 +377,71 @@ const flowRoutes = {
   ],
 };
 
+const kanbanRoutes = {
+  path: '/kanban',
+  component: () => import('@views/kanban/KanbanRootView.vue'),
+  meta: defaultAppMeta,
+  children: [
+    {
+      path: '',
+      name: RouteName.KANBAN_INDEX,
+      component: () => import('@views/kanban/KanbanIndexView.vue'),
+      meta: defaultAppMeta,
+    },
+  ],
+};
+
+const architectureRoutes = {
+  path: '/architecture',
+  component: () => import('@views/architecture/ArchitectureRootView.vue'),
+  meta: defaultAppMeta,
+  children: [
+    {
+      path: '',
+      name: RouteName.ARCHITECTURE_INDEX,
+      component: () => import('@views/architecture/ArchitectureIndexView.vue'),
+      meta: defaultAppMeta,
+    },
+  ],
+};
+
+const testRoutes = {
+  path: '/test',
+  component: () => import('@views/test/TestRootView.vue'),
+  meta: defaultAppMeta,
+  children: [
+    {
+      path: '',
+      name: RouteName.TEST_INDEX,
+      component: () => import('@views/test/TestIndexView.vue'),
+      meta: defaultAppMeta,
+    },
+  ],
+};
+
+const analyticsRoutes = {
+  path: '/analytics',
+  component: () => import('@views/analytics/AnalyticsRootView.vue'),
+  meta: defaultAppMeta,
+  children: [
+    {
+      path: '',
+      name: RouteName.ANALYTICS_INDEX,
+      component: () => import('@views/analytics/AnalyticsIndexView.vue'),
+      meta: defaultAppMeta,
+    },
+  ],
+};
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     onboardingRoutes,
     homeRoute,
+    kanbanRoutes,
+    architectureRoutes,
+    testRoutes,
+    analyticsRoutes,
     userRoutes,
     chatRoutes,
     assistantRoutes,

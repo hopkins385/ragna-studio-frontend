@@ -1,23 +1,26 @@
 import type { NavItem } from '@/interfaces/nav/nav-item.interface';
 import {
-  adminRoutes,
-  assistantRoutes,
-  chatRoutes,
-  collectionRoutes,
-  defaultRoutes,
-  documentRoutes,
+  adminItems,
+  architectureItems,
+  assistantItems,
+  chatItems,
+  collectionItems,
+  defaultItems,
+  documentItems,
   homeNavItem,
-  imageGenRoutes,
-  mediaManagerRoutes,
-  settingsRoutes,
-  workflowRoutes,
+  imageGenItems,
+  kanbanItems,
+  mediaManagerItems,
+  settingsItems,
+  testItems,
+  workflowItems,
 } from './nav-bar-items';
 
 export function useNavBarItems() {
   const route = useRoute();
 
   const getDefaultItems = (): NavItem[] => {
-    return defaultRoutes.value;
+    return defaultItems.value;
   };
 
   const dynamicNavItems: Ref<NavItem[]> = computed((): NavItem[] => {
@@ -27,34 +30,43 @@ export function useNavBarItems() {
 
     switch (routePathStartsWith) {
       case 'admin':
-        items.push(...adminRoutes);
+        items.push(...adminItems);
+        break;
+      case 'kanban':
+        items.push(...kanbanItems);
+        break;
+      case 'architecture':
+        items.push(...architectureItems);
+        break;
+      case 'test':
+        items.push(...testItems);
         break;
       case 'document':
-        items.push(...documentRoutes);
+        items.push(...documentItems);
         break;
       case 'workflow':
-        items.push(...workflowRoutes);
+        items.push(...workflowItems);
         break;
       case 'chat':
-        items.push(...chatRoutes);
+        items.push(...chatItems);
         break;
       case 'assistant':
-        items.push(...assistantRoutes);
+        items.push(...assistantItems);
         break;
       case 'collection':
-        items.push(...collectionRoutes);
+        items.push(...collectionItems);
         break;
       case 'media':
-        items.push(...mediaManagerRoutes);
+        items.push(...mediaManagerItems);
         break;
       case 'settings':
-        items.push(...settingsRoutes);
+        items.push(...settingsItems);
         break;
       case 'text-to-image':
-        items.push(...imageGenRoutes);
+        items.push(...imageGenItems);
         break;
       default:
-        items.push(...defaultRoutes.value);
+        items.push(...defaultItems.value);
     }
 
     return items;
