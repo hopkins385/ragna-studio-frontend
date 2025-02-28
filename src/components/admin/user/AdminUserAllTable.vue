@@ -56,7 +56,7 @@ const initAllUsers = async (params: { page: number }) => {
 };
 
 const handleDelete = async (userId: string) => {
-  if (auth.currentUser?.id === userId) {
+  if (auth.user?.id === userId) {
     return setErrorAlert('You cannot delete yourself');
   }
 

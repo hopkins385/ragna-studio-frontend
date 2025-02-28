@@ -22,7 +22,7 @@ const toast = useToast();
 const { handleSubmit } = useForm({
   validationSchema: assistantFormSchema,
   initialValues: {
-    teamId: authStore.user?.firstTeamId || undefined,
+    teamId: authStore.userFirstTeamId,
     llmId: '',
     title: '',
     description: '',

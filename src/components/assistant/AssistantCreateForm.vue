@@ -70,7 +70,7 @@ const {
 } = useForm({
   validationSchema: assistantFormSchema,
   initialValues: {
-    teamId: authStore.user?.firstTeamId || '-1',
+    teamId: authStore.userFirstTeamId,
     llmId: '',
     title: '',
     description: '',

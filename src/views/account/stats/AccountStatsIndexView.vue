@@ -26,7 +26,7 @@ const authStore = useAuthStore();
     <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
         <HeadingTitle
-          :title="$t('account.stats.title', { name: authStore.currentUser?.firstName })"
+          :title="$t('account.stats.title', { name: authStore.userFirstName })"
           :subtitle="$t('account.stats.subtitle')"
         />
       </template>

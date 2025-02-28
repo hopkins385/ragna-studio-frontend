@@ -11,14 +11,14 @@ export const useWebSocketStore = defineStore('websocket', () => {
   const isConnected = ref(socketClient.connected);
 
   function connect() {
-    if (socketClient.connected) return;
+    // if (socketClient.connected) return;
     setupDefaultListeners();
     socketClient.connect();
   }
 
   function disconnect() {
-    if (!socketClient.connected) return;
-    cleanupListeners();
+    // if (!socketClient.connected) return;
+    cleanupDefaultListeners();
     socketClient.disconnect();
   }
 
@@ -36,14 +36,23 @@ export const useWebSocketStore = defineStore('websocket', () => {
 
   function joinUserRoom() {
     if (authStore.isAuthenticated && authStore.user) {
-      emit('join', `user:${authStore.user.id}`);
+      // emit('join', `user:${authStore.user.id}`);
+      joinRoom(`user:${authStore.user.id}`);
     }
   }
 
   function leaveUserRoom() {
     if (authStore.isAuthenticated && authStore.user) {
-      emit('leave', `user:${authStore.user.id}`);
+      // emit('leave', `user:${authStore.user.id}`);
+      leaveRoom(`user:${authStore.user.id}`);
     }
+  }
+
+  function joinRoom(room: string) {
+    emit('join', room);
+  }
+  function leaveRoom(room: string) {
+    emit('leave', room);
   }
 
   function setupDefaultListeners() {
@@ -85,7 +94,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
     socketClient.off(event, callback);
   }
 
-  function cleanupListeners() {
+  function cleanupDefaultListeners() {
     socketClient.off('connect_error');
     socketClient.off('connect_timeout');
     socketClient.off('reconnect');
@@ -101,11 +110,11 @@ export const useWebSocketStore = defineStore('websocket', () => {
     emit,
     on,
     off,
-    setupDefaultListeners,
     addListener,
     removeListener,
-    cleanupListeners,
     joinUserRoom,
     leaveUserRoom,
+    setupDefaultListeners,
+    cleanupDefaultListeners,
   };
 });

@@ -44,7 +44,8 @@ export const useAuthStore = defineStore('auth-store', () => {
   // Getters
   const isAuthenticated = computed(() => !!user.value && !!accessToken.value);
   const userHasAdminRole = computed(() => !!user.value?.roles?.includes(UserRoles.ADMIN));
-  const currentUser = computed(() => user.value);
+  const userFirstName = computed(() => user.value?.firstName || 'Guest User');
+  const userFirstTeamId = computed(() => user.value?.firstTeamId || '-1');
   const userCredits = computed(() => user.value?.totalCredits || 0);
   const onboardingIsComplete = computed(() => !!user.value?.onboardedAt);
   const hasAccessToken = computed(() => !!accessToken.value);
@@ -209,7 +210,8 @@ export const useAuthStore = defineStore('auth-store', () => {
     // Getters
     isAuthenticated,
     userHasAdminRole,
-    currentUser,
+    userFirstName,
+    userFirstTeamId,
     userCredits,
     onboardingIsComplete,
     hasAccessToken,

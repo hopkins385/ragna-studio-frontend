@@ -309,9 +309,7 @@ useHead({
         :type="message.type"
         :content="message.content"
         :vision-contents="message.visionContent"
-        :display-name="
-          message.role === 'user' ? authStore.currentUser?.firstName : assistant?.title
-        "
+        :display-name="message.role === 'user' ? authStore.userFirstName : assistant?.title"
         :role="message.role === 'user' ? ChatMessageRole.USER : ChatMessageRole.ASSISTANT"
       />
       <!-- thinking message -->

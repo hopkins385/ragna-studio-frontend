@@ -75,7 +75,7 @@ const { createChat } = useChatService();
 const { handleSubmit, meta: formMeta } = useForm({
   validationSchema: assistantFormSchema,
   initialValues: {
-    teamId: authStore.user?.firstTeamId || '-1',
+    teamId: authStore.userFirstTeamId,
     llmId: props.assistant?.llm.id || '',
     title: props.assistant?.title || '',
     description: props.assistant?.description || '',
