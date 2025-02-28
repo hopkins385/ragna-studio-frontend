@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { RouteName } from '@/router/enums/route-names.enum';
+import { useWebSocketStore } from '@/stores/websocket.store';
 import DrawerPanel from '@components/drawer/DrawerPanel.vue';
 import NavBar from '@components/nav/NavBar.vue';
 import NavTopBar from '@components/nav/NavTopBar.vue';
 import { Toaster } from '@components/ui/sonner';
-import { useWebsocketGlobal } from '@composables/websocket/useWebsocketGlobal';
 import { useAuthStore } from '@stores/auth.store';
 
 const router = useRouter();
 const authStore = useAuthStore();
-const socket = useWebsocketGlobal();
+const socket = useWebSocketStore();
 
 // Token refresh logic
 const getSession = async () => {
@@ -34,33 +34,16 @@ useEventListener(document, 'visibilitychange', handleVisibilityChange);
 useEventListener(window, 'focus', handleVisibilityChange);
 
 useHead({
-  titleTemplate: (title?: string) =>
-    !title ? 'RAGNA Studio' : `${title} | RAGNA Studio`,
+  titleTemplate: (title?: string) => (!title ? 'RAGNA Studio' : `${title} | RAGNA Studio`),
 });
-
-const joinUserRoom = () => {
-  if (authStore.isAuthenticated && authStore.user) {
-    socket.emit('join', `user:${authStore.user.id}`);
-  }
-};
-
-const leaveUserRoom = () => {
-  if (authStore.isAuthenticated && authStore.user) {
-    socket.emit('leave', `user:${authStore.user.id}`);
-  }
-};
 
 // Websocket connection
 onMounted(() => {
-  socket.socketClient.on('connect', joinUserRoom);
-  socket.socketClient.on('disconnect', leaveUserRoom);
   socket.connect();
 });
 
 onUnmounted(() => {
-  socket.socketClient.disconnect();
-  socket.socketClient.off('connect', joinUserRoom);
-  socket.socketClient.off('disconnect', leaveUserRoom);
+  socket.disconnect();
 });
 </script>
 

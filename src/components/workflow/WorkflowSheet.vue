@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import useAssistantService from '@/composables/services/useAssistantService';
-import {
-  useWorkflowService,
-  type Workflow,
-} from '@/composables/services/useWorkflowService';
-import { useWorkflowStepService } from '@/composables/services/useWorkflowStepService';
-import { useResizeSheet } from '@/composables/useResizeSheet';
-import useToast from '@/composables/useToast';
-import { useWebsocketGlobal } from '@composables/websocket/useWebsocketGlobal';
+import useAssistantService from '@composables/services/useAssistantService';
+import { useWorkflowService, type Workflow } from '@composables/services/useWorkflowService';
+import { useWorkflowStepService } from '@composables/services/useWorkflowStepService';
+import { useResizeSheet } from '@composables/useResizeSheet';
+import useToast from '@composables/useToast';
+import { useWebSocketStore } from '@stores/websocket.store';
 import { Button } from '@ui/button';
 import { Checkbox } from '@ui/checkbox';
 import { vOnClickOutside } from '@vueuse/components';
@@ -48,7 +45,7 @@ const sideBarOpen = ref(false);
 const sheetRef = ref<HTMLElement | null>(null);
 
 const toast = useToast();
-const socket = useWebsocketGlobal();
+const socket = useWebSocketStore();
 const { t } = useI18n();
 
 const stepCard = reactive({
@@ -76,16 +73,13 @@ const cellActive = ref<{ x: number; y: number; rowHeight: number }>({
   rowHeight: 0,
 });
 
-const { resizeRowListener, resizeColumnListener, initSheetDimensions } =
-  useResizeSheet();
+const { resizeRowListener, resizeColumnListener, initSheetDimensions } = useResizeSheet();
 
-const { createWorkflowStep, createWorkflowRow, updateInputSteps } =
-  useWorkflowStepService();
+const { createWorkflowStep, createWorkflowRow, updateInputSteps } = useWorkflowStepService();
 const { fetchAllAssistants } = useAssistantService();
 // const { createManyDocumentItems } = useManageDocumentItems();
 
-const { fetchFullWorkflow, deleteWorkflowRows, executeWorkflow } =
-  useWorkflowService();
+const { fetchFullWorkflow, deleteWorkflowRows, executeWorkflow } = useWorkflowService();
 
 const flowProgress = reactive({
   show: false,
@@ -97,9 +91,7 @@ const workflow = ref<Workflow | null>(null);
 const workflowId = computed(() => props.workflowId);
 
 const steps = computed(() => workflow.value?.steps || []);
-const rowCount = computed(
-  () => steps.value[0]?.document.documentItems.length || 0,
-);
+const rowCount = computed(() => steps.value[0]?.document.documentItems.length || 0);
 const columnCount = computed(() => steps.value.length);
 const totalCellCount = computed(() => rowCount.value * columnCount.value);
 
@@ -183,15 +175,10 @@ function toggleCellCard(
   height?: number,
 ) {
   // if click again on the same item, ignore
-  if (
-    cellCard.show &&
-    cellCard.teleportTo.x === x &&
-    cellCard.teleportTo.y === y
-  ) {
+  if (cellCard.show && cellCard.teleportTo.x === x && cellCard.teleportTo.y === y) {
     return;
   }
-  const rowHeight =
-    sheetRef.value?.querySelector(`#row_${y}`)?.clientHeight || 0;
+  const rowHeight = sheetRef.value?.querySelector(`#row_${y}`)?.clientHeight || 0;
   cellCard.teleportTo.x = Number(x);
   cellCard.teleportTo.y = Number(y);
   cellCard.stepId = steps.value[x].id; // TODO: check if this is correct
@@ -212,10 +199,7 @@ function onCloseCellCard() {
   cellCard.heigth = undefined;
 }
 
-async function onInputStepsUpdated(payload: {
-  inputSteps: string[];
-  stepId: string;
-}) {
+async function onInputStepsUpdated(payload: { inputSteps: string[]; stepId: string }) {
   await updateInputSteps(payload.stepId, { inputStepIds: payload.inputSteps });
   await initWorkflow();
 }
@@ -231,9 +215,7 @@ function onRowSelected(rowIndex: number) {
     selectedRows.value = selectedRows.value.filter(row => row !== rowIndex);
   } else {
     // push and sort
-    selectedRows.value = [...selectedRows.value, rowIndex].sort(
-      (a, b) => a - b,
-    );
+    selectedRows.value = [...selectedRows.value, rowIndex].sort((a, b) => a - b);
   }
 }
 
@@ -264,9 +246,7 @@ function toggleAllRowsSelected() {
 }
 
 function setCellActive(columnIndex: number, rowIndex: number) {
-  const rowHeight = sheetRef.value?.querySelector(
-    `#row_${rowIndex}`,
-  )?.clientHeight;
+  const rowHeight = sheetRef.value?.querySelector(`#row_${rowIndex}`)?.clientHeight;
   cellActive.value = { x: columnIndex, y: rowIndex, rowHeight: rowHeight || 0 };
 }
 
@@ -327,9 +307,7 @@ await initWorkflow();
 <template>
   <div class="min-h-screen overflow-scroll">
     <!-- Sheet Header -->
-    <div
-      class="h-14 border-b flex items-center justify-between sticky top-0 left-0 bg-white z-10"
-    >
+    <div class="h-14 border-b flex items-center justify-between sticky top-0 left-0 bg-white z-10">
       <!-- Workflow Name -->
       <div class="flex items-center">
         <div class="px-4 flex items-center justify-center border-0">
@@ -375,8 +353,7 @@ await initWorkflow();
       </div>
     </div>
     <div v-if="!workflow" class="p-4 text-sm">
-      Ups something went wrong.<br />The Data you are looking for is not
-      available.
+      Ups something went wrong.<br />The Data you are looking for is not available.
     </div>
     <!-- Sheet Content -->
     <div
@@ -387,10 +364,7 @@ await initWorkflow();
     >
       <!-- Row Index -->
       <div id="column_0" class="column">
-        <div
-          id="row_0_cell_x0_y1"
-          class="index relative flex items-center justify-center"
-        >
+        <div id="row_0_cell_x0_y1" class="index relative flex items-center justify-center">
           <Checkbox
             :checked="hasSelectedRows"
             class="size-3.5 border-stone-500"
@@ -433,9 +407,7 @@ await initWorkflow();
             <!-- Resize Row -->
             <div
               class="group/icon flex h-3 w-full cursor-ns-resize items-center px-2"
-              @mousedown="
-                event => resizeRowListener(event, rowIndex + 1, workflowId)
-              "
+              @mousedown="event => resizeRowListener(event, rowIndex + 1, workflowId)"
             >
               <div
                 class="h-1 w-full shrink-0 rounded-lg group-hover/icon:bg-slate-400 group-hover:bg-slate-200"
@@ -444,11 +416,7 @@ await initWorkflow();
           </div>
         </div>
         <!-- Add new Row -->
-        <div
-          id=""
-          class="index index-last plus-button"
-          @click="onAddWorkflowRow"
-        >
+        <div id="" class="index index-last plus-button" @click="onAddWorkflowRow">
           <PlusIcon class="size-3 stroke-1.5" />
         </div>
       </div>
@@ -460,10 +428,7 @@ await initWorkflow();
         class="column relative"
       >
         <!-- Teleport Anker -->
-        <div
-          :id="`step_teleport_anker_${columnIndex}`"
-          class="absolute left-0 top-8 z-10"
-        ></div>
+        <div :id="`step_teleport_anker_${columnIndex}`" class="absolute left-0 top-8 z-10"></div>
         <!-- Heading Column -->
         <div
           :id="`row_0_cell_${columnIndex}`"
@@ -481,9 +446,7 @@ await initWorkflow();
           <div class="-mr-1 h-full opacity-0 group-hover:opacity-100">
             <div
               class="h-full w-1 shrink-0 cursor-ew-resize rounded-lg bg-slate-300 hover:bg-slate-400"
-              @mousedown="
-                event => resizeColumnListener(event, columnIndex, workflowId)
-              "
+              @mousedown="event => resizeColumnListener(event, columnIndex, workflowId)"
             ></div>
           </div>
         </div>
@@ -494,26 +457,14 @@ await initWorkflow();
           :key="rowIndex"
           class="cell group relative"
           :class="{
-            'border border-black':
-              cellActive.x === columnIndex && cellActive.y === rowIndex + 1,
+            'border border-black': cellActive.x === columnIndex && cellActive.y === rowIndex + 1,
           }"
           @click="() => setCellActive(columnIndex, rowIndex + 1)"
-          @dblclick="
-            () =>
-              toggleCellCard(
-                columnIndex,
-                rowIndex + 1,
-                docItem.content,
-                docItem.id,
-              )
-          "
+          @dblclick="() => toggleCellCard(columnIndex, rowIndex + 1, docItem.content, docItem.id)"
         >
           <!-- Cell State -->
           <div
-            v-if="
-              docItem.processingStatus &&
-              docItem.processingStatus !== 'completed'
-            "
+            v-if="docItem.processingStatus && docItem.processingStatus !== 'completed'"
             class="absolute right-1 top-0 z-10 rounded-lg border shadow-sm"
           >
             <div
@@ -522,10 +473,7 @@ await initWorkflow();
             >
               <TriangleAlertIcon class="size-3 stroke-1.5" />
             </div>
-            <div
-              v-if="docItem.processingStatus === 'pending'"
-              class="rounded-lg bg-green-100 p-2"
-            >
+            <div v-if="docItem.processingStatus === 'pending'" class="rounded-lg bg-green-100 p-2">
               <LoaderIcon class="size-3 animate-spin stroke-1.5" />
             </div>
           </div>
@@ -576,10 +524,7 @@ await initWorkflow();
     </div>
   </div>
   <!-- StepManagement Card -->
-  <Teleport
-    v-if="stepCard.show"
-    :to="`#step_teleport_anker_${stepCard.teleportTo}`"
-  >
+  <Teleport v-if="stepCard.show" :to="`#step_teleport_anker_${stepCard.teleportTo}`">
     <StepManagementCard
       :key="stepCard.teleportTo"
       v-on-click-outside.bubble="onCloseStepCard"
