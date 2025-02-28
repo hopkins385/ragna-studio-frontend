@@ -18,7 +18,7 @@ defineProps<{
       class="pt-3 pb-4 px-4 rounded-2xl flex space-x-3 border border-stone-100"
       :class="[
         role === ChatMessageRole.USER
-          ? 'flex-row-reverse space-x-reverse pl-6 max-w-2xl bg-stone-100'
+          ? 'flex-row-reverse space-x-reverse pl-6 bg-stone-100'
           : 'pr-6 border-transparent',
       ]"
     >
@@ -43,7 +43,10 @@ defineProps<{
         >
           {{ displayName }}
         </div>
-        <div>
+        <div
+          class="overflow-hidden w-fit"
+          :class="[role === ChatMessageRole.USER ? 'max-w-xl' : 'pr-10']"
+        >
           <slot />
         </div>
       </div>

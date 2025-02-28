@@ -2,10 +2,7 @@
 import useForHumans from '@/composables/useForHumans';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { RouteName } from '@/router/enums/route-names.enum';
-import {
-  useChatService,
-  type ChatsPaginated,
-} from '@composables/services/useChatService';
+import { useChatService, type ChatsPaginated } from '@composables/services/useChatService';
 import {
   groupByOptions,
   useChatSettingsStore,
@@ -116,33 +113,17 @@ Example API response
         {{ $t('chat.history.title') }}
       </h1>
       <div class="flex items-center">
-        <Button
-          variant="ghost"
-          size="icon"
-          class="group"
-          @click="toggleGroupBy"
-        >
-          <CalendarIcon
-            class="size-4 stroke-1.5 group-hover:stroke-2 opacity-75"
-          />
+        <Button variant="ghost" size="icon" class="group" @click="toggleGroupBy">
+          <CalendarIcon class="size-4 stroke-1.5 group-hover:stroke-2 opacity-75" />
         </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          class="group"
-          @click="() => drawer.hide()"
-        >
+        <Button variant="ghost" size="icon" class="group" @click="() => drawer.hide()">
           <XIcon class="size-4 stroke-2 group-hover:stroke-2 opacity-75" />
         </Button>
       </div>
     </div>
     <Separator />
     <div class="relative">
-      <div
-        v-for="chatGroup in groupedChats"
-        :key="chatGroup.date"
-        class="my-6 rounded-lg"
-      >
+      <div v-for="chatGroup in groupedChats" :key="chatGroup.date" class="my-6 rounded-lg">
         <div class="sticky top-0">
           <div class="text-sm font-semibold py-2 bg-primary-foreground">
             {{ chatGroup.date }}
@@ -155,7 +136,7 @@ Example API response
               :to="{ name: RouteName.CHAT_SHOW, params: { id: chat.id } }"
               class="cursor-pointer hover:bg-stone-200 rounded-lg block p-2 truncate"
               :class="{
-                'font-semibold ': chat.id === $route.params.id?.toString(),
+                'font-semibold bg-stone-200': chat.id === $route.params.id?.toString(),
               }"
             >
               <span class="text-sm">{{ chat.title }}</span>
