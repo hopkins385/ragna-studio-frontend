@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
 
 const chatStoreName = 'chat-settings';
 
@@ -7,78 +8,89 @@ export type GroupByOption = (typeof groupByOptions)[number];
 export const thinkLevel = [0, 1, 2, 3] as const;
 export type ThinkLevel = (typeof thinkLevel)[number];
 
-interface IChatSettings {
-  thinkLevel: [ThinkLevel];
-  temperature: [number];
-  presencePenalty: [number];
-  maxTokens: [number];
-  submitOnEnter: boolean;
-  historyGroupBy: GroupByOption;
-}
+export const useChatSettingsStore = defineStore(
+  chatStoreName,
+  () => {
+    // Individual refs for each state property
+    const thinkLevel = ref<[ThinkLevel]>([0]);
+    const temperature = ref<[number]>([80]);
+    const presencePenalty = ref<[number]>([0]);
+    const maxTokens = ref<[number]>([4000]);
+    const submitOnEnter = ref(true);
+    const historyGroupBy = ref<GroupByOption>('day');
 
-export const useChatSettingsStore = defineStore(chatStoreName, {
-  state: (): IChatSettings => ({
-    thinkLevel: [0],
-    temperature: [80],
-    presencePenalty: [0],
-    maxTokens: [4000],
-    submitOnEnter: true,
-    historyGroupBy: 'day',
-  }),
-  getters: {
-    getThinkLevel(state): ThinkLevel {
-      return state.thinkLevel[0];
-    },
-    getThinkLevelLabel(state): string {
-      return [
-        'chat.settings.think.off',
-        'chat.settings.think.low',
-        'chat.settings.think.medium',
-        'chat.settings.think.high',
-      ][state.thinkLevel[0]];
-    },
-    getTemperature(state) {
-      return state.temperature[0] / 100;
-    },
-    getPresencePenalty(state) {
-      return state.presencePenalty[0] / 100;
-    },
-    getMaxTokens(state) {
-      return state.maxTokens[0];
-    },
-    getHistoryGroupBy(state) {
-      return state.historyGroupBy;
-    },
-  },
-  actions: {
-    setThinkLevel(thinkingLevel: [ThinkLevel]) {
-      // validate
-      if (!thinkingLevel) {
+    // Getters as computed
+    const getThinkLevel = computed(() => thinkLevel.value[0]);
+    const getThinkLevelLabel = computed(
+      () =>
+        [
+          'chat.settings.think.off',
+          'chat.settings.think.low',
+          'chat.settings.think.medium',
+          'chat.settings.think.high',
+        ][thinkLevel.value[0]],
+    );
+    const getTemperature = computed(() => temperature.value[0] / 100);
+    const getPresencePenalty = computed(() => presencePenalty.value[0] / 100);
+    const getMaxTokens = computed(() => maxTokens.value[0]);
+    const getHistoryGroupBy = computed(() => historyGroupBy.value);
+
+    // Actions as functions
+    function setThinkLevel(thinkingLevel: [ThinkLevel]) {
+      if (!thinkingLevel || thinkingLevel[0] < 0 || thinkingLevel[0] > 3) {
         return;
       }
-      if (thinkingLevel[0] < 0 || thinkingLevel[0] > 3) {
-        return;
-      }
-      this.thinkLevel = thinkingLevel;
-    },
-    setTemperature(temperature: [number]) {
-      this.temperature = temperature;
-    },
-    setPresencePenalty(presencePenalty: [number]) {
-      this.presencePenalty = presencePenalty;
-    },
-    setMaxTokens(maxTokens: [number]) {
-      this.maxTokens = maxTokens;
-    },
-    setHistoryGroupBy(groupBy: GroupByOption) {
-      this.historyGroupBy = groupBy;
-    },
-    resetSettings() {
-      this.thinkLevel = [0];
-      this.temperature = [80];
-      this.presencePenalty = [0];
-      this.maxTokens = [4000];
-    },
+      thinkLevel.value = thinkingLevel;
+    }
+
+    function setTemperature(temp: [number]) {
+      temperature.value = temp;
+    }
+
+    function setPresencePenalty(penalty: [number]) {
+      presencePenalty.value = penalty;
+    }
+
+    function setMaxTokens(tokens: [number]) {
+      maxTokens.value = tokens;
+    }
+
+    function setHistoryGroupBy(groupBy: GroupByOption) {
+      historyGroupBy.value = groupBy;
+    }
+
+    function resetSettings() {
+      thinkLevel.value = [0];
+      temperature.value = [80];
+      presencePenalty.value = [0];
+      maxTokens.value = [4000];
+    }
+
+    return {
+      // State
+      thinkLevel,
+      temperature,
+      presencePenalty,
+      maxTokens,
+      submitOnEnter,
+      historyGroupBy,
+      // Getters
+      getThinkLevel,
+      getThinkLevelLabel,
+      getTemperature,
+      getPresencePenalty,
+      getMaxTokens,
+      getHistoryGroupBy,
+      // Actions
+      setThinkLevel,
+      setTemperature,
+      setPresencePenalty,
+      setMaxTokens,
+      setHistoryGroupBy,
+      resetSettings,
+    };
   },
-  persist: true,
-});
+  {
+    persist: true,
+  },
+);

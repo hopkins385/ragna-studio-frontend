@@ -1,40 +1,57 @@
 import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
 function minMax(value: number) {
   return Math.min(Math.max(value, 12), 30);
 }
 
-export const useNavBarStore = defineStore('nav-bar.store', {
-  state: () => ({
-    isFullClosed: false,
-    isOpen: false,
-    width: 4.5,
-    openWidth: 15.4,
-    closedWidth: 4.5,
-  }),
-  getters: {},
-  actions: {
-    setOpen(value: boolean) {
-      this.isOpen = value;
-      this.resetWidth();
-    },
-    toggleFullClosed() {
-      if (this.isOpen) this.setOpen(false);
-      this.isFullClosed = !this.isFullClosed;
-    },
-    toggleOpen() {
-      this.isOpen = !this.isOpen;
-      this.resetWidth();
-    },
-    setWidth(e: MouseEvent) {
-      e.stopImmediatePropagation();
-      e.preventDefault();
-      this.width = minMax(e.clientX / 16);
-      this.openWidth = this.width;
-    },
-    resetWidth() {
-      this.width = this.isOpen ? this.openWidth : this.closedWidth;
-    },
-  },
+export const useNavBarStore = defineStore('nav-bar.store', () => {
+  // Individual refs for state
+  const isFullClosed = ref(false);
+  const isOpen = ref(false);
+  const width = ref(4.5);
+  const openWidth = ref(15.4);
+  const closedWidth = ref(4.5);
+
+  // Actions as functions
+  function setOpen(value: boolean) {
+    isOpen.value = value;
+    resetWidth();
+  }
+
+  function toggleFullClosed() {
+    if (isOpen.value) setOpen(false);
+    isFullClosed.value = !isFullClosed.value;
+  }
+
+  function toggleOpen() {
+    isOpen.value = !isOpen.value;
+    resetWidth();
+  }
+
+  function setWidth(e: MouseEvent) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    width.value = minMax(e.clientX / 16);
+    openWidth.value = width.value;
+  }
+
+  function resetWidth() {
+    width.value = isOpen.value ? openWidth.value : closedWidth.value;
+  }
+
+  return {
+    isFullClosed,
+    isOpen,
+    width,
+    openWidth,
+    closedWidth,
+    setOpen,
+    toggleFullClosed,
+    toggleOpen,
+    setWidth,
+    resetWidth,
+  };
+}, {
   persist: true,
 });

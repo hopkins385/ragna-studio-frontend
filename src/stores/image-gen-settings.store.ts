@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
 
 export const SUPPORTED_ASPECT_RATIOS = [
   '1:1',
@@ -17,117 +18,124 @@ export type ImageGenExtension = 'jpeg' | 'png';
 export type ImageGenProvider = 'fluxpro' | 'fluxultra';
 export type ImageAspectRatio = (typeof SUPPORTED_ASPECT_RATIOS)[number];
 
-interface ImgGenSettings {
-  provider: ImageGenProvider;
-  imageAspectRatio: ImageAspectRatio;
-  imageCount: number[];
-  imageGuidance: number[];
-  imageExtension: ImageGenExtension;
-  imagePricing: number;
-  promptUpsampling: boolean;
-  submitOnEnter: boolean;
-  showHidden: boolean;
-}
-
 function getProviderName(provider: ImageGenProvider) {
   return provider === 'fluxultra' ? 'Flux 1.1 Ultra' : 'Flux 1.1 Pro';
 }
 
-export const useImgGenSettingsStore = defineStore('img-gen.store', {
-  state: (): ImgGenSettings => ({
-    provider: 'fluxpro',
-    imageAspectRatio: '1:1',
-    imageCount: [4],
-    imageGuidance: [2.5],
-    imageExtension: 'jpeg',
-    imagePricing: 4,
-    promptUpsampling: false,
-    submitOnEnter: false,
-    showHidden: false,
-  }),
-  getters: {
-    getRawProvider(state) {
-      return state.provider;
-    },
-    getProvider(state) {
-      return getProviderName(state.provider);
-    },
-    getImageCount(state) {
-      return state.imageCount[0];
-    },
-    getImageWidthAndHeight(state) {
-      // get image width and height based on aspect ratio
-      switch (state.imageAspectRatio) {
-        case '1:1':
-          return { width: 1440, height: 1440 };
-        case '4:3':
-          return { width: 1024, height: 768 };
-        case '2:3':
-          return { width: 1024, height: 1440 };
-        case '16:9':
-          return { width: 1024, height: 576 };
-        case '9:16':
-          return { width: 576, height: 1024 };
-        default:
-          return { width: 1024, height: 1024 };
-      }
-    },
-    getImageAspectRatio(state) {
-      return state.imageAspectRatio;
-    },
-    getImageGuidance(state) {
-      return state.imageGuidance[0];
-    },
-    getSubmitOnEnter(state) {
-      return state.submitOnEnter;
-    },
-    getShowHidden(state) {
-      return state.showHidden;
-    },
-    getImageExtension(state) {
-      return state.imageExtension;
-    },
-    getImagePricing(state) {
-      return state.imagePricing;
-    },
-  },
-  actions: {
-    getProviderDisplayName(provider: ImageGenProvider) {
-      return getProviderName(provider);
-    },
-    setProvider(provider: ImageGenProvider) {
-      this.provider = provider;
-    },
-    setImageCount(imageCount: number[]) {
-      this.imageCount = imageCount;
-    },
-    setImageAspectRatio(aspectRatio: ImageAspectRatio) {
-      this.imageAspectRatio = aspectRatio;
-    },
-    setSubmitOnEnter(submitOnEnter: boolean) {
-      this.submitOnEnter = Boolean(submitOnEnter);
-    },
-    setShowHidden(showHidden: boolean) {
-      this.showHidden = Boolean(showHidden);
-    },
-    togglePromptUpsampling() {
-      this.promptUpsampling = !this.promptUpsampling;
-    },
-    toggleSubmitOnEnter() {
-      this.submitOnEnter = !this.submitOnEnter;
-    },
-    toggleShowHidden() {
-      this.showHidden = !this.showHidden;
-    },
-    resetSettings() {
-      this.provider = 'fluxpro';
-      this.imageCount = [4];
-      this.imageExtension = 'jpeg';
-      this.imageAspectRatio = '1:1';
-      this.imageGuidance = [2.5];
-      this.submitOnEnter = false;
-      this.showHidden = false;
-    },
-  },
+export const useImgGenSettingsStore = defineStore('img-gen.store', () => {
+  // Individual refs for state
+  const provider = ref<ImageGenProvider>('fluxpro');
+  const imageAspectRatio = ref<ImageAspectRatio>('1:1');
+  const imageCount = ref<number[]>([4]);
+  const imageGuidance = ref<number[]>([2.5]);
+  const imageExtension = ref<ImageGenExtension>('jpeg');
+  const imagePricing = ref(4);
+  const promptUpsampling = ref(false);
+  const submitOnEnter = ref(false);
+  const showHidden = ref(false);
+
+  // Computed properties (getters)
+  const getRawProvider = computed(() => provider.value);
+  const getProvider = computed(() => getProviderName(provider.value));
+  const getImageCount = computed(() => imageCount.value[0]);
+  const getImageWidthAndHeight = computed(() => {
+    switch (imageAspectRatio.value) {
+      case '1:1': return { width: 1440, height: 1440 };
+      case '4:3': return { width: 1024, height: 768 };
+      case '2:3': return { width: 1024, height: 1440 };
+      case '16:9': return { width: 1024, height: 576 };
+      case '9:16': return { width: 576, height: 1024 };
+      default: return { width: 1024, height: 1024 };
+    }
+  });
+  const getImageAspectRatio = computed(() => imageAspectRatio.value);
+  const getImageGuidance = computed(() => imageGuidance.value[0]);
+  const getSubmitOnEnter = computed(() => submitOnEnter.value);
+  const getShowHidden = computed(() => showHidden.value);
+  const getImageExtension = computed(() => imageExtension.value);
+  const getImagePricing = computed(() => imagePricing.value);
+
+  // Actions as functions
+  function getProviderDisplayName(p: ImageGenProvider) {
+    return getProviderName(p);
+  }
+
+  function setProvider(p: ImageGenProvider) {
+    provider.value = p;
+  }
+
+  function setImageCount(count: number[]) {
+    imageCount.value = count;
+  }
+
+  function setImageAspectRatio(aspectRatio: ImageAspectRatio) {
+    imageAspectRatio.value = aspectRatio;
+  }
+
+  function setSubmitOnEnter(value: boolean) {
+    submitOnEnter.value = Boolean(value);
+  }
+
+  function setShowHidden(value: boolean) {
+    showHidden.value = Boolean(value);
+  }
+
+  function togglePromptUpsampling() {
+    promptUpsampling.value = !promptUpsampling.value;
+  }
+
+  function toggleSubmitOnEnter() {
+    submitOnEnter.value = !submitOnEnter.value;
+  }
+
+  function toggleShowHidden() {
+    showHidden.value = !showHidden.value;
+  }
+
+  function resetSettings() {
+    provider.value = 'fluxpro';
+    imageCount.value = [4];
+    imageExtension.value = 'jpeg';
+    imageAspectRatio.value = '1:1';
+    imageGuidance.value = [2.5];
+    submitOnEnter.value = false;
+    showHidden.value = false;
+  }
+
+  return {
+    // State
+    provider,
+    imageAspectRatio,
+    imageCount,
+    imageGuidance,
+    imageExtension,
+    imagePricing,
+    promptUpsampling,
+    submitOnEnter,
+    showHidden,
+    // Getters
+    getRawProvider,
+    getProvider,
+    getImageCount,
+    getImageWidthAndHeight,
+    getImageAspectRatio,
+    getImageGuidance,
+    getSubmitOnEnter,
+    getShowHidden,
+    getImageExtension,
+    getImagePricing,
+    // Actions
+    getProviderDisplayName,
+    setProvider,
+    setImageCount,
+    setImageAspectRatio,
+    setSubmitOnEnter,
+    setShowHidden,
+    togglePromptUpsampling,
+    toggleSubmitOnEnter,
+    toggleShowHidden,
+    resetSettings,
+  };
+}, {
   persist: true,
 });

@@ -3,10 +3,10 @@ import { useAuthService } from '@/composables/services/useAuthService';
 import { defineAbilityFor } from '@/services/ability.service';
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
 
 const UserRoles = {
   ADMIN: 'admin',
-  // Additional roles...
 } as const;
 
 interface Team {
@@ -28,236 +28,208 @@ interface AuthUser {
   roles: string[];
 }
 
-interface IAuthState {
-  user: AuthUser | null;
-  accessToken: string | null;
-  accessTokenExpiresAt: number | null;
-  isFetchingUser: boolean;
-  refreshAttempts: number;
-  maxRefreshAttempts: number;
-  dateNow: number;
-}
+export const useAuthStore = defineStore('auth-store', () => {
+  const { registerUser, loginUser, logoutUser, refreshTokens, googleAuth, fetchSession } =
+    useAuthService();
+  const { fetchAccountData } = useAccountService();
+  // State
+  const user = ref<AuthUser | null>(null);
+  const accessToken = ref<string | null>(null);
+  const accessTokenExpiresAt = ref<number | null>(null);
+  const isFetchingUser = ref(false);
+  const refreshAttempts = ref(0);
+  const maxRefreshAttempts = ref(3);
+  const dateNow = ref(Date.now());
 
-export const useAuthStore = defineStore('auth-store', {
-  state: (): IAuthState => ({
-    user: null,
-    accessToken: null,
-    accessTokenExpiresAt: null,
-    isFetchingUser: false,
-    refreshAttempts: 0,
-    maxRefreshAttempts: 3,
-    dateNow: Date.now(),
-  }),
-  getters: {
-    isAuthenticated(state): boolean {
-      return !!state.user && !!state.accessToken;
-    },
-    userHasAdminRole(state): boolean {
-      return !!state.user?.roles?.includes(UserRoles.ADMIN);
-    },
-    currentUser(state): AuthUser | null {
-      return state.user;
-    },
-    userCredits(state): number {
-      return state.user?.totalCredits || 0;
-    },
-    onboardingIsComplete(state): boolean {
-      return !!state.user?.onboardedAt;
-    },
-    hasAccessToken(state): boolean {
-      return !!state.accessToken;
-    },
-    getAccessToken(state): string | null {
-      return state.accessToken;
-    },
-    getAccessTokenExpiresAt(state): number | null {
-      return state.accessTokenExpiresAt;
-    },
-    accessTokenExpired(state): boolean {
-      return !!state.accessTokenExpiresAt && state.accessTokenExpiresAt < Date.now();
-    },
-    hasRefreshToken(): boolean {
-      const token = useStorage('refreshToken', null, localStorage);
-      return !!token.value;
-    },
-    getRefreshToken(): string | null {
-      return localStorage.getItem('refreshToken');
-    },
-  },
-  actions: {
-    /**
-     * Clears the current user.
-     */
-    clearUser(): void {
-      this.user = null;
-      this.accessToken = null;
-    },
-    /**
-     * Clears the refresh token.
-     */
-    clearRefreshToken(): void {
-      localStorage.removeItem('refreshToken');
-    },
-    /**
-     * Logs in the user with provided credentials.
-     * @param email User's email address.
-     * @param password User's password.
-     */
-    async login({ email, password }: { email: string; password: string }): Promise<void> {
-      const { loginUser } = useAuthService();
-      try {
-        const { refreshToken, accessToken, accessTokenExpiresAt } = await loginUser({
-          email,
-          password,
-        });
-        this.setAccessToken(accessToken, accessTokenExpiresAt);
-        this.setRefreshToken(refreshToken);
-        await this.fetchUser();
-      } catch (error) {
-        this.clearUser();
-        throw error;
-      }
-    },
-    async register(payload: {
-      name: string;
-      email: string;
-      password: string;
-      termsAndConditions: boolean;
-      invitationCode?: string;
-    }): Promise<void> {
-      const { registerUser } = useAuthService();
+  // Getters
+  const isAuthenticated = computed(() => !!user.value && !!accessToken.value);
+  const userHasAdminRole = computed(() => !!user.value?.roles?.includes(UserRoles.ADMIN));
+  const currentUser = computed(() => user.value);
+  const userCredits = computed(() => user.value?.totalCredits || 0);
+  const onboardingIsComplete = computed(() => !!user.value?.onboardedAt);
+  const hasAccessToken = computed(() => !!accessToken.value);
+  const getAccessToken = computed(() => accessToken.value);
+  const getAccessTokenExpiresAt = computed(() => accessTokenExpiresAt.value);
+  const accessTokenExpired = computed(
+    () => !!accessTokenExpiresAt.value && accessTokenExpiresAt.value < Date.now(),
+  );
+  const hasRefreshToken = computed(() => {
+    const token = useStorage('refreshToken', null, localStorage);
+    return !!token.value;
+  });
+  const getRefreshToken = computed(() => localStorage.getItem('refreshToken'));
 
-      try {
-        const response = await registerUser({
-          name: payload.name,
-          email: payload.email,
-          password: payload.password,
-          termsAndConditions: payload.termsAndConditions,
-          invitationCode: payload.invitationCode,
-        });
+  // Actions
+  const clearUser = () => {
+    user.value = null;
+    accessToken.value = null;
+  };
 
-        // auto login user and fetch user data
-        await this.login({
-          email: payload.email,
-          password: payload.password,
-        });
-      } catch (error) {
-      } finally {
-      }
-    },
-    async socialGoogleLogin(query: { code: string | undefined }): Promise<void> {
-      if (!query.code) {
-        throw new Error('No code provided');
-      }
-      const { googleAuth } = useAuthService();
+  const clearRefreshToken = () => {
+    localStorage.removeItem('refreshToken');
+  };
 
-      try {
-        const data = await googleAuth({
-          code: query.code,
-          scope: undefined,
-          authuser: undefined,
-          prompt: undefined,
-        });
+  const setAccessToken = (token: string, expiresAt: number) => {
+    accessToken.value = token;
+    accessTokenExpiresAt.value = expiresAt * 1000;
+  };
 
-        this.setAccessToken(data.accessToken, data.accessTokenExpiresAt);
-        this.setRefreshToken(data.refreshToken);
-        await this.fetchUser();
-      } catch (error) {
-        this.clearUser();
-        throw error;
-      }
-    },
-    /**
-     * Logs out the current user.
-     */
-    async logout(): Promise<void> {
-      const { logoutUser } = useAuthService();
-      try {
-        await logoutUser();
-      } catch (error) {
-        console.error('Logout failed:', error);
-      } finally {
-        this.clearUser();
-        this.clearRefreshToken();
-      }
-    },
-    /**
-     * Refreshes the current session.
-     */
-    async refreshAuth(): Promise<void> {
-      this.refreshAttempts++;
-      if (this.refreshAttempts > this.maxRefreshAttempts) {
-        this.clearUser();
-        this.refreshAttempts = 0;
-        return Promise.reject(new Error('Max refresh attempts reached'));
-      }
-      try {
-        const { refreshTokens } = useAuthService();
-        const { refreshToken, accessToken, accessTokenExpiresAt } = await refreshTokens();
-        this.setAccessToken(accessToken, accessTokenExpiresAt);
-        this.setRefreshToken(refreshToken);
-        await this.fetchUser();
-        this.refreshAttempts = 0;
-      } catch (error) {
-        this.clearUser();
-        throw error;
-      }
-    },
-    /**
-     * Fetches the current authenticated user from the backend.
-     */
-    async fetchUser(): Promise<void> {
-      const { fetchAccountData } = useAccountService();
-      if (this.isFetchingUser) return;
-      this.isFetchingUser = true;
-      try {
-        const data = await fetchAccountData();
-        this.user = {
-          id: data.id,
-          firstTeamId: data.firstTeamId,
-          name: data.name,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          totalCredits: data.totalCredits,
-          onboardedAt: data.onboardedAt,
-          teams: data.teams,
-          roles: data.roles,
-        };
-        defineAbilityFor(this.user);
-      } catch (error) {
-        this.clearUser();
-        throw error;
-      } finally {
-        this.isFetchingUser = false;
-      }
-    },
-    /**
-     * Get Session
-     */
-    async getSession(): Promise<void> {
-      const { fetchSession } = useAuthService();
-      try {
-        const data = await fetchSession();
-      } catch (error) {
-        this.clearUser();
-        throw error;
-      }
-    },
-    /**
-     * Sets the access token.
-     * @param token Access token to set.
-     */
-    setAccessToken(token: string, expiresAt: number): void {
-      this.accessToken = token;
-      this.accessTokenExpiresAt = expiresAt * 1000;
-    },
-    /**
-     * Sets the refresh token.
-     * @param refreshToken Refresh token to set.
-     */
-    setRefreshToken(refreshToken: string): void {
-      localStorage.setItem('refreshToken', refreshToken);
-    },
-  },
+  const setRefreshToken = (token: string) => {
+    localStorage.setItem('refreshToken', token);
+  };
+
+  const fetchUser = async () => {
+    if (isFetchingUser.value) return;
+    isFetchingUser.value = true;
+    try {
+      const data = await fetchAccountData();
+      user.value = {
+        id: data.id,
+        firstTeamId: data.firstTeamId,
+        name: data.name,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        totalCredits: data.totalCredits,
+        onboardedAt: data.onboardedAt,
+        teams: data.teams,
+        roles: data.roles,
+      };
+      defineAbilityFor(user.value);
+    } catch (error) {
+      clearUser();
+      throw error;
+    } finally {
+      isFetchingUser.value = false;
+    }
+  };
+
+  const login = async ({ email, password }: { email: string; password: string }) => {
+    try {
+      const { refreshToken, accessToken, accessTokenExpiresAt } = await loginUser({
+        email,
+        password,
+      });
+      setAccessToken(accessToken, accessTokenExpiresAt);
+      setRefreshToken(refreshToken);
+      await fetchUser();
+    } catch (error) {
+      clearUser();
+      throw error;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await logoutUser();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      clearUser();
+      clearRefreshToken();
+    }
+  };
+
+  const refreshAuth = async () => {
+    refreshAttempts.value++;
+    if (refreshAttempts.value > maxRefreshAttempts.value) {
+      clearUser();
+      refreshAttempts.value = 0;
+      return Promise.reject(new Error('Max refresh attempts reached'));
+    }
+    try {
+      const { refreshToken, accessToken, accessTokenExpiresAt } = await refreshTokens();
+      setAccessToken(accessToken, accessTokenExpiresAt);
+      setRefreshToken(refreshToken);
+      await fetchUser();
+      refreshAttempts.value = 0;
+    } catch (error) {
+      clearUser();
+      throw error;
+    }
+  };
+
+  const register = async (payload: {
+    name: string;
+    email: string;
+    password: string;
+    termsAndConditions: boolean;
+    invitationCode?: string;
+  }) => {
+    try {
+      await registerUser(payload);
+      await login({
+        email: payload.email,
+        password: payload.password,
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const socialGoogleLogin = async (query: { code: string | undefined }) => {
+    if (!query.code) {
+      throw new Error('No code provided');
+    }
+    try {
+      const data = await googleAuth({
+        code: query.code,
+        scope: undefined,
+        authuser: undefined,
+        prompt: undefined,
+      });
+      setAccessToken(data.accessToken, data.accessTokenExpiresAt);
+      setRefreshToken(data.refreshToken);
+      await fetchUser();
+    } catch (error) {
+      clearUser();
+      throw error;
+    }
+  };
+
+  const getSession = async () => {
+    try {
+      await fetchSession();
+    } catch (error) {
+      clearUser();
+      throw error;
+    }
+  };
+
+  return {
+    // State
+    user,
+    accessToken,
+    accessTokenExpiresAt,
+    isFetchingUser,
+    refreshAttempts,
+    maxRefreshAttempts,
+    dateNow,
+
+    // Getters
+    isAuthenticated,
+    userHasAdminRole,
+    currentUser,
+    userCredits,
+    onboardingIsComplete,
+    hasAccessToken,
+    getAccessToken,
+    getAccessTokenExpiresAt,
+    accessTokenExpired,
+    hasRefreshToken,
+    getRefreshToken,
+
+    // Actions
+    clearUser,
+    clearRefreshToken,
+    setAccessToken,
+    setRefreshToken,
+    fetchUser,
+    login,
+    logout,
+    refreshAuth,
+    register,
+    socialGoogleLogin,
+    getSession,
+  };
 });
