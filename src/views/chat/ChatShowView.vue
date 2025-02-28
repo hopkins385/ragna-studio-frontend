@@ -4,6 +4,7 @@ import ChatPresets from '@/components/chat/ChatPresets.vue';
 import ChatThinkingBox from '@/components/chat/ChatThinkingBox.vue';
 import { ChatMessageRole } from '@/enums/chat-role.enum';
 import { chatInputTextSchema } from '@/schemas/chat-input-text.schema';
+import { useAuthStore } from '@/stores/auth.store';
 import { useChatStore } from '@/stores/chat-inference.store';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import ChatButtonNewChat from '@components/chat/ChatButtonNewChat.vue';
@@ -24,6 +25,7 @@ import ChatAssistantDetails from './ChatAssistantDetails.vue';
 
 const socket = useWebsocketGlobal();
 const chatStore = useChatStore();
+const authStore = useAuthStore();
 const settings = useChatSettingsStore();
 
 const { t } = useI18n();
@@ -307,7 +309,9 @@ useHead({
         :type="message.type"
         :content="message.content"
         :vision-contents="message.visionContent"
-        :display-name="message.role === 'user' ? 'User' : assistant?.title"
+        :display-name="
+          message.role === 'user' ? authStore.currentUser?.firstName : assistant?.title
+        "
         :role="message.role === 'user' ? ChatMessageRole.USER : ChatMessageRole.ASSISTANT"
       />
       <!-- thinking message -->

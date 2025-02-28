@@ -20,6 +20,7 @@ const { parseMarkdown } = useMarkdown();
 
 <template>
   <ChatMessageBoxWrapper :display-name="displayName || ''" :role="role">
+    <!-- Vision Content -->
     <div v-if="visionContents?.length">
       <div
         v-for="(visionContent, index) in visionContents"
@@ -34,6 +35,7 @@ const { parseMarkdown } = useMarkdown();
         />
       </div>
     </div>
-    <div v-dompurify-html="parseMarkdown(content)" class="w-full pr-10"></div>
+    <!-- Text Content -->
+    <div v-dompurify-html="parseMarkdown(content)"></div>
   </ChatMessageBoxWrapper>
 </template>
