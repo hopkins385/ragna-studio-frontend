@@ -28,7 +28,8 @@ const router = useRouter();
 const show = ref(false);
 const settings = useChatSettingsStore();
 
-const presencePenalty = false;
+const hasPresencePenaltySetting = false;
+const hasMaxTokensSetting = false;
 
 function onEditAssistantClick() {
   if (!props.assistantId) return;
@@ -119,7 +120,7 @@ function onDeleteChatMessages() {
           class="slider"
         />
       </div>
-      <div v-if="presencePenalty" class="mb-5 flex flex-col space-y-4">
+      <div v-if="hasPresencePenaltySetting" class="mb-5 flex flex-col space-y-4">
         <div class="flex w-full justify-between">
           <div>
             Presence Penalty
@@ -140,7 +141,7 @@ function onDeleteChatMessages() {
           class="slider"
         />
       </div>
-      <div class="mb-5 flex flex-col space-y-4">
+      <div v-if="hasMaxTokensSetting" class="mb-5 flex flex-col space-y-4">
         <div class="flex w-full justify-between">
           <div>
             {{ $t('chat.settings.max_tokens.title') }}
