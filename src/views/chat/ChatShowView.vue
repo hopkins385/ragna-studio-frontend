@@ -56,7 +56,7 @@ const activeChatId = ref('');
 
 const setupChatIsCompleted = ref(false);
 
-const inputMessage = ref('');
+const inputMessage = ref<string | number>('');
 const autoScrollLocked = ref(false);
 const chatInputFormRef = ref<HTMLFormElement | null>(null);
 const chatBoxContainerRef = ref<HTMLElement | null>(null);
@@ -89,7 +89,7 @@ const onSubmit = async (chatId: string) => {
     console.error('No chatId provided');
     return;
   }
-  if (!inputMessage.value.trim()) {
+  if (!inputMessage.value.toString().trim()) {
     return;
   }
 
@@ -117,7 +117,7 @@ const onSubmit = async (chatId: string) => {
     await sendChatMessage({
       chatId,
       type: msgType,
-      content: userMessageContent,
+      content: userMessageContent.toString(),
       visionContent,
     });
   } catch (e: any) {
@@ -173,6 +173,7 @@ const setupChat = async (chatId: string) => {
   // console.log('Setting up chat:', chatId);
   setupChatIsCompleted.value = false;
   activeChatId.value = chatId;
+  settings.resetSettings();
   await initChat(chatId);
   removeSocketListeners(chatId);
   setupSocketListeners(chatId);

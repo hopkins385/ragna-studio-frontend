@@ -4,23 +4,35 @@ import { computed, ref } from 'vue';
 const chatStoreName = 'chat-settings';
 
 export const groupByOptions = ['day', 'month', 'year'] as const;
-export type GroupByOption = (typeof groupByOptions)[number];
 export const thinkLevel = [0, 1, 2, 3] as const;
-export type ThinkLevel = (typeof thinkLevel)[number];
+export type GroupByOption = string | undefined;
+export type ThinkLevel = number[] | undefined;
+export type Temperature = number[] | undefined;
+export type PresencePenalty = number[] | undefined;
+export type MaxTokens = number[] | undefined;
+
+const defaultSettings = {
+  thinkLevel: [0],
+  temperature: [80],
+  presencePenalty: [0],
+  maxTokens: [4000],
+  submitOnEnter: true,
+  historyGroupBy: 'day',
+};
 
 export const useChatSettingsStore = defineStore(
   chatStoreName,
   () => {
     // Individual refs for each state property
-    const thinkLevel = ref<[ThinkLevel]>([0]);
-    const temperature = ref<[number]>([80]);
-    const presencePenalty = ref<[number]>([0]);
-    const maxTokens = ref<[number]>([4000]);
-    const submitOnEnter = ref(true);
-    const historyGroupBy = ref<GroupByOption>('day');
+    const thinkLevel = ref<ThinkLevel>(defaultSettings.thinkLevel);
+    const temperature = ref<Temperature>(defaultSettings.temperature);
+    const presencePenalty = ref<PresencePenalty>(defaultSettings.presencePenalty);
+    const maxTokens = ref<MaxTokens>(defaultSettings.maxTokens);
+    const submitOnEnter = ref(defaultSettings.submitOnEnter);
+    const historyGroupBy = ref<GroupByOption>(defaultSettings.historyGroupBy);
 
     // Getters as computed
-    const getThinkLevel = computed(() => thinkLevel.value[0]);
+    const getThinkLevel = computed(() => thinkLevel.value?.[0] || 0);
     const getThinkLevelLabel = computed(
       () =>
         [
@@ -28,15 +40,19 @@ export const useChatSettingsStore = defineStore(
           'chat.settings.think.low',
           'chat.settings.think.medium',
           'chat.settings.think.high',
-        ][thinkLevel.value[0]],
+        ][thinkLevel.value?.[0] || 0],
     );
-    const getTemperature = computed(() => temperature.value[0] / 100);
-    const getPresencePenalty = computed(() => presencePenalty.value[0] / 100);
-    const getMaxTokens = computed(() => maxTokens.value[0]);
+    const getTemperature = computed(
+      () => (temperature.value?.[0] ?? defaultSettings.temperature[0]) / 100,
+    );
+    const getPresencePenalty = computed(
+      () => presencePenalty.value?.[0] ?? defaultSettings.presencePenalty[0],
+    );
+    const getMaxTokens = computed(() => maxTokens.value?.[0] ?? defaultSettings.maxTokens[0]);
     const getHistoryGroupBy = computed(() => historyGroupBy.value);
 
     // Actions as functions
-    function setThinkLevel(thinkingLevel: [ThinkLevel]) {
+    function setThinkLevel(thinkingLevel: ThinkLevel) {
       if (!thinkingLevel || thinkingLevel[0] < 0 || thinkingLevel[0] > 3) {
         return;
       }
@@ -60,10 +76,12 @@ export const useChatSettingsStore = defineStore(
     }
 
     function resetSettings() {
-      thinkLevel.value = [0];
-      temperature.value = [80];
-      presencePenalty.value = [0];
-      maxTokens.value = [4000];
+      thinkLevel.value = defaultSettings.thinkLevel;
+      temperature.value = defaultSettings.temperature;
+      presencePenalty.value = defaultSettings.presencePenalty;
+      maxTokens.value = defaultSettings.maxTokens;
+      submitOnEnter.value = defaultSettings.submitOnEnter;
+      historyGroupBy.value = defaultSettings.historyGroupBy;
     }
 
     return {
@@ -91,6 +109,6 @@ export const useChatSettingsStore = defineStore(
     };
   },
   {
-    persist: true,
+    persist: false,
   },
 );

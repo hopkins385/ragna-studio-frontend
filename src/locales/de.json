@@ -1,11 +1,11 @@
 {
   "nav": {
     "home": "Startseite",
-    "kanban": "Lean Kanban",
+    "kanban": "Workitems",
     "architecture": "Architektur",
     "documents": "Dokumente",
     "editor": "Editor",
-    "tests": "Tests",
+    "tests": "Validierung",
     "workflows": "Workflows",
     "analytics": "Analysen",
     "agents": "KI Agenten",
