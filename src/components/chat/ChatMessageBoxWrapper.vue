@@ -14,6 +14,7 @@ defineProps<{
     class="chatbox__text-box flex bg-white px-10 text-sm py-4"
     :class="['items-start', role === ChatMessageRole.USER ? 'justify-end' : 'justify-start']"
   >
+    <!-- message inner container -->
     <div
       class="pt-3 pb-4 px-4 rounded-2xl flex space-x-3 border border-stone-100"
       :class="[
@@ -22,6 +23,7 @@ defineProps<{
           : 'pr-6 border-transparent',
       ]"
     >
+      <!-- avatar -->
       <div
         class="size-8 flex items-center justify-center shrink-0 rounded-full"
         :class="[role === ChatMessageRole.USER ? ' border-stone-200' : 'border-stone-100']"
@@ -33,16 +35,19 @@ defineProps<{
           <IconRagna class="size-5 drop-shadow-sm" />
         </span>
       </div>
+      <!-- message content container -->
       <div
         class="flex flex-col space-y-2"
         :class="[role === ChatMessageRole.USER ? 'items-end' : 'items-start']"
       >
+        <!-- display name -->
         <div
           class="select-none font-semibold pt-1"
           :class="[role === ChatMessageRole.USER ? 'hidden' : '']"
         >
           {{ displayName }}
         </div>
+        <!-- message content -->
         <div
           class="overflow-hidden w-fit"
           :class="[role === ChatMessageRole.USER ? 'max-w-xl' : 'pr-10']"
