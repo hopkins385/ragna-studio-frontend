@@ -194,7 +194,13 @@ const handleEditorUpdateEvent = () => {
   }
 };
 
-//
+// Comment Extension
+const handleCommentsEvent = (event: any) => {
+  // Handle comment event
+  console.log('Comment event:', event);
+};
+
+editorStore.setCommentClickHandler(handleCommentsEvent);
 
 watch(
   () => editorStore.isTextSelected,
@@ -207,6 +213,7 @@ watch(
 );
 
 onMounted(() => {
+  editorStore.$reset();
   editorStore.addEventListener('update', handleEditorUpdateEvent);
   editorStore.addEventListener('blur', handleEditorBlurEvent);
   window.addEventListener('mouseup', handleMouseUp);

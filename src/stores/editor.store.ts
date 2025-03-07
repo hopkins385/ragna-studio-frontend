@@ -29,12 +29,38 @@ export const useEditorStore = defineStore('editor-store', () => {
   const _editor = ref<Editor | undefined>();
   const _editorContent = ref<string>('');
   const _isTextSelected = ref(false);
+  const _externalCommentClickHandler = ref<((commentId: string) => void) | undefined>();
 
   // computed
   const isTextSelected = computed(() => _isTextSelected.value);
   const editorContent = computed(() => _editorContent.value);
 
   // actions
+  const defaultCommentClickHandler = (commentId: string) => {
+    // Default implementation
+    console.log('Comment clicked:', commentId);
+    // For example, you might want to:
+    // - Highlight the comment
+    // - Open a details panel
+    // - Navigate to the comment thread
+  };
+
+  const commentClickHandler = (commentId: string) => {
+    if (_externalCommentClickHandler.value) {
+      _externalCommentClickHandler.value(commentId);
+    } else {
+      defaultCommentClickHandler(commentId);
+    }
+  };
+
+  const setCommentClickHandler = (handler: (commentId: string) => void) => {
+    _externalCommentClickHandler.value = handler;
+  };
+
+  const unsetCommentClickHandler = () => {
+    _externalCommentClickHandler.value = undefined;
+  };
+
   const _createEditorInstance = (): Editor => {
     return new Editor({
       content: _editorContent.value,
@@ -60,7 +86,9 @@ export const useEditorStore = defineStore('editor-store', () => {
           types: ['paragraph', 'heading', 'listItem', 'taskItem', 'taskList'],
           generateId: true,
         }),
-        CommentsExtension,
+        CommentsExtension.configure({
+          onCommentClick: commentClickHandler,
+        }),
         // InlineCompletionExtension.configure({
         //   completionHandler: fetchInlineCompletionHandler,
         // }),
@@ -94,6 +122,8 @@ export const useEditorStore = defineStore('editor-store', () => {
     }
     _editor.value = undefined;
     _editorContent.value = '';
+    _isTextSelected.value = false;
+    _externalCommentClickHandler.value = undefined;
   };
 
   const setEditorContent = (content: JSONContent) => {
@@ -148,5 +178,7 @@ export const useEditorStore = defineStore('editor-store', () => {
     getJSONContent,
     addEventListener,
     removeEventListener,
+    setCommentClickHandler,
+    unsetCommentClickHandler,
   };
 });

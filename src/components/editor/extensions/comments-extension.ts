@@ -2,16 +2,44 @@ import { Extension } from '@tiptap/core';
 import { Plugin, PluginKey } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 
+// Helper function to sanitize attribute values
+function sanitizeAttributeValue(value: string | undefined): string {
+  if (!value) return '';
+  // Remove any characters that could be problematic in HTML attributes
+  return String(value).replace(/[&<>"']/g, char => {
+    switch (char) {
+      case '&':
+        return '&amp;';
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '"':
+        return '&quot;';
+      case "'":
+        return '&#39;';
+      default:
+        return char;
+    }
+  });
+}
+
 export interface Comment {
   id: string;
   text: string;
   from: number;
   to: number;
+  reference?: string; // Optional reference to identify the comment for external components
 }
 
 interface CommentsStorage {
   comments: Comment[];
 }
+
+interface CommentsOptions {
+  onCommentClick?: (commentId: string, reference?: string) => void;
+}
+
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     comments: {
@@ -22,8 +50,14 @@ declare module '@tiptap/core' {
   }
 }
 
-const CommentsExtension = Extension.create({
+const CommentsExtension = Extension.create<CommentsOptions>({
   name: 'comments',
+
+  addOptions() {
+    return {
+      onCommentClick: undefined,
+    };
+  },
 
   addStorage() {
     return {
@@ -65,6 +99,8 @@ const CommentsExtension = Extension.create({
   },
 
   addProseMirrorPlugins() {
+    const { onCommentClick } = this.options;
+
     return [
       new Plugin({
         key: new PluginKey('comments'),
@@ -79,7 +115,11 @@ const CommentsExtension = Extension.create({
             const { comments } = this.storage;
             console.log('comments', comments);
             const decorations = comments.map((comment: Comment) =>
-              Decoration.inline(comment.from, comment.to, { class: 'comment-highlighted' }),
+              Decoration.inline(comment.from, comment.to, {
+                class: 'comment-highlighted',
+                'data-comment-id': sanitizeAttributeValue(comment.id),
+                'data-comment-reference': sanitizeAttributeValue(comment.reference),
+              }),
             );
             return DecorationSet.create(tr.doc, decorations);
           },
@@ -87,6 +127,29 @@ const CommentsExtension = Extension.create({
         props: {
           decorations(state) {
             return this.getState(state);
+          },
+          handleClick(view, pos, event) {
+            if (!onCommentClick) {
+              return false;
+            }
+
+            const target = event.target as HTMLElement;
+            const commentHighlight = target.closest('.comment-highlighted');
+
+            if (commentHighlight) {
+              // No need to sanitize here - getAttribute returns the raw string value
+              // The browser doesn't parse this as HTML, so there's no XSS risk
+              const commentId = commentHighlight.getAttribute('data-comment-id');
+              const reference =
+                commentHighlight.getAttribute('data-comment-reference') || undefined;
+
+              if (commentId) {
+                onCommentClick(commentId, reference);
+                return true;
+              }
+            }
+
+            return false;
           },
         },
       }),
