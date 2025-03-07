@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import imageUrl from '@/assets/images/bg_robots.png';
+import imageUrl from '@/assets/images/home8.jpg?q=100&imagetools';
 import HomeFavorites from '@/components/home/HomeFavorites.vue';
 import HomeQuickAccess from '@/components/home/HomeQuickAccess.vue';
 
@@ -21,13 +21,8 @@ const backgroundStyles = computed(() => {
         class="bg-blue-50 p-5 flex items-center h-44 rounded-xl overflow-hidden bg-center bg-cover"
         :style="backgroundStyles"
       >
-        <div
-          v-if="false"
-          class="h-20 border-0 w-full flex items-center justify-center"
-        >
-          <p class="text-4xl text-white font-semibold">
-            Was gestaltest du heute?
-          </p>
+        <div v-if="false" class="h-20 border-0 w-full flex items-center justify-center">
+          <p class="text-4xl text-white font-semibold">Was gestaltest du heute?</p>
         </div>
       </div>
     </div>

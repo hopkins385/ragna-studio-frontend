@@ -1,19 +1,15 @@
 <script setup lang="ts">
 // Imports
 import { UnknownError } from '@/common/errors/unknown.error';
+import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import { useEditorService } from '@/composables/services/useEditorService';
 import useMarkdown from '@/composables/useMarkdown';
-import type { Editor } from '@tiptap/vue-3';
+import { useEditorStore } from '@/stores/editor.store';
 import { Button } from '@ui/button';
 import { Textarea } from '@ui/textarea';
 import { RefreshCcwIcon, SquareIcon, Trash2Icon } from 'lucide-vue-next';
-import ButtonLoading from '../button/ButtonLoading.vue';
 
 // Props
-const props = defineProps<{
-  editor: Editor;
-}>();
-
 // Emits
 const emit = defineEmits<{
   close: [];
@@ -21,6 +17,9 @@ const emit = defineEmits<{
   submit: [];
   error: [error: unknown];
 }>();
+
+// Stores
+const editorStore = useEditorStore();
 
 // Refs
 const input = ref('');
@@ -39,6 +38,9 @@ const hasInput = computed(() => input.value.length > 1);
 const hasRawCompletion = computed(() => !!rawCompletion.value);
 const disableInput = computed(() => isLoading.value || !hasInput.value);
 
+// Injections
+const editor = editorStore.getEditor();
+
 // Functions
 const runCompletion = async () => {
   if (disableInput.value) {
@@ -49,7 +51,7 @@ const runCompletion = async () => {
 
   try {
     const completionPayload = {
-      context: props.editor.getHTML(),
+      context: editor.getHTML(),
       selectedText: originalTextBetween.value,
       prompt: input.value,
     };
@@ -73,7 +75,7 @@ const runCompletion = async () => {
     const startPos = originalSelection.value.from;
 
     // Replace text at the original selection range and select the new content
-    props.editor
+    editor
       .chain()
       .deleteRange({
         from: startPos,
@@ -106,7 +108,7 @@ const resetCompletionVars = () => {
 
 const discardChanges = () => {
   resetCompletionVars();
-  props.editor
+  editor
     .chain()
     .focus()
     .undo()
@@ -133,7 +135,7 @@ const handleAbort = () => {
 
 const handleReGenerate = () => {
   // First restore original selection before regenerating
-  props.editor
+  editor
     .chain()
     .focus()
     .undo()
@@ -174,9 +176,9 @@ onMounted(() => {
   focusInput();
   window.addEventListener('keydown', handleKeyDown);
   // Store initial selection range
-  const { from, to } = props.editor.state.selection;
+  const { from, to } = editor.state.selection;
   originalSelection.value = { from, to };
-  originalTextBetween.value = props.editor.state.doc.textBetween(from, to);
+  originalTextBetween.value = editor.state.doc.textBetween(from, to);
 });
 
 onBeforeUnmount(() => {

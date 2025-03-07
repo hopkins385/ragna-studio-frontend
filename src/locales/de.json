@@ -2,7 +2,7 @@
   "nav": {
     "home": "Startseite",
     "kanban": "Workitems",
-    "architecture": "Architektur",
+    "architecture": "Modelle",
     "documents": "Dokumente",
     "editor": "Editor",
     "tests": "Validierung",

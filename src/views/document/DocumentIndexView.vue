@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import EditorComments from '@/components/editor/EditorComments.vue';
 import EditorContainer from '@/components/editor/EditorContainer.vue';
 import { useDrawerStore } from '@/stores/drawer.store';
 
@@ -10,9 +11,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center space-y-8">
-    <div class="w-full">
+  <div class="flex items-center justify-center h-full">
+    <div class="size-full">
       <EditorContainer />
     </div>
+    <div class="w-96 border-l h-full p-4">
+      <EditorComments />
+    </div>
+    <!-- mt-[7.5rem] -->
   </div>
 </template>

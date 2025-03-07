@@ -31,6 +31,11 @@ const CommentsExtension = Extension.create({
     } as CommentsStorage;
   },
 
+  onDestroy() {
+    // Clear comments when editor is destroyed
+    this.storage.comments = [];
+  },
+
   addCommands() {
     return {
       setOneComment:

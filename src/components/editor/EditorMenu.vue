@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { useEditorStore } from '@/stores/editor.store';
 import useEditorActions from '@composables/editor/useEditorActions';
-import type { Editor } from '@tiptap/vue-3';
 import { Button } from '@ui/button';
 import {
   AlignCenterIcon,
@@ -23,13 +23,21 @@ import {
   Undo2Icon,
 } from 'lucide-vue-next';
 
+// Props
 const props = defineProps<{
-  editor: Editor;
   isLoading: boolean;
 }>();
 
+// Emits
 const emits = defineEmits(['toggle-instruction-menu']);
 
+// Stores
+const editorStore = useEditorStore();
+
+// Injections
+const editor = editorStore.getEditor();
+
+// Composables
 const {
   onImproveClick,
   onExtendClick,
@@ -54,12 +62,18 @@ const {
   onToggleOrderedListClick,
   onToggleTextOrientationClick,
   onToggleInvisibleCharactersClick,
-} = useEditorActions(props.editor);
+} = useEditorActions(editor);
+
+// Refs
+// Computed
 
 const hasTextSelected = computed(() => {
-  const { from, to } = props.editor.state.selection;
+  if (!editor) return false;
+  const { from, to } = editor.state.selection;
   return from !== to;
 });
+
+// Methods
 
 const onInstructionClick = () => {
   emits('toggle-instruction-menu');
@@ -147,11 +161,7 @@ const onTranslateClick = (lang: string) => {
       >
         <StrikethroughIcon class="size-4 bg-transparent" />
       </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        @click="onToggleTextOrientationClick()"
-      >
+      <Button variant="ghost" size="icon" @click="onToggleTextOrientationClick()">
         <TextIcon
           v-if="editor.isActive({ textAlign: 'left' })"
           class="!size-5 stroke-1.5 bg-transparent"
@@ -174,8 +184,7 @@ const onTranslateClick = (lang: string) => {
         variant="ghost"
         size="icon"
         :class="{
-          'is-active':
-            editor.isActive('bulletList') || editor.isActive('orderedList'),
+          'is-active': editor.isActive('bulletList') || editor.isActive('orderedList'),
         }"
         @click="onToggleListClick()"
       >
@@ -232,9 +241,7 @@ const onTranslateClick = (lang: string) => {
         <Redo2Icon class="size-4 bg-transparent" />
       </Button>
       <div v-if="isLoading" class="flex items-center justify-center">
-        <Loader2Icon
-          class="size-6 animate-spin text-slate-300 bg-transparent"
-        />
+        <Loader2Icon class="size-6 animate-spin text-slate-300 bg-transparent" />
       </div>
     </div>
     <!-- div v-if="isLoading" class="flex items-center justify-center">

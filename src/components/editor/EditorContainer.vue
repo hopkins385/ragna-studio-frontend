@@ -1,28 +1,22 @@
 <script setup lang="ts">
+import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import { useEditorService } from '@/composables/services/useEditorService';
 import { useErrorAlert } from '@/composables/useErrorAlert';
-import { Highlight } from '@tiptap/extension-highlight';
-import { Image } from '@tiptap/extension-image';
-import { ListKeymap } from '@tiptap/extension-list-keymap';
-import { Placeholder } from '@tiptap/extension-placeholder';
-import { TaskItem } from '@tiptap/extension-task-item';
-import { TaskList } from '@tiptap/extension-task-list';
-import { TextAlign } from '@tiptap/extension-text-align';
-import { Underline } from '@tiptap/extension-underline';
-import { StarterKit } from '@tiptap/starter-kit';
-import { Editor, EditorContent, type JSONContent } from '@tiptap/vue-3';
-import ErrorAlert from '../error/ErrorAlert.vue';
+import { useEditorStore } from '@/stores/editor.store';
+import { EditorContent } from '@tiptap/vue-3';
 import EditorAssistantDropdownMenu from './EditorAssistantDropdownMenu.vue';
 import EditorAssistantPromptContainer from './EditorAssistantPromptContainer.vue';
 import EditorMenu from './EditorMenu.vue';
-import { HighlightSelection } from './extensions/highlight-selection.extension';
 import {
-  InlineCompletionExtension,
   type CompletionRequestContext,
   type InlineCompletionResponse,
 } from './extensions/inline-completion/inline-completion.extension';
-import { InvisibleCharacters } from './extensions/invisible-characters';
-import { NodeTracker } from './extensions/node-tracker';
+
+// Stores
+const editorStore = useEditorStore();
+
+// Injections
+const editor = editorStore.getEditor();
 
 const isLoading = ref(false);
 const spinnerPosition = ref({ x: 0, y: 0 });
@@ -44,68 +38,8 @@ const assistantDropdownMenu = reactive({
 });
 
 const { isOutside: isOutsideWrapper } = useMouseInElement(editorWrapperRef);
-const { isOutside: isOutsideContent } = useMouseInElement(editorContentRef);
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { fetchInlineCompletion, abortCompletion } = useEditorService();
-
-const creatCommentHandler = async (comment: any) => {
-  console.log('create comment', comment);
-  return await new Promise(resolve => {
-    setTimeout(() => {
-      resolve(comment);
-    }, 1000);
-  });
-};
-
-const deleteCommentHandler = async (id: string) => {
-  console.log('delete comment', id);
-  return await new Promise(resolve => {
-    setTimeout(() => {
-      resolve(id);
-    }, 1000);
-  });
-};
-
-const dummyCommentsData = [
-  {
-    id: '1',
-    documentId: 'aaaabbbbccccdddeeefffgggghhhh',
-    text: 'This is a comment on the first paragraph',
-    anchor: {
-      type: 'paragraph',
-      posStart: 1,
-      posEnd: 45,
-      attrs: {
-        posStart: 1,
-        posEnd: 45,
-      },
-    },
-    createdAt: new Date(),
-  },
-  {
-    id: '2',
-    documentId: 'aaaabbbbccccdddeeefffgggghhhh',
-    text: 'This is a comment on the middle section',
-    anchor: {
-      type: 'paragraph',
-      posStart: 46,
-      posEnd: 120,
-      attrs: {
-        posStart: 46,
-        posEnd: 120,
-      },
-    },
-    createdAt: new Date(),
-  },
-];
-
-const loadCommentsHandler = async (documentId: string) => {
-  return await new Promise(resolve => {
-    setTimeout(() => {
-      resolve([]);
-    }, 1000);
-  });
-};
 
 const fetchInlineCompletionHandler = async (params: {
   context: CompletionRequestContext;
@@ -154,57 +88,6 @@ watch(isLoading, newValue => {
   }
 });
 
-const documentId = ref('aaaabbbbccccdddeeefffgggghhhh');
-const editorContent = ref<JSONContent | undefined>(undefined);
-
-const editor = new Editor({
-  content: editorContent.value,
-  extensions: [
-    StarterKit,
-    Placeholder.configure({
-      placeholder: 'Schreibe etwas …',
-    }),
-    Highlight,
-    HighlightSelection,
-    Underline,
-    TextAlign.configure({
-      types: ['heading', 'paragraph', 'listItem'],
-    }),
-    TaskList,
-    TaskItem,
-    ListKeymap,
-    Image,
-    InvisibleCharacters.configure({
-      injectCSS: false,
-    }),
-    NodeTracker.configure({
-      types: ['paragraph', 'heading', 'listItem', 'taskItem', 'taskList'],
-      generateId: true,
-    }),
-    // CommentsExtension,
-    InlineCompletionExtension.configure({
-      completionHandler: fetchInlineCompletionHandler,
-    }),
-  ],
-  onUpdate: ({ editor }) => {
-    editorContent.value = editor.getJSON();
-    if (assistantPromptContainer.show) {
-      updateAssistantPromptContainerPosition();
-    }
-    if (assistantDropdownMenu.show) {
-      updateAssistantDropdownMenuPosition();
-    }
-  },
-  onCreate: ({ editor }) => {
-    // Initial position update
-    editor.commands.updatePositions();
-  },
-  onBlur: ({ event }) => {
-    handleEditorBlurEvent(event);
-  },
-  autofocus: 'end',
-});
-
 const handleCloseAssistantDropdownMenu = () => {
   assistantDropdownMenu.show = false;
 };
@@ -213,7 +96,7 @@ const handleCloseAssistantPromptContainer = () => {
   assistantPromptContainer.show = false;
 };
 
-const handleEditorBlurEvent = (event: FocusEvent) => {
+const handleEditorBlurEvent = (event: any) => {
   // If the focused element is inside the prompt container or dropdown menu, do nothing
   if (
     (assistantPromptContainerRef.value &&
@@ -233,6 +116,7 @@ const handleEditorBlurEvent = (event: FocusEvent) => {
 };
 
 const updateAssistantPromptContainerPosition = () => {
+  if (!editor) throw new Error('Editor instance is not available');
   const { from, to } = editor.state.selection;
   if (from === to || !editorWrapperRef.value) {
     return;
@@ -249,7 +133,7 @@ const updateAssistantPromptContainerPosition = () => {
 };
 
 const handleShowPromptContainer = () => {
-  if (hasTextSelected.value && !isOutsideWrapper.value) {
+  if (editorStore.isTextSelected && !isOutsideWrapper.value) {
     updateAssistantPromptContainerPosition();
     assistantPromptContainer.show = true;
   } else {
@@ -258,6 +142,7 @@ const handleShowPromptContainer = () => {
 };
 
 const updateAssistantDropdownMenuPosition = () => {
+  if (!editor) throw new Error('Editor instance is not available');
   const { from } = editor.state.selection;
   if (!editorWrapperRef.value) {
     return;
@@ -271,6 +156,7 @@ const updateAssistantDropdownMenuPosition = () => {
 
 // Handle mouseup event to show the assistant dropdown menu
 const handleMouseUp = () => {
+  if (!editor) throw new Error('Editor instance is not available');
   const { from, to } = editor.state.selection;
   if (from !== to && editorWrapperRef.value && !isOutsideWrapper.value) {
     updateAssistantDropdownMenuPosition();
@@ -299,44 +185,47 @@ const onAssistantPromptSubmit = () => {
   unsetErrorAlert();
 };
 
+const handleEditorUpdateEvent = () => {
+  if (assistantPromptContainer.show) {
+    updateAssistantPromptContainerPosition();
+  }
+  if (assistantDropdownMenu.show) {
+    updateAssistantDropdownMenuPosition();
+  }
+};
+
 //
 
-const hasTextSelected = computed(() => {
-  if (editorContent.value && editorContent.value.length < 1) {
-    return false;
-  }
-  const { from, to } = editor.state.selection;
-  return from !== to;
-});
-
 watch(
-  () => hasTextSelected.value,
+  () => editorStore.isTextSelected,
   newValue => {
-    if (newValue === false) {
-      // Only hide if there's really no selection
-      const { from, to } = editor.state.selection;
-      if (from === to) {
-        assistantPromptContainer.show = false;
-      }
+    if (newValue !== true) {
+      assistantPromptContainer.show = false;
       assistantDropdownMenu.show = false;
     }
   },
 );
 
 onMounted(() => {
+  editorStore.addEventListener('update', handleEditorUpdateEvent);
+  editorStore.addEventListener('blur', handleEditorBlurEvent);
   window.addEventListener('mouseup', handleMouseUp);
   // window.addEventListener('contextmenu', handleContextMenu);
 });
 
 onBeforeUnmount(() => {
+  editorStore.removeEventListener('update', handleEditorUpdateEvent);
+  editorStore.removeEventListener('blur', handleEditorBlurEvent);
+  editorStore.destroyEditor();
+
   window.removeEventListener('mouseup', handleMouseUp);
   // window.removeEventListener('contextmenu', handleContextMenu);
-  editor.destroy();
 });
 </script>
 
 <template>
-  <div id="text-editor" class="rounded-lg bg-white overflow-hidden h-full relative">
+  <div v-if="!editor">No Editor Instance</div>
+  <div v-else id="text-editor" class="rounded-lg bg-white overflow-hidden h-full relative">
     <!-- Menu -->
     <div class="border-b flex justify-between items-center rounded-t-lg overflow-hidden h-13">
       <!-- Left Menu -->
@@ -354,7 +243,7 @@ onBeforeUnmount(() => {
       </div>
       <!-- Center Menu -->
       <div class="">
-        <EditorMenu :editor="editor" :is-loading="false" />
+        <EditorMenu :is-loading="false" />
       </div>
       <!-- Right Menu -->
       <div class="w-20"></div>
@@ -395,7 +284,6 @@ onBeforeUnmount(() => {
           }"
         >
           <EditorAssistantPromptContainer
-            :editor="editor"
             @close="() => handleCloseAssistantPromptContainer()"
             @refresh-position="updateAssistantPromptContainerPosition"
             @submit="onAssistantPromptSubmit"
@@ -405,11 +293,6 @@ onBeforeUnmount(() => {
         <!-- Editor Content -->
         <div id="editorContent" ref="editorContentRef" class="relative">
           <EditorContent :editor="editor" />
-          <!--
-          <div class="absolute top-0 right-0">
-            <EditorComments :editor="editor" />
-          </div>
-          -->
 
           <!-- Loading spinner -->
           <div
