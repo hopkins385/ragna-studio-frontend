@@ -213,7 +213,6 @@ watch(
 );
 
 onMounted(() => {
-  editorStore.$reset();
   editorStore.addEventListener('update', handleEditorUpdateEvent);
   editorStore.addEventListener('blur', handleEditorBlurEvent);
   window.addEventListener('mouseup', handleMouseUp);
