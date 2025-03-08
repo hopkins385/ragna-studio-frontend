@@ -1,28 +1,7 @@
+import { sanitizeAttributeValue } from '@/common/sanitize/sanitize-attribute.helper';
 import { Extension } from '@tiptap/core';
 import { Plugin, PluginKey } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
-
-// Helper function to sanitize attribute values
-function sanitizeAttributeValue(value: string | undefined): string {
-  if (!value) return '';
-  // Remove any characters that could be problematic in HTML attributes
-  return String(value).replace(/[&<>"']/g, char => {
-    switch (char) {
-      case '&':
-        return '&amp;';
-      case '<':
-        return '&lt;';
-      case '>':
-        return '&gt;';
-      case '"':
-        return '&quot;';
-      case "'":
-        return '&#39;';
-      default:
-        return char;
-    }
-  });
-}
 
 export interface Comment {
   id: string;
@@ -47,15 +26,17 @@ interface CommentsOptions {
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     comments: {
-      setOneComment: (comment: Comment) => ReturnType;
+      addOneComment: (comment: Comment) => ReturnType;
       removeOneComment: (id: string) => ReturnType;
       initAllComments: (comments: Comment[]) => ReturnType;
     };
   }
 }
 
+const commentsExtensionName = 'comments';
+
 const CommentsExtension = Extension.create<CommentsOptions>({
-  name: 'comments',
+  name: commentsExtensionName,
 
   addOptions() {
     return {
@@ -80,11 +61,11 @@ const CommentsExtension = Extension.create<CommentsOptions>({
 
   addCommands() {
     return {
-      setOneComment:
+      addOneComment:
         (comment: Comment) =>
         ({ editor, tr }) => {
           this.storage.comments.push(comment);
-          tr.setMeta('comments', true);
+          tr.setMeta(commentsExtensionName, true);
 
           // Call the onCommentAdd handler if defined
           if (this.options.onCommentAdd) {
@@ -99,7 +80,7 @@ const CommentsExtension = Extension.create<CommentsOptions>({
           this.storage.comments = this.storage.comments.filter(
             (comment: Comment) => comment.id !== id,
           );
-          tr.setMeta('comments', true);
+          tr.setMeta(commentsExtensionName, true);
 
           // Call the onCommentRemove handler if defined
           if (this.options.onCommentRemove) {
@@ -112,24 +93,25 @@ const CommentsExtension = Extension.create<CommentsOptions>({
         (comments: Comment[]) =>
         ({ editor, tr }) => {
           this.storage.comments = comments;
-          tr.setMeta('comments', true);
+          tr.setMeta(commentsExtensionName, true);
           return true;
         },
     };
   },
 
   addProseMirrorPlugins() {
+    const pluginKey = new PluginKey(commentsExtensionName);
     const { onCommentClick } = this.options;
 
     return [
       new Plugin({
-        key: new PluginKey('comments'),
+        key: pluginKey,
         state: {
           init: (_, { doc }) => {
             return DecorationSet.create(doc, []);
           },
           apply: (tr, old) => {
-            const action = tr.getMeta('comments');
+            const action = tr.getMeta(commentsExtensionName);
 
             // Update positions of comments when text changes
             if (tr.docChanged) {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import EditorSidebar from '@/components/editor/EditorSidebar.vue';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { useWebSocketStore } from '@/stores/websocket.store';
 import DrawerPanel from '@components/drawer/DrawerPanel.vue';
@@ -61,12 +62,12 @@ onUnmounted(() => {
       <div
         id="main"
         ref="mainContainer"
-        class="relative grow overflow-y-scroll overflow-x-hidden text-slate-800 bg-white shadow-lg border-l border-t rounded-xl"
+        class="relative grow overflow-y-scroll overflow-x-hidden text-slate-800 bg-white shadow-lg border rounded-xl"
         style="max-width: calc(100vw - 4.5rem)"
       >
         <slot />
       </div>
-      <div class="w-20 hidden h-full">tglComt</div>
+      <EditorSidebar />
     </div>
   </body>
 </template>

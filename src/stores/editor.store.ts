@@ -195,8 +195,7 @@ export const useEditorStore = defineStore('editor-store', () => {
       from,
       to,
     };
-    console.log('Adding comment:', newComment);
-    _editor.value.chain().focus(to).setOneComment(newComment).run();
+    _editor.value.chain().focus(to).addOneComment(newComment).run();
     if (!_comments.value) {
       _comments.value = [newComment];
     } else {
@@ -209,7 +208,6 @@ export const useEditorStore = defineStore('editor-store', () => {
     if (!_editor.value) {
       throw new Error('Editor instance is not created yet.');
     }
-    console.log('Deleting comment with id:', id);
     _editor.value.chain().focus().removeOneComment(id).run();
     _comments.value = _comments.value?.filter(comment => comment.id !== id);
     await syncCommentsWithBackend();
@@ -222,7 +220,6 @@ export const useEditorStore = defineStore('editor-store', () => {
     console.log('Hydrating comments:', comments);
     _editor.value.commands.initAllComments(comments);
     _comments.value = comments;
-    // await syncCommentsWithBackend();
   };
 
   const toggleShowComments = () => {

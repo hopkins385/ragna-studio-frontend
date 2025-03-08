@@ -42,13 +42,10 @@ const onCancel = () => {
 };
 
 const onFocus = () => {
-  console.log('Textarea focused');
   showControls.value = true;
 };
 
 const onBlur = () => {
-  // Handle blur event
-  console.log('Textarea blurred');
   if (submitLocked.value !== false) showControls.value = false;
 };
 
@@ -57,7 +54,7 @@ const onBlur = () => {
 
 <template>
   <form @submit.prevent="onSubmit">
-    <FormField v-slot="{ componentField }" name="textarea" :defaultValue="newCommentText">
+    <FormField :defaultValue="newCommentText" name="textarea" type="text">
       <FormItem>
         <FormControl>
           <div class="relative">
