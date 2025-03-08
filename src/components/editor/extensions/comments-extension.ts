@@ -139,10 +139,26 @@ const CommentsExtension = Extension.create<CommentsOptions>({
               
               // Update comment positions based on document changes
               this.storage.comments = comments.map(comment => {
+                // Handle text being added or removed before or within the comment
                 const newFrom = tr.mapping.map(comment.from);
-                // Maintain the original length of the comment
+                const mappedTo = tr.mapping.map(comment.to);
+                
+                // Two cases to handle:
+                // 1. If text is added before the comment, we want to shift both from and to
+                // 2. If text is changed within the comment range, we want to maintain the original length
+                
+                // Determine if text was added/removed before the comment
+                // or if the comment itself was modified
+                let newTo: number;
                 const originalLength = comment.to - comment.from;
-                const newTo = newFrom + originalLength;
+                
+                // If the mapping preserved the comment length exactly, use mapped positions
+                if (mappedTo - newFrom === originalLength) {
+                  newTo = mappedTo;
+                } else {
+                  // Otherwise enforce the original length
+                  newTo = newFrom + originalLength;
+                }
                 
                 // Only consider it updated if position actually changed
                 const updatedComment = {
