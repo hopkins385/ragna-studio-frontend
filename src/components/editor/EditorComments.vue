@@ -1,8 +1,9 @@
 <script setup lang="ts">
 // Imports
+import CommentAddForm from '@/components/comment/CommentAddForm.vue';
+import { Button } from '@/components/ui/button';
 import { useEditorStore } from '@/stores/editor.store';
-import { computed, ref, watch } from 'vue';
-import type { Comment } from './extensions/comments-extension';
+import { XIcon } from 'lucide-vue-next';
 
 // Props
 // Emits
@@ -16,56 +17,70 @@ const editorStore = useEditorStore();
 const editor = editorStore.getEditor();
 
 // Refs
-const newCommentText = ref('');
 
 // Computed
-const comments = computed<Comment[]>(() => {
-  return editor.storage.comments.comments || [];
-});
 
 // Functions
-const addComment = async () => {
-  if (editor && newCommentText.value) {
-    const { from, to } = editor.state.selection;
-    const newComment: Comment = {
-      id: Date.now().toString(),
-      text: newCommentText.value,
-      from,
-      to,
-    };
-    console.log('Adding comment:', newComment);
-    editor.chain().focus(to).setOneComment(newComment).run();
-    newCommentText.value = '';
-    await syncCommentsWithBackend();
-  }
-};
 
-const deleteComment = async (id: string) => {
-  if (editor) {
-    console.log('Deleting comment with id:', id);
-    editor.chain().focus().removeOneComment(id).run();
-    await syncCommentsWithBackend();
-  }
-};
-
-const syncCommentsWithBackend = async () => {
-  // Sync comments with backend
-};
+// Comment Extension
 
 // Hooks
-watch(comments, syncCommentsWithBackend, { deep: true });
 </script>
 
 <template>
-  <div class="comment-ui">
-    {{ editor.storage.comments }}
-    <div v-for="comment in comments" :key="comment.id" class="comment">
-      <p>{{ comment.text }}</p>
-      <button @click="deleteComment(comment.id)">Delete</button>
+  <transition name="slide">
+    <div v-if="editorStore.showComments" class="comments-panel h-full overflow-hidden shrink-0">
+      <div class="border-l h-full p-4 space-y-5">
+        <div class="flex items-center space-x-1">
+          <div>
+            <Button variant="ghost" size="icon" @click="editorStore.toggleShowComments">
+              <XIcon class="size-4" />
+            </Button>
+          </div>
+          <div>
+            <h3 class="font-semibold text-base">Comments</h3>
+          </div>
+        </div>
+        <div>
+          <CommentAddForm @submit="editorStore.addComment" />
+        </div>
+        <div v-for="comment in editorStore.comments" :key="comment.id" class="comment">
+          <div
+            class="border p-2 text-sm rounded-md"
+            :class="{
+              'bg-gray-100': comment.id === editorStore.selectedCommentId,
+            }"
+          >
+            <p>{{ comment.text }}</p>
+            <button @click="() => editorStore.deleteComment(comment.id)">Delete</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="add-comment">
-      <input v-model="newCommentText" placeholder="Add a comment" />
-      <button @click="addComment">Add</button>
-    </div>
-  </div>
+  </transition>
 </template>
+
+<style scoped>
+.comments-panel {
+  width: 24rem;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateX(100%);
+  width: 0;
+  opacity: 0;
+}
+
+.slide-enter-to,
+.slide-leave-from {
+  transform: translateX(0);
+  width: 24rem;
+  opacity: 1;
+}
+</style>

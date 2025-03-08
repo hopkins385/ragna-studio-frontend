@@ -1,4 +1,4 @@
-import CommentsExtension from '@/components/editor/extensions/comments-extension';
+import CommentsExtension, { type Comment } from '@/components/editor/extensions/comments-extension';
 import { HighlightSelection } from '@/components/editor/extensions/highlight-selection.extension';
 import { InvisibleCharacters } from '@/components/editor/extensions/invisible-characters';
 import { NodeTracker } from '@/components/editor/extensions/node-tracker';
@@ -25,40 +25,30 @@ type CallbackFunction<T extends Record<string, any>, EventName extends StringKey
 ) => any;
 
 export const useEditorStore = defineStore('editor-store', () => {
-  // ref
+  // internal refs
   const _editor = ref<Editor | undefined>();
   const _editorContent = ref<string>('');
-  const _isTextSelected = ref(false);
-  const _externalCommentClickHandler = ref<((commentId: string) => void) | undefined>();
+  const _hasTextSelected = ref(false);
+  const _comments = ref<Comment[] | undefined>(undefined);
+  const _selectedCommentId = ref<string | null>(null);
+
+  // external refs
+  const showComments = ref(false);
 
   // computed
-  const isTextSelected = computed(() => _isTextSelected.value);
+  const hasTextSelected = computed(() => _hasTextSelected.value);
   const editorContent = computed(() => _editorContent.value);
+  const comments = computed<Comment[]>(() => _comments.value || []);
+  const selectedCommentId = computed(() => _selectedCommentId.value);
 
   // actions
-  const defaultCommentClickHandler = (commentId: string) => {
-    // Default implementation
-    console.log('Comment clicked:', commentId);
-    // For example, you might want to:
-    // - Highlight the comment
-    // - Open a details panel
-    // - Navigate to the comment thread
-  };
-
-  const commentClickHandler = (commentId: string) => {
-    if (_externalCommentClickHandler.value) {
-      _externalCommentClickHandler.value(commentId);
-    } else {
-      defaultCommentClickHandler(commentId);
+  const handleCommentClickEvent = (commentId: string, reference?: string) => {
+    // Handle comment event
+    console.log('Comment event:', commentId);
+    if (showComments.value !== true) {
+      showComments.value = true;
     }
-  };
-
-  const setCommentClickHandler = (handler: (commentId: string) => void) => {
-    _externalCommentClickHandler.value = handler;
-  };
-
-  const unsetCommentClickHandler = () => {
-    _externalCommentClickHandler.value = undefined;
+    _selectedCommentId.value = commentId;
   };
 
   const _createEditorInstance = (): Editor => {
@@ -87,7 +77,7 @@ export const useEditorStore = defineStore('editor-store', () => {
           generateId: true,
         }),
         CommentsExtension.configure({
-          onCommentClick: commentClickHandler,
+          onCommentClick: handleCommentClickEvent,
         }),
         // InlineCompletionExtension.configure({
         //   completionHandler: fetchInlineCompletionHandler,
@@ -102,7 +92,7 @@ export const useEditorStore = defineStore('editor-store', () => {
       },
       onSelectionUpdate: ({ editor }) => {
         const { from, to } = editor.state.selection;
-        _isTextSelected.value = from !== to;
+        _hasTextSelected.value = from !== to;
       },
       onBlur: ({ event }) => {},
       autofocus: 'end',
@@ -122,8 +112,7 @@ export const useEditorStore = defineStore('editor-store', () => {
     }
     _editor.value = undefined;
     _editorContent.value = '';
-    _isTextSelected.value = false;
-    _externalCommentClickHandler.value = undefined;
+    _hasTextSelected.value = false;
   };
 
   const setEditorContent = (content: JSONContent) => {
@@ -168,9 +157,66 @@ export const useEditorStore = defineStore('editor-store', () => {
     _editor.value.off(event, callback);
   };
 
+  const syncCommentsWithBackend = async () => {
+    // Sync comments with backend
+  };
+
+  const addComment = async (commentText: string) => {
+    if (!_editor.value) {
+      throw new Error('Editor instance is not created yet.');
+    }
+    const { from, to } = _editor.value.state.selection;
+    const newComment: Comment = {
+      id: Date.now().toString(),
+      text: commentText,
+      from,
+      to,
+    };
+    console.log('Adding comment:', newComment);
+    _editor.value.chain().focus(to).setOneComment(newComment).run();
+    if (!_comments.value) {
+      _comments.value = [newComment];
+    } else {
+      _comments.value.push(newComment);
+    }
+    await syncCommentsWithBackend();
+  };
+
+  const deleteComment = async (id: string) => {
+    if (!_editor.value) {
+      throw new Error('Editor instance is not created yet.');
+    }
+    console.log('Deleting comment with id:', id);
+    _editor.value.chain().focus().removeOneComment(id).run();
+    _comments.value = _comments.value?.filter(comment => comment.id !== id);
+    await syncCommentsWithBackend();
+  };
+
+  const hydrateComments = async (comments: Comment[]) => {
+    if (!_editor.value) {
+      throw new Error('Editor instance is not created yet.');
+    }
+    console.log('Hydrating comments:', comments);
+    _editor.value.commands.initAllComments(comments);
+    _comments.value = comments;
+    // await syncCommentsWithBackend();
+  };
+
+  const toggleShowComments = () => {
+    showComments.value = !showComments.value;
+    if (showComments.value) {
+      _editor.value?.chain().focus().initAllComments(comments.value).run();
+    } else {
+      _editor.value?.chain().focus().initAllComments([]).run();
+    }
+  };
+
   return {
     editorContent,
-    isTextSelected,
+    hasTextSelected,
+    comments,
+    showComments,
+    selectedCommentId,
     getEditor,
     destroyEditor,
     setEditorContent,
@@ -178,7 +224,9 @@ export const useEditorStore = defineStore('editor-store', () => {
     getJSONContent,
     addEventListener,
     removeEventListener,
-    setCommentClickHandler,
-    unsetCommentClickHandler,
+    addComment,
+    deleteComment,
+    hydrateComments,
+    toggleShowComments,
   };
 });

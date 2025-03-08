@@ -133,7 +133,7 @@ const updateAssistantPromptContainerPosition = () => {
 };
 
 const handleShowPromptContainer = () => {
-  if (editorStore.isTextSelected && !isOutsideWrapper.value) {
+  if (editorStore.hasTextSelected && !isOutsideWrapper.value) {
     updateAssistantPromptContainerPosition();
     assistantPromptContainer.show = true;
   } else {
@@ -194,16 +194,8 @@ const handleEditorUpdateEvent = () => {
   }
 };
 
-// Comment Extension
-const handleCommentsEvent = (event: any) => {
-  // Handle comment event
-  console.log('Comment event:', event);
-};
-
-editorStore.setCommentClickHandler(handleCommentsEvent);
-
 watch(
-  () => editorStore.isTextSelected,
+  () => editorStore.hasTextSelected,
   newValue => {
     if (newValue !== true) {
       assistantPromptContainer.show = false;

@@ -66,7 +66,7 @@ onUnmounted(() => {
       >
         <slot />
       </div>
-      <div class="w-20 border-l border-r h-full hidden">tglComt</div>
+      <div class="w-20 hidden h-full">tglComt</div>
     </div>
   </body>
 </template>

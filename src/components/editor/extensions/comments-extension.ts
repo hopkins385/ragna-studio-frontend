@@ -38,6 +38,8 @@ interface CommentsStorage {
 
 interface CommentsOptions {
   onCommentClick?: (commentId: string, reference?: string) => void;
+  onCommentAdd?: (comment: Comment) => void;
+  onCommentRemove?: (commentId: string) => void;
 }
 
 declare module '@tiptap/core' {
@@ -56,6 +58,8 @@ const CommentsExtension = Extension.create<CommentsOptions>({
   addOptions() {
     return {
       onCommentClick: undefined,
+      onCommentAdd: undefined,
+      onCommentRemove: undefined,
     };
   },
 
@@ -77,6 +81,12 @@ const CommentsExtension = Extension.create<CommentsOptions>({
         ({ editor, tr }) => {
           this.storage.comments.push(comment);
           tr.setMeta('comments', true);
+
+          // Call the onCommentAdd handler if defined
+          if (this.options.onCommentAdd) {
+            this.options.onCommentAdd(comment);
+          }
+
           return true;
         },
       removeOneComment:
@@ -86,6 +96,12 @@ const CommentsExtension = Extension.create<CommentsOptions>({
             (comment: Comment) => comment.id !== id,
           );
           tr.setMeta('comments', true);
+
+          // Call the onCommentRemove handler if defined
+          if (this.options.onCommentRemove) {
+            this.options.onCommentRemove(id);
+          }
+
           return true;
         },
       initAllComments:
@@ -111,9 +127,8 @@ const CommentsExtension = Extension.create<CommentsOptions>({
           apply: (tr, old) => {
             const action = tr.getMeta('comments');
             if (!action) return old;
-
             const { comments } = this.storage;
-            console.log('comments', comments);
+
             const decorations = comments.map((comment: Comment) =>
               Decoration.inline(comment.from, comment.to, {
                 class: 'comment-highlighted',
