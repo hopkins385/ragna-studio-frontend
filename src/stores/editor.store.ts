@@ -44,11 +44,32 @@ export const useEditorStore = defineStore('editor-store', () => {
   // actions
   const handleCommentClickEvent = (commentId: string, reference?: string) => {
     // Handle comment event
-    console.log('Comment event:', commentId);
     if (showComments.value !== true) {
       showComments.value = true;
     }
     _selectedCommentId.value = commentId;
+  };
+
+  const handleCommentUpdateEvent = (comment: Comment) => {
+    // update the comment
+    // find the comment in the list and update it
+    const index = _comments.value?.findIndex(c => c.id === comment.id);
+    if (index !== undefined && index >= 0) {
+      _comments.value![index] = comment;
+    }
+  };
+
+  const handleCommentsUpdatesEvent = (comments: Comment[]) => {
+    // Handle comments updates event
+    // find all comments in the list and update them
+    comments.forEach(comment => {
+      const index = _comments.value?.findIndex(c => c.id === comment.id);
+      if (index !== undefined && index >= 0) {
+        _comments.value![index] = comment;
+      } else {
+        _comments.value?.push(comment);
+      }
+    });
   };
 
   const _createEditorInstance = (): Editor => {
@@ -78,6 +99,8 @@ export const useEditorStore = defineStore('editor-store', () => {
         }),
         CommentsExtension.configure({
           onCommentClick: handleCommentClickEvent,
+          onCommentUpdate: handleCommentUpdateEvent,
+          onCommentsUpdates: handleCommentsUpdatesEvent,
         }),
         // InlineCompletionExtension.configure({
         //   completionHandler: fetchInlineCompletionHandler,

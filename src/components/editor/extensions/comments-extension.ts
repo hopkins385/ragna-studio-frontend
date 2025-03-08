@@ -130,28 +130,28 @@ const CommentsExtension = Extension.create<CommentsOptions>({
           },
           apply: (tr, old) => {
             const action = tr.getMeta('comments');
-            
+
             // Update positions of comments when text changes
             if (tr.docChanged) {
               const { comments } = this.storage;
               const { onCommentUpdate, onCommentsUpdates } = this.options;
               const updatedComments: Comment[] = [];
-              
+
               // Update comment positions based on document changes
-              this.storage.comments = comments.map(comment => {
+              this.storage.comments = comments.map((comment: Comment) => {
                 // Handle text being added or removed before or within the comment
                 const newFrom = tr.mapping.map(comment.from);
                 const mappedTo = tr.mapping.map(comment.to);
-                
+
                 // Two cases to handle:
                 // 1. If text is added before the comment, we want to shift both from and to
                 // 2. If text is changed within the comment range, we want to maintain the original length
-                
+
                 // Determine if text was added/removed before the comment
                 // or if the comment itself was modified
                 let newTo: number;
                 const originalLength = comment.to - comment.from;
-                
+
                 // If the mapping preserved the comment length exactly, use mapped positions
                 if (mappedTo - newFrom === originalLength) {
                   newTo = mappedTo;
@@ -159,37 +159,37 @@ const CommentsExtension = Extension.create<CommentsOptions>({
                   // Otherwise enforce the original length
                   newTo = newFrom + originalLength;
                 }
-                
+
                 // Only consider it updated if position actually changed
                 const updatedComment = {
                   ...comment,
                   from: newFrom,
                   to: newTo,
                 };
-                
+
                 // Check if the comment position has changed
                 if (newFrom !== comment.from || newTo !== comment.to) {
                   // Call onCommentUpdate handler for each updated comment
                   if (onCommentUpdate) {
                     onCommentUpdate(updatedComment);
                   }
-                  
+
                   // Add to list of updated comments for batch handler
                   updatedComments.push(updatedComment);
                 }
-                
+
                 return updatedComment;
               });
-              
+
               // Call onCommentsUpdates handler if any comments were updated
               if (onCommentsUpdates && updatedComments.length > 0) {
                 onCommentsUpdates(updatedComments);
               }
             }
-            
+
             // If no explicit comments update action and no doc changes, return old decorations
             if (!action && !tr.docChanged) return old;
-            
+
             // Get updated comments
             const { comments } = this.storage;
 
