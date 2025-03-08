@@ -40,6 +40,8 @@ interface CommentsOptions {
   onCommentClick?: (commentId: string, reference?: string) => void;
   onCommentAdd?: (comment: Comment) => void;
   onCommentRemove?: (commentId: string) => void;
+  onCommentUpdate?: (comment: Comment) => void;
+  onCommentsUpdates?: (comments: Comment[]) => void;
 }
 
 declare module '@tiptap/core' {
@@ -60,6 +62,8 @@ const CommentsExtension = Extension.create<CommentsOptions>({
       onCommentClick: undefined,
       onCommentAdd: undefined,
       onCommentRemove: undefined,
+      onCommentUpdate: undefined,
+      onCommentsUpdates: undefined,
     };
   },
 
@@ -130,6 +134,8 @@ const CommentsExtension = Extension.create<CommentsOptions>({
             // Update positions of comments when text changes
             if (tr.docChanged) {
               const { comments } = this.storage;
+              const { onCommentUpdate, onCommentsUpdates } = this.options;
+              const updatedComments: Comment[] = [];
               
               // Update comment positions based on document changes
               this.storage.comments = comments.map(comment => {
@@ -138,12 +144,31 @@ const CommentsExtension = Extension.create<CommentsOptions>({
                 const originalLength = comment.to - comment.from;
                 const newTo = newFrom + originalLength;
                 
-                return {
+                // Only consider it updated if position actually changed
+                const updatedComment = {
                   ...comment,
                   from: newFrom,
                   to: newTo,
                 };
+                
+                // Check if the comment position has changed
+                if (newFrom !== comment.from || newTo !== comment.to) {
+                  // Call onCommentUpdate handler for each updated comment
+                  if (onCommentUpdate) {
+                    onCommentUpdate(updatedComment);
+                  }
+                  
+                  // Add to list of updated comments for batch handler
+                  updatedComments.push(updatedComment);
+                }
+                
+                return updatedComment;
               });
+              
+              // Call onCommentsUpdates handler if any comments were updated
+              if (onCommentsUpdates && updatedComments.length > 0) {
+                onCommentsUpdates(updatedComments);
+              }
             }
             
             // If no explicit comments update action and no doc changes, return old decorations
