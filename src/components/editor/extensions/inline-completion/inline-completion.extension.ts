@@ -321,6 +321,16 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
             return false;
           },
           handleKeyDown(view, event) {
+            // Always ensure Enter and Shift+Enter work correctly, regardless of active suggestions
+            // This must be checked first to ensure it always works, even with special characters
+            if (event.key === 'Enter' || (event.shiftKey && event.key === 'Enter')) {
+              // Clear any active suggestion
+              const trClear = view.state.tr.setMeta(inlineCompletionPluginKey, { clear: true });
+              view.dispatch(trClear);
+              // Do not prevent default to allow newline insertion
+              return false;
+            }
+            
             const pluginState = inlineCompletionPluginKey.getState(view.state);
             if (pluginState && pluginState.suggestion && pluginState.basePos !== undefined) {
               // Accept next word with cmd/ctrl+ArrowRight
@@ -385,14 +395,6 @@ export const InlineCompletionExtension = Extension.create<InlineCompletionOption
                 view.dispatch(tr);
                 return true;
               }
-            }
-
-            // NEW: If user presses Enter or Shift+Enter, reset the suggestion without fetching a new completion
-            if (event.key === 'Enter' || (event.shiftKey && event.key === 'Enter')) {
-              const trClear = view.state.tr.setMeta(inlineCompletionPluginKey, { clear: true });
-              view.dispatch(trClear);
-              // Do not prevent default to allow newline insertion
-              return false;
             }
 
             return false;

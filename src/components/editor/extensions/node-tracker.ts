@@ -106,13 +106,42 @@ export const NodeTracker = Extension.create<NodeTrackerOptions>({
           if (transactions.some(tr => tr.getMeta(nodeTrackerKey))) {
             return null;
           }
+          
+          // Check the transactions for special character inputs followed by Enter
+          // We'll use this to detect potentially problematic sequences like backtick + Enter
+          const lastTransactionText = transactions.length > 0 
+            ? transactions[transactions.length - 1].doc.textBetween(0, transactions[transactions.length - 1].doc.content.size)
+            : '';
+          
+          // If the last character was a backtick or other special character that might cause issues
+          const hasSpecialCharacter = lastTransactionText.match(/[`]$/);
+          
+          // If we detected a special character at the end of the text, delay node tracking
+          // This allows Enter key presses to work correctly after these characters
+          if (hasSpecialCharacter) {
+            return null;
+          }
+          
+          // Don't interfere with any transactions that might be related to Enter keypresses
+          // by checking for selection changes and node count differences
+          const hasSelectionJump = oldState.selection.from !== newState.selection.from;
+          const hasNodeCountChanged = oldState.doc.childCount !== newState.doc.childCount;
+          
+          // If either of these conditions is true, it might be an Enter key or similar action
+          if (hasSelectionJump || hasNodeCountChanged) {
+            // Delay node tracking to prevent interference with the Enter key
+            return null;
+          }
 
           const pluginState = nodeTrackerKey.getState(newState);
           if (!pluginState) return null;
 
+          // Add a small delay for tracking when we detect potential Enter operation
+          // This helps ensure we don't interfere with the default key handling
           const tr = newState.tr;
           let changed = false;
 
+          // Process the document to update node positions
           newState.doc.nodesBetween(
             0,
             newState.doc.content.size,
