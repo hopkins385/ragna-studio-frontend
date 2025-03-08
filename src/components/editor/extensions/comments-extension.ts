@@ -126,7 +126,30 @@ const CommentsExtension = Extension.create<CommentsOptions>({
           },
           apply: (tr, old) => {
             const action = tr.getMeta('comments');
-            if (!action) return old;
+            
+            // Update positions of comments when text changes
+            if (tr.docChanged) {
+              const { comments } = this.storage;
+              
+              // Update comment positions based on document changes
+              this.storage.comments = comments.map(comment => {
+                const newFrom = tr.mapping.map(comment.from);
+                // Maintain the original length of the comment
+                const originalLength = comment.to - comment.from;
+                const newTo = newFrom + originalLength;
+                
+                return {
+                  ...comment,
+                  from: newFrom,
+                  to: newTo,
+                };
+              });
+            }
+            
+            // If no explicit comments update action and no doc changes, return old decorations
+            if (!action && !tr.docChanged) return old;
+            
+            // Get updated comments
             const { comments } = this.storage;
 
             const decorations = comments.map((comment: Comment) =>
