@@ -2,7 +2,7 @@ import CommentsExtension, { type Comment } from '@/components/editor/extensions/
 import { HighlightSelection } from '@/components/editor/extensions/highlight-selection.extension';
 import { InvisibleCharacters } from '@/components/editor/extensions/invisible-characters';
 import { NodeTracker } from '@/components/editor/extensions/node-tracker';
-import type { EditorEvents, JSONContent } from '@tiptap/core';
+import type { Content, EditorEvents, JSONContent } from '@tiptap/core';
 import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
 import ListKeymap from '@tiptap/extension-list-keymap';
@@ -11,6 +11,7 @@ import TaskItem from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
 import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
+import type { Fragment, ParseOptions } from '@tiptap/pm/model';
 import StarterKit from '@tiptap/starter-kit';
 import { Editor } from '@tiptap/vue-3';
 import { defineStore } from 'pinia';
@@ -23,25 +24,41 @@ type CallbackType<
 type CallbackFunction<T extends Record<string, any>, EventName extends StringKeyOf<T>> = (
   ...props: CallbackType<T, EventName>
 ) => any;
+type EditorContent = Content | Fragment | string | null;
 
 export const useEditorStore = defineStore('editor-store', () => {
-  // internal refs
+  // internal state refs
   const _editor = ref<Editor | undefined>();
   const _editorContent = ref<string>('');
   const _hasTextSelected = ref(false);
   const _comments = ref<Comment[] | undefined>(undefined);
   const _selectedCommentId = ref<string | null>(null);
 
-  // external refs
+  // external state refs
   const showComments = ref(false);
 
-  // computed
+  // readonly states
   const hasTextSelected = computed(() => _hasTextSelected.value);
   const editorContent = computed(() => _editorContent.value);
   const comments = computed<Comment[]>(() => _comments.value || []);
   const selectedCommentId = computed(() => _selectedCommentId.value);
 
   // actions
+  const ensureEditor = () => {
+    if (!_editor.value) {
+      throw new Error('Editor instance is not created yet.');
+    }
+    return _editor.value;
+  };
+
+  const resetState = () => {
+    _editorContent.value = '';
+    _hasTextSelected.value = false;
+    _comments.value = undefined;
+    _selectedCommentId.value = null;
+    showComments.value = false;
+  };
+
   const handleCommentClickEvent = (commentId: string, reference?: string) => {
     // Handle comment event
     if (showComments.value !== true) {
@@ -76,7 +93,9 @@ export const useEditorStore = defineStore('editor-store', () => {
     return new Editor({
       content: _editorContent.value,
       extensions: [
-        StarterKit,
+        StarterKit.configure({
+          codeBlock: false,
+        }),
         Placeholder.configure({
           placeholder: 'Schreibe etwas …',
         }),
@@ -134,50 +153,33 @@ export const useEditorStore = defineStore('editor-store', () => {
       _editor.value.destroy();
     }
     _editor.value = undefined;
-    _editorContent.value = '';
-    _hasTextSelected.value = false;
+    resetState();
   };
 
-  const setEditorContent = (content: JSONContent) => {
-    if (!_editor.value) {
-      throw new Error('Editor instance is not created yet.');
-    }
+  const setEditorContent = (content: EditorContent) => {
+    const emitUpdate = true;
+    const parseOptions: ParseOptions = {};
 
-    _editor.value.commands.setContent(content);
+    ensureEditor().commands.setContent(content, emitUpdate, parseOptions, {
+      errorOnInvalidContent: true,
+    });
   };
 
-  const getJSONContent = (): JSONContent => {
-    if (!_editor.value) {
-      throw new Error('Editor instance is not created yet.');
-    }
-    return _editor.value.getJSON();
-  };
-
-  const getHtmlContent = (): string => {
-    if (!_editor.value) {
-      throw new Error('Editor instance is not created yet.');
-    }
-    return _editor.value.getHTML();
-  };
+  const getJSONContent = (): JSONContent => ensureEditor().getJSON();
+  const getHtmlContent = (): string => ensureEditor().getHTML();
 
   const addEventListener = <T extends keyof EditorEvents>(
     event: T,
     callback: CallbackFunction<EditorEvents, T>,
   ) => {
-    if (!_editor.value) {
-      throw new Error('Editor instance is not created yet.');
-    }
-    _editor.value.on(event, callback);
+    ensureEditor().on(event, callback);
   };
 
   const removeEventListener = <T extends keyof EditorEvents>(
     event: T,
     callback: CallbackFunction<EditorEvents, T>,
   ) => {
-    if (!_editor.value) {
-      throw new Error('Editor instance is not created yet.');
-    }
-    _editor.value.off(event, callback);
+    ensureEditor().off(event, callback);
   };
 
   const syncCommentsWithBackend = async () => {
@@ -185,17 +187,14 @@ export const useEditorStore = defineStore('editor-store', () => {
   };
 
   const addComment = async (commentText: string) => {
-    if (!_editor.value) {
-      throw new Error('Editor instance is not created yet.');
-    }
-    const { from, to } = _editor.value.state.selection;
+    const { from, to } = ensureEditor().state.selection;
     const newComment: Comment = {
       id: Date.now().toString(),
       text: commentText,
       from,
       to,
     };
-    _editor.value.chain().focus(to).addOneComment(newComment).run();
+    ensureEditor().chain().focus(to).addOneComment(newComment).run();
     if (!_comments.value) {
       _comments.value = [newComment];
     } else {
@@ -205,29 +204,24 @@ export const useEditorStore = defineStore('editor-store', () => {
   };
 
   const deleteComment = async (id: string) => {
-    if (!_editor.value) {
-      throw new Error('Editor instance is not created yet.');
-    }
-    _editor.value.chain().focus().removeOneComment(id).run();
+    ensureEditor().chain().focus().removeOneComment(id).run();
     _comments.value = _comments.value?.filter(comment => comment.id !== id);
     await syncCommentsWithBackend();
   };
 
   const hydrateComments = async (comments: Comment[]) => {
-    if (!_editor.value) {
-      throw new Error('Editor instance is not created yet.');
-    }
-    console.log('Hydrating comments:', comments);
-    _editor.value.commands.initAllComments(comments);
+    ensureEditor().commands.initAllComments(comments);
     _comments.value = comments;
   };
 
   const toggleShowComments = () => {
     showComments.value = !showComments.value;
+
+    // toggles the comments-highlights by removing/adding the comments
     if (showComments.value) {
-      _editor.value?.chain().focus().initAllComments(comments.value).run();
+      ensureEditor().chain().focus().initAllComments(comments.value).run();
     } else {
-      _editor.value?.chain().focus().initAllComments([]).run();
+      ensureEditor().chain().focus().initAllComments([]).run();
     }
   };
 
