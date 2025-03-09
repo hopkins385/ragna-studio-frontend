@@ -21,9 +21,9 @@ const editor = editorStore.getEditor();
 const isLoading = ref(false);
 const spinnerPosition = ref({ x: 0, y: 0 });
 
-const editorWrapperRef = ref<HTMLElement | null>(null);
-const editorContentRef = ref<HTMLElement | null>(null);
-const assistantPromptContainerRef = ref<HTMLElement | null>(null);
+const editorWrapperRef = useTemplateRef('editorWrapperRef');
+const editorContentRef = useTemplateRef('editorContentRef');
+const assistantPromptContainerRef = useTemplateRef('assistantPromptContainerRef');
 
 const assistantPromptContainer = reactive({
   show: false,
@@ -219,9 +219,17 @@ onBeforeUnmount(() => {
   window.removeEventListener('mouseup', handleMouseUp);
   // window.removeEventListener('contextmenu', handleContextMenu);
 });
+
+const content = computed(() => {
+  if (!editor) return '';
+  return editor.getJSON();
+});
 </script>
 
 <template>
+  <div>
+    {{ content }}
+  </div>
   <div v-if="!editor">No Editor Instance</div>
   <div v-else id="text-editor" class="rounded-lg bg-white overflow-hidden h-full relative">
     <!-- Menu -->

@@ -1,4 +1,4 @@
-import { Extension } from '@tiptap/core';
+import { Editor, Extension } from '@tiptap/core';
 import type { Node } from '@tiptap/pm/model';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import type { JSONContent } from '@tiptap/vue-3';
@@ -8,12 +8,14 @@ export interface NodeAttributes {
   posStart: number;
   posEnd: number;
   id: string; // Make id required
+  lineNumber: number; // Add line number tracking
 }
 
 export interface ExtendedNode extends JSONContent {
   posStart: number;
   posEnd: number;
   id: string; // Make id required
+  lineNumber: number; // Add line number tracking
 }
 
 export interface NodeTrackerOptions {
@@ -22,8 +24,32 @@ export interface NodeTrackerOptions {
 }
 
 interface PositionState {
-  positions: Map<string, { pos: number; end: number }>;
+  positions: Map<string, { pos: number; end: number; lineNumber: number }>;
 }
+
+// Fixed line number calculation that doesn't use findIndex
+const getLineNumber = (doc: Node, pos: number): number => {
+  // Start at position 0 and count up until we reach our position
+  let currentPos = 0;
+  let lineCount = 1; // First block is line 1
+
+  // Loop through all top-level blocks in order
+  for (let i = 0; i < doc.content.childCount; i++) {
+    const node = doc.content.child(i);
+
+    // If our target position is within this node, we've found our line
+    if (pos >= currentPos && pos < currentPos + node.nodeSize) {
+      return lineCount;
+    }
+
+    // Move to next block and increment line counter
+    currentPos += node.nodeSize;
+    lineCount++;
+  }
+
+  // Fallback (should rarely happen)
+  return Math.max(1, lineCount - 1);
+};
 
 const nodeTrackerKey = new PluginKey<PositionState>('nodeTracker');
 
@@ -41,7 +67,7 @@ export const NodeTracker = Extension.create<NodeTrackerOptions>({
   addOptions() {
     return {
       types: ['paragraph', 'heading', 'listItem', 'taskItem'],
-      generateId: true, // Default to true since we want ids by default
+      generateId: true,
     };
   },
 
@@ -62,6 +88,10 @@ export const NodeTracker = Extension.create<NodeTrackerOptions>({
             default: null,
             rendered: false,
           },
+          lineNumber: {
+            default: null,
+            rendered: false,
+          },
         },
       },
     ];
@@ -70,7 +100,7 @@ export const NodeTracker = Extension.create<NodeTrackerOptions>({
   addProseMirrorPlugins() {
     const updateNodePositions = (
       doc: Node,
-      positions: Map<string, { pos: number; end: number }>,
+      positions: Map<string, { pos: number; end: number; lineNumber: number }>,
     ) => {
       positions.clear();
       doc.nodesBetween(0, doc.content.size, (node, pos) => {
@@ -78,6 +108,7 @@ export const NodeTracker = Extension.create<NodeTrackerOptions>({
           positions.set(node.attrs.id, {
             pos,
             end: pos + node.nodeSize,
+            lineNumber: getLineNumber(doc, pos),
           });
         }
         return true;
@@ -106,78 +137,116 @@ export const NodeTracker = Extension.create<NodeTrackerOptions>({
           if (transactions.some(tr => tr.getMeta(nodeTrackerKey))) {
             return null;
           }
-          
-          // Check the transactions for special character inputs followed by Enter
-          // We'll use this to detect potentially problematic sequences like backtick + Enter
-          const lastTransactionText = transactions.length > 0 
-            ? transactions[transactions.length - 1].doc.textBetween(0, transactions[transactions.length - 1].doc.content.size)
-            : '';
-          
-          // If the last character was a backtick or other special character that might cause issues
+
+          // Restore special character detection to prevent interfering with Enter key
+          const lastTransactionText =
+            transactions.length > 0
+              ? transactions[transactions.length - 1].doc.textBetween(
+                  0,
+                  transactions[transactions.length - 1].doc.content.size,
+                )
+              : '';
+
+          // If the last character was a backtick or other special character, avoid immediate tracking
           const hasSpecialCharacter = lastTransactionText.match(/[`]$/);
-          
-          // If we detected a special character at the end of the text, delay node tracking
-          // This allows Enter key presses to work correctly after these characters
-          if (hasSpecialCharacter) {
-            return null;
-          }
-          
-          // Don't interfere with any transactions that might be related to Enter keypresses
-          // by checking for selection changes and node count differences
+
+          // Check for conditions that suggest an Enter key press
           const hasSelectionJump = oldState.selection.from !== newState.selection.from;
           const hasNodeCountChanged = oldState.doc.childCount !== newState.doc.childCount;
-          
-          // If either of these conditions is true, it might be an Enter key or similar action
-          if (hasSelectionJump || hasNodeCountChanged) {
-            // Delay node tracking to prevent interference with the Enter key
+
+          // If we detect a special character or potential Enter key, don't interfere
+          // This preserves the original behavior for Enter key after backtick
+          if (hasSpecialCharacter || (hasSelectionJump && hasNodeCountChanged)) {
             return null;
           }
 
           const pluginState = nodeTrackerKey.getState(newState);
           if (!pluginState) return null;
 
-          // Add a small delay for tracking when we detect potential Enter operation
-          // This helps ensure we don't interfere with the default key handling
           const tr = newState.tr;
           let changed = false;
 
           // Process the document to update node positions
-          newState.doc.nodesBetween(
-            0,
-            newState.doc.content.size,
-            (node, pos) => {
-              if (!this.options.types.includes(node.type.name)) {
-                return true;
-              }
-
-              const id = node.attrs.id || uuidv4();
-              const nodeEnd = pos + node.nodeSize;
-              const storedPosition = pluginState.positions.get(id);
-
-              const needsUpdate =
-                !storedPosition ||
-                storedPosition.pos !== pos ||
-                storedPosition.end !== nodeEnd ||
-                node.attrs.posStart !== pos ||
-                node.attrs.posEnd !== nodeEnd ||
-                node.attrs.id !== id;
-
-              if (needsUpdate) {
-                tr.setNodeMarkup(pos, undefined, {
-                  ...node.attrs,
-                  posStart: pos,
-                  posEnd: nodeEnd,
-                  id,
-                });
-                changed = true;
-              }
-
+          newState.doc.nodesBetween(0, newState.doc.content.size, (node, pos) => {
+            if (!this.options.types.includes(node.type.name)) {
               return true;
-            },
-          );
+            }
+
+            // ALWAYS generate new ID for each node to prevent duplicates
+            const id = uuidv4(); // Ensure unique ID for each node
+            const nodeEnd = pos + node.nodeSize;
+            const lineNumber = getLineNumber(newState.doc, pos);
+
+            // Always update line numbers and positions
+            tr.setNodeMarkup(pos, undefined, {
+              ...node.attrs,
+              posStart: pos,
+              posEnd: nodeEnd,
+              lineNumber,
+              id,
+            });
+            changed = true;
+
+            return true;
+          });
 
           if (changed) {
             tr.setMeta(nodeTrackerKey, true);
+            return tr;
+          }
+
+          return null;
+        },
+      }),
+
+      // Add a second plugin that ONLY updates line numbers after document changes
+      // This ensures line numbers get updated even when we avoid interfering with Enter key
+      new Plugin({
+        view(view) {
+          return {
+            update(view, prevState) {
+              // If document structure changed (likely after Enter key)
+              if (prevState.doc.childCount !== view.state.doc.childCount) {
+                // Wait briefly to allow the Enter key handling to complete
+                setTimeout(() => {
+                  // Then run the update command
+                  view.dispatch(view.state.tr.setMeta('updateLineNumbers', true));
+                }, 0);
+              }
+            },
+          };
+        },
+
+        appendTransaction(transactions, oldState, newState) {
+          // Only run when triggered by our delayed update
+          if (!transactions.some(tr => tr.getMeta('updateLineNumbers'))) {
+            return null;
+          }
+
+          const tr = newState.tr;
+          let changed = false;
+
+          // Update line numbers for all nodes
+          newState.doc.nodesBetween(0, newState.doc.content.size, (node, pos) => {
+            if (!this.options.types.includes(node.type.name)) {
+              return true;
+            }
+
+            const lineNumber = getLineNumber(newState.doc, pos);
+
+            // Ensure line number is updated
+            if (node.attrs.lineNumber !== lineNumber) {
+              tr.setNodeMarkup(pos, undefined, {
+                ...node.attrs,
+                lineNumber,
+              });
+              changed = true;
+            }
+
+            return true;
+          });
+
+          if (changed) {
             return tr;
           }
 
@@ -202,11 +271,15 @@ export const NodeTracker = Extension.create<NodeTrackerOptions>({
               return true;
             }
 
+            // Generate unique ID for each node
+            const id = uuidv4();
+            const lineNumber = getLineNumber(state.doc, pos);
             tr.setNodeMarkup(pos, undefined, {
               ...node.attrs,
               posStart: pos,
               posEnd: pos + node.nodeSize,
-              id: node.attrs.id || uuidv4(),
+              lineNumber,
+              id,
             });
             changed = true;
             return true;
@@ -225,12 +298,9 @@ export const NodeTracker = Extension.create<NodeTrackerOptions>({
       addMetadataToJson(
         doc: Node,
         json: JSONContent,
-        positions: Map<string, { pos: number; end: number }>,
+        positions: Map<string, { pos: number; end: number; lineNumber: number }>,
       ): ExtendedNode {
-        const processNode = (
-          node: JSONContent,
-          docNode: Node | null,
-        ): ExtendedNode => {
+        const processNode = (node: JSONContent, docNode: Node | null): ExtendedNode => {
           const result = { ...node } as ExtendedNode;
 
           if (docNode && docNode.attrs.id) {
@@ -238,6 +308,7 @@ export const NodeTracker = Extension.create<NodeTrackerOptions>({
             if (pos) {
               result.posStart = pos.pos;
               result.posEnd = pos.end;
+              result.lineNumber = pos.lineNumber;
               result.id = docNode.attrs.id;
             }
           }
@@ -252,6 +323,10 @@ export const NodeTracker = Extension.create<NodeTrackerOptions>({
         };
 
         return processNode(json, doc);
+      },
+
+      forceUpdateLineNumbers(editor: Editor) {
+        editor.commands.updatePositions();
       },
     };
   },

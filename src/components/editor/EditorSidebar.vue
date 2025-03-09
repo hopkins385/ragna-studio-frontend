@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // Imports
-import { Separator } from '@/components/ui/separator';
 import { useEditorStore } from '@/stores/editor.store';
 import { Button } from '@ui/button';
 import { BookmarkIcon, BotMessageSquare, MessageCircleIcon } from 'lucide-vue-next';
@@ -22,10 +21,9 @@ const editorStore = useEditorStore();
 <template>
   <div class="w-14 z-10 h-full p-2 shrink-0">
     <div class="flex flex-col items-center h-full space-y-1 pt-2">
-      <Button variant="ghost" size="icon">
+      <Button variant="ghost" size="icon" @click="() => editorStore.toggleShowAiChat()">
         <BotMessageSquare class="size-5" />
       </Button>
-      <Separator class="!my-1" />
       <Button variant="ghost" size="icon" @click="() => editorStore.toggleShowComments()">
         <MessageCircleIcon class="size-5" />
       </Button>

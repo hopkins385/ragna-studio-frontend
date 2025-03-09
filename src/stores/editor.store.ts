@@ -27,6 +27,7 @@ type CallbackFunction<T extends Record<string, any>, EventName extends StringKey
 type EditorContent = Content | Fragment | string | null;
 
 export const useEditorStore = defineStore('editor-store', () => {
+  const { t } = useI18n();
   // internal state refs
   const _editor = ref<Editor | undefined>();
   const _editorContent = ref<string>('');
@@ -36,6 +37,7 @@ export const useEditorStore = defineStore('editor-store', () => {
 
   // external state refs
   const showComments = ref(false);
+  const showAiChat = ref(false);
 
   // readonly states
   const hasTextSelected = computed(() => _hasTextSelected.value);
@@ -44,39 +46,32 @@ export const useEditorStore = defineStore('editor-store', () => {
   const selectedCommentId = computed(() => _selectedCommentId.value);
 
   // actions
-  const ensureEditor = () => {
-    if (!_editor.value) {
-      throw new Error('Editor instance is not created yet.');
-    }
-    return _editor.value;
-  };
-
-  const resetState = () => {
+  function resetState() {
     _editorContent.value = '';
     _hasTextSelected.value = false;
     _comments.value = undefined;
     _selectedCommentId.value = null;
     showComments.value = false;
-  };
+  }
 
-  const handleCommentClickEvent = (commentId: string, reference?: string) => {
+  function handleCommentClickEvent(commentId: string, reference?: string) {
     // Handle comment event
     if (showComments.value !== true) {
       showComments.value = true;
     }
     _selectedCommentId.value = commentId;
-  };
+  }
 
-  const handleCommentUpdateEvent = (comment: Comment) => {
+  function handleCommentUpdateEvent(comment: Comment) {
     // update the comment
     // find the comment in the list and update it
     const index = _comments.value?.findIndex(c => c.id === comment.id);
     if (index !== undefined && index >= 0) {
       _comments.value![index] = comment;
     }
-  };
+  }
 
-  const handleCommentsUpdatesEvent = (comments: Comment[]) => {
+  function handleCommentsUpdatesEvent(comments: Comment[]) {
     // Handle comments updates event
     // find all comments in the list and update them
     comments.forEach(comment => {
@@ -87,9 +82,9 @@ export const useEditorStore = defineStore('editor-store', () => {
         _comments.value?.push(comment);
       }
     });
-  };
+  }
 
-  const _createEditorInstance = (): Editor => {
+  function _createEditorInstance(): Editor {
     return new Editor({
       content: _editorContent.value,
       extensions: [
@@ -97,7 +92,7 @@ export const useEditorStore = defineStore('editor-store', () => {
           codeBlock: false,
         }),
         Placeholder.configure({
-          placeholder: 'Schreibe etwas …',
+          placeholder: t('editor.content.placeholder'),
         }),
         Highlight,
         HighlightSelection,
@@ -113,7 +108,7 @@ export const useEditorStore = defineStore('editor-store', () => {
           injectCSS: false,
         }),
         NodeTracker.configure({
-          types: ['paragraph', 'heading', 'listItem', 'taskItem', 'taskList'],
+          types: ['paragraph', 'heading', 'listItem', 'taskItem', 'taskList', 'hardBreak'],
           generateId: true,
         }),
         CommentsExtension.configure({
@@ -139,97 +134,110 @@ export const useEditorStore = defineStore('editor-store', () => {
       onBlur: ({ event }) => {},
       autofocus: 'end',
     });
-  };
+  }
 
-  const getEditor = (): Editor => {
+  function getEditor(): Editor {
     if (!_editor.value) {
       _editor.value = _createEditorInstance();
     }
     return _editor.value;
-  };
+  }
 
-  const destroyEditor = () => {
+  function destroyEditor() {
     if (_editor.value) {
       _editor.value.destroy();
     }
     _editor.value = undefined;
     resetState();
-  };
+  }
 
-  const setEditorContent = (content: EditorContent) => {
+  function setEditorContent(content: EditorContent) {
     const emitUpdate = true;
     const parseOptions: ParseOptions = {};
 
-    ensureEditor().commands.setContent(content, emitUpdate, parseOptions, {
+    getEditor().commands.setContent(content, emitUpdate, parseOptions, {
       errorOnInvalidContent: true,
     });
-  };
+  }
 
-  const getJSONContent = (): JSONContent => ensureEditor().getJSON();
-  const getHtmlContent = (): string => ensureEditor().getHTML();
+  function getJSONContent(): JSONContent {
+    return getEditor().getJSON();
+  }
+  function getHtmlContent(): string {
+    return getEditor().getHTML();
+  }
 
-  const addEventListener = <T extends keyof EditorEvents>(
+  function addEventListener<T extends keyof EditorEvents>(
     event: T,
     callback: CallbackFunction<EditorEvents, T>,
-  ) => {
-    ensureEditor().on(event, callback);
-  };
+  ) {
+    getEditor().on(event, callback);
+  }
 
-  const removeEventListener = <T extends keyof EditorEvents>(
+  function removeEventListener<T extends keyof EditorEvents>(
     event: T,
     callback: CallbackFunction<EditorEvents, T>,
-  ) => {
-    ensureEditor().off(event, callback);
-  };
+  ) {
+    getEditor().off(event, callback);
+  }
 
-  const syncCommentsWithBackend = async () => {
+  async function syncCommentsWithBackend() {
     // Sync comments with backend
-  };
+  }
 
-  const addComment = async (commentText: string) => {
-    const { from, to } = ensureEditor().state.selection;
+  async function addComment(commentText: string) {
+    const { from, to } = getEditor().state.selection;
     const newComment: Comment = {
       id: Date.now().toString(),
       text: commentText,
       from,
       to,
     };
-    ensureEditor().chain().focus(to).addOneComment(newComment).run();
+    getEditor().chain().focus(to).addOneComment(newComment).run();
     if (!_comments.value) {
       _comments.value = [newComment];
     } else {
       _comments.value.push(newComment);
     }
     await syncCommentsWithBackend();
-  };
+  }
 
-  const deleteComment = async (id: string) => {
-    ensureEditor().chain().focus().removeOneComment(id).run();
+  async function deleteComment(id: string) {
+    getEditor().chain().focus().removeOneComment(id).run();
     _comments.value = _comments.value?.filter(comment => comment.id !== id);
     await syncCommentsWithBackend();
-  };
+  }
 
-  const hydrateComments = async (comments: Comment[]) => {
-    ensureEditor().commands.initAllComments(comments);
+  async function hydrateComments(comments: Comment[]) {
+    getEditor().commands.initAllComments(comments);
     _comments.value = comments;
-  };
+  }
 
-  const toggleShowComments = () => {
-    showComments.value = !showComments.value;
+  function toggleShowComments(value?: boolean) {
+    if (value !== undefined) {
+      showComments.value = value;
+    } else {
+      showComments.value = !showComments.value;
+    }
 
     // toggles the comments-highlights by removing/adding the comments
     if (showComments.value) {
-      ensureEditor().chain().focus().initAllComments(comments.value).run();
+      getEditor().chain().focus().initAllComments(comments.value).run();
     } else {
-      ensureEditor().chain().focus().initAllComments([]).run();
+      getEditor().chain().focus().initAllComments([]).run();
     }
-  };
+  }
+
+  function toggleShowAiChat() {
+    showAiChat.value = !showAiChat.value;
+  }
 
   return {
     editorContent,
     hasTextSelected,
     comments,
     showComments,
+    showAiChat,
     selectedCommentId,
     getEditor,
     destroyEditor,
@@ -242,5 +250,6 @@ export const useEditorStore = defineStore('editor-store', () => {
     deleteComment,
     hydrateComments,
     toggleShowComments,
+    toggleShowAiChat,
   };
 });

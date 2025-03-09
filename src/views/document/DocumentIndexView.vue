@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import EditorChat from '@/components/editor/EditorChat.vue';
 import EditorComments from '@/components/editor/EditorComments.vue';
 import EditorContainer from '@/components/editor/EditorContainer.vue';
 </script>
@@ -9,5 +10,6 @@ import EditorContainer from '@/components/editor/EditorContainer.vue';
       <EditorContainer />
     </div>
     <EditorComments />
+    <EditorChat />
   </div>
 </template>

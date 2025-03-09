@@ -607,5 +607,10 @@
         "success": "Benutzer gelöscht"
       }
     }
+  },
+  "editor": {
+    "content": {
+      "placeholder": "Schreibe etwas ..."
+    }
   }
 }
