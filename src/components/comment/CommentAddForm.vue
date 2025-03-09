@@ -5,6 +5,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { useEditorStore } from '@/stores/editor.store';
 import { FormControl, FormField, FormMessage } from '@ui/form';
 import FormItem from '@ui/form/FormItem.vue';
+import { toTypedSchema } from '@vee-validate/zod';
+import { z } from 'zod';
+
+// Schemas
+const formSchema = toTypedSchema(
+  z.object({
+    comment: z.string().trim().min(2).max(50),
+  }),
+);
 
 // Props
 // Emits
@@ -14,10 +23,15 @@ const emit = defineEmits<{
 }>();
 
 // Refs
-const newCommentText = ref('');
-const showControls = ref(false);
+const showSubmitButtons = ref(false);
 
 // Composables
+const form = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    comment: '',
+  },
+});
 
 // Stores
 const editorStore = useEditorStore();
@@ -25,28 +39,30 @@ const editorStore = useEditorStore();
 
 // Computed
 const submitLocked = computed(() => {
-  return !editorStore.hasTextSelected || newCommentText.value.length < 1;
+  return !editorStore.hasTextSelected;
 });
 
 // Functions
-const onSubmit = () => {
-  emit('submit', newCommentText.value);
-  newCommentText.value = '';
-  showControls.value = false;
-};
+const onSubmit = form.handleSubmit(values => {
+  console.log('Form submitted!', values);
+
+  emit('submit', values.comment);
+  form.resetForm();
+  showSubmitButtons.value = false;
+});
 
 const onCancel = () => {
+  form.resetForm();
+  showSubmitButtons.value = false;
   emit('cancel');
-  newCommentText.value = '';
-  showControls.value = false;
 };
 
 const onFocus = () => {
-  showControls.value = true;
+  showSubmitButtons.value = true;
 };
 
 const onBlur = () => {
-  if (submitLocked.value !== false) showControls.value = false;
+  if (submitLocked.value !== false) showSubmitButtons.value = false;
 };
 
 // Hooks
@@ -54,7 +70,7 @@ const onBlur = () => {
 
 <template>
   <form @submit.prevent="onSubmit">
-    <FormField :defaultValue="newCommentText" name="textarea" type="text">
+    <FormField v-slot="{ componentField }" name="comment" type="text">
       <FormItem>
         <FormControl>
           <div class="relative">
@@ -62,12 +78,12 @@ const onBlur = () => {
               type="text"
               placeholder="Add a comment"
               class="min-h-5"
-              :class="['rounded-md border', showControls ? 'min-h-20' : '']"
-              v-model="newCommentText"
+              :class="['rounded-md border', showSubmitButtons ? 'min-h-20' : '']"
+              v-bind="componentField"
               @focus="onFocus"
               @blur="onBlur"
             />
-            <div v-if="showControls" class="absolute bottom-2 right-2 flex items-center">
+            <div v-if="showSubmitButtons" class="absolute bottom-2 right-2 flex items-center">
               <Button
                 type="button"
                 @click="onCancel"
@@ -87,7 +103,7 @@ const onBlur = () => {
             </div>
           </div>
         </FormControl>
-        <FormMessage />
+        <FormMessage class="text-xs" />
       </FormItem>
     </FormField>
   </form>

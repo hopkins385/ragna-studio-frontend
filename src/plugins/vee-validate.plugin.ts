@@ -9,7 +9,7 @@ const veeConfigPlugin: Plugin = {
       generateMessage: localize({
         de,
       }),
-      validateOnBlur: true,
+      validateOnBlur: false,
       validateOnChange: false,
       validateOnInput: false,
       validateOnModelUpdate: false,

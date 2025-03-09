@@ -219,17 +219,9 @@ onBeforeUnmount(() => {
   window.removeEventListener('mouseup', handleMouseUp);
   // window.removeEventListener('contextmenu', handleContextMenu);
 });
-
-const content = computed(() => {
-  if (!editor) return '';
-  return editor.getJSON();
-});
 </script>
 
 <template>
-  <div>
-    {{ content }}
-  </div>
   <div v-if="!editor">No Editor Instance</div>
   <div v-else id="text-editor" class="rounded-lg bg-white overflow-hidden h-full relative">
     <!-- Menu -->

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Imports
 import CommentAddForm from '@/components/comment/CommentAddForm.vue';
+import EditorCommentMenu from '@/components/editor/EditorCommentMenu.vue';
 import EditorSidePanel from '@/components/editor/EditorSidePanel.vue';
 import { useEditorStore } from '@/stores/editor.store';
 
@@ -37,14 +38,19 @@ const editor = editorStore.getEditor();
     </div>
     <div class="pb-5 space-y-5">
       <div v-for="comment in editorStore.comments" :key="comment.id">
+        <!-- Comment Box -->
         <div
-          class="border p-2 text-sm rounded-md"
+          class="border p-2 text-sm rounded-md relative min-h-12"
           :class="{
             'bg-gray-100': comment.id === editorStore.selectedCommentId,
           }"
         >
+          <!-- Comment Text -->
           <p>{{ comment.text }}</p>
-          <button @click="() => editorStore.deleteComment(comment.id)">Delete</button>
+          <!-- Comment Menu -->
+          <div class="absolute top-2 right-3">
+            <EditorCommentMenu @delete="() => editorStore.deleteComment(comment.id)" />
+          </div>
         </div>
       </div>
     </div>
