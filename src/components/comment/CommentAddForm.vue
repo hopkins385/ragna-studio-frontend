@@ -57,11 +57,11 @@ const onCancel = () => {
   emit('cancel');
 };
 
-const onFocus = () => {
+const onTextareaFocus = () => {
   showSubmitButtons.value = true;
 };
 
-const onBlur = () => {
+const onTextareaBlur = () => {
   if (submitLocked.value !== false) showSubmitButtons.value = false;
 };
 
@@ -77,11 +77,11 @@ const onBlur = () => {
             <Textarea
               type="text"
               placeholder="Add a comment"
-              class="min-h-5"
-              :class="['rounded-md border', showSubmitButtons ? 'min-h-20' : '']"
+              class="rounded-md border min-h-5"
+              :class="[showSubmitButtons ? 'min-h-20' : '']"
               v-bind="componentField"
-              @focus="onFocus"
-              @blur="onBlur"
+              @focus="onTextareaFocus"
+              @blur="onTextareaBlur"
             />
             <div v-if="showSubmitButtons" class="absolute bottom-2 right-2 flex items-center">
               <Button

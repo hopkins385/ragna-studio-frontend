@@ -1,5 +1,5 @@
 import { useMediaService } from '@composables/services/useMediaService';
-import { useChatStore } from '@stores/chat-inference.store';
+import { useChatInferenceStore } from '@stores/chat-inference.store';
 
 export interface ChatImage {
   src: string;
@@ -12,15 +12,9 @@ const dummyImage = {
 };
 
 export function useChatImages() {
-  const allowedFileMimeTypes = [
-    'image/jpg',
-    'image/png',
-    'image/jpeg',
-    'image/gif',
-    'image/webp',
-  ];
+  const allowedFileMimeTypes = ['image/jpg', 'image/png', 'image/jpeg', 'image/gif', 'image/webp'];
 
-  const chatStore = useChatStore();
+  const chatStore = useChatInferenceStore();
   const inputImages = ref<ChatImage[]>([]);
 
   const { uploadFiles } = useMediaService();
@@ -37,9 +31,7 @@ export function useChatImages() {
   }
 
   function updateInputImage(index: number, image: ChatImage) {
-    inputImages.value = inputImages.value.map((img, i) =>
-      i === index ? image : img,
-    );
+    inputImages.value = inputImages.value.map((img, i) => (i === index ? image : img));
   }
 
   async function onFileReaderLoad(imageSrc: string, file: File) {

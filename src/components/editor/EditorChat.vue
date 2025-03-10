@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import ChatAssistantSelect from '@/components/chat/ChatAssistantSelect.vue';
+import ChatInputTextarea from '@/components/chat/ChatInputTextarea.vue';
 import EditorSidePanel from '@/components/editor/EditorSidePanel.vue';
+import { useAiChatStore } from '@/stores/ai-chat.store';
 import { useEditorStore } from '@/stores/editor.store';
 
 // Imports
@@ -8,9 +11,11 @@ import { useEditorStore } from '@/stores/editor.store';
 // Emits
 
 // Refs
+const textareaInput = ref<string | undefined>(undefined);
 
 // Stores
 const editorStore = useEditorStore();
+const aiChatStore = useAiChatStore();
 
 // Injections
 // const editor = editorStore.getEditor();
@@ -19,12 +24,70 @@ const editorStore = useEditorStore();
 
 // Computed
 // Functions
+async function onInputSubmit() {
+  const userMessageContent = textareaInput.value?.trim();
+  if (!userMessageContent || userMessageContent.length < 1) {
+    console.warn('Input is empty or chatId is not set');
+    return;
+  }
+
+  // Clear the textarea input
+  textareaInput.value = undefined;
+
+  // Check if chat is set, if not create a new chat on first message
+  if (!aiChatStore.hasChat) {
+    await aiChatStore.createNewChat();
+  }
+
+  // Creates a new message and streams the response via chatTextChunks
+  await aiChatStore.sendChatMessage({
+    chatId: aiChatStore.chat?.id,
+    type: 'text',
+    content: userMessageContent,
+  });
+}
+
+async function onAssistantIdChange(id: string | undefined) {
+  // reset chat
+  // aiChatStore.chatMessages = [];
+}
 
 // Hooks
+// watch(() => aiChatStore.assistantId, onAssistantIdChange, { immediate: true });
+
+onMounted(() => {
+  // aiChatStore.reset();
+  console.log('mounted');
+});
+
+onBeforeUnmount(() => {
+  // Clear chat messages when the component is unmounted
+  // aiChatStore.reset();
+});
 </script>
 
 <template>
   <EditorSidePanel title="Chat" v-model="editorStore.showAiChat">
-    <div>some</div>
+    <div class="flex flex-col h-[calc(100vh-9rem)]">
+      <div class="no-scrollbar relative grow overflow-y-scroll">
+        <div class="h-full">
+          <!-- Chat messages -->
+          <div v-for="(message, index) in aiChatStore.chatMessages" :key="index" class="border">
+            {{ message.content }}
+          </div>
+          <!-- Chat messages stream chunks -->
+          <div>
+            {{ aiChatStore.chatTextChunks }}
+          </div>
+        </div>
+      </div>
+      <!-- Chat input -->
+      <div class="relative">
+        <ChatInputTextarea v-model="textareaInput" @submit="onInputSubmit" />
+        <div class="absolute bottom-[0.3rem] z-10 right-8">
+          <ChatAssistantSelect />
+        </div>
+      </div>
+    </div>
   </EditorSidePanel>
 </template>

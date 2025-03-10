@@ -95,16 +95,6 @@ export interface CreateChatMessageStream {
   provider?: string;
 }
 
-export interface CreateChatStreamPayload {
-  chatId: InputChatId;
-  chatMessages: ChatMessage[];
-  provider: string;
-  model: string;
-  reasoningEffort?: number;
-  maxTokens?: number;
-  temperature?: number;
-}
-
 class ChatServiceError extends Error {
   constructor(message: string) {
     super(message);
@@ -204,54 +194,6 @@ export function useChatService() {
     return data;
   };
 
-  async function createChatStream(
-    payload: CreateChatStreamPayload,
-  ): Promise<ReadableStream<Uint8Array>> {
-    acStream = new AbortController();
-
-    if (!payload.chatId) {
-      throw new Error('Chat ID is required');
-    }
-
-    try {
-      const streamRoute = getRoute(ChatRoute.CHAT_STREAM, {
-        ':chatId': payload.chatId,
-      });
-      const response = await $axios.post<ReadableStream<Uint8Array>>(
-        streamRoute,
-        {
-          provider: payload.provider,
-          model: payload.model,
-          messages: payload.chatMessages,
-          reasoningEffort: payload.reasoningEffort || 'low',
-          maxTokens: payload.maxTokens || 4000,
-          temperature: payload.temperature || 80,
-        },
-        {
-          signal: acStream.signal,
-          headers: {
-            Accept: 'text/event-stream',
-          },
-          responseType: 'stream',
-          adapter: 'fetch',
-        },
-      );
-
-      if (response.status !== HttpStatus.OK) {
-        throw new Error(`Response not ok: ${response.statusText}`);
-      }
-
-      if (!(response.data instanceof ReadableStream)) {
-        throw new Error('Response is not a readable stream');
-      }
-
-      return response.data;
-      //
-    } catch (error: unknown) {
-      throw new ChatServiceError('Failed to create chat message stream');
-    }
-  }
-
   const sendChatMessage = async (payload: CreateChatMessageStream) => {
     acStream = new AbortController();
     const { chatId, content, visionContent } = payload;
@@ -290,7 +232,7 @@ export function useChatService() {
           provider: payload.provider || chatStore.provider,
           model: payload.model || chatStore.model,
           messages: chatMessages.value,
-          reasoningEffort: chatSettingsStore.thinkLevel?.[0] || 0,
+          reasoningEffort: chatSettingsStore.thinkLevel?.[0] || 'low',
           maxTokens: chatSettingsStore.maxTokens?.[0] || 4000,
           temperature: chatSettingsStore.temperature?.[0] || 80,
         },
@@ -480,25 +422,6 @@ export function useChatService() {
     initChatMessages(chat.value?.messages || []);
   };
 
-  const fetchChatById = async (chatId: InputChatId) => {
-    if (!chatId) {
-      throw new Error('Chat ID is required');
-    }
-    const api = newApiRequest();
-    const route = getRoute(ChatRoute.CHAT, { ':chatId': chatId });
-    const { status, data } = await api
-      .GET<ChatResponse>()
-      .setRoute(route)
-      .setSignal(ac.signal)
-      .send();
-
-    if (status !== HttpStatus.OK) {
-      throw new BadResponseError();
-    }
-
-    return data;
-  };
-
   const clearChatMessages = async () => {
     abortChatRequest();
     if (!chat.value) {
@@ -528,13 +451,11 @@ export function useChatService() {
     setError,
     clearError,
     initChat,
-    fetchChatById,
     fetchAllChats,
     fetchAllChatsPaginated,
     fetchLatestChat,
     sendChatMessage,
     createChatMessage,
-    createChatStream,
     clearChatMessages,
     abortChatRequest,
     createChat,

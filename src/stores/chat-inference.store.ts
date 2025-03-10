@@ -7,7 +7,7 @@ interface ISetModelPayload {
   hasVision: boolean;
 }
 
-export const useChatStore = defineStore('chat-inference-store', () => {
+export const useChatInferenceStore = defineStore('chat-inference-store', () => {
   const modelWithVision = ref(false);
   const model = ref('');
   const provider = ref('');

@@ -5,7 +5,7 @@ import ChatThinkingBox from '@/components/chat/ChatThinkingBox.vue';
 import { ChatMessageRole } from '@/enums/chat-role.enum';
 import { chatInputTextSchema } from '@/schemas/chat-input-text.schema';
 import { useAuthStore } from '@/stores/auth.store';
-import { useChatStore } from '@/stores/chat-inference.store';
+import { useChatInferenceStore } from '@/stores/chat-inference.store';
 import { useWebSocketStore } from '@/stores/websocket.store';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import ChatButtonNewChat from '@components/chat/ChatButtonNewChat.vue';
@@ -24,7 +24,7 @@ import { ArrowDownIcon, PaperclipIcon, SendIcon, SquareIcon } from 'lucide-vue-n
 import ChatAssistantDetails from './ChatAssistantDetails.vue';
 
 const socket = useWebSocketStore();
-const chatStore = useChatStore();
+const chatStore = useChatInferenceStore();
 const authStore = useAuthStore();
 const settings = useChatSettingsStore();
 

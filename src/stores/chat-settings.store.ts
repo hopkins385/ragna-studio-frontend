@@ -60,15 +60,15 @@ export const useChatSettingsStore = defineStore(
     }
 
     function setTemperature(temp: [number]) {
-      temperature.value = temp;
+      temperature.value = temp.map(t => Number(t));
     }
 
     function setPresencePenalty(penalty: [number]) {
-      presencePenalty.value = penalty;
+      presencePenalty.value = penalty.map(t => Number(t));
     }
 
     function setMaxTokens(tokens: [number]) {
-      maxTokens.value = tokens;
+      maxTokens.value = tokens.map(t => Number(t));
     }
 
     function setHistoryGroupBy(groupBy: GroupByOption) {

@@ -10,27 +10,22 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { LargeLangModel } from '@/composables/services/interfaces/large-lang-model.interface';
 import { useLlmService } from '@/composables/services/useLlmService';
 import { cn } from '@/lib/utils';
-import { useChatStore } from '@/stores/chat-inference.store';
+import { useChatInferenceStore } from '@/stores/chat-inference.store';
 
 const { getAllModels } = useLlmService();
 
 const models = ref<LargeLangModel[]>([]);
 
 const open = ref(false);
-const chatStore = useChatStore();
+const chatStore = useChatInferenceStore();
 
 const selectedModel = computed(() =>
   chatStore.model
-    ? models.value?.find(model => model?.apiName === chatStore.model)
-        ?.displayName
+    ? models.value?.find(model => model?.apiName === chatStore.model)?.displayName
     : 'Select Model...',
 );
 
@@ -102,9 +97,7 @@ onMounted(() => {
                 :class="
                   cn(
                     'ml-auto h-4 w-4',
-                    chatStore.model === model?.apiName
-                      ? 'opacity-100'
-                      : 'opacity-0',
+                    chatStore.model === model?.apiName ? 'opacity-100' : 'opacity-0',
                   )
                 "
               />
