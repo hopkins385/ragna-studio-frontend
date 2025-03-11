@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useAuthStore } from '@/stores/auth.store';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 
 // Props
 // Emits

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Imports
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { assistantFormSchema } from '@/schemas/assistant.form';
 import ButtonLink from '@components/button/ButtonLink.vue';
@@ -14,7 +15,6 @@ import {
   type AssistantTool,
 } from '@composables/services/useAssistantToolsService';
 import useToast from '@composables/useToast';
-import { useAuthStore } from '@stores/auth.store';
 import {
   FormControl,
   FormDescription,

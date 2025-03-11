@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/stores/auth.store';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import type { RouteLocationNormalized } from 'vue-router';
 
 export function authMiddleware(to: RouteLocationNormalized) {

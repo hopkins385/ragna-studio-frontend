@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth.store';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { Bell, Expand } from 'lucide-vue-next';
 import BrandLogo from '../brand/BrandLogo.vue';
 import NavBarProject from './NavBarProject.vue';

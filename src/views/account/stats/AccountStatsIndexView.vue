@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Imports
 import AccountStatsBarChart from '@/components/account/stats/AccountStatsBarChart.vue';
-import { useAuthStore } from '@/stores/auth.store';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import Heading from '@components/heading/Heading.vue';
 import HeadingTitle from '@components/heading/HeadingTitle.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';

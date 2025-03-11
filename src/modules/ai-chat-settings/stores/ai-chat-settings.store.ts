@@ -44,12 +44,17 @@ export const useAiChatSettingsStore = defineStore(
         ][thinkLevel.value?.[0] || 0],
     );
     const getTemperature = computed(
+      // @ts-ignore
       () => (temperature.value?.[0] || defaultSettings.temperature[0]) / 100,
     );
     const getPresencePenalty = computed(
+      // @ts-ignore
       () => presencePenalty.value?.[0] ?? defaultSettings.presencePenalty[0],
     );
-    const getMaxTokens = computed(() => maxTokens.value?.[0] ?? defaultSettings.maxTokens[0]);
+    const getMaxTokens = computed(
+      // @ts-ignore
+      () => maxTokens.value?.[0] ?? defaultSettings.maxTokens[0],
+    );
     const getHistoryGroupBy = computed(() => historyGroupBy.value);
 
     // Actions as functions

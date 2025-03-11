@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
-import { useAuthStore } from '@/stores/auth.store';
 import BrandHeader from '@components/brand/BrandHeader.vue';
 import { FormControl, FormField, FormItem, FormLabel } from '@ui/form';
 import FormMessage from '@ui/form/FormMessage.vue';
@@ -104,14 +104,8 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
       <div class="max-w-md w-full p-10 border-0 rounded-lg">
         <div>
           <!-- Error -->
-          <div
-            v-if="regError.show"
-            class="text-red-700 pb-6 rounded relative"
-            role="alert"
-          >
-            <span class="block sm:inline text-sm font-semibold">{{
-              regError.message
-            }}</span>
+          <div v-if="regError.show" class="text-red-700 pb-6 rounded relative" role="alert">
+            <span class="block sm:inline text-sm font-semibold">{{ regError.message }}</span>
           </div>
         </div>
         <form @submit.prevent="onSubmit" class="space-y-4">
@@ -120,12 +114,7 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
             <FormItem>
               <FormLabel>{{ $t('auth.invitation_code') }}</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder=""
-                  v-bind="componentField"
-                  :disabled="true"
-                />
+                <Input type="password" placeholder="" v-bind="componentField" :disabled="true" />
               </FormControl>
               <!--
               <FormLabel v-if="!routeCode" class="text-sm text-gray-500">
@@ -141,12 +130,7 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
             <FormItem>
               <FormLabel>{{ $t('form.name') }}</FormLabel>
               <FormControl>
-                <Input
-                  type="text"
-                  placeholder=""
-                  v-bind="componentField"
-                  autocomplete="name"
-                />
+                <Input type="text" placeholder="" v-bind="componentField" autocomplete="name" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -156,12 +140,7 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
             <FormItem>
               <FormLabel>{{ $t('form.email') }}</FormLabel>
               <FormControl>
-                <Input
-                  type="email"
-                  placeholder=""
-                  v-bind="componentField"
-                  autocomplete="email"
-                />
+                <Input type="email" placeholder="" v-bind="componentField" autocomplete="email" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -177,11 +156,7 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
             </FormItem>
           </FormField>
           <!-- Terms -->
-          <FormField
-            v-slot="{ handleChange, value }"
-            type="checkbox"
-            name="terms"
-          >
+          <FormField v-slot="{ handleChange, value }" type="checkbox" name="terms">
             <FormItem>
               <FormControl>
                 <Checkbox

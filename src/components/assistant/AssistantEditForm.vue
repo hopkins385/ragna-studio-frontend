@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useChatService } from '@/composables/services/useChatService';
 import { useToolIcons } from '@/composables/useToolIcons';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import CollectionSelectModal from '@components/collection/CollectionSelectModal.vue';
@@ -12,7 +13,6 @@ import useCollectionAbleService from '@composables/services/useCollectionAbleSer
 import type { Collection } from '@composables/services/useCollectionService';
 import useToast from '@composables/useToast';
 import { assistantFormSchema } from '@schemas/assistant.form';
-import { useAuthStore } from '@stores/auth.store';
 import { Button } from '@ui/button';
 import Checkbox from '@ui/checkbox/Checkbox.vue';
 import {

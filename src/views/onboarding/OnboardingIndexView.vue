@@ -3,8 +3,8 @@ import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import { Input } from '@/components/ui/input';
 import { useOnboardingService } from '@/composables/services/useOnboardingService';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
-import { useAuthStore } from '@/stores/auth.store';
 import {
   Dialog,
   DialogContent,

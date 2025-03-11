@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
@@ -6,16 +7,8 @@ import { useMediaService } from '@composables/services/useMediaService';
 import { useRecordService } from '@composables/services/useRecordService';
 import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
-import { useAuthStore } from '@stores/auth.store';
 import { Button } from '@ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { CheckIcon, FileIcon, Loader2Icon, PlusIcon } from 'lucide-vue-next';
 
 interface IMediaData {
@@ -143,9 +136,7 @@ onMounted(async () => {
       <TableBody>
         <TableRow v-for="media in mediaData.medias || []" :key="media.id">
           <TableCell>
-            <div
-              class="flex size-8 items-center justify-center truncate rounded-full"
-            >
+            <div class="flex size-8 items-center justify-center truncate rounded-full">
               <FileIcon class="size-4" />
             </div>
           </TableCell>
@@ -159,20 +150,14 @@ onMounted(async () => {
             <Button
               variant="outline"
               size="icon"
-              :disabled="
-                pendingUpdateId == media.id ||
-                allRecordsMediaIds.includes(media.id)
-              "
+              :disabled="pendingUpdateId == media.id || allRecordsMediaIds.includes(media.id)"
               @click="onAdd(media.id)"
             >
               <span v-if="pendingUpdateId == media.id" class="animate-spin">
                 <Loader2Icon class="size-4" />
               </span>
               <span v-else>
-                <CheckIcon
-                  v-if="allRecordsMediaIds.includes(media.id)"
-                  class="size-4"
-                />
+                <CheckIcon v-if="allRecordsMediaIds.includes(media.id)" class="size-4" />
                 <PlusIcon v-else class="size-4" />
               </span>
             </Button>
@@ -180,16 +165,9 @@ onMounted(async () => {
         </TableRow>
       </TableBody>
       <!-- Meta Caption -->
-      <TableMetaCaption
-        :itemsLength="mediaData.medias.length"
-        :meta="mediaData.meta"
-      />
+      <TableMetaCaption :itemsLength="mediaData.medias.length" :meta="mediaData.meta" />
     </Table>
     <!-- Pagination Controls -->
-    <PaginateControls
-      :page="page"
-      :meta="mediaData.meta"
-      @update:page="setPage"
-    />
+    <PaginateControls :page="page" :meta="mediaData.meta" @update:page="setPage" />
   </div>
 </template>

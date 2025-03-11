@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { Button } from '@components/ui/button';
 import {
   Command,
@@ -8,7 +9,6 @@ import {
   CommandSeparator,
 } from '@components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover';
-import { useAuthStore } from '@stores/auth.store';
 import {
   Bell,
   ChartColumnIcon,

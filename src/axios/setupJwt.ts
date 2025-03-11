@@ -1,5 +1,5 @@
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { AuthRoute } from '@composables/services/useAuthService';
-import { useAuthStore } from '@stores/auth.store';
 import type { AxiosError, AxiosRequestConfig } from 'axios';
 import { $axios } from './axiosInstance';
 
@@ -39,9 +39,7 @@ export function setupAxiosJwtInterceptor() {
 
   $axios.interceptors.request.use(config => {
     const token =
-      config.url === AuthRoute.REFRESH
-        ? authStore.getRefreshToken
-        : authStore.getAccessToken;
+      config.url === AuthRoute.REFRESH ? authStore.getRefreshToken : authStore.getAccessToken;
     if (token) {
       setAuthorizationHeader(config, token);
     }
@@ -54,11 +52,7 @@ export function setupAxiosJwtInterceptor() {
     async (error: AxiosError) => {
       const originalRequest = error.config as ExtendedAxiosRequestConfig;
 
-      if (
-        error.response?.status === 401 &&
-        !originalRequest._retry &&
-        authStore.hasRefreshToken
-      ) {
+      if (error.response?.status === 401 && !originalRequest._retry && authStore.hasRefreshToken) {
         // do not auto refresh token for these routes
         if (
           originalRequest.url === AuthRoute.REFRESH ||

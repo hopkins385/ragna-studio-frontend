@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import AssistantCreateForm from '@components/assistant/AssistantCreateForm.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import useAssistantService from '@composables/services/useAssistantService';
@@ -9,7 +10,6 @@ import { useAssistantToolsService } from '@composables/services/useAssistantTool
 import useToast from '@composables/useToast';
 import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
 import { assistantFormSchema } from '@schemas/assistant.form';
-import { useAuthStore } from '@stores/auth.store';
 import { useForm } from 'vee-validate';
 
 const router = useRouter();

@@ -1,23 +1,15 @@
-import { useAuthStore } from '@/stores/auth.store';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import type { RouteLocationNormalized } from 'vue-router';
 import { RouteName } from '../enums/route-names.enum';
 
 export async function authMiddleware(to: RouteLocationNormalized) {
   const authStore = useAuthStore();
 
-  if (
-    to.meta.requiresAuth &&
-    !authStore.isAuthenticated &&
-    !authStore.hasRefreshToken
-  ) {
+  if (to.meta.requiresAuth && !authStore.isAuthenticated && !authStore.hasRefreshToken) {
     return { name: RouteName.LOGIN };
   }
 
-  if (
-    to.meta.requiresAuth &&
-    !authStore.isAuthenticated &&
-    authStore.hasRefreshToken
-  ) {
+  if (to.meta.requiresAuth && !authStore.isAuthenticated && authStore.hasRefreshToken) {
     try {
       await authStore.refreshAuth();
       if (!authStore.isAuthenticated) {

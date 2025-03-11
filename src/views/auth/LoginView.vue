@@ -3,17 +3,11 @@ import { ConnectionError } from '@/common/errors/connection.error';
 import { UnauthorizedError } from '@/common/errors/unauthorized.error';
 import BrandHeader from '@/components/brand/BrandHeader.vue';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useAuthService } from '@/composables/services/useAuthService';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
-import { useAuthStore } from '@/stores/auth.store';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { z } from 'zod';
@@ -37,14 +31,8 @@ const loginFormSchema = z.object({
   password: z
     .string()
     .trim()
-    .min(
-      passwordMinLength,
-      t('auth.error.password_min_length', { length: passwordMinLength }),
-    )
-    .max(
-      passwordMaxLength,
-      t('auth.error.password_max_length', { length: passwordMaxLength }),
-    ),
+    .min(passwordMinLength, t('auth.error.password_min_length', { length: passwordMinLength }))
+    .max(passwordMaxLength, t('auth.error.password_max_length', { length: passwordMaxLength })),
 });
 
 const authError = ref<string | null>(null);
@@ -119,9 +107,7 @@ const showRegister = true;
           <div class="h-2"></div>
           <div class="flex w-full items-center justify-center px-10 py-2">
             <hr class="w-full" />
-            <span class="px-5 text-sm text-slate-500 uppercase">{{
-              $t('auth.or')
-            }}</span>
+            <span class="px-5 text-sm text-slate-500 uppercase">{{ $t('auth.or') }}</span>
             <hr class="w-full" />
           </div>
         </div>
@@ -156,11 +142,7 @@ const showRegister = true;
               </FormItem>
             </FormField>
             <div class="pt-4">
-              <ButtonLoading
-                :loading="formLoading"
-                type="submit"
-                class="w-full"
-              >
+              <ButtonLoading :loading="formLoading" type="submit" class="w-full">
                 {{ $t('auth.login') }}
               </ButtonLoading>
             </div>

@@ -1,5 +1,5 @@
 import type { NavItem } from '@/interfaces/nav/nav-item.interface';
-import { useAuthStore } from '@/stores/auth.store';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import {
   BotIcon,
   BriefcaseBusinessIcon,

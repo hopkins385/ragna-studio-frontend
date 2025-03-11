@@ -2,13 +2,13 @@
 // Imports
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import { useMediaService } from '@composables/services/useMediaService';
 import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
-import { useAuthStore } from '@stores/auth.store';
 import { Button } from '@ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { FileIcon, Trash2Icon } from 'lucide-vue-next';

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import EditorSidebar from '@/components/editor/EditorSidebar.vue';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { useWebSocketStore } from '@/stores/websocket.store';
 import DrawerPanel from '@components/drawer/DrawerPanel.vue';
 import NavBar from '@components/nav/NavBar.vue';
 import NavTopBar from '@components/nav/NavTopBar.vue';
 import { Toaster } from '@components/ui/sonner';
-import { useAuthStore } from '@stores/auth.store';
 
 const router = useRouter();
 const authStore = useAuthStore();

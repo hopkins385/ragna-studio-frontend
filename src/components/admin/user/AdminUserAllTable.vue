@@ -8,7 +8,7 @@ import { useAdminUserService } from '@/composables/services/admin/useAdminUserSe
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import useToast from '@/composables/useToast';
-import { useAuthStore } from '@/stores/auth.store';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import {
   Table,
   TableBody,

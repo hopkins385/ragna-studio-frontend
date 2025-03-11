@@ -1,6 +1,6 @@
 import useToast from '@/composables/useToast';
+import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { socketClient } from '@/socket';
-import { useAuthStore } from '@/stores/auth.store';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
