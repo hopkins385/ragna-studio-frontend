@@ -3,7 +3,7 @@
 import { UnknownError } from '@/common/errors/unknown.error';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import { useEditorService } from '@/composables/services/useEditorService';
-import useMarkdown from '@/composables/useMarkdown';
+import { markdownService } from '@/modules/markdown/markdown.service';
 import { useEditorStore } from '@/stores/editor.store';
 import { Button } from '@ui/button';
 import { Textarea } from '@ui/textarea';
@@ -31,7 +31,6 @@ const textareaContainerRef = ref<HTMLDivElement | null>(null);
 
 // Composables
 const { fetchPromptCompletion, abortCompletion } = useEditorService();
-const { parseMarkdown } = useMarkdown();
 
 // Computed
 const hasInput = computed(() => input.value.length > 1);
@@ -63,7 +62,7 @@ const runCompletion = async () => {
     rawCompletion.value = completion;
 
     // parse markdown to html
-    const htmlContent = parseMarkdown(completion);
+    const htmlContent = markdownService.toHtml(completion);
 
     // Create a temporary div to calculate the actual text length
     const tempDiv = document.createElement('div');

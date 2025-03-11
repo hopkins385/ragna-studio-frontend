@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ChatMessageVisionContent } from '@/composables/services/useChatService';
-import useMarkdown from '@/composables/useMarkdown';
 import type { ChatMessageRole } from '@/enums/chat-role.enum';
+import { markdownService } from '@/modules/markdown/markdown.service';
 import 'highlight.js/styles/stackoverflow-light.min.css';
 import ChatMessageBoxWrapper from './ChatMessageBoxWrapper.vue';
 
@@ -14,8 +14,6 @@ interface ChatMessageBoxProps {
 }
 
 defineProps<ChatMessageBoxProps>();
-
-const { parseMarkdown } = useMarkdown();
 </script>
 
 <template>
@@ -36,6 +34,6 @@ const { parseMarkdown } = useMarkdown();
       </div>
     </div>
     <!-- Text Content -->
-    <div v-dompurify-html="parseMarkdown(content)"></div>
+    <div v-dompurify-html="markdownService.toHtml(content)"></div>
   </ChatMessageBoxWrapper>
 </template>

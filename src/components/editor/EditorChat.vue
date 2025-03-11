@@ -1,11 +1,11 @@
 <script setup lang="ts">
+// Imports
 import ChatAssistantSelect from '@/components/chat/ChatAssistantSelect.vue';
 import ChatInputTextarea from '@/components/chat/ChatInputTextarea.vue';
 import EditorSidePanel from '@/components/editor/EditorSidePanel.vue';
 import { useAiChatStore } from '@/modules/ai-chat/stores/ai-chat.store';
+import { markdownService } from '@/modules/markdown/markdown.service';
 import { useEditorStore } from '@/stores/editor.store';
-
-// Imports
 
 // Props
 // Emits
@@ -76,14 +76,15 @@ onBeforeUnmount(() => {
             v-for="(message, index) in aiChatStore.chatMessages"
             :key="index"
             class="border p-2 rounded-md text-sm"
-          >
-            {{ message.content }}
-          </div>
+            v-dompurify-html="markdownService.toHtml(message.content)"
+          ></div>
           <div v-if="aiChatStore.isThinking">...</div>
           <!-- Chat messages stream chunks -->
-          <div v-if="aiChatStore.isStreaming" class="border p-2 rounded-md text-sm">
-            {{ aiChatStore.joinedChatTextChunks }}
-          </div>
+          <div
+            v-if="aiChatStore.isStreaming"
+            class="border p-2 rounded-md text-sm"
+            v-dompurify-html="markdownService.toHtml(aiChatStore.joinedChatTextChunks)"
+          ></div>
         </div>
       </div>
       <!-- Chat input -->

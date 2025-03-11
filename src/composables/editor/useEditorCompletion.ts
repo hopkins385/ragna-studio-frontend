@@ -1,12 +1,11 @@
+import { markdownService } from '@/modules/markdown/markdown.service';
 import { useEditorService } from '../services/useEditorService';
-import useMarkdown from '../useMarkdown';
 
 export default function useEditorCompletion() {
   let ac: AbortController | null = null;
   const isLoading = ref(false);
 
   const { fetchPromptCompletion } = useEditorService();
-  const { parseMarkdown } = useMarkdown();
 
   const abortCompletion = () => {
     if (ac) {
@@ -40,7 +39,7 @@ export default function useEditorCompletion() {
       if (!completion) {
         return '';
       }
-      return parseMarkdown(completion);
+      return markdownService.toHtml(completion);
       //
     } catch (error) {
       console.error('Error running completion', error);
