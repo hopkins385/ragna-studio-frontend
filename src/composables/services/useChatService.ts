@@ -5,8 +5,8 @@ import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
+import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import { useChatInferenceStore } from '@/stores/chat-inference.store';
-import { useChatSettingsStore } from '@/stores/chat-settings.store';
 import { getRoute } from '@/utils/route.util';
 import { AxiosError, CanceledError } from 'axios';
 
@@ -132,7 +132,7 @@ export function useChatService() {
   const chatAssistant = computed(() => chat.value?.assistant);
 
   const chatStore = useChatInferenceStore();
-  const chatSettingsStore = useChatSettingsStore();
+  const chatSettingsStore = useAiChatSettingsStore();
 
   const handleError = (err: unknown) => {
     if (err instanceof DOMException && err.name === 'AbortError') {

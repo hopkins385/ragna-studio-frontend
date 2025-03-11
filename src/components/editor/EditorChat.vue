@@ -2,7 +2,7 @@
 import ChatAssistantSelect from '@/components/chat/ChatAssistantSelect.vue';
 import ChatInputTextarea from '@/components/chat/ChatInputTextarea.vue';
 import EditorSidePanel from '@/components/editor/EditorSidePanel.vue';
-import { useAiChatStore } from '@/stores/ai-chat.store';
+import { useAiChatStore } from '@/modules/ai-chat/stores/ai-chat.store';
 import { useEditorStore } from '@/stores/editor.store';
 
 // Imports
@@ -70,14 +70,19 @@ onBeforeUnmount(() => {
   <EditorSidePanel title="Chat" v-model="editorStore.showAiChat">
     <div class="flex flex-col h-[calc(100vh-9rem)]">
       <div class="no-scrollbar relative grow overflow-y-scroll">
-        <div class="h-full">
+        <div class="h-full space-y-2">
           <!-- Chat messages -->
-          <div v-for="(message, index) in aiChatStore.chatMessages" :key="index" class="border">
+          <div
+            v-for="(message, index) in aiChatStore.chatMessages"
+            :key="index"
+            class="border p-2 rounded-md text-sm"
+          >
             {{ message.content }}
           </div>
+          <div v-if="aiChatStore.isThinking">...</div>
           <!-- Chat messages stream chunks -->
-          <div>
-            {{ aiChatStore.chatTextChunks }}
+          <div v-if="aiChatStore.isStreaming" class="border p-2 rounded-md text-sm">
+            {{ aiChatStore.joinedChatTextChunks }}
           </div>
         </div>
       </div>

@@ -1,21 +1,21 @@
-import { ChatService } from '@/services/chat/chat.service';
-import type { Chat, ChatMessage } from '@/services/chat/intefaces/chat.interfaces';
+import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
+import { AiChatService } from '@/modules/ai-chat/ai-chat.service';
+import type {
+  Chat,
+  ChatMessage,
+  CreateChatMessageStreamPayload,
+} from '@/modules/ai-chat/interfaces/chat.interfaces';
 import { useChatInferenceStore } from '@/stores/chat-inference.store';
-import { useChatSettingsStore } from '@/stores/chat-settings.store';
 import { defineStore } from 'pinia';
-import type { CreateChatMessageStreamPayload } from './../services/chat/intefaces/chat.interfaces';
 
 export const useAiChatStore = defineStore('ai-chat-store', () => {
-  const chatService = new ChatService();
+  const aiChatService = new AiChatService();
   const chatStore = useChatInferenceStore();
-  const chatSettingsStore = useChatSettingsStore();
+  const chatSettingsStore = useAiChatSettingsStore();
 
   const isPending = ref(false);
   const isStreaming = ref(false);
   const isThinking = ref(false);
-
-  // const chatId = ref<string | undefined>();
-  // const assistantId = ref<string | undefined>();
 
   const chat = ref<Chat | null>(null);
   const chatMessages = ref<ChatMessage[]>([]);
@@ -25,6 +25,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   const hasChat = computed(() => chat.value !== null);
   const hasChatMessages = computed(() => chatMessages.value.length > 0);
   const chatAssistant = computed(() => chat.value?.assistant);
+  const joinedChatTextChunks = computed(() => chatTextChunks.value.join(''));
 
   function setAssistantId(id: string) {
     assistantId.value = id;
@@ -62,7 +63,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       throw new Error('Assistant ID is required to create a new chat');
     }
 
-    const { chat } = await chatService.createChat(newAssistantId);
+    const { chat } = await aiChatService.createChat(newAssistantId);
     if (!chat) {
       throw new Error('Failed to create chat');
     }
@@ -81,7 +82,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     };
 
     try {
-      const data = await chatService.createChatMessage({
+      const data = await aiChatService.createChatMessage({
         chatId: payload.chatId,
         message: userChatMessage,
       });
@@ -117,9 +118,9 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
 
     setIsThinking(true);
 
-    const stream = await chatService.createChatStream({
+    const stream = await aiChatService.createChatStream({
       chatId: payload.chatId,
-      chatMessages: [userChatMessage],
+      chatMessages: chatMessages.value,
       provider: chatStore.provider,
       model: chatStore.model,
       reasoningEffort: chatSettingsStore.thinkLevel?.[0] || 0,
@@ -140,7 +141,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       throw new Error('Chat ID is required to hydrate chat');
     }
 
-    const { chat } = await chatService.fetchChatById(chatId);
+    const { chat } = await aiChatService.fetchChatById(chatId);
 
     if (!chat) {
       throw new Error('Failed to hydrate chat');
@@ -186,7 +187,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   // Helpers
 
   function abort() {
-    chatService.abortRequest();
+    aiChatService.abortRequest();
     resetStreamStates();
   }
 
@@ -234,9 +235,13 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   }
 
   return {
+    isPending,
+    isStreaming,
+    isThinking,
     chat,
     chatMessages,
     chatTextChunks,
+    joinedChatTextChunks,
     chatAssistant,
     assistantId,
     hasChat,

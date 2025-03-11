@@ -3,6 +3,7 @@ import ChatHistoryDrawerButton from '@/components/chat/ChatHistoryDrawerButton.v
 import ChatPresets from '@/components/chat/ChatPresets.vue';
 import ChatThinkingBox from '@/components/chat/ChatThinkingBox.vue';
 import { ChatMessageRole } from '@/enums/chat-role.enum';
+import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import { chatInputTextSchema } from '@/schemas/chat-input-text.schema';
 import { useAuthStore } from '@/stores/auth.store';
 import { useChatInferenceStore } from '@/stores/chat-inference.store';
@@ -17,7 +18,6 @@ import ChatToolCallMessage from '@components/chat/ChatToolCallMessage.vue';
 import { useChatImages, type ChatImage } from '@composables/chat/useChatImages';
 import { useChatService } from '@composables/services/useChatService';
 import { useChatTools } from '@composables/useChatTools';
-import { useChatSettingsStore } from '@stores/chat-settings.store';
 import { Button } from '@ui/button';
 import { Textarea } from '@ui/textarea';
 import { ArrowDownIcon, PaperclipIcon, SendIcon, SquareIcon } from 'lucide-vue-next';
@@ -26,7 +26,7 @@ import ChatAssistantDetails from './ChatAssistantDetails.vue';
 const socket = useWebSocketStore();
 const chatStore = useChatInferenceStore();
 const authStore = useAuthStore();
-const settings = useChatSettingsStore();
+const settings = useAiChatSettingsStore();
 
 const { t } = useI18n();
 

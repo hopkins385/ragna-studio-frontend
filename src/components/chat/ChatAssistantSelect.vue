@@ -2,7 +2,7 @@
 // Imports
 import useAssistantService from '@/composables/services/useAssistantService';
 import type { Assistant } from '@/composables/services/useChatService';
-import { useAiChatStore } from '@/stores/ai-chat.store';
+import { useAiChatStore } from '@/modules/ai-chat/stores/ai-chat.store';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/select';
 
 // Props

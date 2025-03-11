@@ -1,17 +1,18 @@
+import type { DefaultSettings } from '@/modules/ai-chat-settings/interfaces/ai-chat-settings.interfaces';
+import type {
+  GroupByOption,
+  MaxTokens,
+  PresencePenalty,
+  Temperature,
+  ThinkLevel,
+} from '@/modules/ai-chat-settings/types/ai-chat-settings.type';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
-const chatStoreName = 'chat-settings';
-
 export const groupByOptions = ['day', 'month', 'year'] as const;
 export const thinkLevel = [0, 1, 2, 3] as const;
-export type GroupByOption = string | undefined;
-export type ThinkLevel = number[] | undefined;
-export type Temperature = number[] | undefined;
-export type PresencePenalty = number[] | undefined;
-export type MaxTokens = number[] | undefined;
 
-const defaultSettings = {
+const defaultSettings: DefaultSettings = {
   thinkLevel: [0],
   temperature: [80],
   presencePenalty: [0],
@@ -20,8 +21,8 @@ const defaultSettings = {
   historyGroupBy: 'day',
 };
 
-export const useChatSettingsStore = defineStore(
-  chatStoreName,
+export const useAiChatSettingsStore = defineStore(
+  'ai-chat-settings',
   () => {
     // Individual refs for each state property
     const thinkLevel = ref<ThinkLevel>(defaultSettings.thinkLevel);
@@ -43,7 +44,7 @@ export const useChatSettingsStore = defineStore(
         ][thinkLevel.value?.[0] || 0],
     );
     const getTemperature = computed(
-      () => (temperature.value?.[0] ?? defaultSettings.temperature[0]) / 100,
+      () => (temperature.value?.[0] || defaultSettings.temperature[0]) / 100,
     );
     const getPresencePenalty = computed(
       () => presencePenalty.value?.[0] ?? defaultSettings.presencePenalty[0],

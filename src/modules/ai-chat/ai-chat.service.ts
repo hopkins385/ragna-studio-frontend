@@ -4,7 +4,7 @@ import { BadRequestError } from '@/common/errors/bad-request.error';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
-import { ChatServiceError } from '@/services/chat/errors/chat-service.error';
+import { ChatServiceError } from '@/modules/ai-chat/errors/chat-service.error';
 import type {
   Chat,
   ChatMessage,
@@ -13,7 +13,7 @@ import type {
   CreateChatMessagePayload,
   CreateChatStreamPayload,
   InputChatId,
-} from '@/services/chat/intefaces/chat.interfaces';
+} from '@/modules/ai-chat/interfaces/chat.interfaces';
 import { getRoute } from '@/utils/route.util';
 import { AxiosError, CanceledError } from 'axios';
 
@@ -28,7 +28,11 @@ const ChatRoute = {
   CHAT_MESSAGES: '/chat/:chatId/messages', // DELETE
 } as const;
 
-export class ChatService {
+const DEFAULT_MAX_TOKENS = 4000;
+const DEFAULT_TEMPERATURE = 80;
+const DEFAULT_REASONING_EFFORT = 0;
+
+export class AiChatService {
   private ac: AbortController;
 
   constructor() {
@@ -87,25 +91,23 @@ export class ChatService {
     const streamRoute = getRoute(ChatRoute.CHAT_STREAM, {
       ':chatId': payload.chatId,
     });
-    const response = await $axios.post<ReadableStream<Uint8Array>>(
-      streamRoute,
-      {
-        provider: payload.provider.trim().length ? payload.provider : undefined,
-        model: payload.model.trim().length ? payload.model : undefined,
-        messages: payload.chatMessages,
-        reasoningEffort: payload.reasoningEffort || 0,
-        maxTokens: payload.maxTokens || 4000,
-        temperature: payload.temperature || 80,
+    const body = {
+      provider: payload.provider.trim().length ? payload.provider : undefined,
+      model: payload.model.trim().length ? payload.model : undefined,
+      messages: payload.chatMessages,
+      reasoningEffort: payload.reasoningEffort || DEFAULT_REASONING_EFFORT,
+      maxTokens: payload.maxTokens || DEFAULT_MAX_TOKENS,
+      temperature: payload.temperature || DEFAULT_TEMPERATURE,
+    };
+
+    const response = await $axios.post<ReadableStream<Uint8Array>>(streamRoute, body, {
+      signal: this.ac.signal,
+      headers: {
+        Accept: 'text/event-stream',
       },
-      {
-        signal: this.ac.signal,
-        headers: {
-          Accept: 'text/event-stream',
-        },
-        responseType: 'stream',
-        adapter: 'fetch',
-      },
-    );
+      responseType: 'stream',
+      adapter: 'fetch',
+    });
 
     if (response.status !== HttpStatus.OK) {
       throw new ChatServiceError(`Response not ok: ${response.statusText}`);

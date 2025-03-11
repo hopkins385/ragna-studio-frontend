@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import useForHumans from '@/composables/useForHumans';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
-import { RouteName } from '@/router/enums/route-names.enum';
-import { useChatService, type ChatsPaginated } from '@composables/services/useChatService';
 import {
   groupByOptions,
-  useChatSettingsStore,
-  type GroupByOption,
-} from '@stores/chat-settings.store';
+  useAiChatSettingsStore,
+} from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
+import type { GroupByOption } from '@/modules/ai-chat-settings/types/ai-chat-settings.type';
+import { RouteName } from '@/router/enums/route-names.enum';
+import { useChatService, type ChatsPaginated } from '@composables/services/useChatService';
 import { useDrawerStore } from '@stores/drawer.store';
 import { Button } from '@ui/button';
 import { Separator } from '@ui/separator';
@@ -15,7 +15,7 @@ import { CalendarIcon, XIcon } from 'lucide-vue-next';
 
 const router = useRouter();
 const drawer = useDrawerStore();
-const chatSettings = useChatSettingsStore();
+const chatSettings = useAiChatSettingsStore();
 
 const data = ref<ChatsPaginated | null>(null);
 const selectedGroupBy = ref<GroupByOption>(chatSettings.getHistoryGroupBy);
@@ -66,7 +66,7 @@ const groupedChats = computed(() => {
 });
 
 const toggleGroupBy = () => {
-  const currentIndex = groupByOptions.indexOf(selectedGroupBy.value);
+  const currentIndex = groupByOptions.indexOf(selectedGroupBy.value ?? 'day');
   const nextIndex = (currentIndex + 1) % groupByOptions.length;
   selectedGroupBy.value = groupByOptions[nextIndex];
   chatSettings.setHistoryGroupBy(selectedGroupBy.value);

@@ -2,9 +2,9 @@
 /**
  * Component: ChatSettings
  */
+import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import { RouteName } from '@/router/enums/route-names.enum';
 import QuestionToolTip from '@components/question/QuestionToolTip.vue';
-import { useChatSettingsStore } from '@stores/chat-settings.store';
 import { Button } from '@ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover';
 import { Separator } from '@ui/separator';
@@ -26,7 +26,7 @@ const emits = defineEmits<ChatSettingsEmits>();
 const router = useRouter();
 
 const show = ref(false);
-const settings = useChatSettingsStore();
+const settings = useAiChatSettingsStore();
 
 const hasPresencePenaltySetting = false;
 const hasMaxTokensSetting = false;
