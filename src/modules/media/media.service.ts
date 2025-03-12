@@ -1,6 +1,6 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
-import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
+import { BaseApiService } from '@/common/service/base-api.service';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
 
@@ -12,13 +12,9 @@ const ApiMediaRoute = {
   FOR_PAGINATE: '/media/for/paginate', // POST
 } as const;
 
-export class MediaService {
-  private ac: AbortController;
-  private api: ApiRequest;
-
+export class MediaService extends BaseApiService {
   constructor() {
-    this.ac = new AbortController();
-    this.api = newApiRequest();
+    super();
   }
 
   public async uploadFiles(files: File[], vision: boolean = false) {
@@ -89,11 +85,6 @@ export class MediaService {
     }
 
     return data;
-  }
-
-  public abortRequest() {
-    this.ac.abort();
-    this.ac = new AbortController();
   }
 }
 

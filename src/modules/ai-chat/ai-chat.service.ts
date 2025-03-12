@@ -2,7 +2,7 @@ import { $axios } from '@/axios/axiosInstance';
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadRequestError } from '@/common/errors/bad-request.error';
 import { BadResponseError } from '@/common/errors/bad-response.error';
-import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
+import { BaseApiService } from '@/common/service/base-api.service';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { ChatServiceError } from '@/modules/ai-chat/errors/chat-service.error';
 import type {
@@ -32,13 +32,9 @@ const DEFAULT_MAX_TOKENS = 4000;
 const DEFAULT_TEMPERATURE = 80;
 const DEFAULT_REASONING_EFFORT = 0;
 
-export class AiChatService {
-  private ac: AbortController;
-  private api: ApiRequest;
-
+export class AiChatService extends BaseApiService {
   constructor() {
-    this.ac = new AbortController();
-    this.api = newApiRequest();
+    super();
   }
 
   public async createChat(assistantId: string): Promise<ChatResponse> {
@@ -208,29 +204,6 @@ export class AiChatService {
   }
 
   // Helpers
-  public abortRequest(): void {
-    this.ac.abort();
-    this.ac = new AbortController();
-  }
-  public getAbortController(): AbortController {
-    return this.ac;
-  }
-  public getAbortSignal(): AbortSignal {
-    return this.ac.signal;
-  }
-  public getAbortStatus(): boolean {
-    return this.ac.signal.aborted;
-  }
-  public getAbortReason(): string | null {
-    return this.ac.signal.reason;
-  }
-  public getAbortError(): Error | null {
-    if (this.ac.signal.aborted) {
-      return new Error(this.ac.signal.reason);
-    }
-    return null;
-  }
-
   private handleError(err: unknown) {
     if (err instanceof DOMException && err.name === 'AbortError') {
       console.warn('DOM: Request was aborted');

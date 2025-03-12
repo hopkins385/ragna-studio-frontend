@@ -1,7 +1,7 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { UnauthorizedError } from '@/common/errors/unauthorized.error';
-import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
+import { BaseApiService } from '@/common/service/base-api.service';
 import type { GoogleAuthCallbackQuery } from '@/interfaces/auth/google-auth-callback.interface';
 import type {
   AuthCredentials,
@@ -25,13 +25,9 @@ export const ApiAuthRoute = {
 
 const emptyBodyData: EmptyBodyData = {};
 
-export class AuthService {
-  private ac: AbortController;
-  private api: ApiRequest;
-
+export class AuthService extends BaseApiService {
   constructor() {
-    this.ac = new AbortController();
-    this.api = newApiRequest();
+    super();
   }
 
   async loginUser(body: AuthCredentials) {
@@ -148,12 +144,6 @@ export class AuthService {
     }
 
     return data;
-  }
-
-  // Helpers
-  public abortRequest(): void {
-    this.ac.abort();
-    this.ac = new AbortController();
   }
 }
 

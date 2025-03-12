@@ -1,6 +1,6 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
-import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
+import { BaseApiService } from '@/common/service/base-api.service';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import type {
   AssistantTemplateCategoriesResponse,
@@ -23,13 +23,9 @@ const ApiAssistantTemplateRoute = {
   ASSISTANT_CATEGORY_PAGINATED: '/assistant-template/category/paginated', // GET
 } as const;
 
-export class AssistantTemplateService {
-  private ac: AbortController;
-  private api: ApiRequest;
-
+export class AssistantTemplateService extends BaseApiService {
   constructor() {
-    this.ac = new AbortController();
-    this.api = newApiRequest();
+    super();
   }
 
   /**
@@ -144,12 +140,6 @@ export class AssistantTemplateService {
     }
 
     return data;
-  }
-
-  // Helpers
-  public abortRequest(): void {
-    this.ac.abort();
-    this.ac = new AbortController();
   }
 }
 

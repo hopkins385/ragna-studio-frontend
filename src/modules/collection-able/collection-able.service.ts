@@ -1,6 +1,6 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadRequestError } from '@/common/errors/bad-request.error';
-import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
+import { BaseApiService } from '@/common/service/base-api.service';
 import type { CollectionAbleModel } from '@/modules/collection-able/interfaces';
 import { getRoute } from '@/utils/route.util';
 
@@ -11,13 +11,9 @@ const ApiCollectionAbleRoute = {
   REPLACE: '/collection-able/replace', // POST
 } as const;
 
-export class CollectionAbleService {
-  private ac: AbortController;
-  private api: ApiRequest;
-
+export class CollectionAbleService extends BaseApiService {
   constructor() {
-    this.ac = new AbortController();
-    this.api = newApiRequest();
+    super();
   }
 
   async detachCollectionFrom(
@@ -81,11 +77,6 @@ export class CollectionAbleService {
     }
 
     return data;
-  }
-
-  public abortRequest() {
-    this.ac.abort();
-    this.ac = new AbortController();
   }
 }
 

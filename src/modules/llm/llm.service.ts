@@ -1,6 +1,6 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
-import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
+import { BaseApiService } from '@/common/service/base-api.service';
 import type { LargeLangModelListResponse } from '@/modules/llm/interfaces';
 import { getRoute } from '@/utils/route.util';
 
@@ -8,13 +8,9 @@ const ApiLlmRoute = {
   MODELS: '/llm/models', // GET
 } as const;
 
-export class LLMService {
-  private ac: AbortController;
-  private api: ApiRequest;
-
+export class LLMService extends BaseApiService {
   constructor() {
-    this.ac = new AbortController();
-    this.api = newApiRequest();
+    super();
   }
 
   async getAllModels() {
@@ -30,11 +26,6 @@ export class LLMService {
     }
 
     return data;
-  }
-
-  public abortRequest() {
-    this.ac.abort();
-    this.ac = new AbortController();
   }
 }
 

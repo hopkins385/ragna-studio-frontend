@@ -1,7 +1,7 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadRequestError } from '@/common/errors/bad-request.error';
 import { BadResponseError } from '@/common/errors/bad-response.error';
-import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
+import { BaseApiService } from '@/common/service/base-api.service';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import type { CollectionAbleModel } from '@/modules/collection-able/interfaces';
 import type {
@@ -20,13 +20,9 @@ const ApiCollectionRoute = {
   FOR: '/collection/for',
 } as const;
 
-export class CollectionService {
-  private ac: AbortController;
-  private api: ApiRequest;
-
+export class CollectionService extends BaseApiService {
   constructor() {
-    this.ac = new AbortController();
-    this.api = newApiRequest();
+    super();
   }
 
   public async createCollection(payload: CreateCollectionPayload) {
@@ -151,14 +147,6 @@ export class CollectionService {
     }
 
     return data;
-  }
-
-  /**
-   * Abort the current request
-   */
-  abortRequest() {
-    this.ac.abort();
-    this.ac = new AbortController();
   }
 }
 

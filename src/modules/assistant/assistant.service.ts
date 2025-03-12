@@ -1,6 +1,6 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
-import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
+import { BaseApiService } from '@/common/service/base-api.service';
 import type { CreateAssistantDto } from '@/modules/assistant/dto/create-assistant.dto';
 import type {
   AssistantResponse,
@@ -17,13 +17,9 @@ const ApiAssistantRoute = {
   FROM_TEMPLATE: '/assistant/from-template', // POST
 };
 
-export class AssistantService {
-  private ac: AbortController;
-  private api: ApiRequest;
-
+export class AssistantService extends BaseApiService {
   constructor() {
-    this.ac = new AbortController();
-    this.api = newApiRequest();
+    super();
   }
 
   public async createAssistant(payload: CreateAssistantDto) {
@@ -155,12 +151,6 @@ export class AssistantService {
     }
 
     return data;
-  }
-
-  // Helpers
-  public abortRequest(): void {
-    this.ac.abort();
-    this.ac = new AbortController();
   }
 }
 
