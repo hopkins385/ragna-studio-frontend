@@ -5,10 +5,10 @@ import { assistantToolService } from '@/modules/assistant-tool/assistant-tool.se
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantService } from '@/modules/assistant/assistant.service';
 import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
+import { collectionService } from '@/modules/collection/collection.service';
+import type { Collection } from '@/modules/collection/interfaces';
 import AssistantEditForm from '@components/assistant/AssistantEditForm.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import type { Collection } from '@composables/services/useCollectionService';
-import useCollectionService from '@composables/services/useCollectionService';
 import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
 
 const assistant = ref<Assistant | null>(null);
@@ -22,7 +22,6 @@ const route = useRoute();
 const assistantId = route.params.id.toString();
 
 const { t } = useI18n();
-const { fetchAllCollectionsFor } = useCollectionService();
 
 const initCollections = async () => {
   const model = {
@@ -30,7 +29,7 @@ const initCollections = async () => {
     id: assistantId,
   };
   try {
-    const { collections: resultCollections } = await fetchAllCollectionsFor({
+    const { collections: resultCollections } = await collectionService.fetchAllCollectionsFor({
       model,
     });
     collections.value = resultCollections;

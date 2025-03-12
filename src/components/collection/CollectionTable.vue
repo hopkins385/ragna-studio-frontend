@@ -2,14 +2,13 @@
 // Imports
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { collectionService } from '@/modules/collection/collection.service';
+import type { CollectionsPaginatedResponse } from '@/modules/collection/interfaces';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
-import useCollectionService, {
-  type CollectionsPaginatedResponse,
-} from '@composables/services/useCollectionService';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
@@ -30,7 +29,6 @@ const allCollections = ref<CollectionsPaginatedResponse | null>(null);
 
 // Composables
 const { t } = useI18n();
-const { fetchAllPaginated, deleteCollection } = useCollectionService();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
@@ -47,7 +45,7 @@ const meta = computed(() => {
 // Functions
 async function handleDelete(collectionId: string) {
   try {
-    await deleteCollection(collectionId);
+    await collectionService.deleteCollection(collectionId);
     await initCollections();
     toast.success({ description: t('collection.delete.success') });
   } catch (error: unknown) {
@@ -73,7 +71,7 @@ const onUpdatePage = async (val: number) => {
 };
 
 const initCollections = async () => {
-  allCollections.value = await fetchAllPaginated({
+  allCollections.value = await collectionService.fetchAllPaginated({
     page: page.value,
     limit: limit.value,
   });

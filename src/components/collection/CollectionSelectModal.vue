@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useCollectionService from '@/composables/services/useCollectionService';
+import { collectionService } from '@/modules/collection/collection.service';
 import { Button } from '@ui/button';
 import {
   Dialog,
@@ -26,10 +26,8 @@ const open = ref(false);
 
 const collections = ref<any[]>([]);
 
-const { fetchAll } = useCollectionService();
-
 const initCollections = async () => {
-  const response = await fetchAll();
+  const response = await collectionService.fetchAll();
   collections.value = response.collections;
 };
 
@@ -69,10 +67,7 @@ onMounted(() => {
 
 <template>
   <div class="flex items-center space-x-3">
-    <div
-      class="cursor-pointer rounded-lg border px-5 py-2.5 text-sm"
-      @click="() => setOpen(true)"
-    >
+    <div class="cursor-pointer rounded-lg border px-5 py-2.5 text-sm" @click="() => setOpen(true)">
       {{ selectedCollection?.name || initialDisplayName }}
     </div>
     <Dialog v-model:open="open">
@@ -84,9 +79,7 @@ onMounted(() => {
       <DialogContent class="max-w-screen-lg">
         <DialogHeader>
           <DialogTitle>Add Knowledge</DialogTitle>
-          <DialogDescription>
-            This is a list of all available collections.
-          </DialogDescription>
+          <DialogDescription> This is a list of all available collections. </DialogDescription>
         </DialogHeader>
         <div class="h-[60dvh] space-y-8 overflow-y-scroll">
           <div class="space-y-4">
@@ -123,15 +116,11 @@ onMounted(() => {
           </div>
           <div>Upload Files</div>
           <div>Settings</div>
-          <Button variant="outline" @click="removeAllCollections">
-            Remove Knowledge
-          </Button>
+          <Button variant="outline" @click="removeAllCollections"> Remove Knowledge </Button>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" @click="() => setOpen(false)">
-            Cancel
-          </Button>
+          <Button variant="outline" @click="() => setOpen(false)"> Cancel </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

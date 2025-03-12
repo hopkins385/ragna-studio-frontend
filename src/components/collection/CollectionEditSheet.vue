@@ -1,14 +1,8 @@
 <script setup lang="ts">
-import useCollectionService from '@composables/services/useCollectionService';
+import { collectionService } from '@/modules/collection/collection.service';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';
 import { Input } from '@ui/input';
 import { Separator } from '@ui/separator';
 import {
@@ -20,12 +14,7 @@ import {
   SheetTrigger,
 } from '@ui/sheet';
 import { Textarea } from '@ui/textarea';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { toTypedSchema } from '@vee-validate/zod';
 import { SettingsIcon } from 'lucide-vue-next';
 import { z } from 'zod';
@@ -53,7 +42,6 @@ const collectionSettingsSchema = z.object({
 });
 
 const { t } = useI18n();
-const { editCollection } = useCollectionService();
 
 const { handleSubmit, resetForm } = useForm({
   validationSchema: toTypedSchema(collectionSettingsSchema),
@@ -69,7 +57,7 @@ const onSettingsButtonClick = () => {
 
 const onSubmit = handleSubmit(async values => {
   try {
-    await editCollection(props.collectionId, {
+    await collectionService.editCollection(props.collectionId, {
       name: values.name,
       description: values.description,
     });
@@ -96,12 +84,7 @@ watch(sheetIsOpen, isOpen => {
       <TooltipProvider :delay-duration="300">
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button
-              variant="outline"
-              size="icon"
-              class="group"
-              @click="onSettingsButtonClick"
-            >
+            <Button variant="outline" size="icon" class="group" @click="onSettingsButtonClick">
               <SettingsIcon class="opacity-75 group-hover:opacity-100" />
             </Button>
           </TooltipTrigger>
@@ -111,11 +94,7 @@ watch(sheetIsOpen, isOpen => {
         </Tooltip>
       </TooltipProvider>
     </SheetTrigger>
-    <SheetContent
-      @open-auto-focus="e => e.preventDefault()"
-      side="right"
-      class=""
-    >
+    <SheetContent @open-auto-focus="e => e.preventDefault()" side="right" class="">
       <SheetHeader class="">
         <SheetTitle class="text-base flex items-center space-x-2">
           <SettingsIcon class="size-5 stroke-1.5" />
@@ -151,11 +130,7 @@ watch(sheetIsOpen, isOpen => {
                 {{ $t('collection.settings.form.description') }}
               </FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Description"
-                  autocomplete="off"
-                  v-bind="componentField"
-                />
+                <Textarea placeholder="Description" autocomplete="off" v-bind="componentField" />
               </FormControl>
               <FormMessage class="text-xs" />
             </FormItem>

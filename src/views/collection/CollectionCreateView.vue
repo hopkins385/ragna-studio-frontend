@@ -6,9 +6,9 @@
 import ButtonLink from '@/components/button/ButtonLink.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import { collectionService } from '@/modules/collection/collection.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import useCollectionService from '@composables/services/useCollectionService';
 import useToast from '@composables/useToast';
 import bgImgUrl from '@images/bg_databases.png?q=100&format=webp&imagetools';
 import { Button } from '@ui/button';
@@ -42,11 +42,9 @@ const { handleSubmit } = useForm({
   validationSchema: createCollectionSchema,
 });
 
-const { createCollection } = useCollectionService();
-
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
   try {
-    const { collection } = await createCollection({
+    const { collection } = await collectionService.createCollection({
       name: values.name,
       description: values.description || '',
     });

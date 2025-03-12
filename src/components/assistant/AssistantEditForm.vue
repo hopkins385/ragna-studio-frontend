@@ -5,12 +5,12 @@ import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistan
 import { assistantService } from '@/modules/assistant/assistant.service';
 import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
+import type { Collection } from '@/modules/collection/interfaces';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import CollectionSelectModal from '@components/collection/CollectionSelectModal.vue';
 import TabSidebar from '@components/tab/TabSidebar.vue';
 import useCollectionAbleService from '@composables/services/useCollectionAbleService';
-import type { Collection } from '@composables/services/useCollectionService';
 import useToast from '@composables/useToast';
 import { assistantFormSchema } from '@schemas/assistant.form';
 import { Button } from '@ui/button';
