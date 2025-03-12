@@ -4,7 +4,7 @@ import { newApiRequest } from '@/common/http/http-request.builder';
 import type { AssistantToolResponse } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { getRoute } from '@/utils/route.util';
 
-const APIAssistantToolRoute = {
+const ApiAssistantToolRoute = {
   TOOLS: '/assistant-tool/tools', // GET
 } as const;
 
@@ -18,7 +18,7 @@ export class AssistantToolService {
   async fetchAllTools() {
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(APIAssistantToolRoute.TOOLS);
+    const route = getRoute(ApiAssistantToolRoute.TOOLS);
     const { status, data } = await api
       .GET<AssistantToolResponse>()
       .setRoute(route)

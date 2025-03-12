@@ -1,12 +1,19 @@
-// authService.ts
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { UnauthorizedError } from '@/common/errors/unauthorized.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
 import type { GoogleAuthCallbackQuery } from '@/interfaces/auth/google-auth-callback.interface';
+import type {
+  AuthCredentials,
+  AuthUserResponse,
+  EmptyBodyData,
+  RegistrationCredentials,
+  SocialAuthUrlResponse,
+  TokensResponse,
+} from '@/modules/auth/interfaces/auth.interfaces';
 import { getRoute } from '@/utils/route.util';
 
-export const AuthRoute = {
+export const ApiAuthRoute = {
   LOGIN: '/auth/login', // POST
   LOGOUT: '/auth/logout', // POST
   REGISTER: '/auth/register', // POST
@@ -16,57 +23,24 @@ export const AuthRoute = {
   CALLBACK_GOOGLE: '/auth/google/callback', // POST
 } as const;
 
-interface AuthCredentials {
-  email: string;
-  password: string;
-}
-
-interface RegistrationCredentials {
-  name: string;
-  email: string;
-  password: string;
-  termsAndConditions: boolean;
-  invitationCode?: string;
-}
-
-interface AuthUserResponse {
-  userData: AuthUserData;
-}
-
-interface AuthUserData {
-  id: number;
-  name: string;
-  email: string;
-}
-
-interface TokensResponse {
-  accessToken: string;
-  accessTokenExpiresAt: number;
-  refreshToken: string;
-  refreshTokenExpiresAt: number;
-}
-
-type AuthUrl = string;
-
-interface SocialAuthUrlResponse {
-  url: AuthUrl;
-}
-
-interface EmptyBodyData {}
-
 const emptyBodyData: EmptyBodyData = {};
 
-export function useAuthService() {
-  const ac = new AbortController();
+export class AuthService {
+  private ac: AbortController;
 
-  const loginUser = async (body: AuthCredentials) => {
+  constructor() {
+    this.ac = new AbortController();
+  }
+
+  async loginUser(body: AuthCredentials) {
+    this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(AuthRoute.LOGIN);
+    const route = getRoute(ApiAuthRoute.LOGIN);
     const { status, data } = await api
       .POST<TokensResponse, never, AuthCredentials>()
       .setRoute(route)
       .setData(body)
-      .setSignal(ac.signal)
+      .setSignal(this.ac.signal)
       .send();
 
     if (status !== HttpStatus.CREATED) {
@@ -74,16 +48,17 @@ export function useAuthService() {
     }
 
     return data;
-  };
+  }
 
-  const logoutUser = async (): Promise<void> => {
+  async logoutUser(): Promise<void> {
+    this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(AuthRoute.LOGOUT);
+    const route = getRoute(ApiAuthRoute.LOGOUT);
     const { status } = await api
       .POST<never, never, EmptyBodyData>()
       .setRoute(route)
       .setData(emptyBodyData)
-      .setSignal(ac.signal)
+      .setSignal(this.ac.signal)
       .send();
 
     // Logout should always return 200 (OK) status
@@ -92,16 +67,17 @@ export function useAuthService() {
     }
 
     return;
-  };
+  }
 
-  const registerUser = async (payload: RegistrationCredentials) => {
+  async registerUser(payload: RegistrationCredentials) {
+    this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(AuthRoute.REGISTER);
+    const route = getRoute(ApiAuthRoute.REGISTER);
     const { status, data } = await api
       .POST<AuthUserResponse, never, RegistrationCredentials>()
       .setRoute(route)
       .setData(payload)
-      .setSignal(ac.signal)
+      .setSignal(this.ac.signal)
       .send();
 
     if (status !== HttpStatus.CREATED) {
@@ -109,15 +85,15 @@ export function useAuthService() {
     }
 
     return data;
-  };
+  }
 
-  const fetchSession = async () => {
+  async fetchSession() {
     const api = newApiRequest();
-    const route = getRoute(AuthRoute.SESSION);
+    const route = getRoute(ApiAuthRoute.SESSION);
     const { status, data } = await api
       .GET<AuthUserResponse>()
       .setRoute(route)
-      .setSignal(ac.signal)
+      .setSignal(this.ac.signal)
       .send();
 
     if (status !== HttpStatus.OK) {
@@ -125,16 +101,16 @@ export function useAuthService() {
     }
 
     return data;
-  };
+  }
 
-  const refreshTokens = async () => {
+  async refreshTokens() {
     const api = newApiRequest();
-    const route = getRoute(AuthRoute.REFRESH);
+    const route = getRoute(ApiAuthRoute.REFRESH);
     const { status, data } = await api
       .POST<TokensResponse, never, EmptyBodyData>()
       .setRoute(route)
       .setData(emptyBodyData)
-      .setSignal(ac.signal)
+      .setSignal(this.ac.signal)
       .send();
 
     if (status !== HttpStatus.CREATED) {
@@ -142,17 +118,17 @@ export function useAuthService() {
     }
 
     return data;
-  };
+  }
 
-  const fetchSocialAuthUrl = async (provider: string) => {
+  async fetchSocialAuthUrl(provider: string) {
     const api = newApiRequest();
-    const route = getRoute(AuthRoute.SOCIAL_AUTH_URL, {
+    const route = getRoute(ApiAuthRoute.SOCIAL_AUTH_URL, {
       ':provider': provider,
     });
     const { status, data } = await api
       .GET<SocialAuthUrlResponse>()
       .setRoute(route)
-      .setSignal(ac.signal)
+      .setSignal(this.ac.signal)
       .send();
 
     if (status !== HttpStatus.OK) {
@@ -160,16 +136,16 @@ export function useAuthService() {
     }
 
     return data;
-  };
+  }
 
-  const googleAuth = async (callbackData: GoogleAuthCallbackQuery) => {
+  async googleAuth(callbackData: GoogleAuthCallbackQuery) {
     const api = newApiRequest();
-    const route = getRoute(AuthRoute.CALLBACK_GOOGLE);
+    const route = getRoute(ApiAuthRoute.CALLBACK_GOOGLE);
     const { status, data } = await api
       .POST<TokensResponse, never, GoogleAuthCallbackQuery>()
       .setRoute(route)
       .setData(callbackData)
-      .setSignal(ac.signal)
+      .setSignal(this.ac.signal)
       .send();
 
     if (status !== HttpStatus.CREATED) {
@@ -177,20 +153,13 @@ export function useAuthService() {
     }
 
     return data;
-  };
+  }
 
-  // TODO: find alternative to onScopeDispose
-  // onScopeDispose(() => {
-  //   ac.abort();
-  // });
-
-  return {
-    loginUser,
-    logoutUser,
-    registerUser,
-    refreshTokens,
-    fetchSession,
-    fetchSocialAuthUrl,
-    googleAuth,
-  };
+  // Helpers
+  public abortRequest(): void {
+    this.ac.abort();
+    this.ac = new AbortController();
+  }
 }
+
+export const authService = new AuthService();

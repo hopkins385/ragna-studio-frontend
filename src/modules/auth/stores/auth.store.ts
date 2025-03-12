@@ -1,5 +1,5 @@
 import { useAccountService } from '@/composables/services/account/useAccountService';
-import { useAuthService } from '@/composables/services/useAuthService';
+import { authService } from '@/modules/auth/auth.service';
 import { defineAbilityFor } from '@/services/ability.service';
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
@@ -29,8 +29,6 @@ interface AuthUser {
 }
 
 export const useAuthStore = defineStore('auth-store', () => {
-  const { registerUser, loginUser, logoutUser, refreshTokens, googleAuth, fetchSession } =
-    useAuthService();
   const { fetchAccountData } = useAccountService();
   // State
   const user = ref<AuthUser | null>(null);
@@ -107,7 +105,7 @@ export const useAuthStore = defineStore('auth-store', () => {
 
   const login = async ({ email, password }: { email: string; password: string }) => {
     try {
-      const { refreshToken, accessToken, accessTokenExpiresAt } = await loginUser({
+      const { refreshToken, accessToken, accessTokenExpiresAt } = await authService.loginUser({
         email,
         password,
       });
@@ -122,7 +120,7 @@ export const useAuthStore = defineStore('auth-store', () => {
 
   const logout = async () => {
     try {
-      await logoutUser();
+      await authService.logoutUser();
     } catch (error) {
       console.error('Logout failed:', error);
     } finally {
@@ -139,7 +137,7 @@ export const useAuthStore = defineStore('auth-store', () => {
       return Promise.reject(new Error('Max refresh attempts reached'));
     }
     try {
-      const { refreshToken, accessToken, accessTokenExpiresAt } = await refreshTokens();
+      const { refreshToken, accessToken, accessTokenExpiresAt } = await authService.refreshTokens();
       setAccessToken(accessToken, accessTokenExpiresAt);
       setRefreshToken(refreshToken);
       await fetchUser();
@@ -158,7 +156,7 @@ export const useAuthStore = defineStore('auth-store', () => {
     invitationCode?: string;
   }) => {
     try {
-      await registerUser(payload);
+      await authService.registerUser(payload);
       await login({
         email: payload.email,
         password: payload.password,
@@ -173,7 +171,7 @@ export const useAuthStore = defineStore('auth-store', () => {
       throw new Error('No code provided');
     }
     try {
-      const data = await googleAuth({
+      const data = await authService.googleAuth({
         code: query.code,
         scope: undefined,
         authuser: undefined,
@@ -190,7 +188,7 @@ export const useAuthStore = defineStore('auth-store', () => {
 
   const getSession = async () => {
     try {
-      await fetchSession();
+      await authService.fetchSession();
     } catch (error) {
       clearUser();
       throw error;

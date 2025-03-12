@@ -5,7 +5,6 @@ import BrandHeader from '@/components/brand/BrandHeader.vue';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useAuthService } from '@/composables/services/useAuthService';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -71,13 +70,9 @@ const toggleShowForm = () => {
   // showForm.value = !showForm.value;
 };
 
-const { fetchSocialAuthUrl } = useAuthService();
-
 const google = ref(false);
 const onGoogleLogin = async () => {
-  // get the google login url and redirect to it
-  const { url } = await fetchSocialAuthUrl('google');
-  window.location.href = url;
+  throw new Error('Google login not implemented');
 };
 
 const showRegister = true;

@@ -11,7 +11,7 @@ import type {
 } from '@/modules/assistant-template/interfaces/assistant-template.interfaces';
 import { getRoute } from '@/utils/route.util';
 
-const APIAssistantTemplateRoute = {
+const ApiAssistantTemplateRoute = {
   ASSISTANT_TEMPLATE: '/assistant-template', // GET
   ASSISTANT_TEMPLATE_PAGINATED: '/assistant-template/paginated', // GET
   ASSISTANT_TEMPLATE_RANDOM: '/assistant-template/random', // GET
@@ -36,7 +36,7 @@ export class AssistantTemplateService {
   async fetchAllTemplates() {
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(APIAssistantTemplateRoute.ASSISTANT_TEMPLATE);
+    const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATE);
     const { status, data } = await api
       .GET<AssistantTemplatesResponse>()
       .setRoute(route)
@@ -56,7 +56,7 @@ export class AssistantTemplateService {
   async fetchAllTemplatesPaginated(params: PaginateDto) {
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(APIAssistantTemplateRoute.ASSISTANT_TEMPLATE_PAGINATED);
+    const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATE_PAGINATED);
     const { status, data } = await api
       .GET<AssistantTemplatesPaginatedResponse, PaginateDto>()
       .setRoute(route)
@@ -77,7 +77,7 @@ export class AssistantTemplateService {
   async fetchRandomTemplates(params: RandomTemplatesParams) {
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(APIAssistantTemplateRoute.ASSISTANT_TEMPLATE_RANDOM);
+    const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATE_RANDOM);
     const { status, data } = await api
       .GET<AssistantTemplatesResponse, RandomTemplatesParams>()
       .setRoute(route)
@@ -98,7 +98,7 @@ export class AssistantTemplateService {
   async fetchAllCategories() {
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(APIAssistantTemplateRoute.ASSISTANT_CATEGORY);
+    const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_CATEGORY);
     const { status, data } = await api
       .GET<AssistantTemplateCategoriesResponse>()
       .setRoute(route)
@@ -118,7 +118,7 @@ export class AssistantTemplateService {
   async fetchTemplatesByCategory(categoryId: string) {
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(APIAssistantTemplateRoute.ASSISTANT_TEMPLATE_BY_CATEGORY, {
+    const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATE_BY_CATEGORY, {
       ':categoryId': categoryId,
     });
     const { status, data } = await api
@@ -140,7 +140,7 @@ export class AssistantTemplateService {
   async fetchTemplatesByCategoryIds(payload: { categoryIds: string[] }) {
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(APIAssistantTemplateRoute.ASSISTANT_TEMPLATES_BY_CATEGORY_IDS);
+    const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATES_BY_CATEGORY_IDS);
     const { status, data } = await api
       .POST<CategoriesWithTemplatesResponse, never, { categoryIds: string[] }>()
       .setRoute(route)

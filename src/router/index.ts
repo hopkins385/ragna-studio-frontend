@@ -1,10 +1,7 @@
 import { chatRoutes } from '@/modules/ai-chat/routes';
+import { authRoutes } from '@/modules/auth/routes';
 import { defaultAdminMeta, defaultAppMeta } from '@/router/defaults';
-import {
-  hasValidGoogleCallbackQuery,
-  hasValidRouteId,
-  hasValidRouteQuery,
-} from '@/utils/route-validation.util';
+import { hasValidRouteId, hasValidRouteQuery } from '@/utils/route-validation.util';
 import { createRouter, createWebHistory } from 'vue-router';
 import { AdminRouteName } from './enums/admin-route-names.enum';
 import { RouteName } from './enums/route-names.enum';
@@ -268,17 +265,6 @@ const accountRoutes = {
   ],
 };
 
-const socialAuthCallbackRoutes = {
-  path: '/auth/:provider/callback',
-  name: RouteName.SOCIAL_AUTH_CALLBACK,
-  beforeEnter: [hasValidGoogleCallbackQuery],
-  component: () => import('@views/auth/SocialAuthCallbackView.vue'),
-  meta: {
-    requiresAuth: false,
-    layout: Layout.Login,
-  },
-};
-
 const onboardingRoutes = {
   path: '/onboarding',
   component: () => import('@views/onboarding/OnboardingRootView.vue'),
@@ -394,32 +380,9 @@ const router = createRouter({
     mediaRoutes,
     textToImageRoutes,
     accountRoutes,
-    socialAuthCallbackRoutes,
     adminRoutes,
-    {
-      path: '/login',
-      name: RouteName.LOGIN,
-      component: () => import('@views/auth/LoginView.vue'),
-      meta: {
-        requiresAuth: false,
-        layout: Layout.Login,
-      },
-    },
-    {
-      path: '/register',
-      name: RouteName.REGISTER,
-      component: () => import('@views/auth/RegisterView.vue'),
-      meta: {
-        requiresAuth: false,
-        layout: Layout.Login,
-      },
-    },
-    {
-      path: '/logout',
-      name: RouteName.LOGOUT,
-      component: () => import('@views/auth/LogoutView.vue'),
-      meta: defaultAppMeta,
-    },
+    ...authRoutes,
+
     // 404 route - must be last
     {
       path: '/:pathMatch(.*)*',

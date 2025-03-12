@@ -1,5 +1,5 @@
+import { AuthRoutePath } from '@/modules/auth/routes';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
-import { AuthRoute } from '@composables/services/useAuthService';
 import type { AxiosError, AxiosRequestConfig } from 'axios';
 import { $axios } from './axiosInstance';
 
@@ -39,7 +39,7 @@ export function setupAxiosJwtInterceptor() {
 
   $axios.interceptors.request.use(config => {
     const token =
-      config.url === AuthRoute.REFRESH ? authStore.getRefreshToken : authStore.getAccessToken;
+      config.url === AuthRoutePath.REFRESH ? authStore.getRefreshToken : authStore.getAccessToken;
     if (token) {
       setAuthorizationHeader(config, token);
     }
@@ -55,11 +55,11 @@ export function setupAxiosJwtInterceptor() {
       if (error.response?.status === 401 && !originalRequest._retry && authStore.hasRefreshToken) {
         // do not auto refresh token for these routes
         if (
-          originalRequest.url === AuthRoute.REFRESH ||
-          originalRequest.url === AuthRoute.LOGIN ||
-          originalRequest.url === AuthRoute.CALLBACK_GOOGLE ||
-          originalRequest.url === AuthRoute.SOCIAL_AUTH_URL ||
-          originalRequest.url === AuthRoute.REGISTER
+          originalRequest.url === AuthRoutePath.REFRESH ||
+          originalRequest.url === AuthRoutePath.LOGIN ||
+          originalRequest.url === AuthRoutePath.CALLBACK_GOOGLE ||
+          originalRequest.url === AuthRoutePath.SOCIAL_AUTH_URL ||
+          originalRequest.url === AuthRoutePath.REGISTER
         ) {
           return Promise.reject(error);
         }
