@@ -28,7 +28,6 @@ export class CollectionService {
   }
 
   public async createCollection(payload: CreateCollectionPayload) {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiCollectionRoute.BASE);
     const { status, data } = await api
@@ -49,7 +48,6 @@ export class CollectionService {
     if (!collectionId) {
       throw new BadRequestError('Collection ID is required');
     }
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiCollectionRoute.COLLECTION, {
       ':collectionId': collectionId,
@@ -72,7 +70,6 @@ export class CollectionService {
     if (!collectionId) {
       throw new BadRequestError('Collection ID is required');
     }
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiCollectionRoute.COLLECTION, {
       ':collectionId': collectionId,
@@ -91,7 +88,6 @@ export class CollectionService {
   }
 
   public async fetchAll() {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiCollectionRoute.ALL);
     const { status, data } = await api
@@ -108,7 +104,6 @@ export class CollectionService {
   }
 
   public async fetchAllPaginated(params: PaginateDto) {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiCollectionRoute.BASE);
     const { status, data } = await api
@@ -126,7 +121,6 @@ export class CollectionService {
   }
 
   public async fetchAllCollectionsFor(payload: { model: CollectionAbleModel }) {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiCollectionRoute.FOR);
     const { status, data } = await api
@@ -147,7 +141,6 @@ export class CollectionService {
     if (!collectionId) {
       throw new BadRequestError('Collection ID is required');
     }
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiCollectionRoute.COLLECTION, {
       ':collectionId': collectionId,

@@ -16,7 +16,6 @@ export class AssistantToolService {
   }
 
   async fetchAllTools() {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantToolRoute.TOOLS);
     const { status, data } = await api

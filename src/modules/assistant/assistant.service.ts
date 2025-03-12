@@ -25,7 +25,6 @@ export class AssistantService {
   }
 
   public async createAssistant(payload: CreateAssistantDto) {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.BASE);
     const { status, data } = await api
@@ -43,7 +42,6 @@ export class AssistantService {
   }
 
   public async createAssistantFromTemplate(payload: CreateAssistantFromTemplatePayload) {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.FROM_TEMPLATE);
     const { status, data } = await api
@@ -61,7 +59,6 @@ export class AssistantService {
   }
 
   public async fetchAssistant(assistantId: string) {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.ASSISTANT, {
       ':assistantId': assistantId,
@@ -93,7 +90,6 @@ export class AssistantService {
       limit: limit ?? undefined,
       searchQuery: searchQuery ?? undefined,
     };
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.BASE);
     const { status, data } = await api
@@ -111,7 +107,6 @@ export class AssistantService {
   }
 
   public async updateAssistant(assistantId: string, payload: Partial<CreateAssistantDto>) {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.ASSISTANT, {
       ':assistantId': assistantId,
@@ -131,7 +126,6 @@ export class AssistantService {
   }
 
   public async updateHasKnowledgeBase(assistantId: string, hasKnowledgeBase: boolean) {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.HAS_KNOWLEDGE, {
       ':assistantId': assistantId,
@@ -151,7 +145,6 @@ export class AssistantService {
   }
 
   public async deleteAssistant(assistantId: string) {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.ASSISTANT, {
       ':assistantId': assistantId,

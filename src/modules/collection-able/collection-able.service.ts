@@ -18,12 +18,6 @@ export class CollectionAbleService {
     this.ac = new AbortController();
   }
 
-  //
-  public abortRequest() {
-    this.ac.abort();
-    this.ac = new AbortController();
-  }
-
   async detachCollectionFrom(
     collectionId: string,
     payload: {
@@ -88,6 +82,11 @@ export class CollectionAbleService {
     }
 
     return data;
+  }
+
+  public abortRequest() {
+    this.ac.abort();
+    this.ac = new AbortController();
   }
 }
 

@@ -40,7 +40,6 @@ export class AiChatService {
   }
 
   public async createChat(assistantId: string): Promise<ChatResponse> {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiChatRoute.BASE);
     const { status, data } = await api
@@ -62,7 +61,6 @@ export class AiChatService {
     if (!chatId || !message) {
       throw new BadRequestError();
     }
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT_MESSAGE, { ':chatId': chatId });
     const { status, data } = await api
@@ -85,9 +83,6 @@ export class AiChatService {
     if (!payload.chatId) {
       throw new Error('Chat ID is required');
     }
-
-    this.abortRequest();
-
     const streamRoute = getRoute(ApiChatRoute.CHAT_STREAM, {
       ':chatId': payload.chatId,
     });
@@ -124,7 +119,6 @@ export class AiChatService {
     if (!chatId) {
       throw new ChatServiceError('Chat ID is required');
     }
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT, { ':chatId': chatId });
     const { status, data } = await api
@@ -141,7 +135,6 @@ export class AiChatService {
   }
 
   public async fetchAllChats(): Promise<Chat[]> {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT_ALL);
     const { status, data } = await api
@@ -158,7 +151,6 @@ export class AiChatService {
   }
 
   public async fetchAllChatsPaginated(params: PaginateDto): Promise<ChatsPaginatedResponse> {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT_HISTORY);
     const { status, data } = await api
@@ -176,7 +168,6 @@ export class AiChatService {
   }
 
   public async fetchLatestChat(): Promise<ChatResponse> {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT_LATEST);
     const { status, data } = await api
@@ -196,7 +187,6 @@ export class AiChatService {
     if (!chatId) {
       throw new ChatServiceError('Chat ID is required');
     }
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT_MESSAGES, { ':chatId': chatId });
     const { status } = await api.DELETE().setRoute(route).setSignal(this.ac.signal).send();
@@ -212,7 +202,6 @@ export class AiChatService {
     if (!chatId) {
       throw new ChatServiceError('Chat ID is required');
     }
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT, { ':chatId': chatId });
     const { status } = await api.DELETE().setRoute(route).setSignal(this.ac.signal).send();

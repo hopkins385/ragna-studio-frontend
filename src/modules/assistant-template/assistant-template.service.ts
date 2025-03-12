@@ -34,7 +34,6 @@ export class AssistantTemplateService {
    * Fetch all assistant templates
    */
   async fetchAllTemplates() {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATE);
     const { status, data } = await api
@@ -54,7 +53,6 @@ export class AssistantTemplateService {
    * Fetch all assistant templates paginated
    */
   async fetchAllTemplatesPaginated(params: PaginateDto) {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATE_PAGINATED);
     const { status, data } = await api
@@ -75,7 +73,6 @@ export class AssistantTemplateService {
    * Fetch random assistant templates
    */
   async fetchRandomTemplates(params: RandomTemplatesParams) {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATE_RANDOM);
     const { status, data } = await api
@@ -96,7 +93,6 @@ export class AssistantTemplateService {
    * Fetch all templates categories
    */
   async fetchAllCategories() {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_CATEGORY);
     const { status, data } = await api
@@ -116,7 +112,6 @@ export class AssistantTemplateService {
    * Fetch all templates for a category
    */
   async fetchTemplatesByCategory(categoryId: string) {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATE_BY_CATEGORY, {
       ':categoryId': categoryId,
@@ -138,7 +133,6 @@ export class AssistantTemplateService {
    * Fetch many templates by many category ids
    */
   async fetchTemplatesByCategoryIds(payload: { categoryIds: string[] }) {
-    this.abortRequest();
     const api = newApiRequest();
     const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATES_BY_CATEGORY_IDS);
     const { status, data } = await api
