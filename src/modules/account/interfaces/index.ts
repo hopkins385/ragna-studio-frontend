@@ -18,3 +18,21 @@ export interface AccountData {
 export interface AccountDataResponse {
   account: AccountData;
 }
+
+export interface TokenUsage {
+  totalTokens: number;
+  createdAt: Date;
+  llm: {
+    provider: string;
+    displayName: string;
+  };
+}
+
+export interface TokenUsageHistoryResponse {
+  tokenUsages: TokenUsage[];
+}
+
+export interface TokenUsageHistoryParams {
+  month: string;
+  year: string;
+}

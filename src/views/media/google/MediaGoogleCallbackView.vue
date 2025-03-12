@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AuthProcessing from '@/components/auth/AuthProcessing.vue';
-import { useProviderAuthService } from '@/composables/services/useProviderAuthService';
+import { authProviderService } from '@/modules/auth/auth-provider.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 
 const router = useRouter();
@@ -10,8 +10,6 @@ const code = query.code?.toString() || null;
 const error = query.error?.toString() || null;
 
 const errorMessage = ref('');
-
-const { connectGoogleDrive } = useProviderAuthService();
 
 onMounted(async () => {
   await new Promise(resolve => setTimeout(resolve, 1000));
@@ -25,7 +23,7 @@ onMounted(async () => {
     return;
   }
   try {
-    await connectGoogleDrive({ code });
+    await authProviderService.connectGoogleDrive({ code });
     router.push({ name: RouteName.MEDIA_GOOGLE_DRIVE_INDEX });
   } catch (error: any) {
     console.error('[fetch google drive callback]', error);

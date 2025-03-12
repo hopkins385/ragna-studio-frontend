@@ -4,7 +4,6 @@ import ConfirmDialog from '@/components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import PaginateControls from '@/components/pagniate/PaginateControls.vue';
 import { Button } from '@/components/ui/button';
-import { useAdminUserService } from '@/composables/services/admin/useAdminUserService';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import useToast from '@/composables/useToast';
@@ -32,7 +31,6 @@ const router = useRouter();
 const toast = useToast();
 const auth = useAuthStore();
 const { t } = useI18n();
-const { fetchAllUsers, deleteUser } = useAdminUserService();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
@@ -49,7 +47,7 @@ const meta = computed(() => {
 const initAllUsers = async (params: { page: number }) => {
   unsetErrorAlert();
   try {
-    data.value = await fetchAllUsers(params);
+    //TODO: data.value = await fetchAllUsers(params);
   } catch (error: unknown) {
     return setErrorAlert(error);
   }
@@ -61,7 +59,7 @@ const handleDelete = async (userId: string) => {
   }
 
   try {
-    await deleteUser({ userId });
+    //TODO: await deleteUser({ userId });
     await initAllUsers({ page: page.value });
     toast.success({ description: t('admin.user.delete.success') });
   } catch (error) {

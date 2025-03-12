@@ -1,3 +1,5 @@
+import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
+
 export type ImageUrl = string;
 export type JsonArray = JsonValue[];
 export type JsonObject = { [key: string]: JsonValue };

@@ -6,17 +6,15 @@ import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import SectionContainer from '@/components/section/SectionContainer.vue';
 import TableSkeleton from '@/components/table/TableSkeleton.vue';
 import Button from '@/components/ui/button/Button.vue';
-import { useProviderAuthService } from '@/composables/services/useProviderAuthService';
+import { authProviderService } from '@/modules/auth/auth-provider.service';
 
 const isLoading = ref(true);
 const hasAccess = ref(false);
 
-const { fetchUserHasAccess, fetchConsentURL } = useProviderAuthService();
-
 const init = async () => {
   try {
-    const { hasAccess: val } = await fetchUserHasAccess('google');
-    hasAccess.value = val;
+    const response = await authProviderService.fetchUserHasAccess('google');
+    hasAccess.value = response.hasAccess;
   } catch (error: any) {
     console.error('[fetch google drive access]', error);
   } finally {
@@ -25,7 +23,7 @@ const init = async () => {
 };
 
 async function onConnectClick() {
-  const { url } = await fetchConsentURL('google');
+  const { url } = await authProviderService.fetchConsentURL('google');
   if (!url) return;
   window.open(url, '_self');
 }

@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import type { LargeLangModelInfos } from '@/composables/services/interfaces/large-lang-model.interface';
 import { useProviderIcons } from '@/composables/useProviderIcons';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@ui/tooltip';
+import type { LargeLangModelInfos } from '@/modules/llm/interfaces';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { CheckCircle, Hammer, Image, MessageSquareText } from 'lucide-vue-next';
 import CircleFlagEu from '~icons/circle-flags/eu?width=512px&height=512px';
 import CircleFlagUs from '~icons/circle-flags/us?width=512px&height=512px';
@@ -44,10 +39,7 @@ const showDatacenter = false;
         <CheckCircle class="stroke-2 size-4 text-green-700 group-hover:block" />
       </div>
       <h2 class="font-semibold">
-        <component
-          :is="getProviderIcon(providerName)"
-          class="stroke-1.5 size-5 mb-1"
-        />
+        <component :is="getProviderIcon(providerName)" class="stroke-1.5 size-5 mb-1" />
         {{ providerName }} /
         {{ displayName }}
       </h2>
@@ -64,32 +56,21 @@ const showDatacenter = false;
     </div>
     <div class="py-2">
       <h3 class="font-medium pb-2">Capabilities</h3>
-      <div
-        v-if="textStreamingSupported"
-        class="flex items-center space-x-2 pb-1 opacity-75"
-      >
+      <div v-if="textStreamingSupported" class="flex items-center space-x-2 pb-1 opacity-75">
         <span><MessageSquareText class="stroke-1.5 size-4" /></span>
         <span>Text Streaming</span>
       </div>
-      <div
-        v-if="imageInputSupported"
-        class="flex items-center space-x-2 pb-1 opacity-75"
-      >
+      <div v-if="imageInputSupported" class="flex items-center space-x-2 pb-1 opacity-75">
         <span><Image class="stroke-1.5 size-4" /></span>
         <span>Image Analysis</span>
       </div>
-      <div
-        v-if="toolUseSupported"
-        class="flex items-center space-x-2 opacity-75"
-      >
+      <div v-if="toolUseSupported" class="flex items-center space-x-2 opacity-75">
         <span><Hammer class="stroke-1.5 size-4" /></span>
         <span>Tool Use</span>
       </div>
     </div>
     <div class="hidden">
-      <span class="text-xs">
-        Context Size: {{ infos?.contextSize }}K Tokens</span
-      >
+      <span class="text-xs"> Context Size: {{ infos?.contextSize }}K Tokens</span>
     </div>
     <div v-if="showDatacenter" class="flex items-center space-x-3">
       <span>Datacenter:</span>

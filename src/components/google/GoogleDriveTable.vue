@@ -1,28 +1,11 @@
 <script setup lang="ts">
-import { useGoogleDriveService } from '@/composables/services/useGoogleDriveService';
 import useForHumans from '@/composables/useForHumans';
 import useGoogleDriveIcons from '@/composables/useGoogleDriveIcons';
+import { googleDriveService } from '@/modules/google-drive/google-drive.service';
 import { Button } from '@ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@ui/table';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@ui/tooltip';
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  CopyPlusIcon,
-  LoaderIcon,
-} from 'lucide-vue-next';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
+import { ArrowLeftIcon, ArrowRightIcon, CopyPlusIcon, LoaderIcon } from 'lucide-vue-next';
 import TableSkeleton from '../table/TableSkeleton.vue';
 import GoogleSearchFileBar from './GoogleSearchFileBar.vue';
 
@@ -60,10 +43,7 @@ const nextPageToken = ref<string | null>(null);
 
 const folderId = computed(() => route.params.id?.toString() ?? null);
 const showPageControls = computed(
-  () =>
-    pageTokenHistory.value.length > 0 ||
-    nextPageToken.value !== null ||
-    data.nextPageToken,
+  () => pageTokenHistory.value.length > 0 || nextPageToken.value !== null || data.nextPageToken,
 );
 
 const dataIsLoading = ref(true);
@@ -72,12 +52,10 @@ const data = reactive<Data>({
   nextPageToken: null,
 });
 
-const { fetchDriveData } = useGoogleDriveService();
-
 const init = async () => {
   dataIsLoading.value = true;
   try {
-    const result = await fetchDriveData({
+    const result = await googleDriveService.fetchDriveData({
       fileName: searchFileName.value,
       folderId: folderId.value,
       pageToken: nextPageToken.value,
@@ -107,9 +85,7 @@ watch(searchFileName, value => {
   init();
 });
 
-const submitDisabled = computed(
-  () => searchFileName.value === '' || dataIsLoading.value,
-);
+const submitDisabled = computed(() => searchFileName.value === '' || dataIsLoading.value);
 
 const onRowClick = (file: any) => {
   if (file.mimeType === 'application/vnd.google-apps.folder') {
@@ -207,11 +183,7 @@ onMounted(init);
         <TableRow
           v-for="(file, index) in data?.files"
           :key="index"
-          :class="
-            file?.mimeType === GOOGLE_DRIVE_FOLDER_MIME_TYPE
-              ? 'cursor-pointer'
-              : ''
-          "
+          :class="file?.mimeType === GOOGLE_DRIVE_FOLDER_MIME_TYPE ? 'cursor-pointer' : ''"
           @click="onRowClick(file)"
         >
           <TableCell class="truncate">
@@ -241,10 +213,7 @@ onMounted(init);
                         v-if="fileDonwloadPending === file?.id"
                         class="size-4 animate-spin stroke-1.5"
                       />
-                      <CopyPlusIcon
-                        v-else
-                        class="size-4 stroke-1.5 group-hover:stroke-2"
-                      />
+                      <CopyPlusIcon v-else class="size-4 stroke-1.5 group-hover:stroke-2" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>

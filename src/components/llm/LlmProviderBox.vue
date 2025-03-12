@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { LargeLangModelInfos } from '@/composables/services/interfaces/large-lang-model.interface';
 import { useProviderIcons } from '@/composables/useProviderIcons';
+import type { LargeLangModelInfos } from '@/modules/llm/interfaces';
 import { CheckCircle } from 'lucide-vue-next';
 import CircleFlagEu from '~icons/circle-flags/eu?width=512px&height=512px';
 import CircleFlagUs from '~icons/circle-flags/us?width=512px&height=512px';
