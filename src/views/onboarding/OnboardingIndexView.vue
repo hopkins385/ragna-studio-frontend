@@ -2,8 +2,8 @@
 import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import { Input } from '@/components/ui/input';
-import { useOnboardingService } from '@/composables/services/useOnboardingService';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
+import { onboardingService } from '@/modules/onboarding/onboarding.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import {
   Dialog,
@@ -22,26 +22,27 @@ import {
 const router = useRouter();
 const authStore = useAuthStore();
 
-const { onboardUser } = useOnboardingService();
-
 const open = true;
 const orgName = ref('');
 const isLoading = ref(false);
 
 async function onSubmit() {
   isLoading.value = true;
-  await onboardUser({ orgName: orgName.value })
-    .then(async res => {
-      if (res.success !== true) {
-        throw new Error('Failed to onboard user');
-      }
-      // refresh session
-      await authStore.refreshAuth();
-      // navigate to home
-      await router.push({ name: RouteName.HOME });
-    })
-    .catch((error: any) => console.error(error))
-    .finally(() => (isLoading.value = false));
+  try {
+    const res = await onboardingService.onboardUser({ orgName: orgName.value });
+    if (res.success !== true) {
+      throw new Error('Failed to onboard user');
+    }
+    // refresh session
+    await authStore.refreshAuth();
+    // navigate to home
+    await router.push({ name: RouteName.HOME });
+  } catch (error) {
+    console.error('Error during onboarding:', error);
+    isLoading.value = false;
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 const backgroundStyles = computed(() => {

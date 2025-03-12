@@ -4,7 +4,9 @@ import ButtonLink from '@/components/button/ButtonLink.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { mediaAbleService } from '@/modules/media-able/media-able.service';
 import { mediaService } from '@/modules/media/media.service';
+import { workflowService } from '@/modules/workflow/workflow.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import {
   allowedMimeTypes,
@@ -15,8 +17,6 @@ import ButtonLoading from '@components/button/ButtonLoading.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import { Textarea } from '@components/ui/textarea';
-import { useMediaAbleService } from '@composables/services/useMediaAbleService';
-import { useWorkflowService } from '@composables/services/useWorkflowService';
 import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
 import bgImgUrl from '@images/bg_workflow.png?q=100&format=webp&imagetools';
@@ -42,8 +42,6 @@ const router = useRouter();
 const toast = useToast();
 const { t } = useI18n();
 
-const { createWorkflow, reCreateWorkflowFromMedia } = useWorkflowService();
-const { attachMediaTo } = useMediaAbleService();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 
 const { handleSubmit } = useForm({
@@ -64,7 +62,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
   const file = values.file;
 
   try {
-    const { workflow } = await createWorkflow({
+    const { workflow } = await workflowService.createWorkflow({
       name: values.name,
       description: values.description,
     });
@@ -80,8 +78,9 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         id: workflow.id,
         type: 'workflow',
       };
-      const mediaAble = await attachMediaTo(mediaId, { model: mediaAbleModel });
-      const updatedWorkflow = await reCreateWorkflowFromMedia({
+      throw new Error('Workflow created but file upload not implemented yet');
+      const mediaAble = await mediaAbleService.attachMediaTo(mediaId, { model: mediaAbleModel });
+      const updatedWorkflow = await workflowService.reCreateWorkflowFromMedia({
         workflowId: workflow.id,
         mediaId: mediaId,
       });

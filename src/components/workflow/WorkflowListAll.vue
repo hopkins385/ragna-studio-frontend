@@ -4,15 +4,13 @@ import { useUserFavoriteService } from '@/composables/services/useUserFavoriteSe
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import useToast from '@/composables/useToast';
+import type { WorkflowsPaginatedResponse } from '@/modules/workflow/interfaces';
+import { workflowService } from '@/modules/workflow/workflow.service';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
-import {
-  useWorkflowService,
-  type WorkflowsPaginatedResponse,
-} from '@composables/services/useWorkflowService';
 import Button from '@ui/button/Button.vue';
 import Table from '@ui/table/Table.vue';
 import TableBody from '@ui/table/TableBody.vue';
@@ -33,7 +31,6 @@ const workflowFavorites = ref<any>([]); // TODO: type
 // Composables
 const toast = useToast();
 const { t } = useI18n();
-const { fetchWorkflowsPaginated, deleteWorkflow } = useWorkflowService();
 const { addFavorite, deleteFavorite, fetchAllFavoritesByType } = useUserFavoriteService();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
@@ -50,7 +47,7 @@ const meta = computed(() => {
 
 // Functions
 const initWorkflows = async () => {
-  data.value = await fetchWorkflowsPaginated();
+  data.value = await workflowService.fetchWorkflowsPaginated();
 };
 
 const setPage = (value: number) => {
@@ -59,7 +56,7 @@ const setPage = (value: number) => {
 
 const handleDelete = async (workflowId: string) => {
   try {
-    await deleteWorkflow(workflowId);
+    await workflowService.deleteWorkflow(workflowId);
     await initWorkflows();
     toast.success({ description: t('workflow.delete.success') });
   } catch (error: unknown) {

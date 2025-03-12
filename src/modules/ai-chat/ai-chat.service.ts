@@ -15,7 +15,6 @@ import type {
   InputChatId,
 } from '@/modules/ai-chat/interfaces/chat.interfaces';
 import { getRoute } from '@/utils/route.util';
-import { AxiosError, CanceledError } from 'axios';
 
 const ApiChatRoute = {
   BASE: '/chat', // POST
@@ -201,25 +200,5 @@ export class AiChatService extends BaseApiService {
     }
 
     return;
-  }
-
-  // Helpers
-  private handleError(err: unknown) {
-    if (err instanceof DOMException && err.name === 'AbortError') {
-      console.warn('DOM: Request was aborted');
-      return;
-    }
-    if (
-      err instanceof CanceledError ||
-      (err instanceof AxiosError && err.message === 'AbortError')
-    ) {
-      console.warn('Axios: Request was aborted');
-      return;
-    }
-    if (err instanceof Error) {
-      throw new ChatServiceError(err.message);
-    }
-    console.error(err);
-    throw new ChatServiceError('Failed to fetch data');
   }
 }

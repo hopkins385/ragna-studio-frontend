@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePromptWizardService } from '@/composables/services/usePromptWizardService';
+import { promptWizardService } from '@/modules/prompt-wizard/prompt-wizard.service';
 import {
   FormControl,
   FormDescription,
@@ -23,17 +23,11 @@ const emit = defineEmits<{
   updatePrompt: [string];
 }>();
 
-const { createPrompt } = usePromptWizardService();
-
 const isLoading = ref<boolean>(false);
 const generatedPrompt = ref<string>('');
 
 const promptWizardSchema = z.object({
-  input: z
-    .string()
-    .trim()
-    .min(1, 'Input prompt is required')
-    .max(4000, 'Input prompt is too long'),
+  input: z.string().trim().min(1, 'Input prompt is required').max(4000, 'Input prompt is too long'),
 });
 
 // form
@@ -73,7 +67,7 @@ const onSubmit = handleSubmit(async values => {
   if (isLoading.value) return;
   initSubmit();
   try {
-    const { prompt } = await createPrompt(payload);
+    const { prompt } = await promptWizardService.createPrompt(payload);
     handleSubmitSuccess(prompt);
   } catch (error) {
     handleSubmitError(error);
@@ -106,10 +100,7 @@ const onSubmit = handleSubmit(async values => {
     </form>
     <div class="space-y-4">
       <div class="h-72 border rounded-md p-3 relative overflow-auto">
-        <div
-          v-if="isLoading"
-          class="absolute inset-0 p-2 bg-white border rounded-md"
-        >
+        <div v-if="isLoading" class="absolute inset-0 p-2 bg-white border rounded-md">
           <Loader2Icon class="animate-spin size-5 opacity-75" />
         </div>
         <p class="text-sm whitespace-pre-line">{{ generatedPrompt }}</p>

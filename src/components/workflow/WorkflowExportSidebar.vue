@@ -1,18 +1,13 @@
 <script setup lang="ts">
-import { useWorkflowService } from '@/composables/services/useWorkflowService';
 import useToast from '@/composables/useToast';
+import { workflowService } from '@/modules/workflow/workflow.service';
 import { Button } from '@ui/button';
 import Separator from '@ui/separator/Separator.vue';
 import { SheetContent, SheetHeader, SheetTrigger } from '@ui/sheet';
 import Sheet from '@ui/sheet/Sheet.vue';
 import SheetDescription from '@ui/sheet/SheetDescription.vue';
 import SheetTitle from '@ui/sheet/SheetTitle.vue';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { ShareIcon } from 'lucide-vue-next';
 import ExcelIcon from '~icons/vscode-icons/file-type-excel';
 
@@ -28,14 +23,12 @@ const toast = useToast();
 
 const sheetIsOpen = ref(false);
 
-const { exportWorkflow } = useWorkflowService();
-
 const onClick = () => {
   sheetIsOpen.value = true;
 };
 
 const onExcelClick = async () => {
-  const response = await exportWorkflow(props.workflowId, 'xlsx');
+  const response = await workflowService.exportWorkflow(props.workflowId, 'xlsx');
 
   const url = window.URL.createObjectURL(response);
   const a = document.createElement('a');
@@ -54,9 +47,7 @@ const onExcelClick = async () => {
         <Tooltip>
           <TooltipTrigger as-child>
             <Button variant="ghost" size="icon" class="group" @click="onClick">
-              <ShareIcon
-                class="stroke-1.5 opacity-75 group-hover:opacity-100"
-              />
+              <ShareIcon class="stroke-1.5 opacity-75 group-hover:opacity-100" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
@@ -65,11 +56,7 @@ const onExcelClick = async () => {
         </Tooltip>
       </TooltipProvider>
     </SheetTrigger>
-    <SheetContent
-      @open-auto-focus="e => e.preventDefault()"
-      side="right"
-      class=""
-    >
+    <SheetContent @open-auto-focus="e => e.preventDefault()" side="right" class="">
       <SheetHeader class="">
         <SheetTitle class="text-base flex items-center space-x-2">
           <ShareIcon class="size-5 stroke-1.5" />

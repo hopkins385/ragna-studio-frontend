@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { assistantService } from '@/modules/assistant/assistant.service';
-import { useWorkflowService, type Workflow } from '@composables/services/useWorkflowService';
+import type { Workflow } from '@/modules/workflow/interfaces';
+import { workflowService } from '@/modules/workflow/workflow.service';
 import { useWorkflowStepService } from '@composables/services/useWorkflowStepService';
 import { useResizeSheet } from '@composables/useResizeSheet';
 import useToast from '@composables/useToast';
@@ -78,8 +79,6 @@ const { resizeRowListener, resizeColumnListener, initSheetDimensions } = useResi
 const { createWorkflowStep, createWorkflowRow, updateInputSteps } = useWorkflowStepService();
 // const { createManyDocumentItems } = useManageDocumentItems();
 
-const { fetchFullWorkflow, deleteWorkflowRows, executeWorkflow } = useWorkflowService();
-
 const flowProgress = reactive({
   show: false,
   completed: 0,
@@ -99,7 +98,7 @@ const workflowStepCardActive = computed(() => {
 });
 
 const initWorkflow = async () => {
-  const { workflow: data } = await fetchFullWorkflow(props.workflowId);
+  const { workflow: data } = await workflowService.fetchFullWorkflow(props.workflowId);
   workflow.value = data;
   nextTick(() => {
     initSheetDimensions(props.workflowId);
@@ -223,7 +222,7 @@ function onAllRowsSelected() {
 }
 
 async function onDeleteSelectedRows() {
-  await deleteWorkflowRows(props.workflowId, selectedRows.value);
+  await workflowService.deleteWorkflowRows(props.workflowId, selectedRows.value);
   deselectAllRows();
   await initWorkflow();
 }
@@ -253,7 +252,7 @@ const onRunFlow = async () => {
   flowProgress.show = true;
   flowProgress.completed = 0;
   flowProgress.total = totalCellCount.value;
-  await executeWorkflow(props.workflowId);
+  await workflowService.executeWorkflow(props.workflowId);
 };
 
 const onRefresh = async () => {

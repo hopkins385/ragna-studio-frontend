@@ -1,4 +1,5 @@
 import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
+import { AxiosError, CanceledError } from 'axios';
 
 export class BaseApiService {
   protected ac: AbortController;
@@ -7,6 +8,28 @@ export class BaseApiService {
   constructor() {
     this.ac = new AbortController();
     this.api = newApiRequest();
+  }
+
+  /**
+   * Handle the error from the request
+   */
+  protected handleError(err: unknown) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      console.warn('DOM: Request was aborted');
+      return;
+    }
+    if (
+      err instanceof CanceledError ||
+      (err instanceof AxiosError && err.message === 'AbortError')
+    ) {
+      console.warn('Axios: Request was aborted');
+      return;
+    }
+    if (err instanceof Error) {
+      throw err;
+    }
+    console.error(err);
+    throw new Error('Unknown error occurred');
   }
 
   /**

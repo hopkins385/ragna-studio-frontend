@@ -1,15 +1,9 @@
 <script setup lang="ts">
-import { useWorkflowService } from '@/composables/services/useWorkflowService';
 import useToast from '@/composables/useToast';
+import { workflowService } from '@/modules/workflow/workflow.service';
 import { workflowSettingsSchema } from '@/schemas/workflow-settings.schema';
 import { Button } from '@ui/button';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';
 import { Input } from '@ui/input';
 import Separator from '@ui/separator/Separator.vue';
 import { SheetContent, SheetHeader, SheetTrigger } from '@ui/sheet';
@@ -17,12 +11,7 @@ import Sheet from '@ui/sheet/Sheet.vue';
 import SheetDescription from '@ui/sheet/SheetDescription.vue';
 import SheetTitle from '@ui/sheet/SheetTitle.vue';
 import { Textarea } from '@ui/textarea';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { toTypedSchema } from '@vee-validate/zod';
 import { SettingsIcon } from 'lucide-vue-next';
 
@@ -40,8 +29,6 @@ const toast = useToast();
 
 const sheetIsOpen = ref(false);
 
-const { updateWorkflow } = useWorkflowService();
-
 const { handleSubmit, resetForm } = useForm({
   validationSchema: toTypedSchema(workflowSettingsSchema),
   initialValues: {
@@ -56,7 +43,7 @@ const onClick = () => {
 
 const onSubmit = handleSubmit(async values => {
   try {
-    await updateWorkflow(props.workflowId, {
+    await workflowService.updateWorkflow(props.workflowId, {
       name: values.name,
       description: values.description,
     });
@@ -83,9 +70,7 @@ watch(sheetIsOpen, isOpen => {
         <Tooltip>
           <TooltipTrigger as-child>
             <Button variant="ghost" size="icon" class="group" @click="onClick">
-              <SettingsIcon
-                class="stroke-1.5 opacity-75 group-hover:opacity-100"
-              />
+              <SettingsIcon class="stroke-1.5 opacity-75 group-hover:opacity-100" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
@@ -94,11 +79,7 @@ watch(sheetIsOpen, isOpen => {
         </Tooltip>
       </TooltipProvider>
     </SheetTrigger>
-    <SheetContent
-      @open-auto-focus="e => e.preventDefault()"
-      side="right"
-      class=""
-    >
+    <SheetContent @open-auto-focus="e => e.preventDefault()" side="right" class="">
       <SheetHeader class="">
         <SheetTitle class="text-base flex items-center space-x-2">
           <SettingsIcon class="size-5 stroke-1.5" />
@@ -130,15 +111,9 @@ watch(sheetIsOpen, isOpen => {
           </FormField>
           <FormField v-slot="{ componentField }" name="description">
             <FormItem>
-              <FormLabel>{{
-                $t('workflow.settings.form.description')
-              }}</FormLabel>
+              <FormLabel>{{ $t('workflow.settings.form.description') }}</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Description"
-                  autocomplete="off"
-                  v-bind="componentField"
-                />
+                <Textarea placeholder="Description" autocomplete="off" v-bind="componentField" />
               </FormControl>
               <FormMessage class="text-xs" />
             </FormItem>

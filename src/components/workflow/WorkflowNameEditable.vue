@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useWorkflowService } from '@/composables/services/useWorkflowService';
-import { Input } from '@ui/input';
-import { FormControl, FormField, FormItem, FormMessage } from '@ui/form';
-import { toTypedSchema } from '@vee-validate/zod';
+import { workflowService } from '@/modules/workflow/workflow.service';
 import { workflowNameSchema } from '@/schemas/workflow-settings.schema';
+import { FormControl, FormField, FormItem, FormMessage } from '@ui/form';
+import { Input } from '@ui/input';
+import { toTypedSchema } from '@vee-validate/zod';
 
 const props = defineProps<{
   workflowId: string;
@@ -16,8 +16,6 @@ const emit = defineEmits<{
 
 const showForm = ref(false);
 
-const { updateWorkflow } = useWorkflowService();
-
 const { handleSubmit } = useForm({
   validationSchema: toTypedSchema(workflowNameSchema),
   initialValues: {
@@ -27,7 +25,7 @@ const { handleSubmit } = useForm({
 
 const onSubmit = handleSubmit(async values => {
   try {
-    await updateWorkflow(props.workflowId, { name: values.name });
+    await workflowService.updateWorkflow(props.workflowId, { name: values.name });
   } catch (error) {
     console.error(error);
   } finally {
