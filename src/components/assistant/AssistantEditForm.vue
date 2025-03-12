@@ -5,12 +5,12 @@ import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistan
 import { assistantService } from '@/modules/assistant/assistant.service';
 import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
+import { collectionAbleService } from '@/modules/collection-able/collection-able.service';
 import type { Collection } from '@/modules/collection/interfaces';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import CollectionSelectModal from '@components/collection/CollectionSelectModal.vue';
 import TabSidebar from '@components/tab/TabSidebar.vue';
-import useCollectionAbleService from '@composables/services/useCollectionAbleService';
 import useToast from '@composables/useToast';
 import { assistantFormSchema } from '@schemas/assistant.form';
 import { Button } from '@ui/button';
@@ -111,14 +111,12 @@ const onSubmit = handleSubmit(async values => {
 });
 
 // collections
-const { replaceCollectionTo, detachAllCollectionsFrom } = useCollectionAbleService();
-
 async function updateCollection(collectionId: string) {
   const model = {
     type: 'assistant',
     id: props.assistant.id,
   };
-  await replaceCollectionTo(collectionId, { model });
+  await collectionAbleService.replaceCollectionTo(collectionId, { model });
   // update assistant has collections
   await assistantService.updateHasKnowledgeBase(props.assistant.id, true);
   emit('refreshCollections');
@@ -132,7 +130,7 @@ async function resetCollections() {
     type: 'assistant',
     id: props.assistant.id,
   };
-  await detachAllCollectionsFrom({ model });
+  await collectionAbleService.detachAllCollectionsFrom({ model });
   // update assistant does not has collections
   await assistantService.updateHasKnowledgeBase(props.assistant.id, false);
   emit('refreshCollections');
