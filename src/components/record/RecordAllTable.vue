@@ -1,27 +1,14 @@
 <script setup lang="ts">
-import {
-  useRecordService,
-  type RecordsPaginatedResponse,
-} from '@/composables/services/useRecordService';
 import useToast from '@/composables/useToast';
+import type { RecordsPaginatedResponse } from '@/modules/record/interfaces';
+import { recordService } from '@/modules/record/record.service';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
 import { Button } from '@ui/button';
-import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@ui/table';
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import Table from '@ui/table/Table.vue';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { FileIcon, LoaderIcon, Trash2Icon } from 'lucide-vue-next';
 
 const props = defineProps<{
@@ -34,11 +21,9 @@ const page = ref(1);
 
 const data = ref<RecordsPaginatedResponse | null>(null);
 
-const { fetchAllPaginated, deleteRecord } = useRecordService();
-
 const initRecords = async () => {
   if (!props.collectionId) return;
-  data.value = await fetchAllPaginated({
+  data.value = await recordService.fetchAllPaginated({
     collectionId: props.collectionId,
     params: { page: page.value },
   });
@@ -79,7 +64,7 @@ const handleDelete = async () => {
   addIsLoading(deleteRecordId.value);
   showConfirmDialog.value = false;
   try {
-    await deleteRecord(deleteRecordId.value);
+    await recordService.deleteRecord(deleteRecordId.value);
     toast.success({
       description: 'Record deleted.',
     });
@@ -134,12 +119,7 @@ onMounted(() => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger as-child>
-                <Button
-                  class="group"
-                  variant="outline"
-                  size="icon"
-                  @click="onDelete(record.id)"
-                >
+                <Button class="group" variant="outline" size="icon" @click="onDelete(record.id)">
                   <LoaderIcon
                     v-if="isLoadingIds.includes(record.id)"
                     class="size-4 animate-spin stroke-1.5 text-primary group-hover:stroke-2"

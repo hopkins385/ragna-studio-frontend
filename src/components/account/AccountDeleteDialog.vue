@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAccountService } from '@/composables/services/account/useAccountService';
+import { accountService } from '@/modules/account/account.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import { Button } from '@ui/button';
@@ -45,13 +45,12 @@ const { handleSubmit, setErrors } = useForm({
 const router = useRouter();
 const { t } = useI18n();
 
-const { deleteAccount } = useAccountService();
-
+// TODO: Delete Account
 const onSubmit = handleSubmit(async ({ password }, { resetForm }) => {
   isLoading.value = true;
 
   try {
-    const result = await deleteAccount({
+    const result = await accountService.deleteAccount({
       password,
     });
     if (result.success !== true) {

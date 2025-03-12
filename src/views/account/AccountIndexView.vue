@@ -3,10 +3,8 @@ import AccountDeleteDialog from '@/components/account/AccountDeleteDialog.vue';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
-import {
-  useAccountService,
-  type AccountData,
-} from '@/composables/services/account/useAccountService';
+import { accountService } from '@/modules/account/account.service';
+import type { AccountData } from '@/modules/account/interfaces';
 import AccountProfileForm from '@components/account/AccountProfileForm.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
@@ -14,13 +12,12 @@ import AccountEditLoginForm from './AccountEditLoginForm.vue';
 
 const isLoading = ref(false);
 const account = ref<AccountData | null>(null);
-const { fetchAccountData } = useAccountService();
 
 const org = computed(() => account.value?.organisation ?? null);
 const teams = computed(() => account.value?.teams ?? null);
 
 const initAccountData = async () => {
-  const data = await fetchAccountData();
+  const data = await accountService.fetchAccountData();
   account.value = data;
 };
 

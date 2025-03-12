@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAccountService } from '@/composables/services/account/useAccountService';
+import { accountService } from '@/modules/account/account.service';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import useToast from '@composables/useToast';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';
@@ -23,7 +23,6 @@ const emits = defineEmits<{
 
 const toast = useToast();
 const { t } = useI18n();
-const { updateName } = useAccountService();
 
 const userFormSchema = toTypedSchema(
   z.object({
@@ -42,7 +41,7 @@ const isLoading = ref(false);
 const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
   isLoading.value = true;
   try {
-    await updateName({
+    await accountService.updateName({
       firstName,
       lastName,
     });

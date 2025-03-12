@@ -1,4 +1,4 @@
-import { useAccountService } from '@/composables/services/account/useAccountService';
+import { accountService } from '@/modules/account/account.service';
 import { authService } from '@/modules/auth/auth.service';
 import { defineAbilityFor } from '@/services/ability.service';
 import { useStorage } from '@vueuse/core';
@@ -29,7 +29,6 @@ interface AuthUser {
 }
 
 export const useAuthStore = defineStore('auth-store', () => {
-  const { fetchAccountData } = useAccountService();
   // State
   const user = ref<AuthUser | null>(null);
   const accessToken = ref<string | null>(null);
@@ -81,7 +80,7 @@ export const useAuthStore = defineStore('auth-store', () => {
     if (isFetchingUser.value) return;
     isFetchingUser.value = true;
     try {
-      const data = await fetchAccountData();
+      const data = await accountService.fetchAccountData();
       user.value = {
         id: data.id,
         firstTeamId: data.firstTeamId,

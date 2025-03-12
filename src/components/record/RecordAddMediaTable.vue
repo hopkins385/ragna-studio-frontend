@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { mediaService } from '@/modules/media/media.service';
+import { recordService } from '@/modules/record/record.service';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
-import { useRecordService } from '@composables/services/useRecordService';
 import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
@@ -27,7 +27,6 @@ const emits = defineEmits<{
   success: [void];
 }>();
 
-const { fetchAll, createRecord } = useRecordService();
 const { getFileSizeForHumans } = useForHumans();
 
 const toast = useToast();
@@ -57,7 +56,7 @@ const initAllRecords = async () => {
     throw new Error('Collection ID is required');
   }
 
-  const data = await fetchAll({
+  const data = await recordService.fetchAll({
     collectionId: props.collectionId.toString(),
   });
 
@@ -90,7 +89,7 @@ async function onAdd(id: string) {
   pendingUpdateId.value = id;
   errorAlert.show = false;
   try {
-    await createRecord({
+    await recordService.createRecord({
       collectionId: props.collectionId.toString(),
       mediaId: id,
     });

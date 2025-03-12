@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAccountService } from '@/composables/services/account/useAccountService';
+import { accountService } from '@/modules/account/account.service';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
 import { FormControl, FormField, FormLabel, FormMessage } from '@ui/form';
@@ -33,8 +33,6 @@ const passwordFormSchema = toTypedSchema(
 const toast = useToast();
 const { t } = useI18n();
 
-const { updatePassword } = useAccountService();
-
 const { handleSubmit } = useForm({
   validationSchema: passwordFormSchema,
 });
@@ -44,7 +42,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
   error.value = '';
 
   try {
-    await updatePassword({
+    await accountService.updatePassword({
       oldPassword: values.password,
       newPassword: values.newPassword,
     });
