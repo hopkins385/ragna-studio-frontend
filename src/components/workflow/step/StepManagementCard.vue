@@ -3,9 +3,9 @@ import AssistantSelectForm from '@/components/assistant/AssistantSelectForm.vue'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useWorkflowStepService } from '@/composables/services/useWorkflowStepService';
 import { assistantService } from '@/modules/assistant/assistant.service';
 import type { AssistantsPaginatedResponse } from '@/modules/assistant/interfaces/assistant.interfaces';
+import { workflowStepService } from '@/modules/workflow-step/workflow-step.service';
 import { Trash2Icon } from 'lucide-vue-next';
 
 const props = defineProps<{
@@ -31,8 +31,6 @@ const availableSteps = computed(() => {
 const hasActiveSteps = computed(() => availableSteps.value.length > 0);
 const isFirstStep = computed(() => props.workflowStep.orderColumn === 0);
 
-const { deleteWorkflowStep, updateWorkflowStep } = useWorkflowStepService();
-
 const data = ref<AssistantsPaginatedResponse | null>(null);
 const allAssistants = computed(
   () =>
@@ -46,14 +44,14 @@ const fetchData = async () => {
 };
 
 async function onDeleteClick() {
-  await deleteWorkflowStep(props.workflowStep.id);
+  await workflowStepService.deleteWorkflowStep(props.workflowStep.id);
   emits('close');
   emits('refresh');
 }
 
 async function submitForm() {
   if (!workflowStepName.value || workflowStepName.value === '') return;
-  await updateWorkflowStep(props.workflowStep.id, {
+  await workflowStepService.updateWorkflowStep(props.workflowStep.id, {
     name: workflowStepName.value,
   });
   emits('refresh');

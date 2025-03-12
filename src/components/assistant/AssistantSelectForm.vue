@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { useWorkflowStepService } from '@/composables/services/useWorkflowStepService';
-import { toTypedSchema } from '@vee-validate/zod';
-import { useForm } from 'vee-validate';
-import { z } from 'zod';
+import { workflowStepService } from '@/modules/workflow-step/workflow-step.service';
 import { FormControl, FormField, FormItem, FormMessage } from '@ui/form';
 import {
   Select,
@@ -12,6 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@ui/select';
+import { toTypedSchema } from '@vee-validate/zod';
+import { useForm } from 'vee-validate';
+import { z } from 'zod';
 
 const props = defineProps<{
   assistantId: string | null | undefined;
@@ -37,8 +37,7 @@ const { handleSubmit } = useForm({
 });
 
 const onSubmit = handleSubmit(async values => {
-  const { updateWorkflowStepAssistant } = useWorkflowStepService();
-  await updateWorkflowStepAssistant(props.workflowStepId, {
+  await workflowStepService.updateWorkflowStepAssistant(props.workflowStepId, {
     assistantId: values.assistantId,
   });
   emit('refresh');

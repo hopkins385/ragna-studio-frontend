@@ -1,13 +1,11 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BaseApiService } from '@/common/service/base-api.service';
 import type {
-  WorkflowResponse,
-  WorkflowsPaginatedResponse,
-} from '@/composables/services/useWorkflowService';
-import type {
   ICreateWorkflow,
   IReCreateWorkflowFromMedia,
   UpdateWorkflowDto,
+  WorkflowResponse,
+  WorkflowsPaginatedResponse,
 } from '@/modules/workflow/interfaces';
 import { getRoute } from '@/utils/route.util';
 

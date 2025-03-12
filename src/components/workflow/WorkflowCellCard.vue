@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useWorkflowStepService } from '@/composables/services/useWorkflowStepService';
+import { workflowStepService } from '@/modules/workflow-step/workflow-step.service';
 import { Textarea } from '@ui/textarea';
 import { onClickOutside, useDebounceFn } from '@vueuse/core';
 import { XIcon } from 'lucide-vue-next';
@@ -22,14 +22,12 @@ const text = ref(props.content || '');
 const pending = ref(false);
 const cellCardRef = ref<HTMLDivElement | null>(null);
 
-const { updateItemContent } = useWorkflowStepService();
-
 async function updateItem(value: string) {
   if (!props.itemId) {
     throw new Error('itemId is required');
   }
   try {
-    await updateItemContent({
+    await workflowStepService.updateItemContent({
       stepId: props.stepId,
       itemId: props.itemId,
       content: value,

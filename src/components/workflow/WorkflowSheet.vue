@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { assistantService } from '@/modules/assistant/assistant.service';
+import { workflowStepService } from '@/modules/workflow-step/workflow-step.service';
 import type { Workflow } from '@/modules/workflow/interfaces';
 import { workflowService } from '@/modules/workflow/workflow.service';
-import { useWorkflowStepService } from '@composables/services/useWorkflowStepService';
 import { useResizeSheet } from '@composables/useResizeSheet';
 import useToast from '@composables/useToast';
 import { useWebSocketStore } from '@stores/websocket.store';
@@ -76,9 +76,6 @@ const cellActive = ref<{ x: number; y: number; rowHeight: number }>({
 
 const { resizeRowListener, resizeColumnListener, initSheetDimensions } = useResizeSheet();
 
-const { createWorkflowStep, createWorkflowRow, updateInputSteps } = useWorkflowStepService();
-// const { createManyDocumentItems } = useManageDocumentItems();
-
 const flowProgress = reactive({
   show: false,
   completed: 0,
@@ -117,7 +114,7 @@ async function onAddWorkflowStep() {
     console.error('No assistant found');
     return;
   }
-  await createWorkflowStep(props.workflowId, {
+  await workflowStepService.createWorkflowStep(props.workflowId, {
     assistantId: assistant.id,
     name: t('workflow.create.new_step_name'),
     description: t('workflow.create.new_step_description'),
@@ -143,7 +140,7 @@ async function onAddWorkflowRow() {
       type: 'text',
     };
   });
-  await createWorkflowRow(props.workflowId, { items: items ?? [] });
+  await workflowStepService.createWorkflowRow(props.workflowId, { items: items ?? [] });
   await initWorkflow();
 }
 
@@ -198,7 +195,7 @@ function onCloseCellCard() {
 }
 
 async function onInputStepsUpdated(payload: { inputSteps: string[]; stepId: string }) {
-  await updateInputSteps(payload.stepId, { inputStepIds: payload.inputSteps });
+  await workflowStepService.updateInputSteps(payload.stepId, { inputStepIds: payload.inputSteps });
   await initWorkflow();
 }
 
