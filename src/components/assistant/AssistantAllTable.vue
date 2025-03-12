@@ -2,13 +2,13 @@
 // Imports
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { assistantService } from '@/modules/assistant/assistant.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
-import useAssistantService from '@composables/services/useAssistantService';
 import { useChatService } from '@composables/services/useChatService';
 import { useUserFavoriteService } from '@composables/services/useUserFavoriteService';
 import { useProviderIcons } from '@composables/useProviderIcons';
@@ -38,7 +38,6 @@ const router = useRouter();
 const toast = useToast();
 const { t } = useI18n();
 const { createChat } = useChatService();
-const { fetchAllAssistants, deleteAssistant } = useAssistantService();
 const { getProviderIcon } = useProviderIcons();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
@@ -55,12 +54,12 @@ const meta = computed(() => {
 
 // Functions
 const initAllAssistants = async ({ page }: { page: number }) => {
-  data.value = await fetchAllAssistants({ page });
+  data.value = await assistantService.fetchAllAssistants({ page });
 };
 
 const handleDelete = async (assistantId: string) => {
   try {
-    await deleteAssistant(assistantId);
+    await assistantService.deleteAssistant(assistantId);
     await initAllAssistants({ page: page.value ?? 1 });
     toast.success({ description: t('assistant.delete.success') });
   } catch (error: unknown) {
@@ -131,6 +130,10 @@ const initAssistantFavorites = async () => {
 
 await initAllAssistants({ page: page.value ?? 1 });
 await initAssistantFavorites();
+
+onBeforeUnmount(() => {
+  assistantService.abortRequest();
+});
 </script>
 
 <template>

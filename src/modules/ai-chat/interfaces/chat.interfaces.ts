@@ -1,32 +1,7 @@
 import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
+import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
 
 export type InputChatId = string | null | undefined;
-
-export interface AssistantLLM {
-  provider: string;
-  displayName: string;
-  apiName: string;
-  multiModal: boolean;
-  capabilities: {
-    imageInput: boolean;
-    audioInput: boolean;
-    videoInput: boolean;
-    textOutput: boolean;
-    imageOutput: boolean;
-    audioOutput: boolean;
-    videoOutput: boolean;
-  };
-}
-
-export interface Assistant {
-  id: string;
-  name: string;
-  title: string;
-  description: string;
-  llm: AssistantLLM; // TODO: change interface to LargeLangModel interface
-  createdAt: string;
-  updatedAt: string;
-}
 
 export interface Chat {
   id: string;

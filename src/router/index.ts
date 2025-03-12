@@ -1,3 +1,5 @@
+import { chatRoutes } from '@/modules/ai-chat/routes';
+import { defaultAdminMeta, defaultAppMeta } from '@/router/defaults';
 import {
   hasValidGoogleCallbackQuery,
   hasValidRouteId,
@@ -12,17 +14,6 @@ import { Layout, layoutMiddleware } from './middlewares/layout.middleware';
 import { NProgressPlugin } from './plugins/nprogress.router.plugin';
 
 const progressPlugin = new NProgressPlugin();
-
-const defaultAppMeta = {
-  requiresAuth: true,
-  layout: Layout.App,
-};
-
-const defaultAdminMeta = {
-  requiresAdmin: true,
-  requiresAuth: true,
-  layout: Layout.App,
-};
 
 const homeRoute = {
   path: '/',
@@ -61,40 +52,6 @@ const userRoutes = {
       name: RouteName.USER_EDIT,
       beforeEnter: [hasValidRouteId],
       component: () => import('@views/user/UserEditView.vue'),
-      meta: defaultAppMeta,
-    },
-  ],
-};
-
-const chatRoutes = {
-  path: '/chat',
-  component: () => import('@views/chat/ChatRootView.vue'),
-  meta: defaultAppMeta,
-  children: [
-    {
-      path: '',
-      name: RouteName.CHAT_RECENT,
-      component: () => import('@views/chat/ChatRecentView.vue'),
-      meta: defaultAppMeta,
-    },
-    {
-      path: 'create',
-      name: RouteName.CHAT_CREATE,
-      component: () => import('@views/chat/ChatCreateView.vue'),
-      meta: defaultAppMeta,
-    },
-    {
-      path: 'history',
-      name: RouteName.CHAT_HISTORY,
-      beforeEnter: [hasValidRouteQuery],
-      component: () => import('@views/chat/ChatHistoryView.vue'),
-      meta: defaultAppMeta,
-    },
-    {
-      path: ':id',
-      name: RouteName.CHAT_SHOW,
-      beforeEnter: [hasValidRouteId],
-      component: () => import('@views/chat/ChatShowView.vue'),
       meta: defaultAppMeta,
     },
   ],

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useAssistantService from '@composables/services/useAssistantService';
+import { assistantService } from '@/modules/assistant/assistant.service';
 import { useWorkflowService, type Workflow } from '@composables/services/useWorkflowService';
 import { useWorkflowStepService } from '@composables/services/useWorkflowStepService';
 import { useResizeSheet } from '@composables/useResizeSheet';
@@ -76,7 +76,6 @@ const cellActive = ref<{ x: number; y: number; rowHeight: number }>({
 const { resizeRowListener, resizeColumnListener, initSheetDimensions } = useResizeSheet();
 
 const { createWorkflowStep, createWorkflowRow, updateInputSteps } = useWorkflowStepService();
-const { fetchAllAssistants } = useAssistantService();
 // const { createManyDocumentItems } = useManageDocumentItems();
 
 const { fetchFullWorkflow, deleteWorkflowRows, executeWorkflow } = useWorkflowService();
@@ -113,7 +112,7 @@ async function onAddWorkflowStep() {
     toast.info({ description: `Max ${MAX_COLUMN_COUNT} steps reached` });
     return;
   }
-  const result = await fetchAllAssistants({ page: 1, limit: 1 });
+  const result = await assistantService.fetchAllAssistants({ page: 1, limit: 1 });
   const assistant = result.assistants[0];
   if (!assistant || !assistant?.id) {
     console.error('No assistant found');
@@ -299,6 +298,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   socket.off(`workflow-update:${props.workflowId}`, onWorkflowUpdateEvent);
+  assistantService.abortRequest();
 });
 
 await initWorkflow();

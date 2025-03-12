@@ -17,7 +17,7 @@ import type {
 import { getRoute } from '@/utils/route.util';
 import { AxiosError, CanceledError } from 'axios';
 
-const ChatRoute = {
+const ApiChatRoute = {
   BASE: '/chat', // POST
   CHAT: '/chat/:chatId', // GET, PATCH, DELETE
   CHAT_ALL: '/chat/all', // GET
@@ -42,7 +42,7 @@ export class AiChatService {
   public async createChat(assistantId: string): Promise<ChatResponse> {
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(ChatRoute.BASE);
+    const route = getRoute(ApiChatRoute.BASE);
     const { status, data } = await api
       .POST<ChatResponse, never, { assistantId: string }>()
       .setRoute(route)
@@ -64,7 +64,7 @@ export class AiChatService {
     }
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(ChatRoute.CHAT_MESSAGE, { ':chatId': chatId });
+    const route = getRoute(ApiChatRoute.CHAT_MESSAGE, { ':chatId': chatId });
     const { status, data } = await api
       .POST<ChatMessage, never, { message: ChatMessage }>()
       .setRoute(route)
@@ -88,7 +88,7 @@ export class AiChatService {
 
     this.abortRequest();
 
-    const streamRoute = getRoute(ChatRoute.CHAT_STREAM, {
+    const streamRoute = getRoute(ApiChatRoute.CHAT_STREAM, {
       ':chatId': payload.chatId,
     });
     const body = {
@@ -126,7 +126,7 @@ export class AiChatService {
     }
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(ChatRoute.CHAT, { ':chatId': chatId });
+    const route = getRoute(ApiChatRoute.CHAT, { ':chatId': chatId });
     const { status, data } = await api
       .GET<ChatResponse>()
       .setRoute(route)
@@ -143,7 +143,7 @@ export class AiChatService {
   public async fetchAllChats(): Promise<Chat[]> {
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(ChatRoute.CHAT_ALL);
+    const route = getRoute(ApiChatRoute.CHAT_ALL);
     const { status, data } = await api
       .GET<Chat[]>()
       .setRoute(route)
@@ -160,7 +160,7 @@ export class AiChatService {
   public async fetchAllChatsPaginated(params: PaginateDto): Promise<ChatsPaginatedResponse> {
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(ChatRoute.CHAT_HISTORY);
+    const route = getRoute(ApiChatRoute.CHAT_HISTORY);
     const { status, data } = await api
       .GET<ChatsPaginatedResponse, PaginateDto>()
       .setRoute(route)
@@ -178,7 +178,7 @@ export class AiChatService {
   public async fetchLatestChat(): Promise<ChatResponse> {
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(ChatRoute.CHAT_LATEST);
+    const route = getRoute(ApiChatRoute.CHAT_LATEST);
     const { status, data } = await api
       .GET<ChatResponse>()
       .setRoute(route)
@@ -198,7 +198,7 @@ export class AiChatService {
     }
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(ChatRoute.CHAT_MESSAGES, { ':chatId': chatId });
+    const route = getRoute(ApiChatRoute.CHAT_MESSAGES, { ':chatId': chatId });
     const { status } = await api.DELETE().setRoute(route).setSignal(this.ac.signal).send();
 
     if (status !== HttpStatus.OK) {
@@ -214,7 +214,7 @@ export class AiChatService {
     }
     this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(ChatRoute.CHAT, { ':chatId': chatId });
+    const route = getRoute(ApiChatRoute.CHAT, { ':chatId': chatId });
     const { status } = await api.DELETE().setRoute(route).setSignal(this.ac.signal).send();
 
     if (status !== HttpStatus.OK) {

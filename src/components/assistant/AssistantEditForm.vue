@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useChatService } from '@/composables/services/useChatService';
 import { useToolIcons } from '@/composables/useToolIcons';
+import { assistantService } from '@/modules/assistant/assistant.service';
+import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import CollectionSelectModal from '@components/collection/CollectionSelectModal.vue';
 import TabSidebar from '@components/tab/TabSidebar.vue';
-import type { Assistant } from '@composables/services/useAssistantService';
-import useAssistantService from '@composables/services/useAssistantService';
 import type { AssistantTool } from '@composables/services/useAssistantToolsService';
 import useCollectionAbleService from '@composables/services/useCollectionAbleService';
 import type { Collection } from '@composables/services/useCollectionService';
@@ -68,7 +68,6 @@ const firstCollection = computed(
 
 const { t } = useI18n();
 const { getToolIcon } = useToolIcons();
-const { updateAssistant, updateHasKnowledgeBase } = useAssistantService();
 const { createChat } = useChatService();
 
 // form
@@ -94,7 +93,7 @@ const onSubmit = handleSubmit(async values => {
   updateIsLoading.value = true;
 
   try {
-    await updateAssistant(props.assistant.id, {
+    await assistantService.updateAssistant(props.assistant.id, {
       ...values,
     });
     toast.success({
@@ -121,7 +120,7 @@ async function updateCollection(collectionId: string) {
   };
   await replaceCollectionTo(collectionId, { model });
   // update assistant has collections
-  await updateHasKnowledgeBase(props.assistant.id, true);
+  await assistantService.updateHasKnowledgeBase(props.assistant.id, true);
   emit('refreshCollections');
   toast.success({
     description: 'Collection updated successfully',
@@ -135,7 +134,7 @@ async function resetCollections() {
   };
   await detachAllCollectionsFrom({ model });
   // update assistant does not has collections
-  await updateHasKnowledgeBase(props.assistant.id, false);
+  await assistantService.updateHasKnowledgeBase(props.assistant.id, false);
   emit('refreshCollections');
   toast.success({
     description: 'Collection updated successfully',
@@ -203,6 +202,10 @@ const supportedProviders = [
     },
   },
 ];
+
+onBeforeUnmount(() => {
+  assistantService.abortRequest();
+});
 </script>
 
 <template>
@@ -371,7 +374,7 @@ const supportedProviders = [
     </template>
     <!-- TAB 6 -->
     <template #tab6>
-      <FormField v-slot="{ componentField, value }" name="temperature">
+      <FormField name="temperature">
         <FormItem>
           <FormLabel>{{ $t('assistant.workflow.label') }}</FormLabel>
           <FormDescription>
@@ -386,7 +389,7 @@ const supportedProviders = [
     </template>
     <!-- TAB 7 -->
     <template #tab7>
-      <FormField v-slot="{ componentField, value }" name="temperature">
+      <FormField name="temperature">
         <FormItem>
           <FormLabel>{{ $t('assistant.privacy.label') }}</FormLabel>
           <FormDescription>

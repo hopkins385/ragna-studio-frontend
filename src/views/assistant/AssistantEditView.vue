@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import { assistantService } from '@/modules/assistant/assistant.service';
+import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
 import AssistantEditForm from '@components/assistant/AssistantEditForm.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import type { Assistant } from '@composables/services/useAssistantService';
-import useAssistantService from '@composables/services/useAssistantService';
 import type { AssistantTool } from '@composables/services/useAssistantToolsService';
 import { useAssistantToolsService } from '@composables/services/useAssistantToolsService';
 import type { Collection } from '@composables/services/useCollectionService';
@@ -22,7 +22,6 @@ const route = useRoute();
 const assistantId = route.params.id.toString();
 
 const { t } = useI18n();
-const { fetchAssistant } = useAssistantService();
 const { fetchAllTools } = useAssistantToolsService();
 const { fetchAllCollectionsFor } = useCollectionService();
 
@@ -43,7 +42,7 @@ const initCollections = async () => {
 
 const initAssistant = async () => {
   try {
-    const { assistant: rAss } = await fetchAssistant(assistantId);
+    const { assistant: rAss } = await assistantService.fetchAssistant(assistantId);
     assistant.value = rAss;
   } catch (error) {
     console.error(error);
@@ -59,9 +58,7 @@ const initAssistantTools = async () => {
   }
 };
 
-const headingTitle = computed(
-  () => `${assistant.value?.title} - ${t('assistant.edit.title')}`,
-);
+const headingTitle = computed(() => `${assistant.value?.title} - ${t('assistant.edit.title')}`);
 
 // noasync = Non-blocking, allows component to render before data is fetched
 onMounted(async () => {
@@ -86,10 +83,7 @@ useHead({
   <SectionContainer>
     <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
-        <HeadingTitle
-          :title="headingTitle"
-          :subtitle="$t('assistant.edit.subtitle')"
-        />
+        <HeadingTitle :title="headingTitle" :subtitle="$t('assistant.edit.subtitle')" />
       </template>
       <template #bottom> </template>
     </Heading>

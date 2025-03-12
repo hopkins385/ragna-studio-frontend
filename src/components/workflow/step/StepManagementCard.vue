@@ -1,18 +1,11 @@
 <script setup lang="ts">
 import AssistantSelectForm from '@/components/assistant/AssistantSelectForm.vue';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import useAssistantService, {
-  type AssistantsPaginatedResponse,
-} from '@/composables/services/useAssistantService';
 import { useWorkflowStepService } from '@/composables/services/useWorkflowStepService';
+import { assistantService } from '@/modules/assistant/assistant.service';
+import type { AssistantsPaginatedResponse } from '@/modules/assistant/interfaces/assistant.interfaces';
 import { Trash2Icon } from 'lucide-vue-next';
 
 const props = defineProps<{
@@ -33,15 +26,12 @@ const workflowStepName = ref<string>(props.workflowStep.name);
 const selectedSteps = ref(props.workflowStep.inputSteps);
 
 const availableSteps = computed(() => {
-  return props.allWorkflowSteps.filter(
-    step => step.orderColumn < props.workflowStep.orderColumn,
-  );
+  return props.allWorkflowSteps.filter(step => step.orderColumn < props.workflowStep.orderColumn);
 });
 const hasActiveSteps = computed(() => availableSteps.value.length > 0);
 const isFirstStep = computed(() => props.workflowStep.orderColumn === 0);
 
 const { deleteWorkflowStep, updateWorkflowStep } = useWorkflowStepService();
-const { fetchAllAssistants } = useAssistantService();
 
 const data = ref<AssistantsPaginatedResponse | null>(null);
 const allAssistants = computed(
@@ -52,7 +42,7 @@ const allAssistants = computed(
 );
 
 const fetchData = async () => {
-  data.value = await fetchAllAssistants({ page: 1, limit: 100 });
+  data.value = await assistantService.fetchAllAssistants({ page: 1, limit: 100 });
 };
 
 async function onDeleteClick() {
@@ -135,11 +125,7 @@ onMounted(() => {
             <h3 class="pb-1 underline">{{ $t('workflow.step.inputs') }}:</h3>
             <ul>
               <li v-for="step in availableSteps" :key="step.id">
-                <input
-                  v-model="selectedSteps"
-                  type="checkbox"
-                  :value="step.id"
-                />
+                <input v-model="selectedSteps" type="checkbox" :value="step.id" />
                 - {{ step.name }}
               </li>
             </ul>
@@ -193,9 +179,7 @@ onMounted(() => {
           class="group flex cursor-pointer items-center py-2 opacity-75 hover:opacity-100"
           @click="onDeleteClick"
         >
-          <Trash2Icon
-            class="mr-1 size-4 stroke-1.5 text-red-500 group-hover:stroke-2"
-          />
+          <Trash2Icon class="mr-1 size-4 stroke-1.5 text-red-500 group-hover:stroke-2" />
           <span class="group-hover:font-semibold">
             {{ $t('form.button.delete') }}
           </span>

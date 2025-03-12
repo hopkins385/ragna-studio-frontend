@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Imports
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { assistantService } from '@/modules/assistant/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { assistantFormSchema } from '@/schemas/assistant.form';
@@ -9,7 +10,6 @@ import ButtonLoading from '@components/button/ButtonLoading.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import LlmSelectModal from '@components/llm/LlmSelectModal.vue';
 import TabSidebar from '@components/tab/TabSidebar.vue';
-import useAssistantService from '@composables/services/useAssistantService';
 import {
   useAssistantToolsService,
   type AssistantTool,
@@ -50,7 +50,6 @@ const toast = useToast();
 const router = useRouter();
 const { t } = useI18n();
 const { fetchAllTools } = useAssistantToolsService();
-const { createAssistant } = useAssistantService();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 
 // Computed
@@ -88,7 +87,7 @@ const onSubmit = handleSubmit(async values => {
   isLoading.value = true;
 
   try {
-    await createAssistant({
+    await assistantService.createAssistant({
       ...values,
     });
     toast.success({
@@ -128,6 +127,10 @@ const siderBarTabs = [
 
 onMounted(() => {
   initAssistantTools();
+});
+
+onBeforeUnmount(() => {
+  assistantService.abortRequest();
 });
 </script>
 

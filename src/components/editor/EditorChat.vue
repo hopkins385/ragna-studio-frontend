@@ -3,7 +3,7 @@
 import ChatAssistantSelect from '@/components/chat/ChatAssistantSelect.vue';
 import ChatInputTextarea from '@/components/chat/ChatInputTextarea.vue';
 import EditorSidePanel from '@/components/editor/EditorSidePanel.vue';
-import { useAiChatStore } from '@/modules/ai-chat/stores/ai-chat.store';
+import { useAiChatStore } from '@/modules/ai-chat/stores';
 import { markdownService } from '@/modules/markdown/markdown.service';
 import { useEditorStore } from '@/stores/editor.store';
 

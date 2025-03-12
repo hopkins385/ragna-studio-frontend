@@ -1,9 +1,8 @@
 <script setup lang="ts">
+import { assistantService } from '@/modules/assistant/assistant.service';
+import type { CreateAssistantFromTemplatePayload } from '@/modules/assistant/interfaces/assistant.interfaces';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
-import useAssistantService, {
-  type CreateFromTemplatePayload,
-} from '@composables/services/useAssistantService';
 import useToast from '@composables/useToast';
 import { Dialog, DialogContent } from '@ui/dialog';
 
@@ -22,8 +21,6 @@ const router = useRouter();
 const toast = useToast();
 
 const { t, locale } = useI18n();
-// const { createChat } = useChatService();
-const { createAssistantFromTemplate } = useAssistantService();
 
 const isLoading = ref(false);
 
@@ -32,14 +29,14 @@ const closeDialog = () => {
 };
 
 const createAssistant = async () => {
-  const payload: CreateFromTemplatePayload = {
+  const payload: CreateAssistantFromTemplatePayload = {
     templateId: props.templateId,
     language: locale.value === 'en' ? 'en' : 'de',
   };
 
   try {
     // clone the template
-    const { assistant } = await createAssistantFromTemplate(payload);
+    const { assistant } = await assistantService.createAssistantFromTemplate(payload);
     // toast success
     toast.success({ description: t('assistant.clone.success') });
     // return the assistant
@@ -76,6 +73,10 @@ const onCloneTemplateClick = async (payload: { startNewChat: boolean }) => {
     isLoading.value = false;
   }
 };
+
+onBeforeUnmount(() => {
+  assistantService.abortRequest();
+});
 </script>
 
 <template>
@@ -112,11 +113,7 @@ const onCloneTemplateClick = async (payload: { startNewChat: boolean }) => {
               {{ description }}
             </p>
             <div class="flex space-x-3">
-              <ButtonLoading
-                :loading="isLoading"
-                class="mt-10 px-10"
-                @click="onCloneTemplateClick"
-              >
+              <ButtonLoading :loading="isLoading" class="mt-10 px-10" @click="onCloneTemplateClick">
                 Use this Template
               </ButtonLoading>
               <!--
