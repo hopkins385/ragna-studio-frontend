@@ -1,12 +1,28 @@
 import mk from '@vscode/markdown-it-katex';
-import hljs from 'highlight.js';
+import hljs from 'highlight.js/lib/core';
+import c from 'highlight.js/lib/languages/c';
+import java from 'highlight.js/lib/languages/java';
+import javascript from 'highlight.js/lib/languages/javascript';
+import python from 'highlight.js/lib/languages/python';
+import typescript from 'highlight.js/lib/languages/typescript';
 import type { Options as LinkifyOptions } from 'linkify-it';
 import MarkdownIt from 'markdown-it';
+import HighlightJS from 'markdown-it-highlightjs';
+
+hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('python', python);
+hljs.registerLanguage('java', java);
+hljs.registerLanguage('c', c);
 
 const linkifyOptions: LinkifyOptions = {
   fuzzyLink: false,
   fuzzyIP: false,
   fuzzyEmail: false,
+};
+
+const hljsPluginOptions = {
+  hljs: hljs,
 };
 
 // TODO: support right now only $ delimiters, need to add [ delimiters
@@ -34,7 +50,7 @@ export class MarkdownService {
     });
 
     // Set highlight function with access to the instance
-    this.md.options.highlight = (str: string, lang: string) => {
+    /*this.md.options.highlight = (str: string, lang: string) => {
       if (lang && hljs.getLanguage(lang)) {
         try {
           return (
@@ -48,10 +64,11 @@ export class MarkdownService {
       }
 
       return '<pre><code class="hljs">' + this.md.utils.escapeHtml(str) + '</code></pre>';
-    };
+    };*/
 
     this.md.disable(disable);
     this.md.linkify.set(linkifyOptions);
+    this.md.use(HighlightJS, hljsPluginOptions);
     this.md.use(mk, katexOptions);
 
     this.setupParagraphRenderer();
