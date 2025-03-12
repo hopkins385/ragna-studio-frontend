@@ -1,11 +1,9 @@
+import { editorService } from '@/modules/editor/editor.service';
 import { markdownService } from '@/modules/markdown/markdown.service';
-import { useEditorService } from '../services/useEditorService';
 
 export default function useEditorCompletion() {
   let ac: AbortController | null = null;
   const isLoading = ref(false);
-
-  const { fetchPromptCompletion } = useEditorService();
 
   const abortCompletion = () => {
     if (ac) {
@@ -35,7 +33,7 @@ export default function useEditorCompletion() {
     isLoading.value = true;
 
     try {
-      const { completion } = await fetchPromptCompletion(fetchPayload);
+      const { completion } = await editorService.fetchPromptCompletion(fetchPayload);
       if (!completion) {
         return '';
       }

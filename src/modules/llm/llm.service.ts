@@ -1,31 +1,27 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
+import type { LargeLangModelListResponse } from '@/modules/llm/interfaces';
 import { getRoute } from '@/utils/route.util';
-import type { LargeLangModel } from './interfaces/large-lang-model.interface';
 
-interface LargeLangModelResponse {
-  llm: LargeLangModel;
-}
-
-interface LargeLangModelListResponse {
-  llms: LargeLangModel[];
-}
-
-const LlmRoute = {
+const ApiLlmRoute = {
   MODELS: '/llm/models', // GET
 } as const;
 
-export function useLlmService() {
-  const ac = new AbortController();
+export class LLMService {
+  private ac: AbortController;
 
-  const getAllModels = async () => {
+  constructor() {
+    this.ac = new AbortController();
+  }
+
+  async getAllModels() {
     const api = newApiRequest();
-    const route = getRoute(LlmRoute.MODELS);
+    const route = getRoute(ApiLlmRoute.MODELS);
     const { status, data } = await api
       .GET<LargeLangModelListResponse>()
       .setRoute(route)
-      .setSignal(ac.signal)
+      .setSignal(this.ac.signal)
       .send();
 
     if (status !== HttpStatus.OK) {
@@ -33,13 +29,12 @@ export function useLlmService() {
     }
 
     return data;
-  };
+  }
 
-  onScopeDispose(() => {
-    ac.abort();
-  });
-
-  return {
-    getAllModels,
-  };
+  public abortRequest() {
+    this.ac.abort();
+    this.ac = new AbortController();
+  }
 }
+
+export const llmService = new LLMService();

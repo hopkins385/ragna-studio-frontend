@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { LargeLangModel } from '@composables/services/interfaces/large-lang-model.interface';
-import { useLlmService } from '@composables/services/useLlmService';
+import type { LargeLangModel } from '@/modules/llm/interfaces';
+import { llmService } from '@/modules/llm/llm.service';
 import LlmInfoBox from './LlmInfoBox.vue';
 
 const props = defineProps<{
@@ -15,11 +15,9 @@ const open = ref(false);
 const models = ref<LargeLangModel[] | null>(null);
 const activeModelId = ref(props.currentLlmId);
 
-const { getAllModels } = useLlmService();
-
 const initModels = async () => {
   if (models.value) return;
-  const { llms } = await getAllModels();
+  const { llms } = await llmService.getAllModels();
   models.value = llms;
 };
 

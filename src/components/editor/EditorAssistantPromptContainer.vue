@@ -2,7 +2,7 @@
 // Imports
 import { UnknownError } from '@/common/errors/unknown.error';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
-import { useEditorService } from '@/composables/services/useEditorService';
+import { editorService } from '@/modules/editor/editor.service';
 import { markdownService } from '@/modules/markdown/markdown.service';
 import { useEditorStore } from '@/stores/editor.store';
 import { Button } from '@ui/button';
@@ -30,7 +30,6 @@ const originalSelection = ref({ from: 0, to: 0 });
 const textareaContainerRef = ref<HTMLDivElement | null>(null);
 
 // Composables
-const { fetchPromptCompletion, abortCompletion } = useEditorService();
 
 // Computed
 const hasInput = computed(() => input.value.length > 1);
@@ -55,7 +54,7 @@ const runCompletion = async () => {
       prompt: input.value,
     };
 
-    const { completion } = await fetchPromptCompletion(completionPayload);
+    const { completion } = await editorService.fetchPromptCompletion(completionPayload);
     if (!completion) {
       return;
     }
@@ -128,7 +127,7 @@ const handleGenerate = async () => {
 const handleDiscard = () => discardChanges();
 
 const handleAbort = () => {
-  abortCompletion();
+  editorService.abortRequest();
   // input.value = '';
 };
 

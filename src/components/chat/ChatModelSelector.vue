@@ -11,12 +11,10 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import type { LargeLangModel } from '@/composables/services/interfaces/large-lang-model.interface';
-import { useLlmService } from '@/composables/services/useLlmService';
 import { cn } from '@/lib/utils';
+import type { LargeLangModel } from '@/modules/llm/interfaces';
+import { llmService } from '@/modules/llm/llm.service';
 import { useChatInferenceStore } from '@/stores/chat-inference.store';
-
-const { getAllModels } = useLlmService();
 
 const models = ref<LargeLangModel[]>([]);
 
@@ -30,7 +28,7 @@ const selectedModel = computed(() =>
 );
 
 const initModels = async () => {
-  const { llms } = await getAllModels();
+  const { llms } = await llmService.getAllModels();
   models.value = llms;
 };
 

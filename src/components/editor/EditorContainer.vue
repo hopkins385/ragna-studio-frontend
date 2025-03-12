@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ErrorAlert from '@/components/error/ErrorAlert.vue';
-import { useEditorService } from '@/composables/services/useEditorService';
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { editorService } from '@/modules/editor/editor.service';
 import { useEditorStore } from '@/stores/editor.store';
 import { EditorContent } from '@tiptap/vue-3';
 import EditorAssistantDropdownMenu from './EditorAssistantDropdownMenu.vue';
@@ -39,7 +39,6 @@ const assistantDropdownMenu = reactive({
 
 const { isOutside: isOutsideWrapper } = useMouseInElement(editorWrapperRef);
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
-const { fetchInlineCompletion, abortCompletion } = useEditorService();
 
 const fetchInlineCompletionHandler = async (params: {
   context: CompletionRequestContext;
@@ -54,10 +53,12 @@ const fetchInlineCompletionHandler = async (params: {
   isLoading.value = true;
 
   // listen for abort signal and abort the request via abortCompletion
-  params.signal.addEventListener('abort', abortCompletion);
+  params.signal.addEventListener('abort', editorService.abortRequest);
 
   try {
-    const { inlineCompletion } = await fetchInlineCompletion({ context: params.context });
+    const { inlineCompletion } = await editorService.fetchInlineCompletion({
+      context: params.context,
+    });
     return { inlineCompletion };
   } catch (error) {
     console.error('Error fetching inline completion:', error);
@@ -65,7 +66,7 @@ const fetchInlineCompletionHandler = async (params: {
   } finally {
     isLoading.value = false;
     // remove abort signal listener
-    params.signal.removeEventListener('abort', abortCompletion);
+    params.signal.removeEventListener('abort', editorService.abortRequest);
   }
 };
 

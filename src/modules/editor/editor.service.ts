@@ -1,47 +1,34 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { newApiRequest } from '@/common/http/http-request.builder';
+import type {
+  InlineCompletionPayload,
+  InlineCompletionResponse,
+  PromptCompletionPayload,
+  PromptCompletionResponse,
+} from '@/modules/editor/interfaces';
 import { getRoute } from '@/utils/route.util';
 
-const EditorRoute = {
+const ApiEditorRoute = {
   PROMPT_COMPLETION: '/editor/completion',
   INLINE_COMPLETION: '/editor/inline-completion',
 } as const;
 
-interface PromptCompletionPayload {
-  context: string;
-  selectedText: string;
-  prompt: string;
-}
+export class EditorService {
+  private ac: AbortController;
 
-interface PromptCompletionResponse {
-  completion: string;
-}
+  constructor() {
+    this.ac = new AbortController();
+  }
 
-interface InlineCompletionPayload {}
-
-interface InlineCompletionResponse {
-  inlineCompletion: string;
-}
-
-export function useEditorService() {
-  let ac: AbortController = new AbortController();
-
-  const abortCompletion = () => {
-    if (ac) {
-      ac.abort();
-    }
-    ac = new AbortController();
-  };
-
-  const fetchPromptCompletion = async (payload: PromptCompletionPayload) => {
-    abortCompletion();
+  async fetchPromptCompletion(payload: PromptCompletionPayload) {
+    this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(EditorRoute.PROMPT_COMPLETION);
+    const route = getRoute(ApiEditorRoute.PROMPT_COMPLETION);
     const { status, data } = await api
       .POST<PromptCompletionResponse, never, PromptCompletionPayload>()
       .setRoute(route)
-      .setSignal(ac.signal)
+      .setSignal(this.ac.signal)
       .setData(payload)
       .send();
 
@@ -50,16 +37,16 @@ export function useEditorService() {
     }
 
     return data;
-  };
+  }
 
-  const fetchInlineCompletion = async ({ context }: any) => {
-    abortCompletion();
+  async fetchInlineCompletion({ context }: any) {
+    this.abortRequest();
     const api = newApiRequest();
-    const route = getRoute(EditorRoute.INLINE_COMPLETION);
+    const route = getRoute(ApiEditorRoute.INLINE_COMPLETION);
     const { status, data } = await api
       .POST<InlineCompletionResponse, never, InlineCompletionPayload>()
       .setRoute(route)
-      .setSignal(ac.signal)
+      .setSignal(this.ac.signal)
       .setData(context)
       .send();
 
@@ -68,11 +55,12 @@ export function useEditorService() {
     }
 
     return data;
-  };
+  }
 
-  return {
-    fetchPromptCompletion,
-    fetchInlineCompletion,
-    abortCompletion,
-  };
+  public abortRequest() {
+    this.ac.abort();
+    this.ac = new AbortController();
+  }
 }
+
+export const editorService = new EditorService();
