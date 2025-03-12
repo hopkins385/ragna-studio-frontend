@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTextToImageService } from '@/composables/services/useTextToImageService';
+import { textToImageService } from '@/modules/text-to-image/text-to-image.service';
 import { useImgGenSettingsStore } from '@/stores/image-gen-settings.store';
 import { useInfiniteScroll } from '@vueuse/core';
 import { Loader2Icon } from 'lucide-vue-next';
@@ -34,10 +34,8 @@ const hasRuns = computed(() => runs.value && runs.value.length > 0);
 
 const settings = useImgGenSettingsStore();
 
-const { fetchFolders, fetchRunsPaginated } = useTextToImageService();
-
 const initFolder = async () => {
-  const response = await fetchFolders();
+  const response = await textToImageService.fetchFolders();
   if (!response?.folders.length) {
     throw new Error('No folder found');
   }
@@ -46,7 +44,7 @@ const initFolder = async () => {
 
 const fetchRuns = async (payload: { page: number }) => {
   isLoading.value = true;
-  const response = await fetchRunsPaginated(
+  const response = await textToImageService.fetchRunsPaginated(
     {
       folderId: folderId.value,
     },
@@ -69,13 +67,9 @@ const handleNextScroll = async () => {
   await fetchRuns({ page: meta.value.nextPage });
 };
 
-const { reset: resetInfiniteScroll } = useInfiniteScroll(
-  mainContainer,
-  handleNextScroll,
-  {
-    distance: 50,
-  },
-);
+const { reset: resetInfiniteScroll } = useInfiniteScroll(mainContainer, handleNextScroll, {
+  distance: 50,
+});
 
 const scrollToTop = (options: { instant: boolean } = { instant: false }) => {
   nextTick(() => {
@@ -145,16 +139,8 @@ onMounted(() => {
             "
           >
             <picture v-if="image.path">
-              <source
-                v-if="image.thumb?.avif"
-                :srcset="image.thumb.avif.path"
-                type="image/avif"
-              />
-              <source
-                v-if="image.thumb?.webp"
-                :srcset="image.thumb.webp.path"
-                type="image/webp"
-              />
+              <source v-if="image.thumb?.avif" :srcset="image.thumb.avif.path" type="image/avif" />
+              <source v-if="image.thumb?.webp" :srcset="image.thumb.webp.path" type="image/webp" />
               <img
                 :src="image.path"
                 alt="image"

@@ -1,18 +1,10 @@
 <script setup lang="ts">
 import Button from '@/components/ui/button/Button.vue';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  useUserService,
-  type User,
-} from '@/composables/services/useUserService';
 import { useNotification } from '@/composables/useNotification';
+import type { User } from '@/modules/user/interfaces';
+import { userService } from '@/modules/user/user.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 
 const route = useRoute();
@@ -20,7 +12,6 @@ const router = useRouter();
 
 const userData = ref<User | null>(null);
 
-const { fetchUserById } = useUserService();
 const { showError } = useNotification();
 
 const onEditClick = () => {
@@ -34,7 +25,7 @@ const initUser = async () => {
     return;
   }
   try {
-    const user = await fetchUserById(id);
+    const user = await userService.fetchUserById(id);
     if (!user) {
       throw new Error('User not found');
     }
@@ -52,20 +43,13 @@ onBeforeMount(async () => {
 <template>
   <div class="rounded-2xl p-5 h-full">
     <h1 class="text-xl font-semibold mb-5">User Details</h1>
-    <div
-      class="rounded-lg bg-white overflow-hidden shadow-md border border-muted/50 p-5"
-    >
+    <div class="rounded-lg bg-white overflow-hidden shadow-md border border-muted/50 p-5">
       <form class="space-y-5 max-w-sm" @submit.prevent="onEditClick">
         <FormField v-slot="{ componentField }" name="name">
           <FormItem>
             <FormLabel> Name </FormLabel>
             <FormControl>
-              <Input
-                type="text"
-                v-bind="componentField"
-                :value="userData?.name"
-                :disabled="true"
-              />
+              <Input type="text" v-bind="componentField" :value="userData?.name" :disabled="true" />
             </FormControl>
             <FormMessage />
           </FormItem>

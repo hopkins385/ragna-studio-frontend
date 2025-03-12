@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import TextToImagePricingPopover from '@/components/text-to-image/TextToImagePricingPopover.vue';
 import TextToImageProviderPopover from '@/components/text-to-image/TextToImageProviderPopover.vue';
+import { textToImageService } from '@/modules/text-to-image/text-to-image.service';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import TextToImageAssetsList from '@components/text-to-image/TextToImageAssetsList.vue';
 import TextToImageCountPopover from '@components/text-to-image/TextToImageCountPopover.vue';
 import TextToImageMimeTypePopover from '@components/text-to-image/TextToImageMimeTypePopover.vue';
 import TextToImageSettings from '@components/text-to-image/TextToImageSettings.vue';
 import TextToImageSizePopover from '@components/text-to-image/TextToImageSizePopover.vue';
-import { useTextToImageService } from '@composables/services/useTextToImageService';
 import { useImgGenSettingsStore } from '@stores/image-gen-settings.store';
 import { Button } from '@ui/button';
 import { Textarea } from '@ui/textarea';
@@ -24,12 +24,6 @@ const promptFormRef = ref<HTMLFormElement | null>(null);
 const settings = useImgGenSettingsStore();
 
 const { t } = useI18n();
-const {
-  generateFluxProImages,
-  generateFluxUltraImages,
-  fetchFolders,
-  toggleHideRun,
-} = useTextToImageService();
 
 async function generateImage(submitPrompt: string) {
   prompt.value = '';
@@ -39,13 +33,13 @@ async function generateImage(submitPrompt: string) {
   });
   isLoading.value = true;
   try {
-    const folderResult = await fetchFolders();
+    const folderResult = await textToImageService.fetchFolders();
     if (!folderResult?.folders.length) {
       throw new Error('No folder found');
     }
     if (settings.getRawProvider === 'fluxpro') {
       const { width, height } = settings.getImageWidthAndHeight;
-      const { imageUrls } = await generateFluxProImages({
+      const { imageUrls } = await textToImageService.generateFluxProImages({
         folderId: folderResult.folders[0].id,
         prompt: submitPrompt,
         imgCount: settings.getImageCount,
@@ -59,7 +53,7 @@ async function generateImage(submitPrompt: string) {
       }
       return imageUrls;
     } else if (settings.getRawProvider === 'fluxultra') {
-      const { imageUrls } = await generateFluxUltraImages({
+      const { imageUrls } = await textToImageService.generateFluxUltraImages({
         folderId: folderResult.folders[0].id,
         prompt: submitPrompt,
         imgCount: settings.getImageCount,
@@ -125,7 +119,8 @@ function usePrompt(value: string) {
 }
 
 function handleToggleHideRun(runId: string) {
-  toggleHideRun({ runId })
+  textToImageService
+    .toggleHideRun({ runId })
     .then(() => {
       refreshData();
     })
@@ -227,14 +222,8 @@ useHead({
     <SectionContainer class="sticky inset-0 z-10 !py-0 px-10">
       <div class="h-8 bg-white/95"></div>
       <div class="w-full">
-        <div
-          class="flex flex-col h-fit w-full space-x-4 rounded-b-lg bg-white/95 pb-1"
-        >
-          <form
-            ref="promptFormRef"
-            class="relative grow space-y-2"
-            @submit.prevent="onSubmit"
-          >
+        <div class="flex flex-col h-fit w-full space-x-4 rounded-b-lg bg-white/95 pb-1">
+          <form ref="promptFormRef" class="relative grow space-y-2" @submit.prevent="onSubmit">
             <Textarea
               v-model="prompt"
               type="text"
@@ -255,17 +244,11 @@ useHead({
                 :disabled="!prompt || isLoading"
                 aria-label="Generate image"
               >
-                <Loader2Icon
-                  v-if="isLoading"
-                  class="!size-5 animate-spin stroke-1.5 opacity-75"
-                />
+                <Loader2Icon v-if="isLoading" class="!size-5 animate-spin stroke-1.5 opacity-75" />
                 <SendIcon v-else class="!size-5 stroke-1.5 opacity-75" />
               </Button>
             </div>
-            <div
-              id="settings"
-              class="absolute bottom-1/2 translate-y-1/2 right-2"
-            >
+            <div id="settings" class="absolute bottom-1/2 translate-y-1/2 right-2">
               <TextToImageSettings />
             </div>
           </form>
@@ -306,9 +289,7 @@ useHead({
           @toggle-hide="handleToggleHideRun"
         />
         <template #fallback>
-          <p class="animate-pulse text-center text-sm opacity-50">
-            Loading ...
-          </p>
+          <p class="animate-pulse text-center text-sm opacity-50">Loading ...</p>
         </template>
       </Suspense>
     </SectionContainer>

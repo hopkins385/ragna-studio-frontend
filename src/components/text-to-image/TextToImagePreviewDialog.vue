@@ -1,19 +1,9 @@
 <script setup lang="ts">
-import { useTextToImageService } from '@/composables/services/useTextToImageService';
+import { textToImageService } from '@/modules/text-to-image/text-to-image.service';
 import { Button } from '@ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader } from '@ui/dialog';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@ui/tooltip';
-import {
-  ClipboardCheckIcon,
-  ClipboardIcon,
-  DownloadIcon,
-  Loader2Icon,
-} from 'lucide-vue-next';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
+import { ClipboardCheckIcon, ClipboardIcon, DownloadIcon, Loader2Icon } from 'lucide-vue-next';
 
 const props = defineProps<{
   show: boolean;
@@ -25,8 +15,6 @@ const props = defineProps<{
 defineEmits<{
   'update:show': [value: boolean];
 }>();
-
-const { downloadImage } = useTextToImageService();
 
 const isLoading = ref(false);
 
@@ -71,7 +59,7 @@ const onOpenAutoFocus = (event: Event) => {
 async function downloadImageFile(): Promise<void> {
   isLoading.value = true;
   try {
-    const res = await downloadImage(props.imgId);
+    const res = await textToImageService.downloadImage(props.imgId);
     const url = window.URL.createObjectURL(new Blob([res]));
     const link = document.createElement('a');
     link.href = url;
@@ -88,18 +76,12 @@ async function downloadImageFile(): Promise<void> {
 </script>
 
 <template>
-  <Dialog
-    :open="show"
-    :modal="true"
-    @update:open="() => $emit('update:show', false)"
-  >
+  <Dialog :open="show" :modal="true" @update:open="() => $emit('update:show', false)">
     <DialogContent
       class="flex max-w-6xl flex-col bg-stone-100 max-h-screen overflow-hidden"
       @open-auto-focus="onOpenAutoFocus"
     >
-      <DialogHeader
-        class="flex w-full flex-row items-center justify-between border-0"
-      >
+      <DialogHeader class="flex w-full flex-row items-center justify-between border-0">
       </DialogHeader>
       <div class="flex space-x-8">
         <div class="flex-grow overflow-hidden shrink-0">
@@ -140,11 +122,7 @@ async function downloadImageFile(): Promise<void> {
             <TooltipProvider :delayDuration="300">
               <Tooltip>
                 <TooltipTrigger>
-                  <Button
-                    variant="default"
-                    size="icon"
-                    @click="() => downloadImageFile()"
-                  >
+                  <Button variant="default" size="icon" @click="() => downloadImageFile()">
                     <DownloadIcon v-if="!isLoading" class="size-5" />
                     <Loader2Icon v-else class="size-5 animate-spin" />
                   </Button>

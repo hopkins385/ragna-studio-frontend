@@ -1,15 +1,9 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useUserService } from '@/composables/services/useUserService';
 import { useNotification } from '@/composables/useNotification';
+import { userService } from '@/modules/user/user.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { updateUserSchema } from '@/schemas/user.schema';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -24,7 +18,6 @@ const router = useRouter();
 // userId
 const userId = route.params.id.toString();
 
-const { fetchUserById, updateUser } = useUserService();
 const { showError, showSuccess } = useNotification();
 
 const { handleSubmit, errors, resetForm } = useForm({
@@ -44,7 +37,7 @@ const handleError = (error: unknown, message: string) => {
 const onSubmit = handleSubmit(async values => {
   try {
     isLoading.value = true;
-    await updateUser(userId, values);
+    await userService.updateUser(userId, values);
     await initUser();
     showSuccess('User updated successfully');
     resetForm();
@@ -58,7 +51,7 @@ const onSubmit = handleSubmit(async values => {
 const initUser = async () => {
   try {
     isLoading.value = true;
-    const user = await fetchUserById(userId);
+    const user = await userService.fetchUserById(userId);
     if (!user) throw new Error('User not found');
     resetForm({
       values: {
@@ -84,9 +77,7 @@ onMounted(async () => {
 <template>
   <div class="rounded-2xl p-5 h-full">
     <h1 class="text-xl font-semibold mb-5">Create User</h1>
-    <div
-      class="rounded-lg bg-white overflow-hidden shadow-md border border-muted/50 p-5"
-    >
+    <div class="rounded-lg bg-white overflow-hidden shadow-md border border-muted/50 p-5">
       <form class="space-y-5 max-w-sm" @submit.prevent="onSubmit">
         <FormField v-slot="{ componentField }" name="name">
           <FormItem>

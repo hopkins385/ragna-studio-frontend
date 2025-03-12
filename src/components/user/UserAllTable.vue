@@ -10,16 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  useUserService,
-  type User,
-  type UsersPaginated,
-} from '@/composables/services/useUserService';
 import { useNotification } from '@/composables/useNotification';
+import type { User, UsersPaginated } from '@/modules/user/interfaces';
+import { userService } from '@/modules/user/user.service';
 import { Settings, Trash2, User2 } from 'lucide-vue-next';
 
 // Composables
-const { fetchAllUsers, deleteUser } = useUserService();
 const { showError, showSuccess } = useNotification();
 
 // Data
@@ -33,7 +29,7 @@ const hasUsers = computed(() => users.value && users.value.length > 0);
 // Methods
 const onDelete = async (id: string) => {
   try {
-    await deleteUser(id);
+    await userService.deleteUser(id);
     await initUsers();
     showSuccess('User deleted successfully');
   } catch (err) {
@@ -43,7 +39,7 @@ const onDelete = async (id: string) => {
 
 const initUsers = async () => {
   try {
-    data.value = await fetchAllUsers();
+    data.value = await userService.fetchAllUsers();
   } catch (err) {
     //
   } finally {
@@ -56,10 +52,7 @@ await initUsers();
 </script>
 
 <template>
-  <div
-    v-if="hasUsers"
-    class="rounded-lg bg-white overflow-hidden shadow-sm border border-muted/50"
-  >
+  <div v-if="hasUsers" class="rounded-lg bg-white overflow-hidden shadow-sm border border-muted/50">
     <Table>
       <TableCaption>
         <!--
@@ -94,18 +87,12 @@ await initUsers();
           </TableCell>
           <TableCell class="whitespace-nowrap"> ... </TableCell>
           <TableCell class="whitespace-nowrap"> ... </TableCell>
-          <TableCell
-            class="flex justify-end space-x-2 whitespace-nowrap text-right"
-          >
+          <TableCell class="flex justify-end space-x-2 whitespace-nowrap text-right">
             <ButtonLink :to="`/user/${user.id}`" variant="outline" size="icon">
               <User2 class="size-4 stroke-1.5 text-primary" />
             </ButtonLink>
 
-            <ButtonLink
-              :to="`/user/${user.id}/edit`"
-              variant="outline"
-              size="icon"
-            >
+            <ButtonLink :to="`/user/${user.id}/edit`" variant="outline" size="icon">
               <Settings class="size-4 stroke-1.5 text-primary" />
             </ButtonLink>
             <Button variant="outline" size="icon" @click="onDelete(user.id)">
