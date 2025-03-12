@@ -1,5 +1,5 @@
-import { useMediaService } from '@composables/services/useMediaService';
 import { useChatInferenceStore } from '@stores/chat-inference.store';
+import { mediaService } from './../../modules/media/media.service';
 
 export interface ChatImage {
   src: string;
@@ -16,8 +16,6 @@ export function useChatImages() {
 
   const chatStore = useChatInferenceStore();
   const inputImages = ref<ChatImage[]>([]);
-
-  const { uploadFiles } = useMediaService();
 
   // Vision
   function addInputImage(image: ChatImage): number | null {
@@ -41,7 +39,7 @@ export function useChatImages() {
     }
     const isVisonEnabled = chatStore.modelWithVision;
 
-    const uploadedImages = await uploadFiles([file], isVisonEnabled);
+    const uploadedImages = await mediaService.uploadFiles([file], isVisonEnabled);
     if (!uploadedImages || uploadedImages.length === 0) {
       updateInputImage(index, { src: imageSrc, status: 'error' });
       return;

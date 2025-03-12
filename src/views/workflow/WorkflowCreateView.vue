@@ -4,6 +4,7 @@ import ButtonLink from '@/components/button/ButtonLink.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { mediaService } from '@/modules/media/media.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import {
   allowedMimeTypes,
@@ -15,7 +16,6 @@ import ErrorAlert from '@components/error/ErrorAlert.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import { Textarea } from '@components/ui/textarea';
 import { useMediaAbleService } from '@composables/services/useMediaAbleService';
-import { useMediaService } from '@composables/services/useMediaService';
 import { useWorkflowService } from '@composables/services/useWorkflowService';
 import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
@@ -43,7 +43,6 @@ const toast = useToast();
 const { t } = useI18n();
 
 const { createWorkflow, reCreateWorkflowFromMedia } = useWorkflowService();
-const { uploadFiles } = useMediaService();
 const { attachMediaTo } = useMediaAbleService();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 
@@ -72,7 +71,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 
     if (file) {
       // handle file upload
-      const medias = await uploadFiles([file]);
+      const medias = await mediaService.uploadFiles([file]);
       const mediaId = medias?.[0].id;
       if (!mediaId) {
         throw new Error('Workflow created but unable to upload file');

@@ -2,7 +2,7 @@ import { $axios } from '@/axios/axiosInstance';
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadRequestError } from '@/common/errors/bad-request.error';
 import { BadResponseError } from '@/common/errors/bad-response.error';
-import { newApiRequest } from '@/common/http/http-request.builder';
+import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { ChatServiceError } from '@/modules/ai-chat/errors/chat-service.error';
 import type {
@@ -34,15 +34,16 @@ const DEFAULT_REASONING_EFFORT = 0;
 
 export class AiChatService {
   private ac: AbortController;
+  private api: ApiRequest;
 
   constructor() {
     this.ac = new AbortController();
+    this.api = newApiRequest();
   }
 
   public async createChat(assistantId: string): Promise<ChatResponse> {
-    const api = newApiRequest();
     const route = getRoute(ApiChatRoute.BASE);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<ChatResponse, never, { assistantId: string }>()
       .setRoute(route)
       .setData({ assistantId })
@@ -61,9 +62,8 @@ export class AiChatService {
     if (!chatId || !message) {
       throw new BadRequestError();
     }
-    const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT_MESSAGE, { ':chatId': chatId });
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<ChatMessage, never, { message: ChatMessage }>()
       .setRoute(route)
       .setData({ message })
@@ -119,9 +119,8 @@ export class AiChatService {
     if (!chatId) {
       throw new ChatServiceError('Chat ID is required');
     }
-    const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT, { ':chatId': chatId });
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<ChatResponse>()
       .setRoute(route)
       .setSignal(this.ac.signal)
@@ -135,9 +134,8 @@ export class AiChatService {
   }
 
   public async fetchAllChats(): Promise<Chat[]> {
-    const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT_ALL);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<Chat[]>()
       .setRoute(route)
       .setSignal(this.ac.signal)
@@ -151,9 +149,8 @@ export class AiChatService {
   }
 
   public async fetchAllChatsPaginated(params: PaginateDto): Promise<ChatsPaginatedResponse> {
-    const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT_HISTORY);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<ChatsPaginatedResponse, PaginateDto>()
       .setRoute(route)
       .setParams(params)
@@ -168,9 +165,8 @@ export class AiChatService {
   }
 
   public async fetchLatestChat(): Promise<ChatResponse> {
-    const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT_LATEST);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<ChatResponse>()
       .setRoute(route)
       .setSignal(this.ac.signal)
@@ -187,9 +183,8 @@ export class AiChatService {
     if (!chatId) {
       throw new ChatServiceError('Chat ID is required');
     }
-    const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT_MESSAGES, { ':chatId': chatId });
-    const { status } = await api.DELETE().setRoute(route).setSignal(this.ac.signal).send();
+    const { status } = await this.api.DELETE().setRoute(route).setSignal(this.ac.signal).send();
 
     if (status !== HttpStatus.OK) {
       throw new BadResponseError();
@@ -202,9 +197,8 @@ export class AiChatService {
     if (!chatId) {
       throw new ChatServiceError('Chat ID is required');
     }
-    const api = newApiRequest();
     const route = getRoute(ApiChatRoute.CHAT, { ':chatId': chatId });
-    const { status } = await api.DELETE().setRoute(route).setSignal(this.ac.signal).send();
+    const { status } = await this.api.DELETE().setRoute(route).setSignal(this.ac.signal).send();
 
     if (status !== HttpStatus.OK) {
       throw new BadResponseError();

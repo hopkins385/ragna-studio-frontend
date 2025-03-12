@@ -1,6 +1,6 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
-import { newApiRequest } from '@/common/http/http-request.builder';
+import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
 import type { AssistantToolResponse } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { getRoute } from '@/utils/route.util';
 
@@ -10,15 +10,16 @@ const ApiAssistantToolRoute = {
 
 export class AssistantToolService {
   private ac: AbortController;
+  private api: ApiRequest;
 
   constructor() {
     this.ac = new AbortController();
+    this.api = newApiRequest();
   }
 
   async fetchAllTools() {
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantToolRoute.TOOLS);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<AssistantToolResponse>()
       .setRoute(route)
       .setSignal(this.ac.signal)

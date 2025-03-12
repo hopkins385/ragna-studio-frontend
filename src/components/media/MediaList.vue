@@ -3,10 +3,10 @@
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
+import { mediaService } from '@/modules/media/media.service';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
-import { useMediaService } from '@composables/services/useMediaService';
 import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
@@ -34,7 +34,6 @@ const showAddToCollectionDialog = ref(false);
 const toast = useToast();
 const authStore = useAuthStore();
 const { t } = useI18n();
-const { fetchAllMediaFor, deleteMedia } = useMediaService();
 const { getFileSizeForHumans } = useForHumans();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
@@ -44,7 +43,7 @@ const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 // Functions
 const initMedia = async () => {
   if (!authStore.user?.id) return;
-  const response = await fetchAllMediaFor(
+  const response = await mediaService.fetchAllMediaFor(
     { id: authStore.user.id, type: 'user' },
     { page: props.page },
   );
@@ -70,7 +69,7 @@ function onPlusClick(id: string) {
 
 const handleDelete = async (mediaId: string) => {
   try {
-    await deleteMedia(mediaId);
+    await mediaService.deleteMedia(mediaId);
     await initMedia();
     toast.success({ description: t('media.delete.success') });
   } catch (error) {

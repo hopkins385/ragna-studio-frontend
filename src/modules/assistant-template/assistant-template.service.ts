@@ -1,6 +1,6 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
-import { newApiRequest } from '@/common/http/http-request.builder';
+import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import type {
   AssistantTemplateCategoriesResponse,
@@ -25,18 +25,19 @@ const ApiAssistantTemplateRoute = {
 
 export class AssistantTemplateService {
   private ac: AbortController;
+  private api: ApiRequest;
 
   constructor() {
     this.ac = new AbortController();
+    this.api = newApiRequest();
   }
 
   /**
    * Fetch all assistant templates
    */
   async fetchAllTemplates() {
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATE);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<AssistantTemplatesResponse>()
       .setRoute(route)
       .setSignal(this.ac.signal)
@@ -53,9 +54,8 @@ export class AssistantTemplateService {
    * Fetch all assistant templates paginated
    */
   async fetchAllTemplatesPaginated(params: PaginateDto) {
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATE_PAGINATED);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<AssistantTemplatesPaginatedResponse, PaginateDto>()
       .setRoute(route)
       .setParams(params)
@@ -73,9 +73,8 @@ export class AssistantTemplateService {
    * Fetch random assistant templates
    */
   async fetchRandomTemplates(params: RandomTemplatesParams) {
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATE_RANDOM);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<AssistantTemplatesResponse, RandomTemplatesParams>()
       .setRoute(route)
       .setParams(params)
@@ -93,9 +92,8 @@ export class AssistantTemplateService {
    * Fetch all templates categories
    */
   async fetchAllCategories() {
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_CATEGORY);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<AssistantTemplateCategoriesResponse>()
       .setRoute(route)
       .setSignal(this.ac.signal)
@@ -112,11 +110,10 @@ export class AssistantTemplateService {
    * Fetch all templates for a category
    */
   async fetchTemplatesByCategory(categoryId: string) {
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATE_BY_CATEGORY, {
       ':categoryId': categoryId,
     });
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<AssistantTemplatesResponse>()
       .setRoute(route)
       .setSignal(this.ac.signal)
@@ -133,9 +130,8 @@ export class AssistantTemplateService {
    * Fetch many templates by many category ids
    */
   async fetchTemplatesByCategoryIds(payload: { categoryIds: string[] }) {
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantTemplateRoute.ASSISTANT_TEMPLATES_BY_CATEGORY_IDS);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<CategoriesWithTemplatesResponse, never, { categoryIds: string[] }>()
       .setRoute(route)
       .setData(payload)

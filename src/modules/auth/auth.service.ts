@@ -1,7 +1,7 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { UnauthorizedError } from '@/common/errors/unauthorized.error';
-import { newApiRequest } from '@/common/http/http-request.builder';
+import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
 import type { GoogleAuthCallbackQuery } from '@/interfaces/auth/google-auth-callback.interface';
 import type {
   AuthCredentials,
@@ -27,16 +27,17 @@ const emptyBodyData: EmptyBodyData = {};
 
 export class AuthService {
   private ac: AbortController;
+  private api: ApiRequest;
 
   constructor() {
     this.ac = new AbortController();
+    this.api = newApiRequest();
   }
 
   async loginUser(body: AuthCredentials) {
     this.abortRequest();
-    const api = newApiRequest();
     const route = getRoute(ApiAuthRoute.LOGIN);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<TokensResponse, never, AuthCredentials>()
       .setRoute(route)
       .setData(body)
@@ -52,9 +53,8 @@ export class AuthService {
 
   async logoutUser(): Promise<void> {
     this.abortRequest();
-    const api = newApiRequest();
     const route = getRoute(ApiAuthRoute.LOGOUT);
-    const { status } = await api
+    const { status } = await this.api
       .POST<never, never, EmptyBodyData>()
       .setRoute(route)
       .setData(emptyBodyData)
@@ -71,9 +71,8 @@ export class AuthService {
 
   async registerUser(payload: RegistrationCredentials) {
     this.abortRequest();
-    const api = newApiRequest();
     const route = getRoute(ApiAuthRoute.REGISTER);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<AuthUserResponse, never, RegistrationCredentials>()
       .setRoute(route)
       .setData(payload)
@@ -88,9 +87,8 @@ export class AuthService {
   }
 
   async fetchSession() {
-    const api = newApiRequest();
     const route = getRoute(ApiAuthRoute.SESSION);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<AuthUserResponse>()
       .setRoute(route)
       .setSignal(this.ac.signal)
@@ -104,9 +102,8 @@ export class AuthService {
   }
 
   async refreshTokens() {
-    const api = newApiRequest();
     const route = getRoute(ApiAuthRoute.REFRESH);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<TokensResponse, never, EmptyBodyData>()
       .setRoute(route)
       .setData(emptyBodyData)
@@ -121,11 +118,10 @@ export class AuthService {
   }
 
   async fetchSocialAuthUrl(provider: string) {
-    const api = newApiRequest();
     const route = getRoute(ApiAuthRoute.SOCIAL_AUTH_URL, {
       ':provider': provider,
     });
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<SocialAuthUrlResponse>()
       .setRoute(route)
       .setSignal(this.ac.signal)
@@ -139,9 +135,8 @@ export class AuthService {
   }
 
   async googleAuth(callbackData: GoogleAuthCallbackQuery) {
-    const api = newApiRequest();
     const route = getRoute(ApiAuthRoute.CALLBACK_GOOGLE);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<TokensResponse, never, GoogleAuthCallbackQuery>()
       .setRoute(route)
       .setData(callbackData)

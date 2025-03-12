@@ -1,6 +1,6 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadRequestError } from '@/common/errors/bad-request.error';
-import { newApiRequest } from '@/common/http/http-request.builder';
+import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
 import type { CollectionAbleModel } from '@/modules/collection-able/interfaces';
 import { getRoute } from '@/utils/route.util';
 
@@ -13,9 +13,11 @@ const ApiCollectionAbleRoute = {
 
 export class CollectionAbleService {
   private ac: AbortController;
+  private api: ApiRequest;
 
   constructor() {
     this.ac = new AbortController();
+    this.api = newApiRequest();
   }
 
   async detachCollectionFrom(
@@ -29,9 +31,8 @@ export class CollectionAbleService {
       collectionId,
     };
 
-    const api = newApiRequest();
     const route = getRoute(ApiCollectionAbleRoute.DETACH);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<any, never, { model: CollectionAbleModel; collectionId: string }>()
       .setRoute(route)
       .setData(body)
@@ -46,9 +47,8 @@ export class CollectionAbleService {
   }
 
   async detachAllCollectionsFrom(payload: { model: CollectionAbleModel }) {
-    const api = newApiRequest();
     const route = getRoute(ApiCollectionAbleRoute.DETACH_ALL);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<any, never, { model: CollectionAbleModel }>()
       .setRoute(route)
       .setData(payload)
@@ -68,9 +68,8 @@ export class CollectionAbleService {
       model: CollectionAbleModel;
     },
   ) {
-    const api = newApiRequest();
     const route = getRoute(ApiCollectionAbleRoute.REPLACE);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<any, never, { model: CollectionAbleModel; collectionId: string }>()
       .setRoute(route)
       .setData({ model: payload.model, collectionId })

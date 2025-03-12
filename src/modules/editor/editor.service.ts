@@ -1,6 +1,6 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
-import { newApiRequest } from '@/common/http/http-request.builder';
+import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
 import type {
   InlineCompletionPayload,
   InlineCompletionResponse,
@@ -16,16 +16,17 @@ const ApiEditorRoute = {
 
 export class EditorService {
   private ac: AbortController;
+  private api: ApiRequest;
 
   constructor() {
     this.ac = new AbortController();
+    this.api = newApiRequest();
   }
 
   async fetchPromptCompletion(payload: PromptCompletionPayload) {
     this.abortRequest();
-    const api = newApiRequest();
     const route = getRoute(ApiEditorRoute.PROMPT_COMPLETION);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<PromptCompletionResponse, never, PromptCompletionPayload>()
       .setRoute(route)
       .setSignal(this.ac.signal)
@@ -41,9 +42,8 @@ export class EditorService {
 
   async fetchInlineCompletion({ context }: any) {
     this.abortRequest();
-    const api = newApiRequest();
     const route = getRoute(ApiEditorRoute.INLINE_COMPLETION);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<InlineCompletionResponse, never, InlineCompletionPayload>()
       .setRoute(route)
       .setSignal(this.ac.signal)

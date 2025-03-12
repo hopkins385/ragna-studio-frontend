@@ -9,8 +9,8 @@ import { ValidationError } from '@/common/errors/validation.error';
 import { AxiosError, type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { AbortError } from '../errors/abort.error';
 
-type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
-type ResponseType = 'json' | 'text' | 'blob' | 'arraybuffer';
+export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
+export type ResponseType = 'json' | 'text' | 'blob' | 'arraybuffer';
 
 interface RequestOptions<TParams = never, TData = never> {
   method: HttpMethod;
@@ -147,3 +147,6 @@ export function newApiRequest() {
     },
   };
 }
+
+export type { RequestBuilder as HttpRequestBuilder };
+export type ApiRequest = ReturnType<typeof newApiRequest>;

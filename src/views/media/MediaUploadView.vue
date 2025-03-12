@@ -3,10 +3,10 @@
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import MediaList from '@/components/media/MediaList.vue';
+import { mediaService } from '@/modules/media/media.service';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import FileDropzone from '@components/file/FileDropzone.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import { useMediaService } from '@composables/services/useMediaService';
 import bgImgUrl from '@images/bg_upload.png?q=100&format=webp&imagetools';
 import Button from '@ui/button/Button.vue';
 
@@ -20,12 +20,13 @@ defineEmits<{
 const page = ref(1);
 const refreshData = ref(false);
 const openFileDialog = ref(false);
+const dropzoneFiles = ref<File[]>([]);
+const isLoading = ref(false);
 
 // Composables
 const router = useRouter();
 const route = useRoute();
 const { t } = useI18n();
-const { dropzoneFiles, isLoading, uploadFiles } = useMediaService();
 
 // Functions
 function setRoutePage(value: number) {
@@ -35,11 +36,15 @@ function setRoutePage(value: number) {
 }
 
 const onSubmit = async (e: Event) => {
-  if (dropzoneFiles.value.length === 0) {
+  const files = dropzoneFiles.value;
+  if (files.length === 0) {
     return;
   }
-  await uploadFiles(dropzoneFiles.value);
+  dropzoneFiles.value = [];
+  isLoading.value = true;
+  await mediaService.uploadFiles(files);
   onRefreshData();
+  isLoading.value = false;
 };
 
 const onRefreshData = () => {

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
+import { mediaService } from '@/modules/media/media.service';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
-import { useMediaService } from '@composables/services/useMediaService';
 import { useRecordService } from '@composables/services/useRecordService';
 import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
@@ -28,7 +28,6 @@ const emits = defineEmits<{
 }>();
 
 const { fetchAll, createRecord } = useRecordService();
-const { fetchAllMediaFor } = useMediaService();
 const { getFileSizeForHumans } = useForHumans();
 
 const toast = useToast();
@@ -73,7 +72,7 @@ const initMedia = async () => {
     id: authStore.user.id,
     type: 'user',
   };
-  const data = await fetchAllMediaFor(userModel, {
+  const data = await mediaService.fetchAllMediaFor(userModel, {
     page: page.value,
   });
 

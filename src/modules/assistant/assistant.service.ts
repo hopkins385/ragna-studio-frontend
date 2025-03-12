@@ -1,6 +1,6 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
-import { newApiRequest } from '@/common/http/http-request.builder';
+import { newApiRequest, type ApiRequest } from '@/common/http/http-request.builder';
 import type { CreateAssistantDto } from '@/modules/assistant/dto/create-assistant.dto';
 import type {
   AssistantResponse,
@@ -19,15 +19,16 @@ const ApiAssistantRoute = {
 
 export class AssistantService {
   private ac: AbortController;
+  private api: ApiRequest;
 
   constructor() {
     this.ac = new AbortController();
+    this.api = newApiRequest();
   }
 
   public async createAssistant(payload: CreateAssistantDto) {
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.BASE);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<AssistantResponse, never, CreateAssistantDto>()
       .setRoute(route)
       .setData(payload)
@@ -42,9 +43,8 @@ export class AssistantService {
   }
 
   public async createAssistantFromTemplate(payload: CreateAssistantFromTemplatePayload) {
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.FROM_TEMPLATE);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .POST<AssistantResponse, never, CreateAssistantFromTemplatePayload>()
       .setRoute(route)
       .setData(payload)
@@ -59,11 +59,10 @@ export class AssistantService {
   }
 
   public async fetchAssistant(assistantId: string) {
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.ASSISTANT, {
       ':assistantId': assistantId,
     });
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<AssistantResponse>()
       .setRoute(route)
       .setSignal(this.ac.signal)
@@ -90,9 +89,8 @@ export class AssistantService {
       limit: limit ?? undefined,
       searchQuery: searchQuery ?? undefined,
     };
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.BASE);
-    const { status, data } = await api
+    const { status, data } = await this.api
       .GET<AssistantsPaginatedResponse, PaginateParams>()
       .setRoute(route)
       .setParams(params)
@@ -107,11 +105,10 @@ export class AssistantService {
   }
 
   public async updateAssistant(assistantId: string, payload: Partial<CreateAssistantDto>) {
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.ASSISTANT, {
       ':assistantId': assistantId,
     });
-    const { status, data } = await api
+    const { status, data } = await this.api
       .PATCH<AssistantResponse, never, Partial<CreateAssistantDto>>()
       .setRoute(route)
       .setData(payload)
@@ -126,11 +123,10 @@ export class AssistantService {
   }
 
   public async updateHasKnowledgeBase(assistantId: string, hasKnowledgeBase: boolean) {
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.HAS_KNOWLEDGE, {
       ':assistantId': assistantId,
     });
-    const { status, data } = await api
+    const { status, data } = await this.api
       .PATCH<AssistantResponse, never, { hasKnowledgeBase: boolean }>()
       .setRoute(route)
       .setData({ hasKnowledgeBase })
@@ -145,11 +141,10 @@ export class AssistantService {
   }
 
   public async deleteAssistant(assistantId: string) {
-    const api = newApiRequest();
     const route = getRoute(ApiAssistantRoute.ASSISTANT, {
       ':assistantId': assistantId,
     });
-    const { status, data } = await api
+    const { status, data } = await this.api
       .DELETE<AssistantResponse>()
       .setRoute(route)
       .setSignal(this.ac.signal)
