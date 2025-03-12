@@ -1,6 +1,8 @@
 <script setup lang="ts">
 // Imports
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { assistantToolService } from '@/modules/assistant-tool/assistant-tool.service';
+import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantService } from '@/modules/assistant/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
@@ -10,10 +12,6 @@ import ButtonLoading from '@components/button/ButtonLoading.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import LlmSelectModal from '@components/llm/LlmSelectModal.vue';
 import TabSidebar from '@components/tab/TabSidebar.vue';
-import {
-  useAssistantToolsService,
-  type AssistantTool,
-} from '@composables/services/useAssistantToolsService';
 import useToast from '@composables/useToast';
 import {
   FormControl,
@@ -49,7 +47,6 @@ const authStore = useAuthStore();
 const toast = useToast();
 const router = useRouter();
 const { t } = useI18n();
-const { fetchAllTools } = useAssistantToolsService();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 
 // Computed
@@ -58,7 +55,7 @@ const initialCollectionName = computed(() => t('assistant.knowledge.select'));
 
 // Functions
 const initAssistantTools = async () => {
-  const { tools } = await fetchAllTools();
+  const { tools } = await assistantToolService.fetchAllTools();
   assistantTools.value = tools;
 };
 

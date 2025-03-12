@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useChatService } from '@/composables/services/useChatService';
 import { useToolIcons } from '@/composables/useToolIcons';
+import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantService } from '@/modules/assistant/assistant.service';
 import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
@@ -8,7 +9,6 @@ import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import CollectionSelectModal from '@components/collection/CollectionSelectModal.vue';
 import TabSidebar from '@components/tab/TabSidebar.vue';
-import type { AssistantTool } from '@composables/services/useAssistantToolsService';
 import useCollectionAbleService from '@composables/services/useCollectionAbleService';
 import type { Collection } from '@composables/services/useCollectionService';
 import useToast from '@composables/useToast';

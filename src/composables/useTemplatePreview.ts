@@ -1,4 +1,4 @@
-import type { AssistantTemplate } from './services/useAssistantTemplateService';
+import type { AssistantTemplate } from '@/modules/assistant-template/interfaces/assistant-template.interfaces';
 
 type ColorMap = {
   [key: string]: string;

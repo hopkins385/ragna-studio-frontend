@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import { assistantToolService } from '@/modules/assistant-tool/assistant-tool.service';
+import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantService } from '@/modules/assistant/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import AssistantCreateForm from '@components/assistant/AssistantCreateForm.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import type { AssistantTool } from '@composables/services/useAssistantToolsService';
-import { useAssistantToolsService } from '@composables/services/useAssistantToolsService';
 import useToast from '@composables/useToast';
 import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
 import { assistantFormSchema } from '@schemas/assistant.form';
@@ -51,13 +51,11 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 });
 
 // tools
-const { fetchAllTools } = useAssistantToolsService();
-
 const assistantTools = ref<AssistantTool[]>([]);
 
 const getTools = async () => {
   try {
-    const { tools } = await fetchAllTools();
+    const { tools } = await assistantToolService.fetchAllTools();
     assistantTools.value = tools;
   } catch (error) {
     console.error(error);

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import { assistantToolService } from '@/modules/assistant-tool/assistant-tool.service';
+import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantService } from '@/modules/assistant/assistant.service';
 import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
 import AssistantEditForm from '@components/assistant/AssistantEditForm.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import type { AssistantTool } from '@composables/services/useAssistantToolsService';
-import { useAssistantToolsService } from '@composables/services/useAssistantToolsService';
 import type { Collection } from '@composables/services/useCollectionService';
 import useCollectionService from '@composables/services/useCollectionService';
 import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
@@ -22,7 +22,6 @@ const route = useRoute();
 const assistantId = route.params.id.toString();
 
 const { t } = useI18n();
-const { fetchAllTools } = useAssistantToolsService();
 const { fetchAllCollectionsFor } = useCollectionService();
 
 const initCollections = async () => {
@@ -51,7 +50,7 @@ const initAssistant = async () => {
 
 const initAssistantTools = async () => {
   try {
-    const { tools } = await fetchAllTools();
+    const { tools } = await assistantToolService.fetchAllTools();
     assistantTools.value = tools;
   } catch (error) {
     console.error(error);

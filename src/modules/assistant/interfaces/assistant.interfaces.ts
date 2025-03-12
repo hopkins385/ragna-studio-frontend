@@ -2,6 +2,7 @@ import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 
 export interface AssistantLLM {
+  id: string;
   provider: string;
   displayName: string;
   apiName: string;
