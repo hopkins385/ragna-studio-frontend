@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useChatService } from '@/composables/services/useChatService';
-import {
-  useUserFavoriteService,
-  type UserFavorite,
-} from '@/composables/services/useUserFavoriteService';
+import type { UserFavorite } from '@/modules/user-favorite/interfaces';
+import { userFavoriteService } from '@/modules/user-favorite/user-favorite.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { Star } from 'lucide-vue-next';
 
@@ -48,26 +46,19 @@ Example of the response from the fetchAllFavorites method:
 const myFavorites = ref<UserFavorite[]>();
 const favoriteAssistants = computed(() => {
   return (
-    myFavorites.value
-      ?.filter(fav => fav.favoriteType === 'assistant')
-      .map(fav => fav.detail) ?? []
+    myFavorites.value?.filter(fav => fav.favoriteType === 'assistant').map(fav => fav.detail) ?? []
   );
 });
-const hasFavoriteAssistants = computed(
-  () => favoriteAssistants.value.length > 0,
-);
+const hasFavoriteAssistants = computed(() => favoriteAssistants.value.length > 0);
 const favoriteWorkflows = computed(() => {
   return (
-    myFavorites.value
-      ?.filter(fav => fav.favoriteType === 'workflow')
-      .map(fav => fav.detail) ?? []
+    myFavorites.value?.filter(fav => fav.favoriteType === 'workflow').map(fav => fav.detail) ?? []
   );
 });
 const hasFavoriteWorkflows = false; // computed(() => favoriteWorkflows.value.length > 0);
 
 const router = useRouter();
 
-const { fetchAllFavorites } = useUserFavoriteService();
 const { createChat } = useChatService();
 
 const onStartChat = async (assistantId: string) => {
@@ -83,7 +74,7 @@ const onStartChat = async (assistantId: string) => {
 };
 
 onMounted(async () => {
-  const { favorites } = await fetchAllFavorites();
+  const { favorites } = await userFavoriteService.fetchAllFavorites();
   myFavorites.value = favorites;
 });
 </script>

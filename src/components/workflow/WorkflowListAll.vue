@@ -1,9 +1,9 @@
 <script setup lang="ts">
 // Imports
-import { useUserFavoriteService } from '@/composables/services/useUserFavoriteService';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import useToast from '@/composables/useToast';
+import { userFavoriteService } from '@/modules/user-favorite/user-favorite.service';
 import type { WorkflowsPaginatedResponse } from '@/modules/workflow/interfaces';
 import { workflowService } from '@/modules/workflow/workflow.service';
 import ButtonLink from '@components/button/ButtonLink.vue';
@@ -31,7 +31,6 @@ const workflowFavorites = ref<any>([]); // TODO: type
 // Composables
 const toast = useToast();
 const { t } = useI18n();
-const { addFavorite, deleteFavorite, fetchAllFavoritesByType } = useUserFavoriteService();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
@@ -76,7 +75,7 @@ const onDelete = (workflowId: string) => {
 
 const onAddFavorite = async (workflowId: string) => {
   try {
-    await addFavorite({ id: workflowId, type: 'workflow' });
+    await userFavoriteService.addFavorite({ id: workflowId, type: 'workflow' });
     await initWorkflowFavorites();
   } catch (error: any) {
     return setErrorAlert(error);
@@ -86,7 +85,7 @@ const onAddFavorite = async (workflowId: string) => {
 const onDeleteFavorite = async (workflowId: string) => {
   const entityId = workflowFavorites.value.find((f: any) => f.favoriteId === workflowId).id;
   try {
-    await deleteFavorite({ entityId, favoriteType: 'workflow' });
+    await userFavoriteService.deleteFavorite({ entityId, favoriteType: 'workflow' });
     await initWorkflowFavorites();
   } catch (error: any) {
     return setErrorAlert(error);
@@ -94,7 +93,7 @@ const onDeleteFavorite = async (workflowId: string) => {
 };
 
 const initWorkflowFavorites = async () => {
-  const { favorites: all } = await fetchAllFavoritesByType('workflow');
+  const { favorites: all } = await userFavoriteService.fetchAllFavoritesByType('workflow');
   workflowFavorites.value = all;
 };
 

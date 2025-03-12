@@ -3,6 +3,7 @@
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { assistantService } from '@/modules/assistant/assistant.service';
+import { userFavoriteService } from '@/modules/user-favorite/user-favorite.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
@@ -10,7 +11,6 @@ import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
 import { useChatService } from '@composables/services/useChatService';
-import { useUserFavoriteService } from '@composables/services/useUserFavoriteService';
 import { useProviderIcons } from '@composables/useProviderIcons';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
@@ -100,12 +100,10 @@ watch(
 );
 
 // favorite
-const { addFavorite, deleteFavorite, fetchAllFavoritesByType } = useUserFavoriteService();
-
 const onAddFavorite = async (assistantId: string) => {
   unsetErrorAlert();
   try {
-    await addFavorite({ id: assistantId, type: 'assistant' });
+    await userFavoriteService.addFavorite({ id: assistantId, type: 'assistant' });
     await initAssistantFavorites();
   } catch (error) {
     return setErrorAlert(error);
@@ -116,7 +114,7 @@ const onDeleteFavorite = async (assistantId: string) => {
   unsetErrorAlert();
   const entityId = assistantFavorites.value.find((f: any) => f.favoriteId === assistantId).id;
   try {
-    await deleteFavorite({ entityId, favoriteType: 'assistant' });
+    await userFavoriteService.deleteFavorite({ entityId, favoriteType: 'assistant' });
     await initAssistantFavorites();
   } catch (error) {
     return setErrorAlert(error);
@@ -124,7 +122,7 @@ const onDeleteFavorite = async (assistantId: string) => {
 };
 
 const initAssistantFavorites = async () => {
-  const { favorites: all } = await fetchAllFavoritesByType('assistant');
+  const { favorites: all } = await userFavoriteService.fetchAllFavoritesByType('assistant');
   assistantFavorites.value = all;
 };
 
