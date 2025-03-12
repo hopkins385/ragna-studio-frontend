@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import {
-  useAssistantTemplateService,
-  type AssistantTemplate,
-} from '@/composables/services/useAssistantTemplateService';
 import { useTemplatePreview } from '@/composables/useTemplatePreview';
+import { assistantTemplateService } from '@/modules/assistant-template/assistant-template.service';
+import type { AssistantTemplate } from '@/modules/assistant-template/interfaces/assistant-template.interfaces';
 import { BotIcon } from 'lucide-vue-next';
 import TemplatePreviewDialog from '../template/TemplatePreviewDialog.vue';
 
-const { fetchRandomTemplates } = useAssistantTemplateService();
 const { previewDialog, openPreviewDialog } = useTemplatePreview();
 
 const templates = ref<AssistantTemplate[]>([]);
 
 const initTemplates = async () => {
-  const { templates: data } = await fetchRandomTemplates({ limit: 9 });
+  const { templates: data } = await assistantTemplateService.fetchRandomTemplates({ limit: 9 });
   templates.value = data;
 };
 

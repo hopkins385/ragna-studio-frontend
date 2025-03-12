@@ -1,34 +1,28 @@
 <script setup lang="ts">
 import TemplatePreviewDialog from '@/components/template/TemplatePreviewDialog.vue';
-import {
-  useAssistantTemplateService,
-  type AssistantTemplateCategory,
-  type CategoryWithTemplates,
-} from '@/composables/services/useAssistantTemplateService';
 import { useTemplatePreview } from '@/composables/useTemplatePreview';
+import { assistantTemplateService } from '@/modules/assistant-template/assistant-template.service';
+import type {
+  AssistantTemplateCategory,
+  CategoryWithTemplates,
+} from '@/modules/assistant-template/interfaces/assistant-template.interfaces';
 import Heading from '@components/heading/Heading.vue';
 import HeadingTitle from '@components/heading/HeadingTitle.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import bgImgUrl from '@images/bg_template_2.png?q=100&format=webp&imagetools';
 
-const { t } = useI18n();
-const { previewDialog, getBgColorClass, openPreviewDialog } =
-  useTemplatePreview();
-const { fetchAllCategories, fetchTemplatesByCategoryIds } =
-  useAssistantTemplateService();
+const { previewDialog, getBgColorClass, openPreviewDialog } = useTemplatePreview();
 
 const categories = ref<AssistantTemplateCategory[]>([]);
 const catsWithTemplates = ref<CategoryWithTemplates[]>([]);
 
 const initTemplateCategories = async () => {
-  const { categories: cats } = await fetchAllCategories();
+  const { categories: cats } = await assistantTemplateService.fetchAllCategories();
   categories.value = cats;
 };
 
-const getTemplatesByCategoryIds = async (payload: {
-  categoryIds: string[];
-}) => {
-  const { categories } = await fetchTemplatesByCategoryIds(payload);
+const getTemplatesByCategoryIds = async (payload: { categoryIds: string[] }) => {
+  const { categories } = await assistantTemplateService.fetchTemplatesByCategoryIds(payload);
   catsWithTemplates.value = categories;
 };
 
@@ -57,11 +51,7 @@ onMounted(async () => {
     </Heading>
     <div class="px-10">
       <ul class="flex flex-wrap space-x-10">
-        <li
-          v-for="(category, index) in categories"
-          :key="category.id"
-          class="py-2"
-        >
+        <li v-for="(category, index) in categories" :key="category.id" class="py-2">
           <div
             class="text-sm px-3 pb-2"
             :class="{
@@ -74,11 +64,7 @@ onMounted(async () => {
       </ul>
     </div>
     <div>
-      <div
-        v-for="cat in catsWithTemplates"
-        :key="cat.id"
-        class="p-10 flex flex-col"
-      >
+      <div v-for="cat in catsWithTemplates" :key="cat.id" class="p-10 flex flex-col">
         <h2 class="text-xl font-semibold pb-2">{{ $t(cat.name) }}</h2>
         <div class="flex overflow-x-scroll space-x-4 no-scrollbar pb-5">
           <div
