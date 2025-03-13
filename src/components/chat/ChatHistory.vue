@@ -4,12 +4,13 @@ import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useProviderIcons } from '@/composables/useProviderIcons';
 import useToast from '@/composables/useToast';
+import { aiChatService } from '@/modules/ai-chat/ai-chat.service';
+import type { ChatsPaginatedResponse } from '@/modules/ai-chat/interfaces/chat.interfaces';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
-import { useChatService, type ChatsPaginated } from '@composables/services/useChatService';
 import useForHumans from '@composables/useForHumans';
 import { Button } from '@ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
@@ -28,13 +29,12 @@ const emit = defineEmits<{
 }>();
 
 // Refs
-const data = ref<ChatsPaginated | null>(null);
+const data = ref<ChatsPaginatedResponse | null>(null);
 
 // Composables
 const toast = useToast();
 const { t } = useI18n();
 const { getDateTimeForHumans } = useForHumans();
-const { fetchAllChatsPaginated, deleteChat } = useChatService();
 const { getProviderIcon } = useProviderIcons();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
@@ -53,7 +53,7 @@ const meta = computed(() => {
 // Functions
 const initChatHistory = async ({ page }: { page: number }) => {
   try {
-    data.value = await fetchAllChatsPaginated({ page });
+    data.value = await aiChatService.fetchAllChatsPaginated({ page });
   } catch (error) {
     return setErrorAlert(error);
   }
@@ -61,7 +61,7 @@ const initChatHistory = async ({ page }: { page: number }) => {
 
 const handleDelete = async (chatId: string) => {
   try {
-    await deleteChat(chatId);
+    await aiChatService.deleteChat(chatId);
     await initChatHistory({ page: props.page });
     toast.success({ description: t('chat.delete.success') });
   } catch (error) {

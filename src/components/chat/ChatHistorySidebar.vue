@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import useForHumans from '@/composables/useForHumans';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
+import { aiChatService } from '@/modules/ai-chat/ai-chat.service';
+import type { ChatsPaginatedResponse } from '@/modules/ai-chat/interfaces/chat.interfaces';
 import { RouteName } from '@/router/enums/route-names.enum';
-import {
-  useChatService,
-  type ChatsPaginated,
-} from '@composables/services/useChatService';
 import { Button } from '@ui/button';
 import { Separator } from '@ui/separator';
 import {
@@ -16,18 +14,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@ui/sheet';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { History, SettingsIcon } from 'lucide-vue-next';
 
 const groupByOptions = ['day', 'month', 'year'] as const;
 type GroupByOption = (typeof groupByOptions)[number];
 
-const data = ref<ChatsPaginated | null>(null);
+const data = ref<ChatsPaginatedResponse | null>(null);
 const selectedGroupBy = ref<GroupByOption>('month');
 const chats = computed(() => data.value?.chats || []);
 
@@ -36,10 +29,8 @@ const sheetDisplaySide = 'left';
 
 const router = useRouter();
 
-const { fetchAllChatsPaginated } = useChatService();
-
 const initChatHistory = async ({ page, limit }: PaginateDto) => {
-  data.value = await fetchAllChatsPaginated({ page, limit });
+  data.value = await aiChatService.fetchAllChatsPaginated({ page, limit });
 };
 
 const navigateToChat = (chatId: string) => {
@@ -76,7 +67,7 @@ const groupedChats = computed(() => {
       acc[key].push(chat);
       return acc;
     },
-    {} as Record<string, ChatsPaginated['chats']>,
+    {} as Record<string, ChatsPaginatedResponse['chats']>,
   );
 
   return Object.entries(grouped).map(([date, chats]) => ({
@@ -120,12 +111,7 @@ Example API response
       <TooltipProvider :delay-duration="300">
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button
-              variant="outline"
-              size="icon"
-              class="group"
-              @click="openSheet"
-            >
+            <Button variant="outline" size="icon" class="group" @click="openSheet">
               <History class="size-4 stroke-1.5 group-hover:stroke-2" />
             </Button>
           </TooltipTrigger>
@@ -149,22 +135,11 @@ Example API response
       <Separator />
       <div class="px-4 overflow-y-auto h-[calc(100%-4rem)] relative">
         <div class="absolute top-0 right-0 z-10 p-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            class="group"
-            @click="toggleGroupBy"
-          >
-            <SettingsIcon
-              class="size-4 stroke-1.5 group-hover:stroke-2 opacity-75"
-            />
+          <Button variant="ghost" size="icon" class="group" @click="toggleGroupBy">
+            <SettingsIcon class="size-4 stroke-1.5 group-hover:stroke-2 opacity-75" />
           </Button>
         </div>
-        <div
-          v-for="chatGroup in groupedChats"
-          :key="chatGroup.date"
-          class="mt-8"
-        >
+        <div v-for="chatGroup in groupedChats" :key="chatGroup.date" class="mt-8">
           <div class="sticky top-0 bg-white">
             <div class="text-sm font-medium p-2">{{ chatGroup.date }}</div>
           </div>

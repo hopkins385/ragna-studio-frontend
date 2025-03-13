@@ -1,14 +1,15 @@
 <script setup lang="ts">
 // Imports
-import type { Assistant } from '@/composables/services/useChatService';
 import { useAiChatStore } from '@/modules/ai-chat/stores';
 import { assistantService } from '@/modules/assistant/assistant.service';
+import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/select';
 
 // Props
 // Emits
 
 // Refs
+const assistantId = ref<string | undefined>(undefined);
 const assistants = ref<Assistant[]>([]);
 
 // Stores
@@ -19,10 +20,12 @@ const aiChatStore = useAiChatStore();
 // Computed
 // Functions
 const initAllAssistants = async () => {
-  const { assistants: data } = await assistantService.fetchAllAssistants({ page: 1, limit: 100 });
-  assistants.value = data as any;
+  const response = await assistantService.fetchAllAssistants({ page: 1, limit: 100 });
+  assistants.value = response.assistants;
 };
+
 // Hooks
+
 onMounted(() => {
   initAllAssistants();
 });
@@ -33,7 +36,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Select v-model="aiChatStore.assistantId" class="w-full">
+  <Select v-model="assistantId" class="w-full">
     <SelectTrigger
       class="h-7 text-xs bg-transparent border-0 focus:ring-0 focus:ring-offset-0 opacity-90"
     >
