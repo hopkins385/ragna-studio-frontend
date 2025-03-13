@@ -36,7 +36,7 @@ async function onInputSubmit() {
 
   // Check if chat is set, if not create a new chat on first message
   if (!aiChatStore.hasChat) {
-    await aiChatStore.createNewChat();
+    await aiChatStore.createNewChat({ assistantId: 'default' });
   }
 
   // Creates a new message and streams the response via chatTextChunks

@@ -6,8 +6,9 @@ import {
   useAiChatSettingsStore,
 } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import type { GroupByOption } from '@/modules/ai-chat-settings/types/ai-chat-settings.type';
+import { aiChatService } from '@/modules/ai-chat/ai-chat.service';
+import type { ChatsPaginatedResponse } from '@/modules/ai-chat/interfaces/chat.interfaces';
 import { RouteName } from '@/router/enums/route-names.enum';
-import { useChatService, type ChatsPaginated } from '@composables/services/useChatService';
 import { useDrawerStore } from '@stores/drawer.store';
 import { Button } from '@ui/button';
 import { Separator } from '@ui/separator';
@@ -17,14 +18,12 @@ const router = useRouter();
 const drawer = useDrawerStore();
 const chatSettings = useAiChatSettingsStore();
 
-const data = ref<ChatsPaginated | null>(null);
+const data = ref<ChatsPaginatedResponse | null>(null);
 const selectedGroupBy = ref<GroupByOption>(chatSettings.getHistoryGroupBy);
 const chats = computed(() => data.value?.chats || []);
 
-const { fetchAllChatsPaginated } = useChatService();
-
 const initChatHistory = async ({ page, limit }: PaginateDto) => {
-  data.value = await fetchAllChatsPaginated({ page, limit });
+  data.value = await aiChatService.fetchAllChatsPaginated({ page, limit });
 };
 
 const { getDateForHumans } = useForHumans();
@@ -52,7 +51,7 @@ const groupedChats = computed(() => {
       acc[key].push(chat);
       return acc;
     },
-    {} as Record<string, ChatsPaginated['chats']>,
+    {} as Record<string, ChatsPaginatedResponse['chats']>,
   );
 
   return Object.entries(grouped).map(([date, chats]) => ({

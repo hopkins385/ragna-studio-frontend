@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useChatService } from '@/composables/services/useChatService';
 import { useToolIcons } from '@/composables/useToolIcons';
+import { aiChatService } from '@/modules/ai-chat/ai-chat.service';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantService } from '@/modules/assistant/assistant.service';
 import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
@@ -68,7 +68,6 @@ const firstCollection = computed(
 
 const { t } = useI18n();
 const { getToolIcon } = useToolIcons();
-const { createChat } = useChatService();
 
 // form
 const { handleSubmit, meta: formMeta } = useForm({
@@ -156,7 +155,7 @@ const onStartChat = async () => {
   newChatIsLoading.value = true;
 
   try {
-    const { chat } = await createChat(props.assistant.id);
+    const { chat } = await aiChatService.createChat({ assistantId: props.assistant.id });
     router.push({
       name: RouteName.CHAT_SHOW,
       params: { id: chat.id },

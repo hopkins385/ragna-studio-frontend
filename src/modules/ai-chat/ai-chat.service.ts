@@ -36,12 +36,12 @@ export class AiChatService extends BaseApiService {
     super();
   }
 
-  public async createChat(assistantId: string): Promise<ChatResponse> {
+  public async createChat(payload: { assistantId: string }): Promise<ChatResponse> {
     const route = getRoute(ApiChatRoute.BASE);
     const { status, data } = await this.api
       .POST<ChatResponse, never, { assistantId: string }>()
       .setRoute(route)
-      .setData({ assistantId })
+      .setData(payload)
       .setSignal(this.ac.signal)
       .send();
 
@@ -202,3 +202,5 @@ export class AiChatService extends BaseApiService {
     return;
   }
 }
+
+export const aiChatService = new AiChatService();

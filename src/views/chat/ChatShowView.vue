@@ -4,6 +4,7 @@ import ChatPresets from '@/components/chat/ChatPresets.vue';
 import ChatThinkingBox from '@/components/chat/ChatThinkingBox.vue';
 import { ChatMessageRole } from '@/enums/chat-role.enum';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
+import { useAiChatStore } from '@/modules/ai-chat/stores';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { chatInputTextSchema } from '@/schemas/chat-input-text.schema';
 import { useChatInferenceStore } from '@/stores/chat-inference.store';
@@ -16,56 +17,36 @@ import ChatMessageChunk from '@components/chat/ChatMessageChunk.vue';
 import ChatSettings from '@components/chat/ChatSettings.vue';
 import ChatToolCallMessage from '@components/chat/ChatToolCallMessage.vue';
 import { useChatImages, type ChatImage } from '@composables/chat/useChatImages';
-import { useChatService } from '@composables/services/useChatService';
 import { useChatTools } from '@composables/useChatTools';
 import { Button } from '@ui/button';
 import { Textarea } from '@ui/textarea';
 import { ArrowDownIcon, PaperclipIcon, SendIcon, SquareIcon } from 'lucide-vue-next';
 import ChatAssistantDetails from './ChatAssistantDetails.vue';
 
+const route = useRoute();
 const socket = useWebSocketStore();
+const aiChat = useAiChatStore();
 const chatStore = useChatInferenceStore();
 const authStore = useAuthStore();
 const settings = useAiChatSettingsStore();
 
 const { t } = useI18n();
 
-const {
-  initChat,
-  sendChatMessage,
-  clearChatMessages,
-  abortChatRequest,
-  chat,
-  chatTextChunks,
-  chatAssistant: assistant,
-  chatMessages,
-  hasChatMessages,
-  isStreaming,
-  isThinking,
-  hasError,
-  errorMessage,
-  setError,
-  clearError,
-} = useChatService();
-
 const { setActiveTool, unsetActiveTool, clearActiveTools, activeTools } = useChatTools();
 
-// activeChatId
-const route = useRoute();
 const activeChatId = ref('');
 
 const setupChatIsCompleted = ref(false);
 
 const inputMessage = ref<string | number>('');
 const autoScrollLocked = ref(false);
+
 const chatInputFormRef = ref<HTMLFormElement | null>(null);
 const chatBoxContainerRef = ref<HTMLElement | null>(null);
 const chatMessagesContainerRef = ref<HTMLElement | null>(null);
 
-const showPresets = computed(() => setupChatIsCompleted.value === true && !hasChatMessages.value);
-const chatTitle = computed(() => chat.value?.title);
-const showAbortButton = computed(() => isThinking.value === true || isStreaming.value === true);
-const streamText = computed(() => chatTextChunks.value.join(''));
+const showPresets = computed(() => setupChatIsCompleted.value === true && !aiChat.hasChatMessages);
+const showAbortButton = computed(() => aiChat.isThinking === true || aiChat.isStreaming === true);
 
 function getVisionContent(images: ChatImage[]): any {
   return images.map(image => {
@@ -83,7 +64,7 @@ const clearVisionContent = () => {
 
 // SUBMIT
 const onSubmit = async (chatId: string) => {
-  clearError();
+  // clearError();
 
   if (!chatId || !chatId.trim()) {
     console.error('No chatId provided');
@@ -99,13 +80,11 @@ const onSubmit = async (chatId: string) => {
   // validate input
   const result = chatInputTextSchema.safeParse({ input: userMessageContent });
   if (!result.success) {
-    setError(result.error.errors[0].message);
+    // setError(result.error.errors[0].message);
     return;
   }
 
-  nextTick(() => {
-    adjustTextareaHeight();
-  });
+  nextTick(() => adjustTextareaHeight());
 
   const hasImages = inputImages.value.some(image => image.status === 'loaded');
   const msgType = hasImages ? 'image' : 'text';
@@ -114,14 +93,14 @@ const onSubmit = async (chatId: string) => {
   clearVisionContent();
 
   try {
-    await sendChatMessage({
+    await aiChat.sendChatMessage({
       chatId,
       type: msgType,
       content: userMessageContent.toString(),
       visionContent,
     });
   } catch (e: any) {
-    setError(e.message);
+    // setError(e.message);
     console.error('Failed to send message:', e);
   }
 };
@@ -148,15 +127,15 @@ const onPresetClick = (value: string) => {
 };
 
 const onAbortChatRequest = () => {
-  abortChatRequest();
+  aiChat.abortChatRequest();
   clearActiveTools();
 };
 
 const onResetChat = async () => {
-  await clearChatMessages();
+  await aiChat.clearChatMessages();
   clearActiveTools();
-  clearError();
-  await initChat(activeChatId.value);
+  // clearError();
+  await aiChat.hydrateChatById(activeChatId.value);
 };
 
 const setupSocketListeners = (chatId: string) => {
@@ -174,7 +153,7 @@ const setupChat = async (chatId: string) => {
   setupChatIsCompleted.value = false;
   activeChatId.value = chatId;
   settings.resetSettings();
-  await initChat(chatId);
+  await aiChat.hydrateChatById(chatId);
   removeSocketListeners(chatId);
   setupSocketListeners(chatId);
   scrollToBottom({ instant: true });
@@ -257,6 +236,7 @@ watch(
 
 onBeforeUnmount(() => {
   removeSocketListeners(activeChatId.value);
+  aiChat.resetStore();
 });
 
 useHead({
@@ -288,12 +268,12 @@ useHead({
     <div class="absolute right-10 top-5 border-0 z-10">
       <div class="flex justify-center items-center shrink-0 space-x-5">
         <ChatAssistantDetails
-          :chat-title="chatTitle"
-          :llm-provider="assistant?.llm.provider"
-          :llm-name="assistant?.llm.displayName"
-          :title="assistant?.title"
+          :chat-title="aiChat.chatTitle"
+          :llm-provider="aiChat.assistant?.llm.provider"
+          :llm-name="aiChat.assistant?.llm.displayName"
+          :title="aiChat.assistant?.title"
         />
-        <ChatSettings :assistant-id="assistant?.id" @reset-chat="onResetChat" />
+        <ChatSettings :assistant-id="aiChat.assistant?.id" @reset-chat="onResetChat" />
       </div>
     </div>
 
@@ -305,34 +285,36 @@ useHead({
     >
       <!-- chat messages -->
       <ChatMessageBox
-        v-for="(message, index) in chatMessages"
+        v-for="(message, index) in aiChat.chatMessages"
         :key="index"
         :type="message.type"
         :content="message.content"
         :vision-contents="message.visionContent"
-        :display-name="message.role === 'user' ? authStore.userFirstName : assistant?.title"
+        :display-name="message.role === 'user' ? authStore.userFirstName : aiChat.assistant?.title"
         :role="message.role === 'user' ? ChatMessageRole.USER : ChatMessageRole.ASSISTANT"
       />
       <!-- thinking message -->
-      <ChatThinkingBox v-if="isThinking" :display-name="assistant?.title" />
+      <ChatThinkingBox v-if="aiChat.isThinking" :display-name="aiChat.assistant?.title" />
       <!-- streaming message -->
       <ChatMessageChunk
-        v-if="streamText.length > 0"
+        v-if="aiChat.joinedChatTextChunks.length > 0"
         id="chatMessage"
-        :stream-text="streamText"
-        :assistant-name="assistant?.title"
+        :stream-text="aiChat.joinedChatTextChunks"
+        :assistant-name="aiChat.assistant?.title"
       />
       <!-- tool call message -->
       <ChatToolCallMessage
         v-if="activeTools.length > 0"
-        :display-name="assistant?.title ?? 'Assistant'"
+        :display-name="aiChat.assistant?.title ?? 'Assistant'"
         :active-tools="activeTools"
       />
       <!-- error message -->
+      <!--
       <div v-if="hasError" class="px-20 text-sm text-destructive">
         <p class="pb-2 font-semibold">{{ $t('alert.error.message') }}</p>
         <p>{{ errorMessage }}</p>
       </div>
+      -->
       <div class="h-10 border-0"></div>
       <!-- scroll to bottom button -->
       <!-- div

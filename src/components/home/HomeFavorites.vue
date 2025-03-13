@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useChatService } from '@/composables/services/useChatService';
+import { useAiChatStore } from '@/modules/ai-chat/stores';
 import type { UserFavorite } from '@/modules/user-favorite/interfaces';
 import { userFavoriteService } from '@/modules/user-favorite/user-favorite.service';
 import { RouteName } from '@/router/enums/route-names.enum';
@@ -58,12 +58,11 @@ const favoriteWorkflows = computed(() => {
 const hasFavoriteWorkflows = false; // computed(() => favoriteWorkflows.value.length > 0);
 
 const router = useRouter();
-
-const { createChat } = useChatService();
+const aiChat = useAiChatStore();
 
 const onStartChat = async (assistantId: string) => {
   try {
-    const { chat } = await createChat(assistantId);
+    const chat = await aiChat.createNewChat({ assistantId });
     if (!chat) {
       return;
     }

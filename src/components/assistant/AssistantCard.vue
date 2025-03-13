@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
-import { useChatService } from '@/composables/services/useChatService';
+import { aiChatService } from '@/modules/ai-chat/ai-chat.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { EditIcon } from 'lucide-vue-next';
 
@@ -10,14 +10,12 @@ const props = defineProps<{
 
 const router = useRouter();
 
-const { createChat } = useChatService();
-
 const onStartClick = async () => {
   if (!props.assistant.id) {
     throw new Error('Assistant ID is required');
   }
   try {
-    const { chat } = await createChat(props.assistant.id);
+    const { chat } = await aiChatService.createChat({ assistantId: props.assistant.id });
     if (!chat || !chat.id) {
       throw new Error('Failed to create chat');
     }
@@ -42,15 +40,11 @@ const onEditClick = (event: Event) => {
   >
     <div class="group/icon absolute right-1 top-1 hidden group-hover:block">
       <Button size="icon" variant="ghost" @click.stop="onEditClick">
-        <EditIcon
-          class="size-4 stroke-1.5 opacity-50 group-hover/icon:stroke-2"
-        />
+        <EditIcon class="size-4 stroke-1.5 opacity-50 group-hover/icon:stroke-2" />
       </Button>
     </div>
     <div class="group absolute bottom-1 right-1 hidden group-hover:block">
-      <div
-        class="flex items-center justify-center space-x-2 rounded-xl border px-4 py-2"
-      >
+      <div class="flex items-center justify-center space-x-2 rounded-xl border px-4 py-2">
         <span class="text-sm">Chat</span>
       </div>
     </div>

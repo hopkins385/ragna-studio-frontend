@@ -1,12 +1,11 @@
 <script setup lang="ts">
+import { aiChatService } from '@/modules/ai-chat/ai-chat.service';
 import { RouteName } from '@/router/enums/route-names.enum';
-import { useChatService } from '@composables/services/useChatService';
 
 const router = useRouter();
-const { fetchLatestChat } = useChatService();
 
 const forwardToChat = async () => {
-  const { chat } = await fetchLatestChat();
+  const { chat } = await aiChatService.fetchLatestChat();
   if (!chat || !chat?.id) {
     return router.push({
       name: RouteName.CHAT_CREATE,

@@ -13,57 +13,55 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   const chatStore = useChatInferenceStore();
   const chatSettingsStore = useAiChatSettingsStore();
 
-  const isPending = ref(false);
-  const isStreaming = ref(false);
-  const isThinking = ref(false);
+  // internal state
+  const _isPending = ref(false);
+  const _isStreaming = ref(false);
+  const _isThinking = ref(false);
 
-  const chat = ref<Chat | null>(null);
-  const chatMessages = ref<ChatMessage[]>([]);
-  const chatTextChunks = ref<string[]>([]);
-  const assistantId = ref('');
+  const _chat = ref<Chat | null>(null);
+  const _chatMessages = ref<ChatMessage[]>([]);
+  const _chatTextChunks = ref<string[]>([]);
 
-  const hasChat = computed(() => chat.value !== null);
-  const hasChatMessages = computed(() => chatMessages.value.length > 0);
-  const chatAssistant = computed(() => chat.value?.assistant);
-  const joinedChatTextChunks = computed(() => chatTextChunks.value.join(''));
+  // external state
+  const chat = computed(() => _chat.value);
+  const chatId = computed(() => _chat.value?.id);
+  const chatTitle = computed(() => _chat.value?.title);
+  const chatMessages = computed(() => _chatMessages.value);
 
-  function setAssistantId(id: string) {
-    assistantId.value = id;
-  }
-  function getAssistantId() {
-    return assistantId.value;
-  }
+  const assistant = computed(() => _chat.value?.assistant);
+
+  const isPending = computed<boolean>(() => _isPending.value);
+  const isStreaming = computed<boolean>(() => _isStreaming.value);
+  const isThinking = computed<boolean>(() => _isThinking.value);
+
+  const hasChat = computed(() => _chat.value !== null);
+  const hasChatMessages = computed(() => _chatMessages.value.length > 0);
+
+  const joinedChatTextChunks = computed(() => _chatTextChunks.value.join(''));
+
   function setIsThinking(thinking: boolean) {
-    isThinking.value = thinking;
+    _isThinking.value = thinking;
   }
   function setIsPending(pending: boolean) {
-    isPending.value = pending;
+    _isPending.value = pending;
   }
   function setIsStreaming(streaming: boolean) {
-    isStreaming.value = streaming;
+    _isStreaming.value = streaming;
   }
-
-  function resetStreamStates() {
-    setIsThinking(false);
-    setIsStreaming(false);
-    setIsPending(false);
+  function clearChatMessages() {
+    _chatMessages.value = [];
+    _chatTextChunks.value = [];
   }
-
   function appendChatMessage(message: ChatMessage) {
-    chatMessages.value.push(message);
+    _chatMessages.value.push(message);
   }
 
-  async function createNewChat(id?: string | undefined) {
-    let newAssistantId = id;
-    if (!id) {
-      newAssistantId = assistantId.value;
-    }
-
-    if (!newAssistantId) {
+  async function createNewChat(payload: { assistantId: string }) {
+    if (!payload || !payload.assistantId) {
       throw new Error('Assistant ID is required to create a new chat');
     }
 
-    const { chat } = await aiChatService.createChat(newAssistantId);
+    const { chat } = await aiChatService.createChat({ assistantId: payload.assistantId });
     if (!chat) {
       throw new Error('Failed to create chat');
     }
@@ -120,7 +118,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
 
     const stream = await aiChatService.createChatStream({
       chatId: payload.chatId,
-      chatMessages: chatMessages.value,
+      chatMessages: _chatMessages.value,
       provider: chatStore.provider,
       model: chatStore.model,
       reasoningEffort: chatSettingsStore.thinkLevel?.[0] || 0,
@@ -151,7 +149,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   }
 
   function hydrateChatMessages(messages: ChatMessage[]) {
-    chatMessages.value = messages.map(message => ({
+    _chatMessages.value = messages.map(message => ({
       type: message.type,
       role: message.role,
       content: message.content,
@@ -162,7 +160,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   function hydrateChat(payload: Chat) {
     resetStreamStates();
 
-    chat.value = {
+    _chat.value = {
       id: payload.id,
       title: payload.title,
       assistant: payload.assistant,
@@ -171,7 +169,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       updatedAt: payload.updatedAt,
     };
 
-    chatMessages.value =
+    _chatMessages.value =
       payload.messages?.map(message => ({
         type: message.type,
         role: message.role,
@@ -179,16 +177,22 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
         visionContent: message.visionContent,
       })) || [];
 
-    chatTextChunks.value = [];
+    _chatTextChunks.value = [];
 
-    return chat.value;
+    return _chat.value;
   }
 
   // Helpers
 
-  function abort() {
+  function resetStreamStates() {
+    setIsThinking(false);
+    setIsStreaming(false);
+    setIsPending(false);
+  }
+
+  function abortChatRequest() {
     aiChatService.abortRequest();
-    resetStreamStates();
+    finalizeChatStream();
   }
 
   async function streamChatMessages(stream: ReadableStream<Uint8Array>) {
@@ -207,7 +211,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
           if (line.trim().startsWith('data: ')) {
             const { message } = JSON.parse(line.slice(6).trim());
             if (message) {
-              chatTextChunks.value.push(message);
+              _chatTextChunks.value.push(message);
             }
           }
         } catch (e) {
@@ -220,12 +224,12 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   function finalizeChatStream() {
     resetStreamStates();
 
-    if (chatTextChunks.value.length === 0) {
+    if (_chatTextChunks.value.length === 0) {
       return;
     }
 
-    const assistantContent = chatTextChunks.value.join('');
-    chatTextChunks.value = [];
+    const assistantContent = _chatTextChunks.value.join('');
+    _chatTextChunks.value = [];
 
     appendChatMessage({
       type: 'text',
@@ -234,26 +238,38 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     });
   }
 
+  function resetChat() {
+    _chat.value = null;
+    _chatMessages.value = [];
+    _chatTextChunks.value = [];
+  }
+
+  function resetStore() {
+    resetStreamStates();
+    resetChat();
+  }
+
   return {
     isPending,
     isStreaming,
     isThinking,
     chat,
     chatMessages,
-    chatTextChunks,
+    chatId,
+    chatTitle,
     joinedChatTextChunks,
-    chatAssistant,
-    assistantId,
+    assistant,
     hasChat,
     hasChatMessages,
-    abort,
+    abortChatRequest,
     createNewChat,
     createUserChatMessage,
     sendChatMessage,
+    clearChatMessages,
     hydrateChatById,
     hydrateChatMessages,
     hydrateChat,
-    setAssistantId,
-    getAssistantId,
+    resetChat,
+    resetStore,
   };
 });

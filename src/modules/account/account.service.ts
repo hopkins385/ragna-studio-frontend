@@ -12,7 +12,7 @@ const ApiAccountRoute = {
   DELETE: '/account/delete', // DELETE
 } as const;
 
-export class AiChatService extends BaseApiService {
+export class AccountService extends BaseApiService {
   constructor() {
     super();
   }
@@ -82,4 +82,4 @@ export class AiChatService extends BaseApiService {
   }
 }
 
-export const accountService = new AiChatService();
+export const accountService = new AccountService();

@@ -2,6 +2,7 @@
 // Imports
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { aiChatService } from '@/modules/ai-chat/ai-chat.service';
 import { assistantService } from '@/modules/assistant/assistant.service';
 import { userFavoriteService } from '@/modules/user-favorite/user-favorite.service';
 import { RouteName } from '@/router/enums/route-names.enum';
@@ -10,7 +11,6 @@ import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
-import { useChatService } from '@composables/services/useChatService';
 import { useProviderIcons } from '@composables/useProviderIcons';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
@@ -37,7 +37,6 @@ const page = defineModel<number>('page');
 const router = useRouter();
 const toast = useToast();
 const { t } = useI18n();
-const { createChat } = useChatService();
 const { getProviderIcon } = useProviderIcons();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
@@ -68,7 +67,7 @@ const handleDelete = async (assistantId: string) => {
 };
 
 const onStart = async (assistantId: string) => {
-  const { chat } = await createChat(assistantId);
+  const { chat } = await aiChatService.createChat({ assistantId });
   if (!chat) {
     return setErrorAlert('Failed to create chat');
   }
