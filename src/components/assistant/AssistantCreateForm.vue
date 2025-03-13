@@ -114,8 +114,8 @@ watch(
 
 const siderBarTabs = [
   { id: 'tab1', icon: Settings, label: t('assistant.settings.label') },
-  { id: 'tab2', icon: Stars, label: t('assistant.genai.label') },
-  { id: 'tab3', icon: CircleUserRound, label: t('assistant.behavior.label') },
+  { id: 'tab2', icon: CircleUserRound, label: t('assistant.behavior.label') },
+  { id: 'tab3', icon: Stars, label: t('assistant.genai.label') },
   { id: 'tab5', icon: BriefcaseBusiness, label: t('assistant.tools.label') },
   { id: 'tab4', icon: Book, label: t('assistant.knowledge.label') },
   { id: 'tab6', icon: Workflow, label: t('assistant.workflow.label') },
@@ -178,18 +178,6 @@ onBeforeUnmount(() => {
     </template>
     <!-- TAB 2-->
     <template #tab2>
-      <FormField v-slot="{ handleChange, value }" name="llmId">
-        <FormItem>
-          <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
-          <FormControl>
-            <LlmSelectModal :current-llm-id="value" @update:id="handleChange" />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-    </template>
-    <!-- TAB 3-->
-    <template #tab3>
       <div class="space-y-8">
         <FormField v-slot="{ componentField, value, handleChange }" name="systemPrompt">
           <div>
@@ -207,6 +195,18 @@ onBeforeUnmount(() => {
           </FormItem>
         </FormField>
       </div>
+    </template>
+    <!-- TAB 3-->
+    <template #tab3>
+      <FormField v-slot="{ handleChange, value }" name="llmId">
+        <FormItem>
+          <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
+          <FormControl>
+            <LlmSelectModal :current-llm-id="value" @update:id="handleChange" />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
     </template>
     <!-- TAB 4-->
     <template #tab4>

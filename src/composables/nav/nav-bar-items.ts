@@ -50,13 +50,6 @@ export const spacerNavItem: NavItem = {
 
 const baseMoreMenuItems: NavItem[] = [
   {
-    icon: BotIcon,
-    path: '/assistant',
-    label: 'nav.agents',
-    hidden: false,
-    children: [],
-  },
-  {
     icon: MessagesSquareIcon,
     path: '/chat',
     label: 'nav.chat',
@@ -81,6 +74,13 @@ const baseMoreMenuItems: NavItem[] = [
     icon: FolderIcon,
     path: '/media',
     label: 'nav.media',
+    hidden: false,
+    children: [],
+  },
+  {
+    icon: PieChartIcon,
+    path: '/analytics',
+    label: 'nav.analytics',
     hidden: false,
     children: [],
   },
@@ -123,9 +123,9 @@ export const defaultItems = computed((): NavItem[] => [
     children: [],
   },
   {
-    icon: PieChartIcon,
-    path: '/analytics',
-    label: 'nav.analytics',
+    icon: BotIcon,
+    path: '/assistant',
+    label: 'nav.agents',
     hidden: false,
     children: [],
   },
