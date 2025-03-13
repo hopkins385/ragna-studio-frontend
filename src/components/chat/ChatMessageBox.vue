@@ -19,7 +19,7 @@ defineProps<ChatMessageBoxProps>();
 <template>
   <ChatMessageBoxWrapper :display-name="displayName || ''" :role="role">
     <!-- Vision Content -->
-    <div v-if="visionContents?.length">
+    <div v-if="visionContents?.length" class="pb-4">
       <div
         v-for="(visionContent, index) in visionContents"
         :key="index"

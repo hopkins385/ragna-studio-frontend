@@ -6,12 +6,10 @@ import type {
   ChatMessage,
   CreateChatMessageStreamPayload,
 } from '@/modules/ai-chat/interfaces/chat.interfaces';
-import { useChatInferenceStore } from '@/stores/chat-inference.store';
 import { defineStore } from 'pinia';
 
 export const useAiChatStore = defineStore('ai-chat-store', () => {
   const aiChatService = new AiChatService();
-  const chatStore = useChatInferenceStore();
   const chatSettingsStore = useAiChatSettingsStore();
 
   // internal state
@@ -30,6 +28,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   const chatMessages = computed(() => _chatMessages.value);
 
   const assistant = computed(() => _chat.value?.assistant);
+  const assistantHasImageInput = computed(() => assistant.value?.llm.capabilities?.imageInput);
 
   const isPending = computed<boolean>(() => _isPending.value);
   const isStreaming = computed<boolean>(() => _isStreaming.value);
@@ -107,8 +106,6 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       type: payload.type,
       content: payload.content,
       visionContent: payload.visionContent,
-      model: payload.model,
-      provider: payload.provider,
     });
 
     if (!userChatMessage) {
@@ -121,8 +118,6 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       const stream = await aiChatService.createChatStream({
         chatId: payload.chatId,
         chatMessages: _chatMessages.value,
-        provider: chatStore.provider,
-        model: chatStore.model,
         reasoningEffort: chatSettingsStore.thinkLevel?.[0] || 0,
         maxTokens: chatSettingsStore.maxTokens?.[0] || 4000,
         temperature: chatSettingsStore.temperature?.[0] || 80,
@@ -272,6 +267,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     chatTitle,
     joinedChatTextChunks,
     assistant,
+    assistantHasImageInput,
     hasChat,
     hasChatMessages,
     abortChatRequest,

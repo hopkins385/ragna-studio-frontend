@@ -45,16 +45,16 @@ export interface CreateChatMessageStreamPayload {
   type: ChatMessage['type'];
   content: ChatMessage['content'];
   visionContent?: ChatMessage['visionContent'];
-  model?: string;
-  provider?: string;
+  // model?: string; // deprecated
+  // provider?: string; // deprecated
 }
 
 export interface CreateChatStreamPayload {
   chatId: InputChatId;
   chatMessages: ChatMessage[];
-  provider: string;
-  model: string;
   reasoningEffort?: number;
   maxTokens?: number;
   temperature?: number;
+  // provider?: string; // deprecated
+  // model?: string; // deprecated
 }

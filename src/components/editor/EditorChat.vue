@@ -18,8 +18,6 @@ const editorStore = useEditorStore();
 const aiChatStore = useAiChatStore();
 
 // Injections
-// const editor = editorStore.getEditor();
-
 // Composables
 
 // Computed
@@ -47,22 +45,8 @@ async function onInputSubmit() {
   });
 }
 
-async function onAssistantIdChange(id: string | undefined) {
-  // reset chat
-  // aiChatStore.chatMessages = [];
-}
-
-// Hooks
-// watch(() => aiChatStore.assistantId, onAssistantIdChange, { immediate: true });
-
-onMounted(() => {
-  // aiChatStore.reset();
-  console.log('mounted');
-});
-
 onBeforeUnmount(() => {
-  // Clear chat messages when the component is unmounted
-  // aiChatStore.reset();
+  aiChatStore.resetStore();
 });
 </script>
 

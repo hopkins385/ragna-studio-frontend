@@ -2,12 +2,13 @@
 import ChatHistoryDrawerButton from '@/components/chat/ChatHistoryDrawerButton.vue';
 import ChatPresets from '@/components/chat/ChatPresets.vue';
 import ChatThinkingBox from '@/components/chat/ChatThinkingBox.vue';
+import ErrorAlert from '@/components/error/ErrorAlert.vue';
+import { useErrorAlert } from '@/composables/useErrorAlert';
 import { ChatMessageRole } from '@/enums/chat-role.enum';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import { useAiChatStore } from '@/modules/ai-chat/stores';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { chatInputTextSchema } from '@/schemas/chat-input-text.schema';
-import { useChatInferenceStore } from '@/stores/chat-inference.store';
 import { useWebSocketStore } from '@/stores/websocket.store';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import ChatButtonNewChat from '@components/chat/ChatButtonNewChat.vue';
@@ -26,13 +27,13 @@ import ChatAssistantDetails from './ChatAssistantDetails.vue';
 const route = useRoute();
 const socket = useWebSocketStore();
 const aiChat = useAiChatStore();
-const chatStore = useChatInferenceStore();
 const authStore = useAuthStore();
 const settings = useAiChatSettingsStore();
 
 const { t } = useI18n();
 
 const { setActiveTool, unsetActiveTool, clearActiveTools, activeTools } = useChatTools();
+const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 
 const activeChatId = ref('');
 
@@ -64,7 +65,7 @@ const clearVisionContent = () => {
 
 // SUBMIT
 const onSubmit = async (chatId: string) => {
-  // clearError();
+  unsetErrorAlert();
 
   if (!chatId || !chatId.trim()) {
     console.error('No chatId provided');
@@ -80,7 +81,7 @@ const onSubmit = async (chatId: string) => {
   // validate input
   const result = chatInputTextSchema.safeParse({ input: userMessageContent });
   if (!result.success) {
-    // setError(result.error.errors[0].message);
+    setErrorAlert(result.error.format()._errors[0]);
     return;
   }
 
@@ -100,7 +101,7 @@ const onSubmit = async (chatId: string) => {
       visionContent,
     });
   } catch (e: any) {
-    // setError(e.message);
+    setErrorAlert(e.message);
     console.error('Failed to send message:', e);
   }
 };
@@ -132,7 +133,7 @@ const abortChatRequest = () => {
 };
 
 const onResetChat = async () => {
-  await aiChat.clearChatMessages();
+  aiChat.clearChatMessages();
   clearActiveTools();
   // clearError();
   await aiChat.hydrateChatById(activeChatId.value);
@@ -165,7 +166,7 @@ const { openFileDialog, readFile, inputImages, allowedFileMimeTypes } = useChatI
 
 const { isOverDropZone } = useDropZone(chatBoxContainerRef, {
   onDrop: files => {
-    if (!chatStore.modelWithVision) return;
+    if (!aiChat.assistantHasImageInput) return;
     const file = files?.[0];
     readFile(file);
   },
@@ -234,11 +235,6 @@ watch(
   { immediate: true },
 );
 
-onBeforeUnmount(() => {
-  removeSocketListeners(activeChatId.value);
-  aiChat.resetStore();
-});
-
 useHead({
   title: t('chat.title'),
   meta: [
@@ -248,6 +244,13 @@ useHead({
     },
   ],
 });
+
+onBeforeUnmount(() => {
+  removeSocketListeners(activeChatId.value);
+  aiChat.resetStore();
+});
+
+onMounted(() => {});
 </script>
 
 <template>
@@ -276,7 +279,8 @@ useHead({
         <ChatSettings :assistant-id="aiChat.assistant?.id" @reset-chat="onResetChat" />
       </div>
     </div>
-
+    <!-- chat error alert -->
+    <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
     <!-- chat messages container -->
     <div
       id="chatMessagesContainer"
@@ -352,7 +356,7 @@ useHead({
         </div>
         <div class="flex space-x-1">
           <!-- vision input -->
-          <div v-if="chatStore.modelWithVision">
+          <div v-if="aiChat.assistantHasImageInput">
             <Button
               variant="ghost"
               size="icon"

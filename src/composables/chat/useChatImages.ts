@@ -1,5 +1,5 @@
-import { useChatInferenceStore } from '@stores/chat-inference.store';
-import { mediaService } from './../../modules/media/media.service';
+import { useAiChatStore } from '@/modules/ai-chat/stores';
+import { mediaService } from '@/modules/media/media.service';
 
 export interface ChatImage {
   src: string;
@@ -14,7 +14,7 @@ const dummyImage = {
 export function useChatImages() {
   const allowedFileMimeTypes = ['image/jpg', 'image/png', 'image/jpeg', 'image/gif', 'image/webp'];
 
-  const chatStore = useChatInferenceStore();
+  const aiChat = useAiChatStore();
   const inputImages = ref<ChatImage[]>([]);
 
   // Vision
@@ -37,7 +37,7 @@ export function useChatImages() {
     if (index === null) {
       return;
     }
-    const isVisonEnabled = chatStore.modelWithVision;
+    const isVisonEnabled = aiChat.assistantHasImageInput;
 
     const uploadedImages = await mediaService.uploadFiles([file], isVisonEnabled);
     if (!uploadedImages || uploadedImages.length === 0) {
@@ -65,7 +65,7 @@ export function useChatImages() {
   }
 
   function openFileDialog() {
-    if (!chatStore.modelWithVision) return;
+    if (!aiChat.assistantHasImageInput) return;
     const accept = Array.isArray(allowedFileMimeTypes)
       ? allowedFileMimeTypes.join(',')
       : allowedFileMimeTypes;

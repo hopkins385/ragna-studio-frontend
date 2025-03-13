@@ -83,8 +83,6 @@ export class AiChatService extends BaseApiService {
       ':chatId': payload.chatId,
     });
     const body = {
-      provider: payload.provider.trim().length ? payload.provider : undefined,
-      model: payload.model.trim().length ? payload.model : undefined,
       messages: payload.chatMessages,
       reasoningEffort: payload.reasoningEffort || DEFAULT_REASONING_EFFORT,
       maxTokens: payload.maxTokens || DEFAULT_MAX_TOKENS,
