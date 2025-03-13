@@ -1,4 +1,3 @@
-import type { DefaultSettings } from '@/modules/ai-chat-settings/interfaces/ai-chat-settings.interfaces';
 import type {
   GroupByOption,
   MaxTokens,
@@ -12,7 +11,7 @@ import { computed, ref } from 'vue';
 export const groupByOptions = ['day', 'month', 'year'] as const;
 export const thinkLevel = [0, 1, 2, 3] as const;
 
-const defaultSettings: DefaultSettings = {
+const defaultSettings = {
   thinkLevel: [0],
   temperature: [80],
   presencePenalty: [0],
@@ -30,7 +29,7 @@ export const useAiChatSettingsStore = defineStore(
     const presencePenalty = ref<PresencePenalty>(defaultSettings.presencePenalty);
     const maxTokens = ref<MaxTokens>(defaultSettings.maxTokens);
     const submitOnEnter = ref(defaultSettings.submitOnEnter);
-    const historyGroupBy = ref<GroupByOption>(defaultSettings.historyGroupBy);
+    const historyGroupBy = ref<GroupByOption>(defaultSettings.historyGroupBy as GroupByOption);
 
     // Getters as computed
     const getThinkLevel = computed(() => thinkLevel.value?.[0] || 0);
@@ -44,17 +43,12 @@ export const useAiChatSettingsStore = defineStore(
         ][thinkLevel.value?.[0] || 0],
     );
     const getTemperature = computed(
-      // @ts-ignore
       () => (temperature.value?.[0] || defaultSettings.temperature[0]) / 100,
     );
     const getPresencePenalty = computed(
-      // @ts-ignore
       () => presencePenalty.value?.[0] ?? defaultSettings.presencePenalty[0],
     );
-    const getMaxTokens = computed(
-      // @ts-ignore
-      () => maxTokens.value?.[0] ?? defaultSettings.maxTokens[0],
-    );
+    const getMaxTokens = computed(() => maxTokens.value?.[0] ?? defaultSettings.maxTokens[0]);
     const getHistoryGroupBy = computed(() => historyGroupBy.value);
 
     // Actions as functions
@@ -87,7 +81,7 @@ export const useAiChatSettingsStore = defineStore(
       presencePenalty.value = defaultSettings.presencePenalty;
       maxTokens.value = defaultSettings.maxTokens;
       submitOnEnter.value = defaultSettings.submitOnEnter;
-      historyGroupBy.value = defaultSettings.historyGroupBy;
+      historyGroupBy.value = defaultSettings.historyGroupBy as GroupByOption;
     }
 
     return {

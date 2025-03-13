@@ -21,7 +21,7 @@ interface ChatSettingsEmits {
 }
 
 const props = defineProps<ChatSettingsProps>();
-const emits = defineEmits<ChatSettingsEmits>();
+const emit = defineEmits<ChatSettingsEmits>();
 
 const router = useRouter();
 
@@ -37,10 +37,6 @@ function onEditAssistantClick() {
     name: RouteName.ASSISTANT_EDIT,
     params: { id: props.assistantId },
   });
-}
-
-function onDeleteChatMessages() {
-  emits('resetChat');
 }
 </script>
 
@@ -77,7 +73,7 @@ function onDeleteChatMessages() {
         variant="outline"
         size="sm"
         class="w-full hover:text-destructive"
-        @click="onDeleteChatMessages"
+        @click="() => emit('resetChat')"
       >
         {{ $t('chat.settings.button.reset_chat') }}
       </Button>

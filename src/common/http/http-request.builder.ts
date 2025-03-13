@@ -97,6 +97,9 @@ class RequestBuilder<TResponse, TParams = never, TData = never> {
         if (error.code === 'ERR_NETWORK') {
           throw new ConnectionError();
         }
+        if (error.code === 'ERR_CANCELED') {
+          throw new RequestAbortError();
+        }
         if (this.errorHandler) {
           this.errorHandler(error);
         } else {

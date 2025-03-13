@@ -133,10 +133,10 @@ const abortChatRequest = () => {
 };
 
 const onResetChat = async () => {
-  aiChat.clearChatMessages();
+  abortChatRequest();
   clearActiveTools();
-  // clearError();
-  await aiChat.hydrateChatById(activeChatId.value);
+  clearVisionContent();
+  await aiChat.resetChatById({ chatId: activeChatId.value });
 };
 
 const setupSocketListeners = (chatId: string) => {

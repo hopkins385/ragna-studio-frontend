@@ -3,6 +3,7 @@ import { HttpStatus } from '@/axios/utils/http-status';
 import { RequestAbortError } from '@/common/errors/abort.error';
 import { BadRequestError } from '@/common/errors/bad-request.error';
 import { BadResponseError } from '@/common/errors/bad-response.error';
+import { ConnectionError } from '@/common/errors/connection.error';
 import { BaseApiService } from '@/common/service/base-api.service';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { ChatServiceError } from '@/modules/ai-chat/errors/chat-service.error';
@@ -16,6 +17,7 @@ import type {
   InputChatId,
 } from '@/modules/ai-chat/interfaces/chat.interfaces';
 import { getRoute } from '@/utils/route.util';
+import { AxiosError } from 'axios';
 
 const ApiChatRoute = {
   BASE: '/chat', // POST
@@ -110,6 +112,17 @@ export class AiChatService extends BaseApiService {
       return response.data;
       //
     } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        if (error.name === 'AbortError') {
+          throw new RequestAbortError();
+        }
+        if (error.code === 'ERR_NETWORK') {
+          throw new ConnectionError();
+        }
+        if (error.code === 'ERR_CANCELED') {
+          throw new RequestAbortError();
+        }
+      }
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
           throw new RequestAbortError();
@@ -183,11 +196,11 @@ export class AiChatService extends BaseApiService {
     return data;
   }
 
-  public async deleteAllChatMessages(chatId: InputChatId) {
-    if (!chatId) {
+  public async deleteAllChatMessages(payload: { chatId: InputChatId }) {
+    if (!payload.chatId) {
       throw new ChatServiceError('Chat ID is required');
     }
-    const route = getRoute(ApiChatRoute.CHAT_MESSAGES, { ':chatId': chatId });
+    const route = getRoute(ApiChatRoute.CHAT_MESSAGES, { ':chatId': payload.chatId });
     const { status } = await this.api.DELETE().setRoute(route).setSignal(this.ac.signal).send();
 
     if (status !== HttpStatus.OK) {
@@ -197,11 +210,11 @@ export class AiChatService extends BaseApiService {
     return;
   }
 
-  public async deleteChat(chatId: InputChatId) {
-    if (!chatId) {
+  public async deleteChat(payload: { chatId: InputChatId }) {
+    if (!payload.chatId) {
       throw new ChatServiceError('Chat ID is required');
     }
-    const route = getRoute(ApiChatRoute.CHAT, { ':chatId': chatId });
+    const route = getRoute(ApiChatRoute.CHAT, { ':chatId': payload.chatId });
     const { status } = await this.api.DELETE().setRoute(route).setSignal(this.ac.signal).send();
 
     if (status !== HttpStatus.OK) {

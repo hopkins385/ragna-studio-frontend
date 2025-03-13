@@ -95,7 +95,6 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       return data;
       //
     } catch (error: unknown) {
-      // return handleError(error);
       throw new Error('Error creating user chat message');
     }
   }
@@ -177,17 +176,20 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       updatedAt: payload.updatedAt,
     };
 
-    _chatMessages.value =
-      payload.messages?.map(message => ({
-        type: message.type,
-        role: message.role,
-        content: message.content,
-        visionContent: message.visionContent,
-      })) || [];
+    hydrateChatMessages(payload.messages || []);
 
     _chatTextChunks.value = [];
 
     return _chat.value;
+  }
+
+  async function resetChatById(payload: { chatId: string }) {
+    if (!payload || !payload.chatId) {
+      throw new Error('Chat ID is required to reset chat');
+    }
+
+    await aiChatService.deleteAllChatMessages({ chatId: payload.chatId });
+    return hydrateChatById(payload.chatId);
   }
 
   // Helpers
@@ -217,13 +219,13 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       for (const line of lines) {
         try {
           if (line.trim().startsWith('data: ')) {
-            const { message } = JSON.parse(line.slice(6).trim());
-            if (message) {
-              _chatTextChunks.value.push(message);
+            const parsedData = JSON.parse(line.slice(6).trim());
+            if (parsedData?.message) {
+              _chatTextChunks.value.push(parsedData.message);
             }
           }
         } catch (e) {
-          console.error('Error parsing JSON:', e);
+          console.error('Error parsing JSON:', e, 'line:', line);
         }
       }
     }
@@ -275,6 +277,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     createUserChatMessage,
     sendChatMessage,
     clearChatMessages,
+    resetChatById,
     hydrateChatById,
     hydrateChatMessages,
     hydrateChat,
