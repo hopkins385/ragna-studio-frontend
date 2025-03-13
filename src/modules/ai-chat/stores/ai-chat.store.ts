@@ -1,3 +1,4 @@
+import { RequestAbortError } from '@/common/errors/abort.error';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import { AiChatService } from '@/modules/ai-chat/ai-chat.service';
 import type {
@@ -116,22 +117,34 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
 
     setIsThinking(true);
 
-    const stream = await aiChatService.createChatStream({
-      chatId: payload.chatId,
-      chatMessages: _chatMessages.value,
-      provider: chatStore.provider,
-      model: chatStore.model,
-      reasoningEffort: chatSettingsStore.thinkLevel?.[0] || 0,
-      maxTokens: chatSettingsStore.maxTokens?.[0] || 4000,
-      temperature: chatSettingsStore.temperature?.[0] || 80,
-    });
+    try {
+      const stream = await aiChatService.createChatStream({
+        chatId: payload.chatId,
+        chatMessages: _chatMessages.value,
+        provider: chatStore.provider,
+        model: chatStore.model,
+        reasoningEffort: chatSettingsStore.thinkLevel?.[0] || 0,
+        maxTokens: chatSettingsStore.maxTokens?.[0] || 4000,
+        temperature: chatSettingsStore.temperature?.[0] || 80,
+      });
 
-    setIsThinking(false);
-    setIsStreaming(true);
+      setIsThinking(false);
+      setIsStreaming(true);
 
-    await streamChatMessages(stream);
-
-    finalizeChatStream();
+      await streamChatMessages(stream);
+      //
+    } catch (error: unknown) {
+      // if abort error is thrown, we can ignore it
+      if (error instanceof RequestAbortError) return;
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          return;
+        }
+      }
+      throw error;
+    } finally {
+      finalizeChatStream();
+    }
   }
 
   async function hydrateChatById(chatId: string | undefined) {

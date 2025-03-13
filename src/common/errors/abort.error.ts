@@ -1,4 +1,4 @@
-export class AbortError extends Error {
+export class RequestAbortError extends Error {
   readonly code: number;
 
   constructor(message?: string) {

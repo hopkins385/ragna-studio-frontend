@@ -1,5 +1,6 @@
 import { $axios } from '@/axios/axiosInstance';
 import { HttpStatus } from '@/axios/utils/http-status';
+import { RequestAbortError } from '@/common/errors/abort.error';
 import { BadRequestError } from '@/common/errors/bad-request.error';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { BaseApiService } from '@/common/service/base-api.service';
@@ -90,24 +91,34 @@ export class AiChatService extends BaseApiService {
       temperature: payload.temperature || DEFAULT_TEMPERATURE,
     };
 
-    const response = await $axios.post<ReadableStream<Uint8Array>>(streamRoute, body, {
-      signal: this.ac.signal,
-      headers: {
-        Accept: 'text/event-stream',
-      },
-      responseType: 'stream',
-      adapter: 'fetch',
-    });
+    try {
+      const response = await $axios.post<ReadableStream<Uint8Array>>(streamRoute, body, {
+        signal: this.ac.signal,
+        headers: {
+          Accept: 'text/event-stream',
+        },
+        responseType: 'stream',
+        adapter: 'fetch',
+      });
 
-    if (response.status !== HttpStatus.OK) {
-      throw new ChatServiceError(`Response not ok: ${response.statusText}`);
+      if (response.status !== HttpStatus.OK) {
+        throw new BadResponseError(`Response not ok: ${response.statusText}`);
+      }
+
+      if (!(response.data instanceof ReadableStream)) {
+        throw new BadResponseError('Response is not a readable stream');
+      }
+
+      return response.data;
+      //
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          throw new RequestAbortError();
+        }
+      }
+      throw error;
     }
-
-    if (!(response.data instanceof ReadableStream)) {
-      throw new ChatServiceError('Response is not a readable stream');
-    }
-
-    return response.data;
   }
 
   async fetchChatById(chatId: InputChatId): Promise<ChatResponse> {

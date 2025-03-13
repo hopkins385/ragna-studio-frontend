@@ -126,7 +126,7 @@ const onPresetClick = (value: string) => {
   onSubmit(activeChatId.value);
 };
 
-const onAbortChatRequest = () => {
+const abortChatRequest = () => {
   aiChat.abortChatRequest();
   clearActiveTools();
 };
@@ -403,7 +403,7 @@ useHead({
               variant="outline"
               size="icon"
               class="group absolute bottom-3 right-3 z-20 mr-1 size-8 rounded-full bg-slate-100"
-              @click="onAbortChatRequest"
+              @click="abortChatRequest"
             >
               <SquareIcon class="!size-4 stroke-1.5 text-slate-500 group-hover:text-slate-900" />
             </Button>
