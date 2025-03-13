@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { ChatMessageVisionContent } from '@/composables/services/useChatService';
 import type { ChatMessageRole } from '@/enums/chat-role.enum';
+import type { ChatMessageVisionContent } from '@/modules/ai-chat/interfaces/chat.interfaces';
 import { markdownService } from '@/modules/markdown/markdown.service';
 import 'highlight.js/styles/stackoverflow-light.min.css';
 import ChatMessageBoxWrapper from './ChatMessageBoxWrapper.vue';
@@ -34,6 +34,11 @@ defineProps<ChatMessageBoxProps>();
       </div>
     </div>
     <!-- Text Content -->
-    <div v-dompurify-html="markdownService.toHtml(content)"></div>
+    <div
+      v-dompurify-html="markdownService.toHtml(content)"
+      :class="{
+        'w-full pr-10': role === 'assistant',
+      }"
+    ></div>
   </ChatMessageBoxWrapper>
 </template>
