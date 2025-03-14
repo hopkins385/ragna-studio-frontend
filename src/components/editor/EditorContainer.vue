@@ -2,7 +2,8 @@
 import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { editorService } from '@/modules/editor/editor.service';
-import { useEditorStore } from '@/modules/editor/stores/editor.store';
+import { useEditorStore } from '@/modules/editor/stores';
+import { useWebSocketStore } from '@/stores/websocket.store';
 import { EditorContent } from '@tiptap/vue-3';
 import EditorAssistantDropdownMenu from './EditorAssistantDropdownMenu.vue';
 import EditorAssistantPromptContainer from './EditorAssistantPromptContainer.vue';
@@ -14,6 +15,7 @@ import {
 
 // Stores
 const editorStore = useEditorStore();
+const socket = useWebSocketStore();
 
 // Injections
 const editor = editorStore.getEditor();
@@ -205,11 +207,38 @@ watch(
   },
 );
 
+const setActiveTool = (tool: string) => {
+  // tbd
+};
+const unsetActiveTool = (tool: string) => {
+  // tbd
+};
+const runEditorCommand = (commandPayload: any) => {
+  if (!editor.value) throw new Error('Editor instance is not available');
+  // tbd
+  console.log('runEditorCommand', commandPayload);
+};
+
+const setupSocketListeners = (chatId: string, documentId: string) => {
+  socket.on(`chat:${chatId}-tool-start-event`, setActiveTool);
+  socket.on(`chat:${chatId}-tool-end-event`, unsetActiveTool);
+  socket.on(`document:${documentId}-editor-command`, runEditorCommand);
+};
+
+const removeSocketListeners = (chatId: string, documentId: string) => {
+  socket.off(`chat:${chatId}-tool-start-event`, setActiveTool);
+  socket.off(`chat:${chatId}-tool-end-event`, unsetActiveTool);
+  socket.off(`document:${documentId}-editor-command`, runEditorCommand);
+};
+
 onMounted(() => {
   editorStore.addEventListener('update', handleEditorUpdateEvent);
   editorStore.addEventListener('blur', handleEditorBlurEvent);
   window.addEventListener('mouseup', handleMouseUp);
   // window.addEventListener('contextmenu', handleContextMenu);
+
+  // setup socket listeners
+  setupSocketListeners('chatId', 'documentId');
 });
 
 onBeforeUnmount(() => {
@@ -219,6 +248,9 @@ onBeforeUnmount(() => {
 
   window.removeEventListener('mouseup', handleMouseUp);
   // window.removeEventListener('contextmenu', handleContextMenu);
+
+  // remove socket listeners
+  removeSocketListeners('chatId', 'documentId');
 });
 </script>
 
@@ -238,6 +270,9 @@ onBeforeUnmount(() => {
         >
           <PanelLeftIcon class="size-5" />
         </Button>
+        -->
+        <!--
+        <EditorFileMenu />
         -->
       </div>
       <!-- Center Menu -->

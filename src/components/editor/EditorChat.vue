@@ -140,7 +140,7 @@ onBeforeUnmount(() => {
             </DropdownMenuTrigger>
             <DropdownMenuContent :avoid-collisions="true" side="bottom" align="end">
               <DropdownMenuItem @click="redirectToChat" class="cursor-pointer">
-                Open in Chat Window
+                Open Chat in Window
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

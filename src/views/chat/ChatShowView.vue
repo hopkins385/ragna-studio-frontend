@@ -141,13 +141,13 @@ const onResetChat = async () => {
 };
 
 const setupSocketListeners = (chatId: string) => {
-  socket.on(`chat-${chatId}-tool-start-event`, setActiveTool);
-  socket.on(`chat-${chatId}-tool-end-event`, unsetActiveTool);
+  socket.on(`chat:${chatId}-tool-start-event`, setActiveTool);
+  socket.on(`chat:${chatId}-tool-end-event`, unsetActiveTool);
 };
 
 const removeSocketListeners = (chatId: string) => {
-  socket.off(`chat-${chatId}-tool-start-event`, setActiveTool);
-  socket.off(`chat-${chatId}-tool-end-event`, unsetActiveTool);
+  socket.off(`chat:${chatId}-tool-start-event`, setActiveTool);
+  socket.off(`chat:${chatId}-tool-end-event`, unsetActiveTool);
 };
 
 const setupChat = async (chatId: string) => {

@@ -206,6 +206,10 @@ export const useEditorStore = defineStore('editor-store', () => {
     _comments.value = comments;
   }
 
+  function toggleShowAiChat() {
+    showAiChat.value = !showAiChat.value;
+  }
+
   // Commands
 
   function toggleShowComments(value?: boolean) {
@@ -356,8 +360,29 @@ export const useEditorStore = defineStore('editor-store', () => {
     return getEditor().value.chain().focus().redo().run();
   }
 
-  function toggleShowAiChat() {
-    showAiChat.value = !showAiChat.value;
+  function runCommand(command: string, payload: any) {
+    switch (command) {
+      case 'replaceText':
+        return replaceText(payload);
+      case 'insertContent':
+        return insertContent(payload);
+      case 'addComment':
+        return addComment(payload);
+      case 'highlightText':
+        return formatText({ format: 'highlight', from: payload.from, to: payload.to });
+      default:
+        throw new Error(`Unknown command: ${command}`);
+    }
+  }
+
+  function runManyCommands(commands: { command: string; payload: any }[]) {
+    if (!commands || commands.length === 0 || !Array.isArray(commands)) {
+      console.error('Invalid commands array');
+      return;
+    }
+    commands.forEach(({ command, payload }) => {
+      runCommand(command, payload);
+    });
   }
 
   return {
@@ -392,5 +417,7 @@ export const useEditorStore = defineStore('editor-store', () => {
     toggleInvisibleCharacters,
     undo,
     redo,
+    runCommand,
+    runManyCommands,
   };
 });
