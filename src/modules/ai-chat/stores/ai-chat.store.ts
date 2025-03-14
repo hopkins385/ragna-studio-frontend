@@ -17,7 +17,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   const _isStreaming = ref(false);
   const _isThinking = ref(false);
 
-  const _chat = ref<Chat | null>(null);
+  const _chat = ref<Chat | undefined>(undefined);
   const _chatMessages = ref<ChatMessage[]>([]);
   const _chatTextChunks = ref<string[]>([]);
 
@@ -34,7 +34,8 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   const isStreaming = computed<boolean>(() => _isStreaming.value);
   const isThinking = computed<boolean>(() => _isThinking.value);
 
-  const hasChat = computed(() => _chat.value !== null);
+  const hasChat = computed(() => !!_chat.value);
+  const hasAssistant = computed(() => !!_chat.value?.assistant);
   const hasChatMessages = computed(() => _chatMessages.value.length > 0);
 
   const joinedChatTextChunks = computed(() => _chatTextChunks.value.join(''));
@@ -249,7 +250,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   }
 
   function resetChat() {
-    _chat.value = null;
+    _chat.value = undefined;
     _chatMessages.value = [];
     _chatTextChunks.value = [];
   }
@@ -268,6 +269,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     chatId,
     chatTitle,
     joinedChatTextChunks,
+    hasAssistant,
     assistant,
     assistantHasImageInput,
     hasChat,

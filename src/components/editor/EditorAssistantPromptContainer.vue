@@ -3,8 +3,8 @@
 import { UnknownError } from '@/common/errors/unknown.error';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import { editorService } from '@/modules/editor/editor.service';
+import { useEditorStore } from '@/modules/editor/stores/editor.store';
 import { markdownService } from '@/modules/markdown/markdown.service';
-import { useEditorStore } from '@/stores/editor.store';
 import { Button } from '@ui/button';
 import { Textarea } from '@ui/textarea';
 import { RefreshCcwIcon, SquareIcon, Trash2Icon } from 'lucide-vue-next';

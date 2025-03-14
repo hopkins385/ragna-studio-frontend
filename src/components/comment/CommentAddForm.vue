@@ -2,7 +2,7 @@
 // Imports
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { useEditorStore } from '@/stores/editor.store';
+import { useEditorStore } from '@/modules/editor/stores/editor.store';
 import { FormControl, FormField, FormMessage } from '@ui/form';
 import FormItem from '@ui/form/FormItem.vue';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -44,8 +44,6 @@ const submitLocked = computed(() => {
 
 // Functions
 const onSubmit = form.handleSubmit(values => {
-  console.log('Form submitted!', values);
-
   emit('submit', values.comment);
   form.resetForm();
   showSubmitButtons.value = false;
@@ -76,7 +74,7 @@ const onTextareaBlur = () => {
           <div class="relative">
             <Textarea
               type="text"
-              placeholder="Add a comment"
+              :placeholder="$t('comment.placeholder')"
               class="rounded-md border min-h-5"
               :class="[showSubmitButtons ? 'min-h-20' : '']"
               v-bind="componentField"
@@ -90,7 +88,7 @@ const onTextareaBlur = () => {
                 variant="ghost"
                 class="opacity-75 hover:opacity-100 cursor-pointer h-7 px-2"
               >
-                Cancel
+                {{ $t('form.button.cancel') }}
               </Button>
               <Button
                 type="submit"
@@ -98,7 +96,7 @@ const onTextareaBlur = () => {
                 variant="ghost"
                 class="opacity-75 hover:opacity-100 cursor-pointer h-7 px-2"
               >
-                Post
+                {{ $t('form.button.add') }}
               </Button>
             </div>
           </div>

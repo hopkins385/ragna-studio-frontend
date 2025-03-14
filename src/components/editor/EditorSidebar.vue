@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Imports
-import { useEditorStore } from '@/stores/editor.store';
+import { useEditorStore } from '@/modules/editor/stores/editor.store';
 import { Button } from '@ui/button';
 import { BookmarkIcon, BotMessageSquare, MessageCircleIcon } from 'lucide-vue-next';
 

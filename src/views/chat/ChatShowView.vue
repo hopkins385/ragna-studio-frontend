@@ -3,6 +3,7 @@ import ChatHistoryDrawerButton from '@/components/chat/ChatHistoryDrawerButton.v
 import ChatPresets from '@/components/chat/ChatPresets.vue';
 import ChatThinkingBox from '@/components/chat/ChatThinkingBox.vue';
 import ErrorAlert from '@/components/error/ErrorAlert.vue';
+import { useAutoScroll } from '@/composables/useAutoScroll';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { ChatMessageRole } from '@/enums/chat-role.enum';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
@@ -192,40 +193,8 @@ const focusInput = () => {
   if (textarea) textarea.focus();
 };
 
-// SCROLL
-
-const { arrivedState } = useScroll(chatMessagesContainerRef);
-
-const showScrollToBottomButton = ref(false);
-
-// observer
-useMutationObserver(
-  chatMessagesContainerRef,
-  mutations => {
-    if (!autoScrollLocked.value && mutations.length > 0) scrollToBottom();
-  },
-  {
-    childList: true,
-    subtree: true,
-    characterData: true,
-  },
-);
-
-useEventListener(
-  chatMessagesContainerRef,
-  'wheel',
-  () => {
-    // Disable auto-scroll when the user scrolls up and re-enable it when back at the bottom
-    if (arrivedState.bottom) {
-      autoScrollLocked.value = false;
-      return;
-    }
-    autoScrollLocked.value = true;
-  },
-  {
-    passive: true,
-  },
-);
+// Auto SCROLL
+const { isAutoScrolling } = useAutoScroll(chatMessagesContainerRef);
 
 // watch route changes and setup chat onMount
 // onMounted setupChat is not required, because the watcher is immediate
@@ -381,7 +350,7 @@ onMounted(() => {});
           >
             <div class="relative z-10 max-h-96 w-full">
               <div
-                v-if="showScrollToBottomButton"
+                v-if="false"
                 class="absolute -top-6 left-1/2 w-fit -translate-x-1/2 text-center bg-transparent"
               >
                 <Button

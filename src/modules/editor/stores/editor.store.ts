@@ -2,7 +2,8 @@ import CommentsExtension, { type Comment } from '@/components/editor/extensions/
 import { HighlightSelection } from '@/components/editor/extensions/highlight-selection.extension';
 import { InvisibleCharacters } from '@/components/editor/extensions/invisible-characters';
 import { NodeTracker } from '@/components/editor/extensions/node-tracker';
-import type { Content, EditorEvents, JSONContent } from '@tiptap/core';
+import type { CallbackFunction, EditorContent } from '@/modules/editor/types/editor.types';
+import type { EditorEvents, JSONContent } from '@tiptap/core';
 import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
 import ListKeymap from '@tiptap/extension-list-keymap';
@@ -11,23 +12,14 @@ import TaskItem from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
 import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
-import type { Fragment, ParseOptions } from '@tiptap/pm/model';
+import type { ParseOptions } from '@tiptap/pm/model';
 import StarterKit from '@tiptap/starter-kit';
 import { Editor } from '@tiptap/vue-3';
 import { defineStore } from 'pinia';
 
-type StringKeyOf<T> = Extract<keyof T, string>;
-type CallbackType<
-  T extends Record<string, any>,
-  EventName extends StringKeyOf<T>,
-> = T[EventName] extends any[] ? T[EventName] : [T[EventName]];
-type CallbackFunction<T extends Record<string, any>, EventName extends StringKeyOf<T>> = (
-  ...props: CallbackType<T, EventName>
-) => any;
-type EditorContent = Content | Fragment | string | null;
-
 export const useEditorStore = defineStore('editor-store', () => {
   const { t } = useI18n();
+
   // internal state refs
   const _editor = ref<Editor | undefined>();
   const _editorContent = ref<string>('');
@@ -41,6 +33,7 @@ export const useEditorStore = defineStore('editor-store', () => {
 
   // readonly states
   const hasTextSelected = computed(() => _hasTextSelected.value);
+  const hasComments = computed(() => !!_comments.value && _comments.value.length > 0);
   const editorContent = computed(() => _editorContent.value);
   const comments = computed<Comment[]>(() => _comments.value || []);
   const selectedCommentId = computed(() => _selectedCommentId.value);
@@ -235,6 +228,7 @@ export const useEditorStore = defineStore('editor-store', () => {
   return {
     editorContent,
     hasTextSelected,
+    hasComments,
     comments,
     showComments,
     showAiChat,

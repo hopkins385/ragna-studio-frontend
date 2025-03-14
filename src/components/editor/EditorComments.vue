@@ -1,9 +1,10 @@
 <script setup lang="ts">
 // Imports
+import Illustration from '@/assets/illustrations/empty-comments.svg';
 import CommentAddForm from '@/components/comment/CommentAddForm.vue';
 import EditorCommentMenu from '@/components/editor/EditorCommentMenu.vue';
 import EditorSidePanel from '@/components/editor/EditorSidePanel.vue';
-import { useEditorStore } from '@/stores/editor.store';
+import { useEditorStore } from '@/modules/editor/stores/editor.store';
 
 // Props
 // Emits
@@ -14,8 +15,6 @@ import { useEditorStore } from '@/stores/editor.store';
 const editorStore = useEditorStore();
 
 // Injections
-const editor = editorStore.getEditor();
-
 // Refs
 
 // Computed
@@ -36,6 +35,19 @@ const editor = editorStore.getEditor();
     <div>
       <CommentAddForm @submit="editorStore.addComment" />
     </div>
+    <!-- Empty Comments Placeholder -->
+    <div v-if="!editorStore.hasComments">
+      <div class="px-20 pt-20 pb-10">
+        <Illustration />
+      </div>
+      <div class="px-14 text-center text-sm space-y-4">
+        <p class="opacity-75 font-bold">{{ $t('comment.empty.title') }}</p>
+        <p class="opacity-75">
+          {{ $t('comment.empty.subtitle') }}
+        </p>
+      </div>
+    </div>
+    <!-- Comments List -->
     <div class="pb-5 space-y-5">
       <div v-for="comment in editorStore.comments" :key="comment.id">
         <!-- Comment Box -->

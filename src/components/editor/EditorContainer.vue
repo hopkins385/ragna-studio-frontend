@@ -2,7 +2,7 @@
 import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { editorService } from '@/modules/editor/editor.service';
-import { useEditorStore } from '@/stores/editor.store';
+import { useEditorStore } from '@/modules/editor/stores/editor.store';
 import { EditorContent } from '@tiptap/vue-3';
 import EditorAssistantDropdownMenu from './EditorAssistantDropdownMenu.vue';
 import EditorAssistantPromptContainer from './EditorAssistantPromptContainer.vue';

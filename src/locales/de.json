@@ -70,6 +70,9 @@
     "button": {
       "save": "Speichern",
       "submit": "Absenden",
+      "post": "Posten",
+      "create": "Erstellen",
+      "add": "Hinzufügen",
       "cancel": "Abbrechen",
       "delete": "Löschen",
       "update": "Aktualisieren",
@@ -343,6 +346,9 @@
       "description_label": "Beschreibung",
       "description_description": "Die Beschreibung ist insbesondere hilfreich für andere Agenten, die diesen Agenten verwenden oder für Workflows"
     },
+    "select": {
+      "placeholder": "Agent auswählen"
+    },
     "alert": {
       "create_first": "Bitte erstellen Sie zunächst den Agenten, bevor Sie mit der Konfiguration dieser Funktion fortfahren.",
       "executing_tool": "Benutze Tool"
@@ -557,6 +563,10 @@
       "tooltip": {
         "show": "Historie"
       }
+    },
+    "empty": {
+      "title": "Starte einen neuen KI Chat",
+      "subtitle": "Wähle einen KI Agenten aus, um einen neuen Chat zu starten"
     }
   },
   "template": {
@@ -611,6 +621,13 @@
   "editor": {
     "content": {
       "placeholder": "Schreibe etwas ..."
+    }
+  },
+  "comment": {
+    "placeholder": "Kommentar hinzufügen ...",
+    "empty": {
+      "title": "Starte eine Diskussion",
+      "subtitle": "Du kannst Kommentare hinzufügen und andere erwähnen, um sie zu diesem Dokument einzuladen"
     }
   }
 }

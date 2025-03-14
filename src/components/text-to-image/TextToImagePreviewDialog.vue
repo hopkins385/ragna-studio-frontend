@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { textToImageService } from '@/modules/text-to-image/text-to-image.service';
 import { Button } from '@ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader } from '@ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { ClipboardCheckIcon, ClipboardIcon, DownloadIcon, Loader2Icon } from 'lucide-vue-next';
 
@@ -49,8 +49,13 @@ const {
 } = useClipboard({ source: props.prompt });
 
 const onOpenAutoFocus = (event: Event) => {
+  event.preventDefault();
   const dialog = event.target as HTMLElement;
-  const firstFocusableElement = dialog.querySelector('button');
+  return;
+  // Focus the download-image button
+  const downloadButton = dialog.querySelector('#download-image') as HTMLButtonElement;
+  const firstFocusableElement =
+    downloadButton || dialog.querySelector('button, [href], [tabindex]:not([tabindex="-1"])');
   if (firstFocusableElement) {
     firstFocusableElement.focus();
   }
@@ -78,10 +83,11 @@ async function downloadImageFile(): Promise<void> {
 <template>
   <Dialog :open="show" :modal="true" @update:open="() => $emit('update:show', false)">
     <DialogContent
-      class="flex max-w-6xl flex-col bg-stone-100 max-h-screen overflow-hidden"
+      class="flex max-w-6xl flex-col bg-stone-100 max-h-screen overflow-hidden outline-none"
       @open-auto-focus="onOpenAutoFocus"
     >
       <DialogHeader class="flex w-full flex-row items-center justify-between border-0">
+        <DialogTitle>{{ $t('Image') }}</DialogTitle>
       </DialogHeader>
       <div class="flex space-x-8">
         <div class="flex-grow overflow-hidden shrink-0">
@@ -106,6 +112,7 @@ async function downloadImageFile(): Promise<void> {
               <Tooltip>
                 <TooltipTrigger>
                   <Button
+                    id="copy-prompt"
                     variant="default"
                     size="icon"
                     @click="() => copyToClipboard(props.prompt)"
@@ -122,7 +129,12 @@ async function downloadImageFile(): Promise<void> {
             <TooltipProvider :delayDuration="300">
               <Tooltip>
                 <TooltipTrigger>
-                  <Button variant="default" size="icon" @click="() => downloadImageFile()">
+                  <Button
+                    id="download-image"
+                    variant="default"
+                    size="icon"
+                    @click="() => downloadImageFile()"
+                  >
                     <DownloadIcon v-if="!isLoading" class="size-5" />
                     <Loader2Icon v-else class="size-5 animate-spin" />
                   </Button>

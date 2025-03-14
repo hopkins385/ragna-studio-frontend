@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useEditorStore } from '@/stores/editor.store';
+import { useEditorStore } from '@/modules/editor/stores/editor.store';
 import useEditorActions from '@composables/editor/useEditorActions';
 import { Button } from '@ui/button';
 import {

@@ -2,23 +2,31 @@
 // Imports
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { SendIcon } from 'lucide-vue-next';
+import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
+import { SendHorizontalIcon } from 'lucide-vue-next';
 
 // Props
 const modelValue = defineModel<string | undefined>();
+const { submitLocked = false } = defineProps<{
+  submitLocked?: boolean;
+}>();
 
 // Emits
 const emit = defineEmits<{
-  submit: [void];
-  keyDownEnter: [KeyboardEvent];
+  submitForm: [void];
 }>();
 
 // Refs
 const chatInputFormRef = useTemplateRef('chatInputFormRef');
 
-// Composables
+// Stores
+const aiChatSettings = useAiChatSettingsStore();
 
+// Composables
 // Computed
+const submitReleased = computed(() => {
+  return !submitLocked && modelValue.value;
+});
 // Functions
 
 /**
@@ -36,10 +44,9 @@ const adjustTextareaHeight = () => {
 };
 
 const onKeyDownEnter = (event: KeyboardEvent) => {
-  if (event.key === 'Enter' && !event.shiftKey) {
-    // && settings.submitOnEnter
+  if (event.key === 'Enter' && !event.shiftKey && aiChatSettings.submitOnEnter) {
     event.preventDefault();
-    emit('keyDownEnter', event);
+    emit('submitForm');
   }
 };
 
@@ -51,7 +58,7 @@ const onKeyDownEnter = (event: KeyboardEvent) => {
     id="chatInputForm"
     ref="chatInputFormRef"
     class="relative flex w-full items-center space-x-2"
-    @submit.prevent="() => $emit('submit')"
+    @submit.prevent="() => $emit('submitForm')"
   >
     <div class="relative z-0 max-h-96 w-full">
       <Textarea
@@ -79,13 +86,13 @@ const onKeyDownEnter = (event: KeyboardEvent) => {
       type="submit"
       size="icon"
       variant="ghost"
-      :disabled="!modelValue"
+      :disabled="!submitReleased"
     >
-      <SendIcon
-        class="size-4 stroke-1.5 rotate-45"
+      <SendHorizontalIcon
+        class="size-4 stroke-1.5"
         :class="{
-          'opacity-100': modelValue,
-          'opacity-85': !modelValue,
+          'opacity-100': submitReleased,
+          'opacity-85': !submitReleased,
         }"
       />
     </Button>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Imports
-import { useAiChatStore } from '@/modules/ai-chat/stores';
+import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import { assistantService } from '@/modules/assistant/assistant.service';
 import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/select';
@@ -9,11 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 // Emits
 
 // Refs
-const assistantId = ref<string | undefined>(undefined);
 const assistants = ref<Assistant[]>([]);
 
 // Stores
-const aiChatStore = useAiChatStore();
+const aiChatSettings = useAiChatSettingsStore();
 
 // Composables
 
@@ -36,11 +35,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Select v-model="assistantId" class="w-full">
+  <Select v-model="aiChatSettings.selectedAssistantId" class="w-full">
     <SelectTrigger
       class="h-7 text-xs bg-transparent border-0 focus:ring-0 focus:ring-offset-0 opacity-90"
     >
-      <SelectValue placeholder="Select an agent" />
+      <SelectValue :placeholder="$t('assistant.select.placeholder')" />
     </SelectTrigger>
     <SelectContent class="min-w-96">
       <SelectItem

@@ -23,6 +23,8 @@ const defaultSettings = {
 export const useAiChatSettingsStore = defineStore(
   'ai-chat-settings',
   () => {
+    //
+    const selectedAssistantId = ref<string | undefined>(undefined);
     // Individual refs for each state property
     const thinkLevel = ref<ThinkLevel>(defaultSettings.thinkLevel);
     const temperature = ref<Temperature>(defaultSettings.temperature);
@@ -32,6 +34,7 @@ export const useAiChatSettingsStore = defineStore(
     const historyGroupBy = ref<GroupByOption>(defaultSettings.historyGroupBy as GroupByOption);
 
     // Getters as computed
+    const hasSelectedAssistant = computed(() => !!selectedAssistantId.value);
     const getThinkLevel = computed(() => thinkLevel.value?.[0] || 0);
     const getThinkLevelLabel = computed(
       () =>
@@ -85,6 +88,8 @@ export const useAiChatSettingsStore = defineStore(
     }
 
     return {
+      hasSelectedAssistant,
+      selectedAssistantId,
       // State
       thinkLevel,
       temperature,
