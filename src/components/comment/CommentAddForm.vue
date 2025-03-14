@@ -19,7 +19,7 @@ const formSchema = toTypedSchema(
 // Emits
 const emit = defineEmits<{
   cancel: [void];
-  submit: [value: string];
+  submit: [{ commentText: string }];
 }>();
 
 // Refs
@@ -44,7 +44,7 @@ const submitLocked = computed(() => {
 
 // Functions
 const onSubmit = form.handleSubmit(values => {
-  emit('submit', values.comment);
+  emit('submit', { commentText: values.comment });
   form.resetForm();
   showSubmitButtons.value = false;
 });

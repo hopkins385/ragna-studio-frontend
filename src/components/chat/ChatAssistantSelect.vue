@@ -6,6 +6,9 @@ import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfa
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/select';
 
 // Props
+const { selectLocked = false } = defineProps<{
+  selectLocked?: boolean;
+}>();
 // Emits
 
 // Refs
@@ -17,6 +20,9 @@ const aiChatSettings = useAiChatSettingsStore();
 // Composables
 
 // Computed
+const selectDisabled = computed(() => {
+  return selectLocked;
+});
 // Functions
 const initAllAssistants = async () => {
   const response = await assistantService.fetchAllAssistants({ page: 1, limit: 100 });
@@ -35,7 +41,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Select v-model="aiChatSettings.selectedAssistantId" class="w-full">
+  <Select v-model="aiChatSettings.selectedAssistantId" class="w-full" :disabled="selectDisabled">
     <SelectTrigger
       class="h-7 text-xs bg-transparent border-0 focus:ring-0 focus:ring-offset-0 opacity-90"
     >

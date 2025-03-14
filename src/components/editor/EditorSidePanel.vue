@@ -25,15 +25,18 @@ const modelValue = defineModel();
   <transition name="sidepanel-slide">
     <div v-if="modelValue" class="w-96 h-full overflow-x-hidden overflow-y-scroll shrink-0">
       <div class="border-l h-full p-4 space-y-5">
-        <div class="flex items-center space-x-1">
-          <div>
-            <Button variant="ghost" size="icon" @click="() => $emit('update:modelValue', false)">
-              <XIcon class="size-4" />
-            </Button>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-1">
+            <div>
+              <Button variant="ghost" size="icon" @click="() => $emit('update:modelValue', false)">
+                <XIcon class="size-4" />
+              </Button>
+            </div>
+            <div>
+              <h3 class="font-semibold text-base">{{ props.title }}</h3>
+            </div>
           </div>
-          <div>
-            <h3 class="font-semibold text-base">{{ props.title }}</h3>
-          </div>
+          <slot name="header" />
         </div>
         <!-- Content -->
         <slot />

@@ -21,7 +21,7 @@ export const useEditorStore = defineStore('editor-store', () => {
   const { t } = useI18n();
 
   // internal state refs
-  const _editor = ref<Editor | undefined>();
+  const _editor = ref<Editor>();
   const _editorContent = ref<string>('');
   const _hasTextSelected = ref(false);
   const _comments = ref<Comment[] | undefined>(undefined);
@@ -129,11 +129,11 @@ export const useEditorStore = defineStore('editor-store', () => {
     });
   }
 
-  function getEditor(): Editor {
-    if (!_editor.value) {
+  function getEditor(): globalThis.Ref<Editor, Editor> {
+    if (!_editor || !_editor.value) {
       _editor.value = _createEditorInstance();
     }
-    return _editor.value;
+    return _editor as globalThis.Ref<Editor, Editor>;
   }
 
   function destroyEditor() {
@@ -148,45 +148,45 @@ export const useEditorStore = defineStore('editor-store', () => {
     const emitUpdate = true;
     const parseOptions: ParseOptions = {};
 
-    getEditor().commands.setContent(content, emitUpdate, parseOptions, {
+    getEditor().value.commands.setContent(content, emitUpdate, parseOptions, {
       errorOnInvalidContent: true,
     });
   }
 
   function getJSONContent(): JSONContent {
-    return getEditor().getJSON();
+    return getEditor().value.getJSON();
   }
   function getHtmlContent(): string {
-    return getEditor().getHTML();
+    return getEditor().value.getHTML();
   }
 
   function addEventListener<T extends keyof EditorEvents>(
     event: T,
     callback: CallbackFunction<EditorEvents, T>,
   ) {
-    getEditor().on(event, callback);
+    getEditor().value.on(event, callback);
   }
 
   function removeEventListener<T extends keyof EditorEvents>(
     event: T,
     callback: CallbackFunction<EditorEvents, T>,
   ) {
-    getEditor().off(event, callback);
+    getEditor().value.off(event, callback);
   }
 
   async function syncCommentsWithBackend() {
     // Sync comments with backend
   }
 
-  async function addComment(commentText: string) {
-    const { from, to } = getEditor().state.selection;
+  async function addCommentToSelection(payload: { commentText: string }) {
+    const { from, to } = getEditor().value.state.selection;
     const newComment: Comment = {
       id: Date.now().toString(),
-      text: commentText,
+      text: payload.commentText,
       from,
       to,
     };
-    getEditor().chain().focus(to).addOneComment(newComment).run();
+    getEditor().value.chain().focus(to).addOneComment(newComment).run();
     if (!_comments.value) {
       _comments.value = [newComment];
     } else {
@@ -196,15 +196,17 @@ export const useEditorStore = defineStore('editor-store', () => {
   }
 
   async function deleteComment(id: string) {
-    getEditor().chain().focus().removeOneComment(id).run();
+    getEditor().value.chain().focus().removeOneComment(id).run();
     _comments.value = _comments.value?.filter(comment => comment.id !== id);
     await syncCommentsWithBackend();
   }
 
   async function hydrateComments(comments: Comment[]) {
-    getEditor().commands.initAllComments(comments);
+    getEditor().value.commands.initAllComments(comments);
     _comments.value = comments;
   }
+
+  // Commands
 
   function toggleShowComments(value?: boolean) {
     if (value !== undefined) {
@@ -215,10 +217,143 @@ export const useEditorStore = defineStore('editor-store', () => {
 
     // toggles the comments-highlights by removing/adding the comments
     if (showComments.value) {
-      getEditor().chain().focus().initAllComments(comments.value).run();
+      return getEditor().value.chain().focus().initAllComments(comments.value).run();
     } else {
-      getEditor().chain().focus().initAllComments([]).run();
+      return getEditor().value.chain().focus().initAllComments([]).run();
     }
+  }
+
+  function replaceText(payload: { from: number; to: number; text: string }) {
+    const { from, to, text } = payload;
+    return getEditor()
+      .value.chain()
+      .focus(from)
+      .deleteRange({ from, to })
+      .insertContent(text)
+      .run();
+  }
+
+  function formatText(payload: { format: string; from?: number; to?: number }) {
+    const { format } = payload;
+
+    const chain = getEditor().value.chain().focus();
+    if (payload.from !== undefined && payload.to !== undefined) {
+      chain.setTextSelection({ from: payload.from, to: payload.to });
+    }
+
+    switch (format) {
+      case 'h1':
+        return chain?.toggleHeading({ level: 1 }).run();
+        break;
+      case 'h2':
+        return chain?.toggleHeading({ level: 2 }).run();
+        break;
+      case 'h3':
+        return chain?.toggleHeading({ level: 3 }).run();
+        break;
+      case 'bold':
+        return chain?.toggleBold().run();
+        break;
+      case 'italic':
+        return chain?.toggleItalic().run();
+        break;
+      case 'underline':
+        return chain?.toggleUnderline().run();
+        break;
+      case 'strike':
+        return chain?.toggleStrike().run();
+        break;
+      case 'code':
+        return chain?.toggleCode().run();
+        break;
+      case 'highlight':
+        return chain?.toggleHighlight().run();
+        break;
+      case 'toggleCode':
+        return chain?.toggleCode().run();
+        break;
+      case 'toggleTaskList':
+        return chain?.toggleTaskList().run();
+        break;
+      default:
+        throw new Error(`Unknown format: ${format}`);
+    }
+  }
+
+  function cycleList(payload?: { from: number; to: number }) {
+    const editor = getEditor().value;
+    const chain = editor.chain().focus();
+    if (payload?.from !== undefined && payload?.to !== undefined) {
+      chain.setTextSelection({ from: payload.from, to: payload.to });
+    }
+
+    if (editor.isActive('bulletList')) {
+      // Convert bullet list to ordered list
+      return chain.toggleOrderedList().run();
+    } else if (editor.isActive('orderedList')) {
+      // Remove the ordered list formatting entirely
+      return chain.toggleOrderedList().run();
+    } else {
+      // No list active: start a bullet list
+      return chain.toggleBulletList().run();
+    }
+  }
+
+  function cycleTextOrientation(payload?: { from: number; to: number }) {
+    const editor = getEditor().value;
+    const chain = editor.chain().focus();
+    if (payload?.from !== undefined && payload?.to !== undefined) {
+      chain.setTextSelection({ from: payload.from, to: payload.to });
+    }
+    // Cycle through text alignments
+    if (editor.isActive({ textAlign: 'left' })) {
+      return chain.setTextAlign('center').run();
+    } else if (editor.isActive({ textAlign: 'center' })) {
+      return chain.setTextAlign('right').run();
+    } else if (editor.isActive({ textAlign: 'right' })) {
+      return chain.setTextAlign('justify').run();
+    } else if (editor.isActive({ textAlign: 'justify' })) {
+      return chain.setTextAlign('left').run();
+    } else {
+      return chain.setTextAlign('center').run();
+    }
+  }
+
+  function insertContent(payload: { position: number; content: string }) {
+    const { position, content } = payload;
+    return getEditor().value.chain().focus(position).insertContentAt(position, content).run();
+  }
+
+  function deleteRange(payload: { from: number; to: number }) {
+    const { from, to } = payload;
+    return getEditor().value.chain().focus(from).deleteRange({ from, to }).run();
+  }
+
+  function addComment(payload: { from: number; to: number; comment: string }) {
+    const { from, to, comment } = payload;
+    const newComment: Comment = {
+      id: Date.now().toString(),
+      text: comment,
+      from,
+      to,
+    };
+    return getEditor().value.chain().focus(to).addOneComment(newComment).run();
+  }
+
+  function toggleInvisibleCharacters() {
+    return getEditor().value.chain().focus().toggleInvisibleCharacters().run();
+  }
+
+  function toggleTaskList() {
+    return getEditor().value.chain().focus().toggleTaskList().run();
+  }
+
+  function undo() {
+    return getEditor().value.chain().focus().undo().run();
+  }
+
+  function redo() {
+    return getEditor().value.chain().focus().redo().run();
   }
 
   function toggleShowAiChat() {
@@ -240,10 +375,22 @@ export const useEditorStore = defineStore('editor-store', () => {
     getJSONContent,
     addEventListener,
     removeEventListener,
-    addComment,
+    addCommentToSelection,
     deleteComment,
     hydrateComments,
     toggleShowComments,
     toggleShowAiChat,
+    // Commands
+    replaceText,
+    formatText,
+    insertContent,
+    deleteRange,
+    addComment,
+    cycleList,
+    cycleTextOrientation,
+    toggleTaskList,
+    toggleInvisibleCharacters,
+    undo,
+    redo,
   };
 });

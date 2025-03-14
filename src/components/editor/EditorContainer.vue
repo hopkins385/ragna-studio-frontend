@@ -74,9 +74,9 @@ const fetchInlineCompletionHandler = async (params: {
 watch(isLoading, newValue => {
   if (newValue) {
     // Show loading spinner at cursor position
-    if (editor && editor.view) {
-      const { from } = editor.state.selection;
-      const coords = editor.view.coordsAtPos(from);
+    if (editor.value && editor.value.view) {
+      const { from } = editor.value.state.selection;
+      const coords = editor.value.view.coordsAtPos(from);
       const editorRect = editorContentRef.value?.getBoundingClientRect();
 
       if (editorRect) {
@@ -117,13 +117,13 @@ const handleEditorBlurEvent = (event: any) => {
 };
 
 const updateAssistantPromptContainerPosition = () => {
-  if (!editor) throw new Error('Editor instance is not available');
-  const { from, to } = editor.state.selection;
+  if (!editor.value) throw new Error('Editor instance is not available');
+  const { from, to } = editor.value.state.selection;
   if (from === to || !editorWrapperRef.value) {
     return;
   }
 
-  const coords = editor.view.coordsAtPos(to);
+  const coords = editor.value.view.coordsAtPos(to);
   const containerRect = editorWrapperRef.value.getBoundingClientRect();
 
   const xPosition = 140;
@@ -143,13 +143,13 @@ const handleShowPromptContainer = () => {
 };
 
 const updateAssistantDropdownMenuPosition = () => {
-  if (!editor) throw new Error('Editor instance is not available');
-  const { from } = editor.state.selection;
+  if (!editor.value) throw new Error('Editor instance is not available');
+  const { from } = editor.value.state.selection;
   if (!editorWrapperRef.value) {
     return;
   }
 
-  const coords = editor.view.coordsAtPos(from);
+  const coords = editor.value.view.coordsAtPos(from);
   const containerRect = editorWrapperRef.value.getBoundingClientRect();
 
   assistantDropdownMenu.yPosition = coords.top - containerRect.top - 2;
@@ -157,8 +157,8 @@ const updateAssistantDropdownMenuPosition = () => {
 
 // Handle mouseup event to show the assistant dropdown menu
 const handleMouseUp = () => {
-  if (!editor) throw new Error('Editor instance is not available');
-  const { from, to } = editor.state.selection;
+  if (!editor.value) throw new Error('Editor instance is not available');
+  const { from, to } = editor.value.state.selection;
   if (from !== to && editorWrapperRef.value && !isOutsideWrapper.value) {
     updateAssistantDropdownMenuPosition();
     assistantDropdownMenu.show = true;
@@ -241,8 +241,8 @@ onBeforeUnmount(() => {
         -->
       </div>
       <!-- Center Menu -->
-      <div class="">
-        <EditorMenu :is-loading="false" />
+      <div>
+        <EditorMenu />
       </div>
       <!-- Right Menu -->
       <div class="w-20"></div>

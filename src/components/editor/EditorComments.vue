@@ -33,7 +33,7 @@ const editorStore = useEditorStore();
     @update:modelValue="editorStore.toggleShowComments"
   >
     <div>
-      <CommentAddForm @submit="editorStore.addComment" />
+      <CommentAddForm @submit="editorStore.addCommentToSelection" />
     </div>
     <!-- Empty Comments Placeholder -->
     <div v-if="!editorStore.hasComments">

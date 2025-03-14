@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useEditorStore } from '@/modules/editor/stores/editor.store';
-import useEditorActions from '@composables/editor/useEditorActions';
 import { Button } from '@ui/button';
 import {
   AlignCenterIcon,
@@ -14,7 +13,6 @@ import {
   ListChecksIcon,
   ListIcon,
   ListOrderedIcon,
-  Loader2Icon,
   PilcrowIcon,
   Redo2Icon,
   StrikethroughIcon,
@@ -24,12 +22,7 @@ import {
 } from 'lucide-vue-next';
 
 // Props
-const props = defineProps<{
-  isLoading: boolean;
-}>();
-
 // Emits
-const emits = defineEmits(['toggle-instruction-menu']);
 
 // Stores
 const editorStore = useEditorStore();
@@ -38,50 +31,11 @@ const editorStore = useEditorStore();
 const editor = editorStore.getEditor();
 
 // Composables
-const {
-  onImproveClick,
-  onExtendClick,
-  onShortenClick,
-  onSummarizeClick,
-  onSimplifyClick,
-  onSpellingGrammarClick,
-  onRephraseClick,
-  onH1Click,
-  onH2Click,
-  onBoldClick,
-  onItalicClick,
-  onUnderlineClick,
-  onStrikeClick,
-  onHighlightClick,
-  onUndoClick,
-  onRedoClick,
-  onToggleCodeClick,
-  onToggleListClick,
-  onToggleTaskListClick,
-  onToggleBulletListClick,
-  onToggleOrderedListClick,
-  onToggleTextOrientationClick,
-  onToggleInvisibleCharactersClick,
-} = useEditorActions(editor);
 
 // Refs
 // Computed
 
-const hasTextSelected = computed(() => {
-  if (!editor) return false;
-  const { from, to } = editor.state.selection;
-  return from !== to;
-});
-
 // Methods
-
-const onInstructionClick = () => {
-  emits('toggle-instruction-menu');
-};
-
-const onTranslateClick = (lang: string) => {
-  console.log(`Translate clicked: ${lang}`);
-};
 </script>
 
 <template>
@@ -107,7 +61,7 @@ const onTranslateClick = (lang: string) => {
         :class="{
           'is-active': editor.isActive('heading', { level: 1 }),
         }"
-        @click="onH1Click()"
+        @click="editorStore.formatText({ format: 'h1' })"
       >
         <Heading1Icon class="!size-5 stroke-1.5 bg-transparent" />
       </Button>
@@ -117,7 +71,7 @@ const onTranslateClick = (lang: string) => {
         :class="{
           'is-active': editor.isActive('heading', { level: 2 }),
         }"
-        @click="onH2Click()"
+        @click="editorStore.formatText({ format: 'h2' })"
       >
         <Heading2Icon class="!size-5 stroke-1.5 bg-transparent" />
       </Button>
@@ -127,7 +81,7 @@ const onTranslateClick = (lang: string) => {
         :class="{
           'is-active': editor.isActive('bold'),
         }"
-        @click="onBoldClick()"
+        @click="editorStore.formatText({ format: 'bold' })"
       >
         <BoldIcon class="size-4 bg-transparent" />
       </Button>
@@ -137,7 +91,7 @@ const onTranslateClick = (lang: string) => {
         :class="{
           'is-active': editor.isActive('italic'),
         }"
-        @click="onItalicClick()"
+        @click="editorStore.formatText({ format: 'italic' })"
       >
         <ItalicIcon class="size-4 bg-transparent" />
       </Button>
@@ -147,7 +101,7 @@ const onTranslateClick = (lang: string) => {
         :class="{
           'is-active': editor.isActive('underline'),
         }"
-        @click="onUnderlineClick()"
+        @click="editorStore.formatText({ format: 'underline' })"
       >
         <UnderlineIcon class="size-4 bg-transparent" />
       </Button>
@@ -157,11 +111,11 @@ const onTranslateClick = (lang: string) => {
         :class="{
           'is-active': editor.isActive('strike'),
         }"
-        @click="onStrikeClick()"
+        @click="editorStore.formatText({ format: 'strike' })"
       >
         <StrikethroughIcon class="size-4 bg-transparent" />
       </Button>
-      <Button variant="ghost" size="icon" @click="onToggleTextOrientationClick()">
+      <Button variant="ghost" size="icon" @click="editorStore.cycleTextOrientation">
         <TextIcon
           v-if="editor.isActive({ textAlign: 'left' })"
           class="!size-5 stroke-1.5 bg-transparent"
@@ -186,7 +140,7 @@ const onTranslateClick = (lang: string) => {
         :class="{
           'is-active': editor.isActive('bulletList') || editor.isActive('orderedList'),
         }"
-        @click="onToggleListClick()"
+        @click="editorStore.cycleList()"
       >
         <ListOrderedIcon
           v-if="editor.isActive('orderedList')"
@@ -200,7 +154,7 @@ const onTranslateClick = (lang: string) => {
         :class="{
           'is-active': editor.isActive('taskList'),
         }"
-        @click="onToggleTaskListClick()"
+        @click="editorStore.toggleTaskList()"
       >
         <ListChecksIcon class="!size-5 stroke-1.5 bg-transparent" />
       </Button>
@@ -210,7 +164,7 @@ const onTranslateClick = (lang: string) => {
         :class="{
           'is-active': editor.isActive('highlight'),
         }"
-        @click="onHighlightClick()"
+        @click="editorStore.formatText({ format: 'highlight' })"
       >
         <HighlighterIcon class="size-4 bg-transparent" />
       </Button>
@@ -227,25 +181,19 @@ const onTranslateClick = (lang: string) => {
       <Button
         variant="ghost"
         size="icon"
-        @click="onToggleInvisibleCharactersClick()"
+        @click="editorStore.toggleInvisibleCharacters()"
         :class="{
           'is-active': editor.storage.invisibleCharacters.visibility(),
         }"
       >
         <PilcrowIcon class="size-4 bg-transparent" />
       </Button>
-      <Button variant="ghost" size="icon" @click="onUndoClick()">
+      <Button variant="ghost" size="icon" @click="editorStore.undo()">
         <Undo2Icon class="size-4 bg-transparent" />
       </Button>
-      <Button variant="ghost" size="icon" @click="onRedoClick()">
+      <Button variant="ghost" size="icon" @click="editorStore.redo()">
         <Redo2Icon class="size-4 bg-transparent" />
       </Button>
-      <div v-if="isLoading" class="flex items-center justify-center">
-        <Loader2Icon class="size-6 animate-spin text-slate-300 bg-transparent" />
-      </div>
     </div>
-    <!-- div v-if="isLoading" class="flex items-center justify-center">
-      <Loader2Icon class="size-6 animate-spin text-slate-100" />
-    </div !-->
   </div>
 </template>

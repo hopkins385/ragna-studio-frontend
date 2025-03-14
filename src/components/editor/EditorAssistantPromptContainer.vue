@@ -49,7 +49,7 @@ const runCompletion = async () => {
 
   try {
     const completionPayload = {
-      context: editor.getHTML(),
+      context: editor.value.getHTML(),
       selectedText: originalTextBetween.value,
       prompt: input.value,
     };
@@ -73,7 +73,7 @@ const runCompletion = async () => {
     const startPos = originalSelection.value.from;
 
     // Replace text at the original selection range and select the new content
-    editor
+    editor.value
       .chain()
       .deleteRange({
         from: startPos,
@@ -106,7 +106,7 @@ const resetCompletionVars = () => {
 
 const discardChanges = () => {
   resetCompletionVars();
-  editor
+  editor.value
     .chain()
     .focus()
     .undo()
@@ -133,7 +133,7 @@ const handleAbort = () => {
 
 const handleReGenerate = () => {
   // First restore original selection before regenerating
-  editor
+  editor.value
     .chain()
     .focus()
     .undo()
@@ -174,9 +174,9 @@ onMounted(() => {
   focusInput();
   window.addEventListener('keydown', handleKeyDown);
   // Store initial selection range
-  const { from, to } = editor.state.selection;
+  const { from, to } = editor.value.state.selection;
   originalSelection.value = { from, to };
-  originalTextBetween.value = editor.state.doc.textBetween(from, to);
+  originalTextBetween.value = editor.value.state.doc.textBetween(from, to);
 });
 
 onBeforeUnmount(() => {
