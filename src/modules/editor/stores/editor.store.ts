@@ -2,7 +2,11 @@ import CommentsExtension, { type Comment } from '@/components/editor/extensions/
 import { HighlightSelection } from '@/components/editor/extensions/highlight-selection.extension';
 import { InvisibleCharacters } from '@/components/editor/extensions/invisible-characters';
 import { NodeTracker } from '@/components/editor/extensions/node-tracker';
-import { EditorCommand, editorCommandSchema } from '@/modules/editor/schemas/command.schema';
+import {
+  EditorCommand,
+  editorCommandDefaultArgsSchema,
+  editorCommandSchema,
+} from '@/modules/editor/schemas/command.schema';
 import type { CallbackFunction, EditorContent } from '@/modules/editor/types/editor.types';
 import type { EditorEvents, JSONContent } from '@tiptap/core';
 import Highlight from '@tiptap/extension-highlight';
@@ -217,6 +221,47 @@ export const useEditorStore = defineStore('editor-store', () => {
 
   // Commands
 
+  function deleteRange(payload: { from: number; to: number }) {
+    const { from, to } = payload;
+    return getEditor().value.chain().focus(from).deleteRange({ from, to }).run();
+  }
+
+  function cycleList() {
+    const editor = getEditor().value;
+    const chain = editor.chain().focus();
+
+    if (editor.isActive('bulletList')) {
+      // Convert bullet list to ordered list
+      return chain.toggleOrderedList().run();
+    } else if (editor.isActive('orderedList')) {
+      // Remove the ordered list formatting entirely
+      return chain.toggleOrderedList().run();
+    } else {
+      // No list active: start a bullet list
+      return chain.toggleBulletList().run();
+    }
+  }
+
+  function cycleTextOrientation(payload?: { from: number; to: number }) {
+    const editor = getEditor().value;
+    const chain = editor.chain().focus();
+    if (payload?.from !== undefined && payload?.to !== undefined) {
+      chain.setTextSelection({ from: payload.from, to: payload.to });
+    }
+    // Cycle through text alignments
+    if (editor.isActive({ textAlign: 'left' })) {
+      return chain.setTextAlign('center').run();
+    } else if (editor.isActive({ textAlign: 'center' })) {
+      return chain.setTextAlign('right').run();
+    } else if (editor.isActive({ textAlign: 'right' })) {
+      return chain.setTextAlign('justify').run();
+    } else if (editor.isActive({ textAlign: 'justify' })) {
+      return chain.setTextAlign('left').run();
+    } else {
+      return chain.setTextAlign('center').run();
+    }
+  }
+
   function toggleShowComments(value?: boolean) {
     if (value !== undefined) {
       showComments.value = value;
@@ -232,21 +277,6 @@ export const useEditorStore = defineStore('editor-store', () => {
       return getEditor().value.chain().focus().initAllComments([]).run();
     }
       */
-  }
-
-  function replaceText(payload: { from: number; to: number; text?: string }) {
-    const { from, to, text } = payload;
-
-    if (!text) {
-      return;
-    }
-
-    return getEditor()
-      .value.chain()
-      .focus(from)
-      .deleteRange({ from, to })
-      .insertContent(text)
-      .run();
   }
 
   function formatText(payload: { format: string; from?: number; to?: number }) {
@@ -296,43 +326,19 @@ export const useEditorStore = defineStore('editor-store', () => {
     }
   }
 
-  function cycleList(payload?: { from: number; to: number }) {
-    const editor = getEditor().value;
-    const chain = editor.chain().focus();
-    if (payload?.from !== undefined && payload?.to !== undefined) {
-      chain.setTextSelection({ from: payload.from, to: payload.to });
+  function replaceText(payload: { from: number; to: number; text: string }) {
+    const { from, to, text } = payload;
+
+    if (!text || text.trim().length === 0) {
+      return;
     }
 
-    if (editor.isActive('bulletList')) {
-      // Convert bullet list to ordered list
-      return chain.toggleOrderedList().run();
-    } else if (editor.isActive('orderedList')) {
-      // Remove the ordered list formatting entirely
-      return chain.toggleOrderedList().run();
-    } else {
-      // No list active: start a bullet list
-      return chain.toggleBulletList().run();
-    }
-  }
-
-  function cycleTextOrientation(payload?: { from: number; to: number }) {
-    const editor = getEditor().value;
-    const chain = editor.chain().focus();
-    if (payload?.from !== undefined && payload?.to !== undefined) {
-      chain.setTextSelection({ from: payload.from, to: payload.to });
-    }
-    // Cycle through text alignments
-    if (editor.isActive({ textAlign: 'left' })) {
-      return chain.setTextAlign('center').run();
-    } else if (editor.isActive({ textAlign: 'center' })) {
-      return chain.setTextAlign('right').run();
-    } else if (editor.isActive({ textAlign: 'right' })) {
-      return chain.setTextAlign('justify').run();
-    } else if (editor.isActive({ textAlign: 'justify' })) {
-      return chain.setTextAlign('left').run();
-    } else {
-      return chain.setTextAlign('center').run();
-    }
+    return getEditor()
+      .value.chain()
+      .focus(from)
+      .deleteRange({ from, to })
+      .insertContent(text)
+      .run();
   }
 
   function insertContent(payload: { position: number; content: string }) {
@@ -340,13 +346,8 @@ export const useEditorStore = defineStore('editor-store', () => {
     return getEditor().value.chain().focus(position).insertContentAt(position, content).run();
   }
 
-  function deleteRange(payload: { from: number; to: number }) {
-    const { from, to } = payload;
-    return getEditor().value.chain().focus(from).deleteRange({ from, to }).run();
-  }
-
-  function addComment(payload: { from: number; to: number; text?: string }) {
-    if (!payload.text) {
+  function addComment(payload: { from: number; to: number; text: string }) {
+    if (!payload.text || payload.text.trim().length === 0) {
       return;
     }
     const newComment: Comment = {
@@ -355,7 +356,7 @@ export const useEditorStore = defineStore('editor-store', () => {
       to: payload.to,
       text: payload.text,
     };
-    console.log('Adding comment:', newComment);
+
     return getEditor().value.chain().focus(payload.to).addOneComment(newComment).run();
   }
 
@@ -375,29 +376,63 @@ export const useEditorStore = defineStore('editor-store', () => {
     return getEditor().value.chain().focus().redo().run();
   }
 
+  function handleReplaceText(payload: { args: any }) {
+    const args = editorCommandDefaultArgsSchema.parse(payload.args);
+    return replaceText({
+      from: args.from,
+      to: args.to,
+      text: args.text,
+    });
+  }
+
+  function handleInsertContent(payload: { args: any }) {
+    throw new Error('Not implemented');
+    // return insertContent({
+    //   position: validated.args.from,
+    //   content: validated.args.text,
+    // });
+  }
+
+  function handleAddComment(payload: { args: any }) {
+    const args = editorCommandDefaultArgsSchema.parse(payload.args);
+    return addComment({
+      from: args.from,
+      to: args.to,
+      text: args.text,
+    });
+  }
+
+  function handleHighlightText(payload: { args: any }) {
+    throw new Error('Not implemented');
+    /*
+    return formatText({
+      format: 'highlight',
+      from: args.from,
+      to: args.to,
+    });
+    */
+  }
+
   function runCommand(payload: { command: string; args: any }) {
     // Validate the command
-    const validated = editorCommandSchema.parse(payload);
+    const validatedCommand = editorCommandSchema.parse(payload.command);
     //
-    switch (validated.command) {
+    switch (validatedCommand) {
+      // Replace text in the editor
       case EditorCommand.REPLACE_TEXT:
-        return replaceText(validated.args);
+        return handleReplaceText(payload);
         break;
       case EditorCommand.INSERT_CONTENT:
-        // return insertContent(validated.args);
+        return handleInsertContent(payload);
         break;
       case EditorCommand.ADD_COMMENT:
-        return addComment(validated.args);
+        return handleAddComment(payload);
         break;
       case EditorCommand.HIGHLIGHT_TEXT:
-        return formatText({
-          format: 'highlight',
-          from: validated.args.from,
-          to: validated.args.to,
-        });
+        return handleHighlightText(payload);
         break;
       default:
-        throw new Error(`Unknown command: ${validated.command}`);
+        throw new Error(`Unknown command: ${validatedCommand}`);
         break;
     }
   }
