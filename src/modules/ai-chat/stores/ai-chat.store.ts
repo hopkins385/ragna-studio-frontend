@@ -19,7 +19,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
 
   const _chat = ref<Chat | undefined>(undefined);
   const _chatMessages = ref<ChatMessage[]>([]);
-  const _chatTextChunks = ref<string[]>([]);
+  const _messageTextChunks = ref<string[]>([]);
 
   // external state
   const chat = computed(() => _chat.value);
@@ -38,7 +38,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   const hasAssistant = computed(() => !!_chat.value?.assistant);
   const hasChatMessages = computed(() => _chatMessages.value.length > 0);
 
-  const joinedChatTextChunks = computed(() => _chatTextChunks.value.join(''));
+  const joinedMessageTextChunks = computed(() => _messageTextChunks.value.join(''));
 
   function setIsThinking(thinking: boolean) {
     _isThinking.value = thinking;
@@ -51,7 +51,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   }
   function clearChatMessages() {
     _chatMessages.value = [];
-    _chatTextChunks.value = [];
+    _messageTextChunks.value = [];
   }
   function appendChatMessage(message: ChatMessage) {
     _chatMessages.value.push(message);
@@ -179,7 +179,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
 
     hydrateChatMessages(payload.messages || []);
 
-    _chatTextChunks.value = [];
+    _messageTextChunks.value = [];
 
     return _chat.value;
   }
@@ -222,7 +222,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
           if (line.trim().startsWith('data: ')) {
             const parsedData = JSON.parse(line.slice(6).trim());
             if (parsedData?.message) {
-              _chatTextChunks.value.push(parsedData.message);
+              _messageTextChunks.value.push(parsedData.message);
             }
           }
         } catch (e) {
@@ -235,12 +235,12 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   function finalizeChatStream() {
     resetStreamStates();
 
-    if (_chatTextChunks.value.length === 0) {
+    if (_messageTextChunks.value.length === 0) {
       return;
     }
 
-    const assistantContent = _chatTextChunks.value.join('');
-    _chatTextChunks.value = [];
+    const assistantContent = _messageTextChunks.value.join('');
+    _messageTextChunks.value = [];
 
     appendChatMessage({
       type: 'text',
@@ -252,7 +252,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   function resetChat() {
     _chat.value = undefined;
     _chatMessages.value = [];
-    _chatTextChunks.value = [];
+    _messageTextChunks.value = [];
   }
 
   function resetStore() {
@@ -268,7 +268,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     chatMessages,
     chatId,
     chatTitle,
-    joinedChatTextChunks,
+    joinedMessageTextChunks,
     hasAssistant,
     assistant,
     assistantHasImageInput,

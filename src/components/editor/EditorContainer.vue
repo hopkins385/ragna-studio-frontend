@@ -213,10 +213,9 @@ const setActiveTool = (tool: string) => {
 const unsetActiveTool = (tool: string) => {
   // tbd
 };
-const runEditorCommand = (commandPayload: any) => {
+const runEditorCommand = (payload: any) => {
   if (!editor.value) throw new Error('Editor instance is not available');
-  // tbd
-  console.log('runEditorCommand', commandPayload);
+  editorStore.runCommand({ command: payload.command, args: payload.args });
 };
 
 const setupSocketListeners = (chatId: string, documentId: string) => {
@@ -238,7 +237,7 @@ onMounted(() => {
   // window.addEventListener('contextmenu', handleContextMenu);
 
   // setup socket listeners
-  setupSocketListeners('chatId', 'documentId');
+  setupSocketListeners('chatId', '1234567890');
 });
 
 onBeforeUnmount(() => {
@@ -250,7 +249,7 @@ onBeforeUnmount(() => {
   // window.removeEventListener('contextmenu', handleContextMenu);
 
   // remove socket listeners
-  removeSocketListeners('chatId', 'documentId');
+  removeSocketListeners('chatId', '1234567890');
 });
 </script>
 

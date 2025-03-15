@@ -261,7 +261,7 @@ onMounted(() => {});
         v-for="(message, index) in aiChat.chatMessages"
         :key="index"
         :type="message.type"
-        :content="message.content"
+        :text="message.content.toString()"
         :vision-contents="message.visionContent"
         :display-name="message.role === 'user' ? authStore.userFirstName : aiChat.assistant?.title"
         :role="message.role === 'user' ? ChatMessageRole.USER : ChatMessageRole.ASSISTANT"
@@ -270,9 +270,9 @@ onMounted(() => {});
       <ChatThinkingBox v-if="aiChat.isThinking" :display-name="aiChat.assistant?.title" />
       <!-- streaming message -->
       <ChatMessageChunk
-        v-if="aiChat.joinedChatTextChunks.length > 0"
+        v-if="aiChat.joinedMessageTextChunks.length > 0"
         id="chatMessage"
-        :stream-text="aiChat.joinedChatTextChunks"
+        :stream-text="aiChat.joinedMessageTextChunks"
         :assistant-name="aiChat.assistant?.title"
       />
       <!-- tool call message -->

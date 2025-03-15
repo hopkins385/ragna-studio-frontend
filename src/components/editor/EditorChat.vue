@@ -168,14 +168,14 @@ onBeforeUnmount(() => {
             v-for="(message, index) in aiChatStore.chatMessages"
             :key="index"
             class="border p-2 rounded-md text-sm"
-            v-dompurify-html="markdownService.toHtml(message.content)"
+            v-dompurify-html="markdownService.toHtml(message.content.toString())"
           ></div>
           <div v-if="aiChatStore.isThinking">...</div>
           <!-- Chat messages stream chunks -->
           <div
             v-if="aiChatStore.isStreaming"
             class="border p-2 rounded-md text-sm"
-            v-dompurify-html="markdownService.toHtml(aiChatStore.joinedChatTextChunks)"
+            v-dompurify-html="markdownService.toHtml(aiChatStore.joinedMessageTextChunks)"
           ></div>
           <div class="h-4"></div>
         </div>

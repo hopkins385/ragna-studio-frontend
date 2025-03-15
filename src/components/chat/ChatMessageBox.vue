@@ -8,7 +8,7 @@ import ChatMessageBoxWrapper from './ChatMessageBoxWrapper.vue';
 interface ChatMessageBoxProps {
   role: ChatMessageRole;
   type: 'text' | 'image' | 'video' | 'audio' | null | undefined;
-  content: string;
+  text: string;
   displayName?: string;
   visionContents?: ChatMessageVisionContent[] | null;
 }
@@ -35,7 +35,7 @@ defineProps<ChatMessageBoxProps>();
     </div>
     <!-- Text Content -->
     <div
-      v-dompurify-html="markdownService.toHtml(content)"
+      v-dompurify-html="markdownService.toHtml(text)"
       :class="{
         'w-full pr-10': role === 'assistant',
       }"

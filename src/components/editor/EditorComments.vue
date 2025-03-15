@@ -52,13 +52,13 @@ const editorStore = useEditorStore();
       <div v-for="comment in editorStore.comments" :key="comment.id">
         <!-- Comment Box -->
         <div
-          class="border p-2 text-sm rounded-md relative min-h-12"
+          class="border p-3 text-sm rounded-md relative min-h-12"
           :class="{
             'bg-gray-100': comment.id === editorStore.selectedCommentId,
           }"
         >
           <!-- Comment Text -->
-          <p>{{ comment.text }}</p>
+          <p class="pr-8">{{ comment.text }}</p>
           <!-- Comment Menu -->
           <div class="absolute top-2 right-3">
             <EditorCommentMenu @delete="() => editorStore.deleteComment(comment.id)" />

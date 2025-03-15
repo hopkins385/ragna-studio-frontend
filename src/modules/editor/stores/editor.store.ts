@@ -2,6 +2,7 @@ import CommentsExtension, { type Comment } from '@/components/editor/extensions/
 import { HighlightSelection } from '@/components/editor/extensions/highlight-selection.extension';
 import { InvisibleCharacters } from '@/components/editor/extensions/invisible-characters';
 import { NodeTracker } from '@/components/editor/extensions/node-tracker';
+import { EditorCommand, editorCommandSchema } from '@/modules/editor/schemas/command.schema';
 import type { CallbackFunction, EditorContent } from '@/modules/editor/types/editor.types';
 import type { EditorEvents, JSONContent } from '@tiptap/core';
 import Highlight from '@tiptap/extension-highlight';
@@ -24,7 +25,7 @@ export const useEditorStore = defineStore('editor-store', () => {
   const _editor = ref<Editor>();
   const _editorContent = ref<string>('');
   const _hasTextSelected = ref(false);
-  const _comments = ref<Comment[] | undefined>(undefined);
+  const _comments = ref<Comment[]>([]);
   const _selectedCommentId = ref<string | null>(null);
 
   // external state refs
@@ -42,9 +43,18 @@ export const useEditorStore = defineStore('editor-store', () => {
   function resetState() {
     _editorContent.value = '';
     _hasTextSelected.value = false;
-    _comments.value = undefined;
+    _comments.value = [];
     _selectedCommentId.value = null;
     showComments.value = false;
+  }
+
+  async function handleCommentAddEvent(comment: Comment) {
+    // Handle comment add event
+    if (!_comments.value) {
+      _comments.value = [];
+    }
+    _comments.value.push(comment);
+    await syncCommentsWithBackend();
   }
 
   function handleCommentClickEvent(commentId: string, reference?: string) {
@@ -72,7 +82,7 @@ export const useEditorStore = defineStore('editor-store', () => {
       if (index !== undefined && index >= 0) {
         _comments.value![index] = comment;
       } else {
-        _comments.value?.push(comment);
+        _comments.value.push(comment);
       }
     });
   }
@@ -105,6 +115,7 @@ export const useEditorStore = defineStore('editor-store', () => {
           generateId: true,
         }),
         CommentsExtension.configure({
+          onCommentAdd: handleCommentAddEvent,
           onCommentClick: handleCommentClickEvent,
           onCommentUpdate: handleCommentUpdateEvent,
           onCommentsUpdates: handleCommentsUpdatesEvent,
@@ -178,7 +189,7 @@ export const useEditorStore = defineStore('editor-store', () => {
     // Sync comments with backend
   }
 
-  async function addCommentToSelection(payload: { commentText: string }) {
+  function addCommentToSelection(payload: { commentText: string }) {
     const { from, to } = getEditor().value.state.selection;
     const newComment: Comment = {
       id: Date.now().toString(),
@@ -187,12 +198,6 @@ export const useEditorStore = defineStore('editor-store', () => {
       to,
     };
     getEditor().value.chain().focus(to).addOneComment(newComment).run();
-    if (!_comments.value) {
-      _comments.value = [newComment];
-    } else {
-      _comments.value.push(newComment);
-    }
-    await syncCommentsWithBackend();
   }
 
   async function deleteComment(id: string) {
@@ -220,15 +225,22 @@ export const useEditorStore = defineStore('editor-store', () => {
     }
 
     // toggles the comments-highlights by removing/adding the comments
+    /*
     if (showComments.value) {
       return getEditor().value.chain().focus().initAllComments(comments.value).run();
     } else {
       return getEditor().value.chain().focus().initAllComments([]).run();
     }
+      */
   }
 
-  function replaceText(payload: { from: number; to: number; text: string }) {
+  function replaceText(payload: { from: number; to: number; text?: string }) {
     const { from, to, text } = payload;
+
+    if (!text) {
+      return;
+    }
+
     return getEditor()
       .value.chain()
       .focus(from)
@@ -333,15 +345,18 @@ export const useEditorStore = defineStore('editor-store', () => {
     return getEditor().value.chain().focus(from).deleteRange({ from, to }).run();
   }
 
-  function addComment(payload: { from: number; to: number; comment: string }) {
-    const { from, to, comment } = payload;
+  function addComment(payload: { from: number; to: number; text?: string }) {
+    if (!payload.text) {
+      return;
+    }
     const newComment: Comment = {
       id: Date.now().toString(),
-      text: comment,
-      from,
-      to,
+      from: payload.from,
+      to: payload.to,
+      text: payload.text,
     };
-    return getEditor().value.chain().focus(to).addOneComment(newComment).run();
+    console.log('Adding comment:', newComment);
+    return getEditor().value.chain().focus(payload.to).addOneComment(newComment).run();
   }
 
   function toggleInvisibleCharacters() {
@@ -360,28 +375,40 @@ export const useEditorStore = defineStore('editor-store', () => {
     return getEditor().value.chain().focus().redo().run();
   }
 
-  function runCommand(command: string, payload: any) {
-    switch (command) {
-      case 'replaceText':
-        return replaceText(payload);
-      case 'insertContent':
-        return insertContent(payload);
-      case 'addComment':
-        return addComment(payload);
-      case 'highlightText':
-        return formatText({ format: 'highlight', from: payload.from, to: payload.to });
+  function runCommand(payload: { command: string; args: any }) {
+    // Validate the command
+    const validated = editorCommandSchema.parse(payload);
+    //
+    switch (validated.command) {
+      case EditorCommand.REPLACE_TEXT:
+        return replaceText(validated.args);
+        break;
+      case EditorCommand.INSERT_CONTENT:
+        // return insertContent(validated.args);
+        break;
+      case EditorCommand.ADD_COMMENT:
+        return addComment(validated.args);
+        break;
+      case EditorCommand.HIGHLIGHT_TEXT:
+        return formatText({
+          format: 'highlight',
+          from: validated.args.from,
+          to: validated.args.to,
+        });
+        break;
       default:
-        throw new Error(`Unknown command: ${command}`);
+        throw new Error(`Unknown command: ${validated.command}`);
+        break;
     }
   }
 
-  function runManyCommands(commands: { command: string; payload: any }[]) {
+  function runManyCommands(commands: { command: string; args: any }[]) {
     if (!commands || commands.length === 0 || !Array.isArray(commands)) {
       console.error('Invalid commands array');
       return;
     }
-    commands.forEach(({ command, payload }) => {
-      runCommand(command, payload);
+    commands.forEach(({ command, args }) => {
+      runCommand({ command, args });
     });
   }
 
