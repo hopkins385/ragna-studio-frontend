@@ -229,16 +229,12 @@ export const useEditorStore = defineStore('editor-store', () => {
   function cycleList() {
     const editor = getEditor().value;
     const chain = editor.chain().focus();
-
-    if (editor.isActive('bulletList')) {
-      // Convert bullet list to ordered list
-      return chain.toggleOrderedList().run();
-    } else if (editor.isActive('orderedList')) {
-      // Remove the ordered list formatting entirely
-      return chain.toggleOrderedList().run();
+    // Check if bullet list is active or ordered list is active
+    if (editor.isActive('bulletList') || editor.isActive('orderedList')) {
+      return chain.focus().toggleOrderedList().run();
     } else {
-      // No list active: start a bullet list
-      return chain.toggleBulletList().run();
+      // If no list is active, toggle bullet list on
+      return chain.focus().toggleBulletList().run();
     }
   }
 

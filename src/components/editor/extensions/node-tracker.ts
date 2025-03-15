@@ -228,7 +228,7 @@ export const NodeTracker = Extension.create<NodeTrackerOptions>({
 
           // Update line numbers for all nodes
           newState.doc.nodesBetween(0, newState.doc.content.size, (node, pos) => {
-            if (!this.options.types.includes(node.type.name)) {
+            if (!this.options?.types.includes(node.type.name)) {
               return true;
             }
 

@@ -61,7 +61,7 @@ const editor = editorStore.getEditor();
         :class="{
           'is-active': editor.isActive('heading', { level: 1 }),
         }"
-        @click="editorStore.formatText({ format: 'h1' })"
+        @click="() => editorStore.formatText({ format: 'h1' })"
       >
         <Heading1Icon class="!size-5 stroke-1.5 bg-transparent" />
       </Button>
@@ -71,7 +71,7 @@ const editor = editorStore.getEditor();
         :class="{
           'is-active': editor.isActive('heading', { level: 2 }),
         }"
-        @click="editorStore.formatText({ format: 'h2' })"
+        @click="() => editorStore.formatText({ format: 'h2' })"
       >
         <Heading2Icon class="!size-5 stroke-1.5 bg-transparent" />
       </Button>
@@ -81,7 +81,7 @@ const editor = editorStore.getEditor();
         :class="{
           'is-active': editor.isActive('bold'),
         }"
-        @click="editorStore.formatText({ format: 'bold' })"
+        @click="() => editorStore.formatText({ format: 'bold' })"
       >
         <BoldIcon class="size-4 bg-transparent" />
       </Button>
@@ -91,7 +91,7 @@ const editor = editorStore.getEditor();
         :class="{
           'is-active': editor.isActive('italic'),
         }"
-        @click="editorStore.formatText({ format: 'italic' })"
+        @click="() => editorStore.formatText({ format: 'italic' })"
       >
         <ItalicIcon class="size-4 bg-transparent" />
       </Button>
@@ -101,7 +101,7 @@ const editor = editorStore.getEditor();
         :class="{
           'is-active': editor.isActive('underline'),
         }"
-        @click="editorStore.formatText({ format: 'underline' })"
+        @click="() => editorStore.formatText({ format: 'underline' })"
       >
         <UnderlineIcon class="size-4 bg-transparent" />
       </Button>
@@ -111,11 +111,11 @@ const editor = editorStore.getEditor();
         :class="{
           'is-active': editor.isActive('strike'),
         }"
-        @click="editorStore.formatText({ format: 'strike' })"
+        @click="() => editorStore.formatText({ format: 'strike' })"
       >
         <StrikethroughIcon class="size-4 bg-transparent" />
       </Button>
-      <Button variant="ghost" size="icon" @click="editorStore.cycleTextOrientation">
+      <Button variant="ghost" size="icon" @click="() => editorStore.cycleTextOrientation()">
         <TextIcon
           v-if="editor.isActive({ textAlign: 'left' })"
           class="!size-5 stroke-1.5 bg-transparent"
@@ -140,7 +140,7 @@ const editor = editorStore.getEditor();
         :class="{
           'is-active': editor.isActive('bulletList') || editor.isActive('orderedList'),
         }"
-        @click="editorStore.cycleList()"
+        @click="() => editorStore.cycleList()"
       >
         <ListOrderedIcon
           v-if="editor.isActive('orderedList')"
@@ -154,7 +154,7 @@ const editor = editorStore.getEditor();
         :class="{
           'is-active': editor.isActive('taskList'),
         }"
-        @click="editorStore.toggleTaskList()"
+        @click="() => editorStore.toggleTaskList()"
       >
         <ListChecksIcon class="!size-5 stroke-1.5 bg-transparent" />
       </Button>
@@ -164,7 +164,7 @@ const editor = editorStore.getEditor();
         :class="{
           'is-active': editor.isActive('highlight'),
         }"
-        @click="editorStore.formatText({ format: 'highlight' })"
+        @click="() => editorStore.formatText({ format: 'highlight' })"
       >
         <HighlighterIcon class="size-4 bg-transparent" />
       </Button>
@@ -181,17 +181,17 @@ const editor = editorStore.getEditor();
       <Button
         variant="ghost"
         size="icon"
-        @click="editorStore.toggleInvisibleCharacters()"
+        @click="() => editorStore.toggleInvisibleCharacters()"
         :class="{
           'is-active': editor.storage.invisibleCharacters.visibility(),
         }"
       >
         <PilcrowIcon class="size-4 bg-transparent" />
       </Button>
-      <Button variant="ghost" size="icon" @click="editorStore.undo()">
+      <Button variant="ghost" size="icon" @click="() => editorStore.undo()">
         <Undo2Icon class="size-4 bg-transparent" />
       </Button>
-      <Button variant="ghost" size="icon" @click="editorStore.redo()">
+      <Button variant="ghost" size="icon" @click="() => editorStore.redo()">
         <Redo2Icon class="size-4 bg-transparent" />
       </Button>
     </div>
