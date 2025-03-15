@@ -3,17 +3,19 @@
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
-import { SendHorizontalIcon } from 'lucide-vue-next';
+import { SendHorizontalIcon, SquareIcon } from 'lucide-vue-next';
 
 // Props
 const modelValue = defineModel<string | undefined>();
-const { submitLocked = false } = defineProps<{
+const { showAbortButton = false, submitLocked = false } = defineProps<{
+  showAbortButton?: boolean;
   submitLocked?: boolean;
 }>();
 
 // Emits
 const emit = defineEmits<{
   submitForm: [void];
+  abort: [void];
 }>();
 
 // Refs
@@ -48,6 +50,12 @@ const onKeyDownEnter = (event: KeyboardEvent) => {
     event.preventDefault();
     emit('submitForm');
   }
+  adjustTextareaHeight();
+};
+
+const abortRequest = () => {
+  emit('abort');
+  adjustTextareaHeight();
 };
 
 // Hooks
@@ -65,22 +73,21 @@ const onKeyDownEnter = (event: KeyboardEvent) => {
         v-model="modelValue"
         :placeholder="$t('chat.input.placeholder')"
         resize="none"
-        class="no-scrollbar resize-none rounded-lg py-4 pr-14 focus:shadow-lg bg-stone-50"
+        class="no-scrollbar resize-none rounded-lg py-3 pr-14 focus:shadow-lg bg-stone-50"
         @keydown.enter="onKeyDownEnter"
         @input="adjustTextareaHeight"
       />
     </div>
-    <!--
+
     <Button
       v-if="showAbortButton"
       variant="outline"
       size="icon"
       class="group absolute bottom-3 right-3 z-20 mr-1 size-8 rounded-full bg-slate-100"
-      @click="onAbortChatRequest"
+      @click="abortRequest"
     >
       <SquareIcon class="!size-4 stroke-1.5 text-slate-500 group-hover:text-slate-900" />
     </Button>
-    -->
     <Button
       class="absolute z-10 bottom-1 right-2 size-8"
       type="submit"

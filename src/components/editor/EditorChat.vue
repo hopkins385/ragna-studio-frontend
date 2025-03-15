@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Imports
-import Illustration from '@/assets/illustrations/empty-comments.svg';
+import Illustration from '@/assets/illustrations/undraw_saying.svg';
 import ChatAssistantSelect from '@/components/chat/ChatAssistantSelect.vue';
 import ChatInputTextarea from '@/components/chat/ChatInputTextarea.vue';
 import EditorSidePanel from '@/components/editor/EditorSidePanel.vue';
@@ -71,6 +71,7 @@ async function submitForm(args_0?: void | undefined) {
     chatId: aiChatStore.chat?.id,
     type: 'text',
     content: userMessageContent,
+    context: JSON.stringify(editorStore.getJSONContent()),
   });
 }
 
@@ -95,6 +96,10 @@ const redirectToChatHistory = () => {
   router.push({
     name: RouteName.CHAT_HISTORY,
   });
+};
+
+const abortRequest = () => {
+  aiChatStore.abortChatRequest();
 };
 
 // Hooks
@@ -149,11 +154,14 @@ onBeforeUnmount(() => {
     </template>
     <div class="flex flex-col h-[calc(100vh-9rem)]">
       <!-- Chat scroll container -->
-      <div ref="chatContainerRef" class="no-scrollbar relative grow overflow-y-scroll">
+      <div
+        ref="chatContainerRef"
+        class="chatbox__text-box no-scrollbar relative grow overflow-y-scroll"
+      >
         <div class="h-full space-y-2">
           <!-- Empty Chat Placeholder -->
           <div v-if="!aiChatStore.hasChatMessages">
-            <div class="px-20 pt-20 pb-10">
+            <div class="px-28 pt-20 pb-10">
               <Illustration />
             </div>
             <div class="px-14 text-center text-sm space-y-4">
@@ -167,14 +175,14 @@ onBeforeUnmount(() => {
           <div
             v-for="(message, index) in aiChatStore.chatMessages"
             :key="index"
-            class="border p-2 rounded-md text-sm"
+            class="p-2 rounded-md text-sm"
             v-dompurify-html="markdownService.toHtml(message.content.toString())"
           ></div>
           <div v-if="aiChatStore.isThinking">...</div>
           <!-- Chat messages stream chunks -->
           <div
             v-if="aiChatStore.isStreaming"
-            class="border p-2 rounded-md text-sm"
+            class="p-2 rounded-md text-sm"
             v-dompurify-html="markdownService.toHtml(aiChatStore.joinedMessageTextChunks)"
           ></div>
           <div class="h-4"></div>
@@ -184,8 +192,10 @@ onBeforeUnmount(() => {
       <div class="relative pt-1">
         <ChatInputTextarea
           v-model="textareaInput"
+          :show-abort-button="aiChatStore.isThinking || aiChatStore.isStreaming"
           :submit-locked="submitLocked"
           @submit-form="submitForm"
+          @abort="abortRequest"
         />
         <div class="absolute bottom-[0.3rem] z-10 right-8">
           <ChatAssistantSelect :select-locked="aiChatStore.hasChat" />

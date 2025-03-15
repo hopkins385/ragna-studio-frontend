@@ -86,6 +86,7 @@ export class AiChatService extends BaseApiService {
     });
     const body = {
       messages: payload.chatMessages,
+      context: payload.context,
       reasoningEffort: payload.reasoningEffort || DEFAULT_REASONING_EFFORT,
       maxTokens: payload.maxTokens || DEFAULT_MAX_TOKENS,
       temperature: payload.temperature || DEFAULT_TEMPERATURE,
