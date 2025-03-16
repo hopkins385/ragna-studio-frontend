@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { cuidSchema } from './cuid.schema';
+import { cuidSchema } from '../../../common/schemas/cuid.schema';
 
 export const maxFileSize = 1 * 1024 * 1024; // 1MB
 

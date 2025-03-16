@@ -3,6 +3,7 @@ import { useToolIcons } from '@/composables/useToolIcons';
 import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
+import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
 import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { collectionAbleService } from '@/modules/collection-able/services/collection-able.service';
@@ -12,7 +13,6 @@ import ButtonLoading from '@components/button/ButtonLoading.vue';
 import CollectionSelectModal from '@components/collection/CollectionSelectModal.vue';
 import TabSidebar from '@components/tab/TabSidebar.vue';
 import useToast from '@composables/useToast';
-import { assistantFormSchema } from '@schemas/assistant.form';
 import { Button } from '@ui/button';
 import Checkbox from '@ui/checkbox/Checkbox.vue';
 import {

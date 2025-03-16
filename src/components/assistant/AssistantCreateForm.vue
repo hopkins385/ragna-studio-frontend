@@ -3,10 +3,10 @@
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantToolService } from '@/modules/assistant-tool/services/assistant-tool.service';
+import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
 import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
-import { assistantFormSchema } from '@/schemas/assistant.form';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';

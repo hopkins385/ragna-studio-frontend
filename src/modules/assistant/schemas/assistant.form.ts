@@ -1,6 +1,6 @@
 import { toTypedSchema } from '@vee-validate/zod';
 import * as z from 'zod';
-import { cuidSchema } from './cuid.schema';
+import { cuidSchema } from '../../../common/schemas/cuid.schema';
 
 export const assistantSchema = z.object({
   teamId: cuidSchema,

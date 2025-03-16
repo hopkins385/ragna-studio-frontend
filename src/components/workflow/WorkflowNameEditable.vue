@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { workflowNameSchema } from '@/modules/workflow/schemas/workflow-settings.schema';
 import { workflowService } from '@/modules/workflow/services/workflow.service';
-import { workflowNameSchema } from '@/schemas/workflow-settings.schema';
 import { FormControl, FormField, FormItem, FormMessage } from '@ui/form';
 import { Input } from '@ui/input';
 import { toTypedSchema } from '@vee-validate/zod';

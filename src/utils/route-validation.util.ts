@@ -1,6 +1,6 @@
+import { cuidSchema } from '@/common/schemas/cuid.schema';
+import { socialAuthGoogleCallbackSchema } from '@/modules/auth/schemas/social-auth-google-callback.schema';
 import { RouteName } from '@/router/enums/route-names.enum';
-import { cuidSchema } from '@/schemas/cuid.schema';
-import { socialAuthGoogleCallbackSchema } from '@/schemas/social-auth-google-callback.schema';
 import type { RouteLocationNormalized } from 'vue-router';
 import { z } from 'zod';
 

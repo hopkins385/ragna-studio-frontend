@@ -3,13 +3,13 @@ import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantToolService } from '@/modules/assistant-tool/services/assistant-tool.service';
+import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
 import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import AssistantCreateForm from '@components/assistant/AssistantCreateForm.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import useToast from '@composables/useToast';
 import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
-import { assistantFormSchema } from '@schemas/assistant.form';
 import { useForm } from 'vee-validate';
 
 const router = useRouter();

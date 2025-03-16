@@ -6,13 +6,13 @@ import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { mediaAbleService } from '@/modules/media-able/services/media-able.service';
 import { mediaService } from '@/modules/media/services/media.service';
-import { workflowService } from '@/modules/workflow/services/workflow.service';
-import { RouteName } from '@/router/enums/route-names.enum';
 import {
   allowedMimeTypes,
   createWorkflowSchema,
   maxFileSize,
-} from '@/schemas/create-workflow.schema';
+} from '@/modules/workflow/schemas/create-workflow.schema';
+import { workflowService } from '@/modules/workflow/services/workflow.service';
+import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
