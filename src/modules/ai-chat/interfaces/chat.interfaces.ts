@@ -1,4 +1,4 @@
-import type { PaginateMeta } from '@/interfaces/paginate-meta.interface';
+import type { PaginateMeta } from '@/common/interfaces/paginate-meta.interface';
 import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
 
 export type InputChatId = string | null | undefined;

@@ -1,7 +1,7 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
+import type { PaginateDto } from '@/common/interfaces/paginate.interface';
 import { BaseApiService } from '@/common/service/base-api.service';
-import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { getRoute } from '@/utils/route.util';
 
 const ApiMediaRoute = {

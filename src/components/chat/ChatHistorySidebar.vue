@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import type { PaginateDto } from '@/common/interfaces/paginate.interface';
 import useForHumans from '@/composables/useForHumans';
-import type { PaginateDto } from '@/interfaces/paginate.interface';
 import type { ChatsPaginatedResponse } from '@/modules/ai-chat/interfaces/chat.interfaces';
 import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import { RouteName } from '@/router/enums/route-names.enum';

@@ -1,4 +1,4 @@
-import type { NavItem } from '@/interfaces/nav/nav-item.interface';
+import type { NavItem } from '@/common/interfaces/nav-item.interface';
 import {
   adminItems,
   architectureItems,

@@ -4,8 +4,8 @@ import { RequestAbortError } from '@/common/errors/abort.error';
 import { BadRequestError } from '@/common/errors/bad-request.error';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { ConnectionError } from '@/common/errors/connection.error';
+import type { PaginateDto } from '@/common/interfaces/paginate.interface';
 import { BaseApiService } from '@/common/service/base-api.service';
-import type { PaginateDto } from '@/interfaces/paginate.interface';
 import { ChatServiceError } from '@/modules/ai-chat/errors/chat-service.error';
 import type {
   Chat,

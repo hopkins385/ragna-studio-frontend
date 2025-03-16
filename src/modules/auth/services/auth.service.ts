@@ -2,7 +2,6 @@ import { HttpStatus } from '@/axios/utils/http-status';
 import { BadResponseError } from '@/common/errors/bad-response.error';
 import { UnauthorizedError } from '@/common/errors/unauthorized.error';
 import { BaseApiService } from '@/common/service/base-api.service';
-import type { GoogleAuthCallbackQuery } from '@/interfaces/auth/google-auth-callback.interface';
 import type {
   AuthCredentials,
   AuthUserResponse,
@@ -11,6 +10,7 @@ import type {
   SocialAuthUrlResponse,
   TokensResponse,
 } from '@/modules/auth/interfaces/auth.interfaces';
+import type { GoogleAuthCallbackQuery } from '@/modules/auth/interfaces/google-auth-callback.interface';
 import { getRoute } from '@/utils/route.util';
 
 export const ApiAuthRoute = {

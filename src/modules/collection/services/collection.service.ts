@@ -1,8 +1,8 @@
 import { HttpStatus } from '@/axios/utils/http-status';
 import { BadRequestError } from '@/common/errors/bad-request.error';
 import { BadResponseError } from '@/common/errors/bad-response.error';
+import type { PaginateDto } from '@/common/interfaces/paginate.interface';
 import { BaseApiService } from '@/common/service/base-api.service';
-import type { PaginateDto } from '@/interfaces/paginate.interface';
 import type { CollectionAbleModel } from '@/modules/collection-able/interfaces';
 import type {
   CollectionResponse,

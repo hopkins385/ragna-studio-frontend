@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import type { PaginateDto } from '@/common/interfaces/paginate.interface';
 import { useDrawerStore } from '@/common/stores/drawer.store';
 import useForHumans from '@/composables/useForHumans';
-import type { PaginateDto } from '@/interfaces/paginate.interface';
 import {
   groupByOptions,
   useAiChatSettingsStore,

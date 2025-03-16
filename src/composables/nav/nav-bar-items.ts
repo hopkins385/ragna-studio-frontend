@@ -1,4 +1,4 @@
-import type { NavItem } from '@/interfaces/nav/nav-item.interface';
+import type { NavItem } from '@/common/interfaces/nav-item.interface';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import {
   BotIcon,
