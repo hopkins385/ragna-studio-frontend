@@ -3,9 +3,9 @@ import AssistantSelectForm from '@/components/assistant/AssistantSelectForm.vue'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { assistantService } from '@/modules/assistant/assistant.service';
 import type { AssistantsPaginatedResponse } from '@/modules/assistant/interfaces/assistant.interfaces';
-import { workflowStepService } from '@/modules/workflow-step/workflow-step.service';
+import { assistantService } from '@/modules/assistant/services/assistant.service';
+import { workflowStepService } from '@/modules/workflow-step/services/workflow-step.service';
 import { Trash2Icon } from 'lucide-vue-next';
 
 const props = defineProps<{

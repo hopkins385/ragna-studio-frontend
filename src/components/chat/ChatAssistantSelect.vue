@@ -1,8 +1,8 @@
 <script setup lang="ts">
 // Imports
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
-import { assistantService } from '@/modules/assistant/assistant.service';
 import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
+import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/select';
 
 // Props

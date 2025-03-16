@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { workflowService } from '@/modules/workflow/workflow.service';
+import { workflowService } from '@/modules/workflow/services/workflow.service';
 import { workflowNameSchema } from '@/schemas/workflow-settings.schema';
 import { FormControl, FormField, FormItem, FormMessage } from '@ui/form';
 import { Input } from '@ui/input';

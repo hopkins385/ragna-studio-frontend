@@ -7,8 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { accountStatsService } from '@/modules/account/account-stats.service';
 import type { TokenUsage } from '@/modules/account/interfaces';
+import { accountStatsService } from '@/modules/account/services/account-stats.service';
 import getDaysInMonth from '@/utils/date';
 import { BarChart, type BarSeriesOption } from 'echarts/charts';
 import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';

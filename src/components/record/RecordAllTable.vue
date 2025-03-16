@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useToast from '@/composables/useToast';
 import type { RecordsPaginatedResponse } from '@/modules/record/interfaces';
-import { recordService } from '@/modules/record/record.service';
+import { recordService } from '@/modules/record/services/record.service';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';

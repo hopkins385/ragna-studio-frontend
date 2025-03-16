@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/table';
 import { useNotification } from '@/composables/useNotification';
 import type { User, UsersPaginated } from '@/modules/user/interfaces';
-import { userService } from '@/modules/user/user.service';
+import { userService } from '@/modules/user/services/user.service';
 import { Settings, Trash2, User2 } from 'lucide-vue-next';
 
 // Composables

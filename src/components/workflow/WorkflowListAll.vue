@@ -3,9 +3,9 @@
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import useToast from '@/composables/useToast';
-import { userFavoriteService } from '@/modules/user-favorite/user-favorite.service';
+import { userFavoriteService } from '@/modules/user-favorite/services/user-favorite.service';
 import type { WorkflowsPaginatedResponse } from '@/modules/workflow/interfaces';
-import { workflowService } from '@/modules/workflow/workflow.service';
+import { workflowService } from '@/modules/workflow/services/workflow.service';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';

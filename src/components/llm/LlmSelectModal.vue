@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { LargeLangModel } from '@/modules/llm/interfaces';
-import { llmService } from '@/modules/llm/llm.service';
+import { llmService } from '@/modules/llm/services/llm.service';
 import LlmInfoBox from './LlmInfoBox.vue';
 
 const props = defineProps<{

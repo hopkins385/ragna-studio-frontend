@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useToolIcons } from '@/composables/useToolIcons';
-import { aiChatService } from '@/modules/ai-chat/ai-chat.service';
+import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
-import { assistantService } from '@/modules/assistant/assistant.service';
 import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
+import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
-import { collectionAbleService } from '@/modules/collection-able/collection-able.service';
+import { collectionAbleService } from '@/modules/collection-able/services/collection-able.service';
 import type { Collection } from '@/modules/collection/interfaces';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@components/button/ButtonLoading.vue';

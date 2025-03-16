@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { accountService } from '@/modules/account/account.service';
+import { accountService } from '@/modules/account/services/account.service';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
 import { FormControl, FormField, FormLabel, FormMessage } from '@ui/form';

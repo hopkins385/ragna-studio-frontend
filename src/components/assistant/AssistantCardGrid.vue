@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { assistantService } from '@/modules/assistant/assistant.service';
 import type { AssistantsPaginatedResponse } from '@/modules/assistant/interfaces/assistant.interfaces';
+import { assistantService } from '@/modules/assistant/services/assistant.service';
 import AssistantCard from './AssistantCard.vue';
 import AssistantEmptyList from './AssistantEmptyList.vue';
 

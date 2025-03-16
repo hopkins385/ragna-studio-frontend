@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAiChatStore } from '@/modules/ai-chat/stores';
 import type { UserFavorite } from '@/modules/user-favorite/interfaces';
-import { userFavoriteService } from '@/modules/user-favorite/user-favorite.service';
+import { userFavoriteService } from '@/modules/user-favorite/services/user-favorite.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { Star } from 'lucide-vue-next';
 

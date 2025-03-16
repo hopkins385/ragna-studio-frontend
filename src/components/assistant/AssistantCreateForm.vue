@@ -1,9 +1,9 @@
 <script setup lang="ts">
 // Imports
 import { useErrorAlert } from '@/composables/useErrorAlert';
-import { assistantToolService } from '@/modules/assistant-tool/assistant-tool.service';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
-import { assistantService } from '@/modules/assistant/assistant.service';
+import { assistantToolService } from '@/modules/assistant-tool/services/assistant-tool.service';
+import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { assistantFormSchema } from '@/schemas/assistant.form';

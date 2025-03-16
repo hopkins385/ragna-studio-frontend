@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { workflowStepService } from '@/modules/workflow-step/workflow-step.service';
+import { workflowStepService } from '@/modules/workflow-step/services/workflow-step.service';
 import { Textarea } from '@ui/textarea';
 import { onClickOutside, useDebounceFn } from '@vueuse/core';
 import { XIcon } from 'lucide-vue-next';

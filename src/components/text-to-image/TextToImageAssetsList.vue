@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { textToImageService } from '@/modules/text-to-image/text-to-image.service';
+import { textToImageService } from '@/modules/text-to-image/services/text-to-image.service';
 import { useImgGenSettingsStore } from '@/stores/image-gen-settings.store';
 import { useInfiniteScroll } from '@vueuse/core';
 import { Loader2Icon } from 'lucide-vue-next';

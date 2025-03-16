@@ -1,11 +1,11 @@
 import { RequestAbortError } from '@/common/errors/abort.error';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
-import { AiChatService } from '@/modules/ai-chat/ai-chat.service';
 import type {
   Chat,
   ChatMessage,
   CreateChatMessageStreamPayload,
 } from '@/modules/ai-chat/interfaces/chat.interfaces';
+import { AiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import { defineStore } from 'pinia';
 
 export const useAiChatStore = defineStore('ai-chat-store', () => {

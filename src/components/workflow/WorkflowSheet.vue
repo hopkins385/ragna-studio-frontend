@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { assistantService } from '@/modules/assistant/assistant.service';
-import { workflowStepService } from '@/modules/workflow-step/workflow-step.service';
+import { assistantService } from '@/modules/assistant/services/assistant.service';
+import { workflowStepService } from '@/modules/workflow-step/services/workflow-step.service';
 import type { Workflow } from '@/modules/workflow/interfaces';
-import { workflowService } from '@/modules/workflow/workflow.service';
+import { workflowService } from '@/modules/workflow/services/workflow.service';
 import { useResizeSheet } from '@composables/useResizeSheet';
 import useToast from '@composables/useToast';
 import { useWebSocketStore } from '@stores/websocket.store';

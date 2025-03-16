@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import { useErrorAlert } from '@/composables/useErrorAlert';
-import { editorService } from '@/modules/editor/editor.service';
+import { editorService } from '@/modules/editor/services/editor.service';
 import { useEditorStore } from '@/modules/editor/stores';
 import { useWebSocketStore } from '@/stores/websocket.store';
 import { EditorContent } from '@tiptap/vue-3';

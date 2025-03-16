@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { textToImageService } from '@/modules/text-to-image/text-to-image.service';
+import { textToImageService } from '@/modules/text-to-image/services/text-to-image.service';
 import { Button } from '@ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';

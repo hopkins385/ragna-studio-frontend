@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { accountService } from '@/modules/account/account.service';
+import { accountService } from '@/modules/account/services/account.service';
 import ButtonLoading from '@components/button/ButtonLoading.vue';
 import useToast from '@composables/useToast';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';

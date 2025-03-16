@@ -16,7 +16,7 @@ import { useAutoScroll } from '@/composables/useAutoScroll';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import { useAiChatStore } from '@/modules/ai-chat/stores';
 import { useEditorStore } from '@/modules/editor/stores/editor.store';
-import { markdownService } from '@/modules/markdown/markdown.service';
+import { markdownService } from '@/modules/markdown/services/markdown.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { EllipsisIcon, HistoryIcon, PlusIcon } from 'lucide-vue-next';
 

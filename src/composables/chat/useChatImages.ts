@@ -1,5 +1,5 @@
 import { useAiChatStore } from '@/modules/ai-chat/stores';
-import { mediaService } from '@/modules/media/media.service';
+import { mediaService } from '@/modules/media/services/media.service';
 
 export interface ChatImage {
   src: string;

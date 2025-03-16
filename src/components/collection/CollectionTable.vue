@@ -2,8 +2,8 @@
 // Imports
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
-import { collectionService } from '@/modules/collection/collection.service';
 import type { CollectionsPaginatedResponse } from '@/modules/collection/interfaces';
+import { collectionService } from '@/modules/collection/services/collection.service';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
-import { aiChatService } from '@/modules/ai-chat/ai-chat.service';
+import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { EditIcon } from 'lucide-vue-next';
 

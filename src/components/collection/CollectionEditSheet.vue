@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { collectionService } from '@/modules/collection/collection.service';
+import { collectionService } from '@/modules/collection/services/collection.service';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';

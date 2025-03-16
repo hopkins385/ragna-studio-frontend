@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useToast from '@/composables/useToast';
-import { workflowService } from '@/modules/workflow/workflow.service';
+import { workflowService } from '@/modules/workflow/services/workflow.service';
 import { Button } from '@ui/button';
 import Separator from '@ui/separator/Separator.vue';
 import { SheetContent, SheetHeader, SheetTrigger } from '@ui/sheet';

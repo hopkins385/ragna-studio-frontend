@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { workflowStepService } from '@/modules/workflow-step/workflow-step.service';
+import { workflowStepService } from '@/modules/workflow-step/services/workflow-step.service';
 import { FormControl, FormField, FormItem, FormMessage } from '@ui/form';
 import {
   Select,

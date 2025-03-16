@@ -3,7 +3,7 @@
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
-import { mediaService } from '@/modules/media/media.service';
+import { mediaService } from '@/modules/media/services/media.service';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ChatMessageRole } from '@/enums/chat-role.enum';
-import { markdownService } from '@/modules/markdown/markdown.service';
+import { markdownService } from '@/modules/markdown/services/markdown.service';
 import ChatMessageBoxWrapper from './ChatMessageBoxWrapper.vue';
 
 defineProps<{

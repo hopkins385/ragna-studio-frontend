@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useToast from '@/composables/useToast';
-import { workflowService } from '@/modules/workflow/workflow.service';
+import { workflowService } from '@/modules/workflow/services/workflow.service';
 import { workflowSettingsSchema } from '@/schemas/workflow-settings.schema';
 import { Button } from '@ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';

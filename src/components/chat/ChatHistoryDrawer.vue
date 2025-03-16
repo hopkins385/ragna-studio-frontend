@@ -6,8 +6,8 @@ import {
   useAiChatSettingsStore,
 } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import type { GroupByOption } from '@/modules/ai-chat-settings/types/ai-chat-settings.type';
-import { aiChatService } from '@/modules/ai-chat/ai-chat.service';
 import type { ChatsPaginatedResponse } from '@/modules/ai-chat/interfaces/chat.interfaces';
+import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { useDrawerStore } from '@stores/drawer.store';
 import { Button } from '@ui/button';

@@ -1,4 +1,4 @@
-import { AuthRoutePath } from '@/modules/auth/routes';
+import { AuthRoutePath } from '@/modules/auth/router';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import type { AxiosError, AxiosRequestConfig } from 'axios';
 import { $axios } from './axiosInstance';

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import useForHumans from '@/composables/useForHumans';
 import type { PaginateDto } from '@/interfaces/paginate.interface';
-import { aiChatService } from '@/modules/ai-chat/ai-chat.service';
 import type { ChatsPaginatedResponse } from '@/modules/ai-chat/interfaces/chat.interfaces';
+import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { Button } from '@ui/button';
 import { Separator } from '@ui/separator';

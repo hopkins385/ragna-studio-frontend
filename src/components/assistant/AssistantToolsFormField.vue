@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { assistantToolService } from '@/modules/assistant-tool/assistant-tool.service';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
+import { assistantToolService } from '@/modules/assistant-tool/services/assistant-tool.service';
 import { Checkbox } from '@components/ui/checkbox';
 import {
   FormControl,

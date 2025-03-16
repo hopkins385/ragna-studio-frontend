@@ -1,16 +1,16 @@
 import './assets/css/main.css';
 
-import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 import { createI18n } from 'vue-i18n';
 
 import App from './App.vue';
 import veeConfigPlugin from './plugins/vee-validate.plugin';
+
 import router from './router';
+import pinia from './store';
 
 import { setupAxiosJwtInterceptor } from './axios/setupJwt';
 
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import VueDOMPurifyHTML from 'vue-dompurify-html';
 
 import { createHead } from '@unhead/vue';
@@ -22,7 +22,37 @@ import { abilitiesPlugin } from '@casl/vue';
 import { ability } from './services/ability.service';
 
 // i18n
+import { registerModules } from '@/register-modules';
 import messages from '@intlify/unplugin-vue-i18n/messages';
+
+// Modules
+import accountModule from '@/modules/account';
+import aiChatModule from '@/modules/ai-chat';
+import assistantModule from '@/modules/assistant';
+import authModule from '@/modules/auth';
+import collectionModule from '@/modules/collection';
+import documentModule from '@/modules/document';
+import homeModule from '@/modules/home';
+import mediaModule from '@/modules/media';
+import onboardingModule from '@/modules/onboarding';
+import textToImageModule from '@/modules/text-to-image';
+import userModule from '@/modules/user';
+import workflowModule from '@/modules/workflow';
+
+registerModules({
+  auth: authModule,
+  user: userModule,
+  home: homeModule,
+  account: accountModule,
+  aiChat: aiChatModule,
+  assistant: assistantModule,
+  collection: collectionModule,
+  document: documentModule,
+  media: mediaModule,
+  textToImage: textToImageModule,
+  onboarding: onboardingModule,
+  workflow: workflowModule,
+});
 
 const i18n = createI18n({
   legacy: false,
@@ -32,9 +62,6 @@ const i18n = createI18n({
 });
 
 const app = createApp(App);
-
-const pinia = createPinia();
-pinia.use(piniaPluginPersistedstate);
 
 const head = createHead();
 

@@ -1,5 +1,5 @@
-import { editorService } from '@/modules/editor/editor.service';
-import { markdownService } from '@/modules/markdown/markdown.service';
+import { editorService } from '@/modules/editor/services/editor.service';
+import { markdownService } from '@/modules/markdown/services/markdown.service';
 
 export default function useEditorCompletion() {
   let ac: AbortController | null = null;

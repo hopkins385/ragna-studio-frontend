@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
-import { mediaService } from '@/modules/media/media.service';
-import { recordService } from '@/modules/record/record.service';
+import { mediaService } from '@/modules/media/services/media.service';
+import { recordService } from '@/modules/record/services/record.service';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
@@ -48,7 +48,7 @@ const mediaData = reactive<IMediaData>({
 const allRecords = ref<any[]>([]);
 
 const allRecordsMediaIds = computed(() => {
-  return allRecords.value.map(record => record.media.id);
+  return allRecords.value.map(record => record.media?.id);
 });
 
 const initAllRecords = async () => {

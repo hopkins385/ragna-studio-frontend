@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useForHumans from '@/composables/useForHumans';
 import useGoogleDriveIcons from '@/composables/useGoogleDriveIcons';
-import { googleDriveService } from '@/modules/google-drive/google-drive.service';
+import { googleDriveService } from '@/modules/google-drive/services/google-drive.service';
 import { Button } from '@ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';

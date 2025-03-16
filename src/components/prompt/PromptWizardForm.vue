@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { promptWizardService } from '@/modules/prompt-wizard/prompt-wizard.service';
+import { promptWizardService } from '@/modules/prompt-wizard/services/prompt-wizard.service';
 import {
   FormControl,
   FormDescription,
