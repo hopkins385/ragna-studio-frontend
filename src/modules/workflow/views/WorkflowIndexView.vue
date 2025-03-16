@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import ButtonLink from '@/common/components/button/ButtonLink.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import WorkflowListAll from '@/modules/workflow/components/WorkflowListAll.vue';
 import Heading from '@components/heading/Heading.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import TableSkeleton from '@components/table/TableSkeleton.vue';
-import WorkflowListAll from '@components/workflow/WorkflowListAll.vue';
 import bgImgUrl from '@images/bg_workflow.png?q=100&format=webp&imagetools';
 import { PlusIcon } from 'lucide-vue-next';
 
