@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
+import { Checkbox } from '@ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -7,18 +9,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@ui/dialog';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';
 import { Input } from '@ui/input';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
-import ButtonLoading from '../button/ButtonLoading.vue';
-import { Checkbox } from '../ui/checkbox';
 
 const isLoading = ref(false);
 
@@ -73,12 +67,7 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {});
           <FormItem>
             <FormLabel>{{ $t('form.name') }}</FormLabel>
             <FormControl>
-              <Input
-                type="text"
-                placeholder=""
-                v-bind="componentField"
-                autocomplete="name"
-              />
+              <Input type="text" placeholder="" v-bind="componentField" autocomplete="name" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -88,29 +77,16 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {});
           <FormItem>
             <FormLabel>{{ $t('form.email') }}</FormLabel>
             <FormControl>
-              <Input
-                type="email"
-                placeholder=""
-                v-bind="componentField"
-                autocomplete="email"
-              />
+              <Input type="email" placeholder="" v-bind="componentField" autocomplete="email" />
             </FormControl>
             <FormMessage />
           </FormItem>
         </FormField>
         <!-- Terms -->
-        <FormField
-          v-slot="{ handleChange, value }"
-          type="checkbox"
-          name="terms"
-        >
+        <FormField v-slot="{ handleChange, value }" type="checkbox" name="terms">
           <FormItem>
             <FormControl>
-              <Checkbox
-                :checked="value"
-                :unchecked-value="false"
-                @update:checked="handleChange"
-              />
+              <Checkbox :checked="value" :unchecked-value="false" @update:checked="handleChange" />
               <FormLabel>
                 <span class="pl-2">
                   {{ $t('auth.accept_terms_p1') }}

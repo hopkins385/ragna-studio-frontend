@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChatMessageRole } from '@/enums/chat-role.enum';
+import { ChatMessageRole } from '@/modules/ai-chat/enums/chat-role.enum';
 import IconRagna from '@assets/icons/ragna.svg?component';
 import { UserRoundIcon } from 'lucide-vue-next';
 

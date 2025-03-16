@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import ButtonLink from '@/common/components/button/ButtonLink.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
-import ButtonLink from '@components/button/ButtonLink.vue';
 import Heading from '@components/heading/Heading.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import TableSkeleton from '@components/table/TableSkeleton.vue';

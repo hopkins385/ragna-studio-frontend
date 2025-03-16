@@ -11,9 +11,9 @@ async function getLayout(layout: string) {
     throw new Error('Invalid layout specified');
   }
   return {
-    AppLayout: import('../../layouts/AppLayout.vue'),
-    LoginLayout: import('../../layouts/LoginLayout.vue'),
-    ErrorLayout: import('../../layouts/ErrorLayout.vue'),
+    AppLayout: import('@/layouts/AppLayout.vue'),
+    LoginLayout: import('@/layouts/LoginLayout.vue'),
+    ErrorLayout: import('@/layouts/ErrorLayout.vue'),
   }[layout];
 }
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Imports
+import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import { UnknownError } from '@/common/errors/unknown.error';
-import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import { editorService } from '@/modules/editor/services/editor.service';
 import { useEditorStore } from '@/modules/editor/stores/editor.store';
 import { markdownService } from '@/modules/markdown/services/markdown.service';

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import LlmSelectModal from '@/components/llm/LlmSelectModal.vue';
 import PromptWizardDialog from '@/components/prompt/PromptWizardDialog.vue';
 import { useToolIcons } from '@/composables/useToolIcons';
@@ -11,7 +12,6 @@ import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { collectionAbleService } from '@/modules/collection-able/services/collection-able.service';
 import type { Collection } from '@/modules/collection/interfaces';
 import { RouteName } from '@/router/enums/route-names.enum';
-import ButtonLoading from '@components/button/ButtonLoading.vue';
 import CollectionSelectModal from '@components/collection/CollectionSelectModal.vue';
 import TabSidebar from '@components/tab/TabSidebar.vue';
 import useToast from '@composables/useToast';

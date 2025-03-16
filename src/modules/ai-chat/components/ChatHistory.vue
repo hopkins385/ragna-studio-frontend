@@ -1,12 +1,12 @@
 <script setup lang="ts">
 // Imports
+import ButtonLink from '@/common/components/button/ButtonLink.vue';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useProviderIcons } from '@/composables/useProviderIcons';
 import useToast from '@/composables/useToast';
 import type { ChatsPaginatedResponse } from '@/modules/ai-chat/interfaces/chat.interfaces';
 import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
-import ButtonLink from '@components/button/ButtonLink.vue';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
@@ -61,7 +61,7 @@ const initChatHistory = async ({ page }: { page: number }) => {
 
 const handleDelete = async (chatId: string) => {
   try {
-    await aiChatService.deleteChat(chatId);
+    await aiChatService.deleteChat({ chatId });
     await initChatHistory({ page: props.page });
     toast.success({ description: t('chat.delete.success') });
   } catch (error) {

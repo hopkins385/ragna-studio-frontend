@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@ui/tooltip';
+import ButtonLink from '@/common/components/button/ButtonLink.vue';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { SquarePen } from 'lucide-vue-next';
-import ButtonLink from '../button/ButtonLink.vue';
 </script>
 
 <template>

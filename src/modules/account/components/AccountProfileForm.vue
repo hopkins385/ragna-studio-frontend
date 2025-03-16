@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import { accountService } from '@/modules/account/services/account.service';
-import ButtonLoading from '@components/button/ButtonLoading.vue';
 import useToast from '@composables/useToast';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';
 import { Input } from '@ui/input';

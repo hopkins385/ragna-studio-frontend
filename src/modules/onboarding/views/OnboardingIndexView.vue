@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
-import ButtonLoading from '@/components/button/ButtonLoading.vue';
+import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { onboardingService } from '@/modules/onboarding/services/onboarding.service';

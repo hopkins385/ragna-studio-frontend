@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ButtonLink from '@/components/button/ButtonLink.vue';
+import ButtonLink from '@/common/components/button/ButtonLink.vue';
 import { Button } from '@/components/ui/button';
 import {
   Table,

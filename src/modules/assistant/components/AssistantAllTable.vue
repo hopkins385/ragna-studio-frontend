@@ -1,12 +1,12 @@
 <script setup lang="ts">
 // Imports
+import ButtonLink from '@/common/components/button/ButtonLink.vue';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { userFavoriteService } from '@/modules/user-favorite/services/user-favorite.service';
 import { RouteName } from '@/router/enums/route-names.enum';
-import ButtonLink from '@components/button/ButtonLink.vue';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';

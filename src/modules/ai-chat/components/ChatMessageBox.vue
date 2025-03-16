@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ChatMessageRole } from '@/enums/chat-role.enum';
+import type { ChatMessageRole } from '@/modules/ai-chat/enums/chat-role.enum';
 import type { ChatMessageVisionContent } from '@/modules/ai-chat/interfaces/chat.interfaces';
 import { markdownService } from '@/modules/markdown/services/markdown.service';
 import 'highlight.js/styles/stackoverflow-light.min.css';

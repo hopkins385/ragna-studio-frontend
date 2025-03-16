@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ButtonLoading from '@/components/button/ButtonLoading.vue';
+import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import AccountDeleteDialog from '@/modules/account/components/AccountDeleteDialog.vue';

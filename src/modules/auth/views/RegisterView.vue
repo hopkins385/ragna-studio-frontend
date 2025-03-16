@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ButtonLoading from '@/components/button/ButtonLoading.vue';
+import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';

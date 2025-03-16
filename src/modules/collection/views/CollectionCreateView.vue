@@ -3,7 +3,7 @@
  * Collection Create - Create a new collection
  * Route: /collection/create
  */
-import ButtonLink from '@/components/button/ButtonLink.vue';
+import ButtonLink from '@/common/components/button/ButtonLink.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { collectionService } from '@/modules/collection/services/collection.service';

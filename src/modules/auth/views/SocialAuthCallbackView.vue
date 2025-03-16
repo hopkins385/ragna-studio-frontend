@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import AuthProcessing from '@/modules/auth/components/AuthProcessing.vue';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
-import AuthProcessing from '@components/auth/AuthProcessing.vue';
 
 const router = useRouter();
 const route = useRoute();

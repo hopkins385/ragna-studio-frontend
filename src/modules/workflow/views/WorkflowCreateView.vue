@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Imports
-import ButtonLink from '@/components/button/ButtonLink.vue';
+import ButtonLink from '@/common/components/button/ButtonLink.vue';
+import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { useErrorAlert } from '@/composables/useErrorAlert';
@@ -13,7 +14,6 @@ import {
 } from '@/modules/workflow/schemas/create-workflow.schema';
 import { workflowService } from '@/modules/workflow/services/workflow.service';
 import { RouteName } from '@/router/enums/route-names.enum';
-import ButtonLoading from '@components/button/ButtonLoading.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import { Textarea } from '@components/ui/textarea';

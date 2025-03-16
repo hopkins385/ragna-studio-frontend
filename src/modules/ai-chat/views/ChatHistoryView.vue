@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import ChatHistory from '@/modules/ai-chat/components/ChatHistory.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
-import ChatHistory from '@components/chat/ChatHistory.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import TableSkeleton from '@components/table/TableSkeleton.vue';
 import { Input } from '@ui/input';

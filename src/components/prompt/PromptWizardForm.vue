@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import { promptWizardService } from '@/modules/prompt-wizard/services/prompt-wizard.service';
 import {
   FormControl,
@@ -12,7 +13,6 @@ import { Textarea } from '@ui/textarea';
 import { toTypedSchema } from '@vee-validate/zod';
 import { Loader2Icon } from 'lucide-vue-next';
 import { z } from 'zod';
-import ButtonLoading from '../button/ButtonLoading.vue';
 import { Button } from '../ui/button';
 
 const props = defineProps<{

@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 export const useDrawerStore = defineStore('drawer-store', () => {
   // State
   const _isVisible = ref(false);
-  const _currentComponent = ref<string | null>(null);
+  const _currentComponent = ref<string>();
 
   // Getters
   const isVisible = computed(() => _isVisible.value);
@@ -19,7 +19,7 @@ export const useDrawerStore = defineStore('drawer-store', () => {
 
   function hide() {
     _isVisible.value = false;
-    _currentComponent.value = null;
+    _currentComponent.value = undefined;
   }
 
   function toggle(component: string) {

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 // Imports
+import ButtonLink from '@/common/components/button/ButtonLink.vue';
+import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import PromptWizardDialog from '@/components/prompt/PromptWizardDialog.vue';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
@@ -8,8 +10,6 @@ import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form'
 import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
-import ButtonLink from '@components/button/ButtonLink.vue';
-import ButtonLoading from '@components/button/ButtonLoading.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import LlmSelectModal from '@components/llm/LlmSelectModal.vue';
 import TabSidebar from '@components/tab/TabSidebar.vue';
