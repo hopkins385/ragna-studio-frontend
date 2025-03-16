@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // Imports
-import PromptWizardDialog from '@/components/prompt/PromptWizardDialog.vue';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantToolService } from '@/modules/assistant-tool/services/assistant-tool.service';
@@ -8,6 +7,7 @@ import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form'
 import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import LlmSelectModal from '@/modules/llm/components/LlmSelectModal.vue';
+import PromptWizardDialog from '@/modules/prompt-wizard/components/PromptWizardDialog.vue';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import TabSidebar from '@components/tab/TabSidebar.vue';

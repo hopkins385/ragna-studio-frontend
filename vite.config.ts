@@ -34,16 +34,12 @@ export default defineConfig({
         'vue-i18n',
         unheadVueComposablesImports,
       ],
-      dirs: ['./composables/**'],
+      dirs: ['*/composables/**'],
       vueTemplate: true,
       eslintrc: {
         enabled: true,
       },
     }),
-    // Components({
-    //   dts: true,
-    //   deep: false,
-    // }),
     vue(),
     // vueDevTools(),
     UnheadVite(),

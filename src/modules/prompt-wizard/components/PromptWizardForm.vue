@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { promptWizardService } from '@/modules/prompt-wizard/services/prompt-wizard.service';
+import { Button } from '@ui/button';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import {
   FormControl,
@@ -13,7 +14,6 @@ import { Textarea } from '@ui/textarea';
 import { toTypedSchema } from '@vee-validate/zod';
 import { Loader2Icon } from 'lucide-vue-next';
 import { z } from 'zod';
-import { Button } from '../ui/button';
 
 const props = defineProps<{
   inputPrompt: string;

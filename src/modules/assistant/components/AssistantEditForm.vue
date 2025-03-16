@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import PromptWizardDialog from '@/components/prompt/PromptWizardDialog.vue';
 import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import { useToolIcons } from '@/modules/assistant-tool/composables/useToolIcons';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
@@ -11,6 +10,7 @@ import { collectionAbleService } from '@/modules/collection-able/services/collec
 import CollectionSelectModal from '@/modules/collection/components/CollectionSelectModal.vue';
 import type { Collection } from '@/modules/collection/interfaces';
 import LlmSelectModal from '@/modules/llm/components/LlmSelectModal.vue';
+import PromptWizardDialog from '@/modules/prompt-wizard/components/PromptWizardDialog.vue';
 import { RouteName } from '@/router/enums/route-names.enum';
 import TabSidebar from '@components/tab/TabSidebar.vue';
 import useToast from '@composables/useToast';

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import TemplatePreviewDialog from '@/components/template/TemplatePreviewDialog.vue';
 import type {
   AssistantTemplateCategory,
   CategoryWithTemplates,
 } from '@/modules/assistant-template/interfaces/assistant-template.interfaces';
 import { assistantTemplateService } from '@/modules/assistant-template/services/assistant-template.service';
+import TemplatePreviewDialog from '@/modules/assistant/components/TemplatePreviewDialog.vue';
 import { useTemplatePreview } from '@/modules/assistant/composables/useTemplatePreview';
 import Heading from '@components/heading/Heading.vue';
 import HeadingTitle from '@components/heading/HeadingTitle.vue';
