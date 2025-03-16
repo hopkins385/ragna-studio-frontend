@@ -9,9 +9,9 @@ import { assistantToolService } from '@/modules/assistant-tool/services/assistan
 import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
 import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
+import LlmSelectModal from '@/modules/llm/components/LlmSelectModal.vue';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
-import LlmSelectModal from '@components/llm/LlmSelectModal.vue';
 import TabSidebar from '@components/tab/TabSidebar.vue';
 import useToast from '@composables/useToast';
 import {
