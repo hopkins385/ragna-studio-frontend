@@ -34,7 +34,7 @@ export default defineConfig({
         'vue-i18n',
         unheadVueComposablesImports,
       ],
-      dirs: ['*/composables/**'],
+      dirs: ['./composables/**'],
       vueTemplate: true,
       eslintrc: {
         enabled: true,
