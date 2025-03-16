@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import EditorChat from '@/modules/editor/compontents/EditorChat.vue';
-import EditorComments from '@/modules/editor/compontents/EditorComments.vue';
-import EditorContainer from '@/modules/editor/compontents/EditorContainer.vue';
+import EditorChat from '@/modules/editor/components/EditorChat.vue';
+import EditorComments from '@/modules/editor/components/EditorComments.vue';
+import EditorContainer from '@/modules/editor/components/EditorContainer.vue';
 </script>
 
 <template>
