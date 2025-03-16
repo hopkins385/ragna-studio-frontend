@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import AccountSettingsForm from '@/components/account/AccountSettingsForm.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import SectionContainer from '@/components/section/SectionContainer.vue';
+import AccountSettingsForm from '@/modules/account/components/AccountSettingsForm.vue';
 </script>
 
 <template>

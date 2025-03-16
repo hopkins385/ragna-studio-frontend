@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // Imports
+import TableMetaCaption from '@/components/table/TableMetaCaption.vue';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
@@ -12,7 +13,6 @@ import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { FileIcon, Trash2Icon } from 'lucide-vue-next';
-import TableMetaCaption from '../table/TableMetaCaption.vue';
 
 // Props
 const props = defineProps<{
