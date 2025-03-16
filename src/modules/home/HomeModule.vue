@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import imageUrl from '@/assets/images/home8.jpg?q=100&imagetools';
-import HomeFavorites from './components/HomeFavoritesTable.vue';
+import HomeFavorites from './components/HomeFavorites.vue';
 import HomeQuickAccess from './components/HomeQuickAccess.vue';
 
 const backgroundStyles = computed(() => {
