@@ -1,4 +1,4 @@
-import type { AppAbility } from './ability.service';
+import type { AppAbility } from './services/ability.service';
 
 declare module 'vue' {
   interface ComponentCustomProperties {

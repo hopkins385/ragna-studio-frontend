@@ -19,7 +19,7 @@ import 'nprogress/nprogress.css';
 
 // CASL
 import { abilitiesPlugin } from '@casl/vue';
-import { ability } from './services/ability.service';
+import { ability } from './modules/ability/services/ability.service';
 
 // i18n
 import { registerModules } from '@/register-modules';
@@ -27,19 +27,24 @@ import messages from '@intlify/unplugin-vue-i18n/messages';
 
 // Modules
 import accountModule from '@/modules/account';
+import adminModule from '@/modules/admin';
 import aiChatModule from '@/modules/ai-chat';
+import architectureModule from '@/modules/architecture';
 import assistantModule from '@/modules/assistant';
 import authModule from '@/modules/auth';
 import collectionModule from '@/modules/collection';
 import documentModule from '@/modules/document';
 import homeModule from '@/modules/home';
+import kanbanModule from '@/modules/kanban';
 import mediaModule from '@/modules/media';
+import notFoundModule from '@/modules/not-found';
 import onboardingModule from '@/modules/onboarding';
 import textToImageModule from '@/modules/text-to-image';
 import userModule from '@/modules/user';
 import workflowModule from '@/modules/workflow';
 
 registerModules({
+  admin: adminModule,
   auth: authModule,
   user: userModule,
   home: homeModule,
@@ -52,6 +57,10 @@ registerModules({
   textToImage: textToImageModule,
   onboarding: onboardingModule,
   workflow: workflowModule,
+  architecture: architectureModule,
+  kanban: kanbanModule,
+  // 404 must be last
+  notFound: notFoundModule,
 });
 
 const i18n = createI18n({

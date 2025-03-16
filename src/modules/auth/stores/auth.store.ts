@@ -1,6 +1,6 @@
+import { defineAbilityFor } from '@/modules/ability/services/ability.service';
 import { accountService } from '@/modules/account/services/account.service';
 import { authService } from '@/modules/auth/services/auth.service';
-import { defineAbilityFor } from '@/services/ability.service';
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
