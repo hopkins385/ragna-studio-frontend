@@ -1,4 +1,4 @@
-import { useSheetStore } from '@/stores/sheet.store';
+import { useSheetStore } from '@/modules/workflow/stores/sheet.store';
 import { useEventListener } from '@vueuse/core';
 
 export function useResizeSheet() {
@@ -25,11 +25,7 @@ export function useResizeSheet() {
     return newHeight;
   }
 
-  function resizeRowListener(
-    ev: MouseEvent,
-    rowIndex: number,
-    workflowId: string,
-  ) {
+  function resizeRowListener(ev: MouseEvent, rowIndex: number, workflowId: string) {
     const sheet = document.getElementById('workflowSheet') as HTMLElement;
     if (!sheet) return;
     sheet.classList.add('resizing-active');
@@ -66,11 +62,7 @@ export function useResizeSheet() {
     return newWidth;
   }
 
-  function resizeColumnListener(
-    ev: MouseEvent,
-    columnIndex: number,
-    workflowId: string,
-  ) {
+  function resizeColumnListener(ev: MouseEvent, columnIndex: number, workflowId: string) {
     const sheet = document.getElementById('workflowSheet') as HTMLElement;
     if (!sheet) return;
     sheet.classList.add('resizing-active');
@@ -86,12 +78,8 @@ export function useResizeSheet() {
   }
 
   function resizeAll(e: MouseEvent, workflowId: string) {
-    const rows = document.querySelectorAll(
-      '[id^=row_]',
-    ) as NodeListOf<HTMLElement>;
-    const columns = document.querySelectorAll(
-      '[id^=column_]',
-    ) as NodeListOf<HTMLElement>;
+    const rows = document.querySelectorAll('[id^=row_]') as NodeListOf<HTMLElement>;
+    const columns = document.querySelectorAll('[id^=column_]') as NodeListOf<HTMLElement>;
 
     rows.forEach(row => {
       const rowId = row.id.split('_')[1];

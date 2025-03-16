@@ -2,7 +2,7 @@
 import {
   SUPPORTED_ASPECT_RATIOS,
   useImgGenSettingsStore,
-} from '@/stores/image-gen-settings.store';
+} from '@/modules/text-to-image/stores/image-gen-settings.store';
 import { Button } from '@ui/button';
 
 const settings = useImgGenSettingsStore();

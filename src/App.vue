@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { setLocale as setVeeLocale } from '@vee-validate/i18n';
 import { RouterView } from 'vue-router';
-import { useLocaleStore } from './stores/locale.store';
+import { useLocaleStore } from './common/stores/locale.store';
 
 // Types
 type LocaleStatus = 'loading' | 'ready' | 'error';

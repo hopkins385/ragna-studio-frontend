@@ -2,17 +2,11 @@
 /**
  * Component: ImageGenSettings
  */
-import { useImgGenSettingsStore } from '@/stores/image-gen-settings.store';
+import { useImgGenSettingsStore } from '@/modules/text-to-image/stores/image-gen-settings.store';
 import QuestionToolTip from '@components/question/QuestionToolTip.vue';
 import { Button } from '@ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/select';
 import { Separator } from '@ui/separator';
 import { Slider } from '@ui/slider';
 import { Switch } from '@ui/switch';
@@ -27,9 +21,7 @@ const settings = useImgGenSettingsStore();
   <Popover v-model:open="show">
     <PopoverTrigger as-child>
       <Button variant="ghost" size="icon" class="group !size-10">
-        <SlidersHorizontalIcon
-          class="!size-5 stroke-1.5 text-primary/70 group-hover:stroke-2"
-        />
+        <SlidersHorizontalIcon class="!size-5 stroke-1.5 text-primary/70 group-hover:stroke-2" />
       </Button>
     </PopoverTrigger>
     <PopoverContent align="end" class="mt-1 w-72 text-sm">

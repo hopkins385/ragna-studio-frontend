@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { useNavBarStore } from '@/common/stores/nav-bar.store';
 import { useNavBarItems } from '@/composables/nav/useNavBarItems';
-import { useNavBarStore } from '@/stores/nav-bar.store';
 import { Separator } from '@ui/separator';
 import { useMousePressed } from '@vueuse/core';
 import { EllipsisIcon } from 'lucide-vue-next';
@@ -76,9 +76,7 @@ watch(pressed, isPressed => {
                     <div class="nav-icon-wrapper">
                       <EllipsisIcon class="size-4" />
                     </div>
-                    <span
-                      class="truncate px-4 pt-0 text-foreground nav-icon-text"
-                    >
+                    <span class="truncate px-4 pt-0 text-foreground nav-icon-text">
                       {{ $t('nav.more') }}
                     </span>
                   </div>

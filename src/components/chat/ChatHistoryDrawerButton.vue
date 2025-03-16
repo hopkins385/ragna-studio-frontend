@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { useDrawerStore } from '@stores/drawer.store';
+import { useDrawerStore } from '@/common/stores/drawer.store';
 import { Button } from '@ui/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { HistoryIcon } from 'lucide-vue-next';
 
 const drawer = useDrawerStore();
@@ -16,12 +11,7 @@ const drawer = useDrawerStore();
   <TooltipProvider :delay-duration="300">
     <Tooltip>
       <TooltipTrigger as-child>
-        <Button
-          variant="outline"
-          size="icon"
-          class="group"
-          @click="drawer.toggle('ChatHistory')"
-        >
+        <Button variant="outline" size="icon" class="group" @click="drawer.toggle('ChatHistory')">
           <HistoryIcon class="size-4 stroke-1.5 group-hover:stroke-2" />
         </Button>
       </TooltipTrigger>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useWebSocketStore } from '@/common/stores/websocket.store';
 import ChatAssistantDetails from '@/components/chat/ChatAssistantDetails.vue';
 import ChatHistoryDrawerButton from '@/components/chat/ChatHistoryDrawerButton.vue';
 import ChatPresets from '@/components/chat/ChatPresets.vue';
@@ -11,7 +12,6 @@ import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-cha
 import { useAiChatStore } from '@/modules/ai-chat/stores';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { chatInputTextSchema } from '@/schemas/chat-input-text.schema';
-import { useWebSocketStore } from '@/stores/websocket.store';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import ChatButtonNewChat from '@components/chat/ChatButtonNewChat.vue';
 import ChatImageInput from '@components/chat/ChatImageInput.vue';

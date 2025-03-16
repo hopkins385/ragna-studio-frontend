@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { useDrawerStore } from '@/common/stores/drawer.store';
 import ChatHistory from '@components/chat/ChatHistoryDrawer.vue';
-import { useDrawerStore } from '@stores/drawer.store';
 
 const drawer = useDrawerStore();
 
@@ -12,18 +12,9 @@ const components = {
 
 <template>
   <Transition name="slide" mode="out-in">
-    <div
-      v-if="drawer.isVisible"
-      id="drawer-panel"
-      class="overflow-hidden w-[18rem] shrink-0"
-    >
-      <div
-        id="drawer-content"
-        class="border-l px-6 overflow-y-auto relative h-full"
-      >
-        <component
-          :is="components[drawer.currentComponent as keyof typeof components]"
-        />
+    <div v-if="drawer.isVisible" id="drawer-panel" class="overflow-hidden w-[18rem] shrink-0">
+      <div id="drawer-content" class="border-l px-6 overflow-y-auto relative h-full">
+        <component :is="components[drawer.currentComponent as keyof typeof components]" />
       </div>
     </div>
   </Transition>
