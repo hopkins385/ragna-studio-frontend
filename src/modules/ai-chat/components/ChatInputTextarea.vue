@@ -5,12 +5,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import { SendHorizontalIcon, SquareIcon } from 'lucide-vue-next';
 
-// Props
-const modelValue = defineModel<string | undefined>();
-const { showAbortButton = false, submitLocked = false } = defineProps<{
+interface Props {
   showAbortButton?: boolean;
   submitLocked?: boolean;
-}>();
+}
+
+// Props
+const modelValue = defineModel<string | undefined>();
+const { showAbortButton = false, submitLocked = false } = defineProps<Props>();
 
 // Emits
 const emit = defineEmits<{
@@ -19,7 +21,7 @@ const emit = defineEmits<{
 }>();
 
 // Refs
-const chatInputFormRef = useTemplateRef('chatInputFormRef');
+const chatInputFormRef = useTemplateRef('chat-input-form');
 
 // Stores
 const aiChatSettings = useAiChatSettingsStore();
@@ -29,8 +31,8 @@ const aiChatSettings = useAiChatSettingsStore();
 const submitReleased = computed(() => {
   return !submitLocked && modelValue.value;
 });
-// Functions
 
+// Functions
 /**
  * Adjusts the height of the textarea based on its content.
  */
@@ -45,12 +47,28 @@ const adjustTextareaHeight = () => {
   }
 };
 
+const focusTextarea = () => {
+  const textarea = chatInputFormRef.value?.querySelector('textarea');
+  if (textarea) {
+    textarea.focus();
+  }
+};
+
 const onKeyDownEnter = (event: KeyboardEvent) => {
   if (event.key === 'Enter' && !event.shiftKey && aiChatSettings.submitOnEnter) {
     event.preventDefault();
     emit('submitForm');
   }
   adjustTextareaHeight();
+  focusTextarea();
+};
+
+const submitForm = () => {
+  if (submitReleased.value) {
+    emit('submitForm');
+  }
+  adjustTextareaHeight();
+  focusTextarea();
 };
 
 const abortRequest = () => {
@@ -63,10 +81,10 @@ const abortRequest = () => {
 
 <template>
   <form
-    id="chatInputForm"
-    ref="chatInputFormRef"
+    id="chat-input-form"
+    ref="chat-input-form"
     class="relative flex w-full items-center space-x-2"
-    @submit.prevent="() => $emit('submitForm')"
+    @submit.prevent="submitForm"
   >
     <div class="relative z-0 max-h-96 w-full">
       <Textarea
@@ -83,12 +101,13 @@ const abortRequest = () => {
       v-if="showAbortButton"
       variant="outline"
       size="icon"
-      class="group absolute bottom-3 right-3 z-20 mr-1 size-8 rounded-full bg-slate-100"
+      class="group absolute bottom-[0.6rem] right-3 z-20 mr-1 size-5 rounded-full bg-slate-100"
       @click="abortRequest"
     >
-      <SquareIcon class="!size-4 stroke-1.5 text-slate-500 group-hover:text-slate-900" />
+      <SquareIcon class="!size-3 stroke-1.5 text-slate-500 group-hover:text-slate-900" />
     </Button>
     <Button
+      v-else
       class="absolute z-10 bottom-1 right-2 size-8"
       type="submit"
       size="icon"
