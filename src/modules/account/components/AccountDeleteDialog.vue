@@ -53,9 +53,6 @@ const onSubmit = handleSubmit(async ({ password }, { resetForm }) => {
     const result = await accountService.deleteAccount({
       password,
     });
-    if (result.success !== true) {
-      throw new Error('Failed to delete account');
-    }
     router.push({ name: RouteName.LOGOUT });
   } catch (error) {
     setErrors({ password: t('account.delete.error') });

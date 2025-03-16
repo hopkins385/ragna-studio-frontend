@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
-import AssistantAllTable from '@components/assistant/AssistantAllTable.vue';
+import AssistantAllTable from '@/modules/assistant/components/AssistantAllTable.vue';
 import ButtonLink from '@components/button/ButtonLink.vue';
 import Heading from '@components/heading/Heading.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
@@ -14,7 +14,10 @@ const router = useRouter();
 const search = ref('');
 const page = ref(parseInt(route.query?.page?.toString() ?? '1', 10));
 
-function setRoutePage(value: number) {
+function setRoutePage(value: number | undefined) {
+  if (!value) {
+    return;
+  }
   page.value = value;
   const query = { ...route.query, page: value.toString() };
   router.push({ query });

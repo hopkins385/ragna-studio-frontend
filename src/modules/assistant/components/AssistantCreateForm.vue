@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // Imports
+import PromptWizardDialog from '@/components/prompt/PromptWizardDialog.vue';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantToolService } from '@/modules/assistant-tool/services/assistant-tool.service';
@@ -32,7 +33,6 @@ import {
   Stars,
   Workflow,
 } from 'lucide-vue-next';
-import PromptWizardDialog from '../prompt/PromptWizardDialog.vue';
 
 // Props
 // Emits

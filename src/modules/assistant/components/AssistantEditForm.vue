@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import LlmSelectModal from '@/components/llm/LlmSelectModal.vue';
+import PromptWizardDialog from '@/components/prompt/PromptWizardDialog.vue';
 import { useToolIcons } from '@/composables/useToolIcons';
 import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
@@ -34,8 +36,6 @@ import {
   Stars,
   Workflow,
 } from 'lucide-vue-next';
-import LlmSelectModal from '../llm/LlmSelectModal.vue';
-import PromptWizardDialog from '../prompt/PromptWizardDialog.vue';
 
 interface Props {
   assistant: Assistant;
