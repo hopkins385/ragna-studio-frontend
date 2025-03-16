@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AuthProcessing from '@/components/auth/AuthProcessing.vue';
+import AuthProcessing from '@/modules/auth/components/AuthProcessing.vue';
 import { authProviderService } from '@/modules/auth/services/auth-provider.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 

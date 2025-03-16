@@ -2,8 +2,8 @@
 // Imports
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
-import MediaList from '@/components/media/MediaList.vue';
 import MediaFileDropzone from '@/modules/media/components/MediaFileDropzone.vue';
+import MediaList from '@/modules/media/components/MediaList.vue';
 import { mediaService } from '@/modules/media/services/media.service';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
