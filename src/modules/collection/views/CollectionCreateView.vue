@@ -3,7 +3,6 @@
  * Collection Create - Create a new collection
  * Route: /collection/create
  */
-import ButtonLink from '@/common/components/button/ButtonLink.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { collectionService } from '@/modules/collection/services/collection.service';
@@ -12,6 +11,7 @@ import SectionContainer from '@components/section/SectionContainer.vue';
 import useToast from '@composables/useToast';
 import bgImgUrl from '@images/bg_databases.png?q=100&format=webp&imagetools';
 import { Button } from '@ui/button';
+import ButtonLink from '@ui/button/ButtonLink.vue';
 import {
   FormControl,
   FormDescription,

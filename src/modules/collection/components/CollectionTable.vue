@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // Imports
-import ButtonLink from '@/common/components/button/ButtonLink.vue';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import type { CollectionsPaginatedResponse } from '@/modules/collection/interfaces';
@@ -11,6 +10,7 @@ import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
+import ButtonLink from '@ui/button/ButtonLink.vue';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { DatabaseIcon, FolderClosedIcon, Trash2Icon } from 'lucide-vue-next';

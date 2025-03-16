@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { onboardingService } from '@/modules/onboarding/services/onboarding.service';
 import { RouteName } from '@/router/enums/route-names.enum';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import {
   Dialog,
   DialogContent,

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import AccountDeleteDialog from '@/modules/account/components/AccountDeleteDialog.vue';
@@ -8,6 +7,7 @@ import type { AccountData } from '@/modules/account/interfaces';
 import { accountService } from '@/modules/account/services/account.service';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import AccountEditLoginForm from './AccountEditLoginForm.vue';
 
 const isLoading = ref(false);

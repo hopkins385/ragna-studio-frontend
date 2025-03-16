@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // Imports
-import ButtonLink from '@/common/components/button/ButtonLink.vue';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import useToast from '@/composables/useToast';
@@ -12,6 +11,7 @@ import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
 import Button from '@ui/button/Button.vue';
+import ButtonLink from '@ui/button/ButtonLink.vue';
 import Table from '@ui/table/Table.vue';
 import TableBody from '@ui/table/TableBody.vue';
 import TableCell from '@ui/table/TableCell.vue';

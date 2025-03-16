@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // Imports
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import { UnknownError } from '@/common/errors/unknown.error';
 import { editorService } from '@/modules/editor/services/editor.service';
 import { useEditorStore } from '@/modules/editor/stores/editor.store';
 import { markdownService } from '@/modules/markdown/services/markdown.service';
 import { Button } from '@ui/button';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { Textarea } from '@ui/textarea';
 import { RefreshCcwIcon, SquareIcon, Trash2Icon } from 'lucide-vue-next';
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
 import BrandHeader from '@components/brand/BrandHeader.vue';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { FormControl, FormField, FormItem, FormLabel } from '@ui/form';
 import FormMessage from '@ui/form/FormMessage.vue';
 import { Input } from '@ui/input';

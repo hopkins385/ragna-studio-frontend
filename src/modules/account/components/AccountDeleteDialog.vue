@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import { accountService } from '@/modules/account/services/account.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { Button } from '@ui/button';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import {
   Dialog,
   DialogContent,

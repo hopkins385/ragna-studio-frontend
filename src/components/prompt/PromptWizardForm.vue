@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import { promptWizardService } from '@/modules/prompt-wizard/services/prompt-wizard.service';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import {
   FormControl,
   FormDescription,

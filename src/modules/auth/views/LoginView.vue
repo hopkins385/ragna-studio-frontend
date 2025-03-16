@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import { ConnectionError } from '@/common/errors/connection.error';
 import { UnauthorizedError } from '@/common/errors/unauthorized.error';
 import BrandHeader from '@/components/brand/BrandHeader.vue';
@@ -7,6 +6,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { z } from 'zod';

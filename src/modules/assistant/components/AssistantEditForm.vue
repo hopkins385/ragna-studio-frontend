@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import PromptWizardDialog from '@/components/prompt/PromptWizardDialog.vue';
 import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import { useToolIcons } from '@/modules/assistant-tool/composables/useToolIcons';
@@ -16,6 +15,7 @@ import { RouteName } from '@/router/enums/route-names.enum';
 import TabSidebar from '@components/tab/TabSidebar.vue';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import Checkbox from '@ui/checkbox/Checkbox.vue';
 import {
   FormControl,

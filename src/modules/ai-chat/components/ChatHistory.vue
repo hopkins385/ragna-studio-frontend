@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // Imports
-import ButtonLink from '@/common/components/button/ButtonLink.vue';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useProviderIcons } from '@/composables/useProviderIcons';
@@ -13,6 +12,7 @@ import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
 import useForHumans from '@composables/useForHumans';
 import { Button } from '@ui/button';
+import ButtonLink from '@ui/button/ButtonLink.vue';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { MessageCircleMoreIcon, MessagesSquareIcon, Trash2Icon } from 'lucide-vue-next';
 

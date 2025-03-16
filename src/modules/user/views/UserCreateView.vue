@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useNotification } from '@/composables/useNotification';
 import { createUserSchema } from '@/modules/user/schemas/user.schema';
 import { userService } from '@/modules/user/services/user.service';
 import { RouteName } from '@/router/enums/route-names.enum';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { toTypedSchema } from '@vee-validate/zod';
 
 const isLoading = ref(false);

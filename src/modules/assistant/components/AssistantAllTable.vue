@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // Imports
-import ButtonLink from '@/common/components/button/ButtonLink.vue';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
@@ -14,6 +13,7 @@ import TableMetaCaption from '@components/table/TableMetaCaption.vue';
 import { useProviderIcons } from '@composables/useProviderIcons';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
+import ButtonLink from '@ui/button/ButtonLink.vue';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { MessageSquareIcon, SettingsIcon, StarIcon, Trash2Icon } from 'lucide-vue-next';
 

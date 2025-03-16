@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import type { CreateAssistantFromTemplatePayload } from '@/modules/assistant/interfaces/assistant.interfaces';
 import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import useToast from '@composables/useToast';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { Dialog, DialogContent } from '@ui/dialog';
 
 interface Props {

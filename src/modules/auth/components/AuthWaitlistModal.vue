@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { Checkbox } from '@ui/checkbox';
 import {
   Dialog,

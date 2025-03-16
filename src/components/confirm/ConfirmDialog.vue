@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import type { ConfirmDialogOptions } from '@/composables/useConfirmDialog';
 import {
   AlertDialog,
@@ -11,6 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@ui/alert-dialog';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { Button } from '../ui/button';
 
 const props = defineProps<ConfirmDialogOptions>();

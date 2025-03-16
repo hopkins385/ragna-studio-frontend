@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import { accountService } from '@/modules/account/services/account.service';
 import useToast from '@composables/useToast';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';
 import { Input } from '@ui/input';
 import { toTypedSchema } from '@vee-validate/zod';

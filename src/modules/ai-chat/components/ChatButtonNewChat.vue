@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ButtonLink from '@/common/components/button/ButtonLink.vue';
+import ButtonLink from '@ui/button/ButtonLink.vue';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { SquarePen } from 'lucide-vue-next';
 </script>

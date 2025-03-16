@@ -1,7 +1,5 @@
 <script setup lang="ts">
 // Imports
-import ButtonLink from '@/common/components/button/ButtonLink.vue';
-import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { useErrorAlert } from '@/composables/useErrorAlert';
@@ -20,6 +18,8 @@ import { Textarea } from '@components/ui/textarea';
 import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
 import bgImgUrl from '@images/bg_workflow.png?q=100&format=webp&imagetools';
+import ButtonLink from '@ui/button/ButtonLink.vue';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import {
   FormControl,
   FormDescription,

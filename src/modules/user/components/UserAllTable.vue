@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ButtonLink from '@/common/components/button/ButtonLink.vue';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -13,6 +12,7 @@ import {
 import { useNotification } from '@/composables/useNotification';
 import type { User, UsersPaginated } from '@/modules/user/interfaces';
 import { userService } from '@/modules/user/services/user.service';
+import ButtonLink from '@ui/button/ButtonLink.vue';
 import { Settings, Trash2, User2 } from 'lucide-vue-next';
 
 // Composables

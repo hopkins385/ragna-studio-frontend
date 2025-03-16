@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import ButtonLink from '@/common/components/button/ButtonLink.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import CollectionTable from '@/modules/collection/components/CollectionTable.vue';
 import Heading from '@components/heading/Heading.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import TableSkeleton from '@components/table/TableSkeleton.vue';
 import bgImgUrl from '@images/bg_databases.png?q=100&format=webp&imagetools';
+import ButtonLink from '@ui/button/ButtonLink.vue';
 import { PlusIcon } from 'lucide-vue-next';
 
 const { t } = useI18n();
