@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import TextToImagePricingPopover from '@/components/text-to-image/TextToImagePricingPopover.vue';
-import TextToImageProviderPopover from '@/components/text-to-image/TextToImageProviderPopover.vue';
+import TextToImageAssetsList from '@/modules/text-to-image/components/TextToImageAssetsList.vue';
+import TextToImageCountPopover from '@/modules/text-to-image/components/TextToImageCountPopover.vue';
+import TextToImageMimeTypePopover from '@/modules/text-to-image/components/TextToImageMimeTypePopover.vue';
+import TextToImagePricingPopover from '@/modules/text-to-image/components/TextToImagePricingPopover.vue';
+import TextToImageProviderPopover from '@/modules/text-to-image/components/TextToImageProviderPopover.vue';
+import TextToImageSettings from '@/modules/text-to-image/components/TextToImageSettings.vue';
+import TextToImageSizePopover from '@/modules/text-to-image/components/TextToImageSizePopover.vue';
 import { textToImageService } from '@/modules/text-to-image/services/text-to-image.service';
 import { useImgGenSettingsStore } from '@/modules/text-to-image/stores/image-gen-settings.store';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import TextToImageAssetsList from '@components/text-to-image/TextToImageAssetsList.vue';
-import TextToImageCountPopover from '@components/text-to-image/TextToImageCountPopover.vue';
-import TextToImageMimeTypePopover from '@components/text-to-image/TextToImageMimeTypePopover.vue';
-import TextToImageSettings from '@components/text-to-image/TextToImageSettings.vue';
-import TextToImageSizePopover from '@components/text-to-image/TextToImageSizePopover.vue';
 import { Button } from '@ui/button';
 import { Textarea } from '@ui/textarea';
 import { Loader2Icon, SendIcon } from 'lucide-vue-next';
