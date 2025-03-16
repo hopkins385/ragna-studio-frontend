@@ -4,10 +4,10 @@
  * Route: /collection/:id
  */
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import CollectionEditSheet from '@/modules/collection/components/CollectionEditSheet.vue';
 import type { Collection } from '@/modules/collection/interfaces';
 import { collectionService } from '@/modules/collection/services/collection.service';
 import BoxContainer from '@components/box/BoxContainer.vue';
-import CollectionEditSheet from '@components/collection/CollectionEditSheet.vue';
 import Heading from '@components/heading/Heading.vue';
 import RecordAllTable from '@components/record/RecordAllTable.vue';
 import RecordCreateModal from '@components/record/RecordCreateModal.vue';
