@@ -1,8 +1,6 @@
 <script setup lang="ts">
 // Imports
 import Illustration from '@/assets/illustrations/undraw_saying.svg';
-import ChatAssistantSelect from '@/components/chat/ChatAssistantSelect.vue';
-import ChatInputTextarea from '@/components/chat/ChatInputTextarea.vue';
 import TooltipWrapper from '@/components/tooltip/TooltipWrapper.vue';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,6 +11,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useAutoScroll } from '@/composables/useAutoScroll';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
+import ChatAssistantSelect from '@/modules/ai-chat/components/ChatAssistantSelect.vue';
+import ChatInputTextarea from '@/modules/ai-chat/components/ChatInputTextarea.vue';
 import { useAiChatStore } from '@/modules/ai-chat/stores';
 import { useEditorStore } from '@/modules/editor/stores/editor.store';
 import { markdownService } from '@/modules/markdown/services/markdown.service';

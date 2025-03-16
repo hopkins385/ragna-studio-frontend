@@ -1,8 +1,8 @@
 <script setup lang="ts">
 // Imports
 import Illustration from '@/assets/illustrations/empty-comments.svg';
-import CommentAddForm from '@/components/comment/CommentAddForm.vue';
 import { useEditorStore } from '@/modules/editor/stores/editor.store';
+import EditorCommentAddForm from './EditorCommentAddForm.vue';
 import EditorCommentMenu from './EditorCommentMenu.vue';
 import EditorSidePanel from './EditorSidePanel.vue';
 
@@ -36,7 +36,7 @@ const editorStore = useEditorStore();
     @update:modelValue="editorStore.toggleShowComments"
   >
     <div>
-      <CommentAddForm @submit="editorStore.addCommentToSelection" />
+      <EditorCommentAddForm @submit="editorStore.addCommentToSelection" />
     </div>
     <!-- Empty Comments Placeholder -->
     <div v-if="!editorStore.hasComments" class="pt-20">
