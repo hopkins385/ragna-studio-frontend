@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import TabSidebar from '@/components/tab/TabSidebar.vue';
 import {
   Select,
   SelectContent,
@@ -8,7 +9,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Settings } from 'lucide-vue-next';
-import TabSidebar from '../tab/TabSidebar.vue';
 
 const { availableLocales } = useI18n();
 
@@ -45,11 +45,7 @@ const getLocale = (lang: string) => {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem
-                :value="lang"
-                v-for="(lang, i) in availableLocales"
-                :key="`Lang${i}`"
-              >
+              <SelectItem :value="lang" v-for="(lang, i) in availableLocales" :key="`Lang${i}`">
                 {{ getLocale(lang) }}
               </SelectItem>
             </SelectGroup>

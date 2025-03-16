@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import AccountDeleteDialog from '@/components/account/AccountDeleteDialog.vue';
 import ButtonLoading from '@/components/button/ButtonLoading.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import AccountDeleteDialog from '@/modules/account/components/AccountDeleteDialog.vue';
+import AccountProfileForm from '@/modules/account/components/AccountProfileForm.vue';
 import type { AccountData } from '@/modules/account/interfaces';
 import { accountService } from '@/modules/account/services/account.service';
-import AccountProfileForm from '@components/account/AccountProfileForm.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import AccountEditLoginForm from './AccountEditLoginForm.vue';
