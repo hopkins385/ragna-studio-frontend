@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import BoxContainer from '@/components/box/BoxContainer.vue';
-import GoogleDriveTable from '@/components/google/GoogleDriveTable.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import SectionContainer from '@/components/section/SectionContainer.vue';
 import TableSkeleton from '@/components/table/TableSkeleton.vue';
+import GoogleDriveTable from '@/modules/google-drive/components/GoogleDriveTable.vue';
 </script>
 
 <template>

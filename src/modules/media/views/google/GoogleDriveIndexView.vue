@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import BoxContainer from '@/components/box/BoxContainer.vue';
-import GoogleDriveTable from '@/components/google/GoogleDriveTable.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import SectionContainer from '@/components/section/SectionContainer.vue';
 import TableSkeleton from '@/components/table/TableSkeleton.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { authProviderService } from '@/modules/auth/services/auth-provider.service';
+import GoogleDriveTable from '@/modules/google-drive/components/GoogleDriveTable.vue';
 
 const isLoading = ref(true);
 const hasAccess = ref(false);

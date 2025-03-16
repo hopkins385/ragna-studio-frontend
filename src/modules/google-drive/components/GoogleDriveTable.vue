@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import TableSkeleton from '@/components/table/TableSkeleton.vue';
 import useForHumans from '@/composables/useForHumans';
 import useGoogleDriveIcons from '@/modules/google-drive/composables/useGoogleDriveIcons';
 import { googleDriveService } from '@/modules/google-drive/services/google-drive.service';
@@ -6,7 +7,6 @@ import { Button } from '@ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { ArrowLeftIcon, ArrowRightIcon, CopyPlusIcon, LoaderIcon } from 'lucide-vue-next';
-import TableSkeleton from '../table/TableSkeleton.vue';
 import GoogleSearchFileBar from './GoogleSearchFileBar.vue';
 
 interface File {
