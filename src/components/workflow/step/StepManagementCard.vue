@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import AssistantSelectForm from '@/components/assistant/AssistantSelectForm.vue';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import AssistantSelectForm from '@/modules/assistant/components/AssistantSelectForm.vue';
 import type { AssistantsPaginatedResponse } from '@/modules/assistant/interfaces/assistant.interfaces';
 import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { workflowStepService } from '@/modules/workflow-step/services/workflow-step.service';
@@ -134,7 +134,8 @@ onMounted(() => {
           <FormField
             v-slot="{ componentField }"
             :value="workflowStep?.assistant?.systemPrompt"
-            name="bio"
+            name="systemPrompt"
+            :disabled="true"
           >
             <FormItem>
               <FormLabel class="text-xs">

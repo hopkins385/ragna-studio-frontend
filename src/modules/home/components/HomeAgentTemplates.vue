@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import TemplatePreviewDialog from '@/components/template/TemplatePreviewDialog.vue';
 import { useTemplatePreview } from '@/composables/useTemplatePreview';
 import type { AssistantTemplate } from '@/modules/assistant-template/interfaces/assistant-template.interfaces';
 import { assistantTemplateService } from '@/modules/assistant-template/services/assistant-template.service';
 import { BotIcon } from 'lucide-vue-next';
-import TemplatePreviewDialog from '../template/TemplatePreviewDialog.vue';
 
 const { previewDialog, openPreviewDialog } = useTemplatePreview();
 

@@ -3,9 +3,9 @@
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import MediaList from '@/components/media/MediaList.vue';
+import MediaFileDropzone from '@/modules/media/components/MediaFileDropzone.vue';
 import { mediaService } from '@/modules/media/services/media.service';
 import BoxContainer from '@components/box/BoxContainer.vue';
-import FileDropzone from '@components/file/FileDropzone.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import bgImgUrl from '@images/bg_upload.png?q=100&format=webp&imagetools';
 import Button from '@ui/button/Button.vue';
@@ -85,7 +85,11 @@ useHead({
       <template #bottom> </template>
     </Heading>
     <BoxContainer>
-      <FileDropzone v-model="dropzoneFiles" :max-files="10" :open-file-dialog="openFileDialog" />
+      <MediaFileDropzone
+        v-model="dropzoneFiles"
+        :max-files="10"
+        :open-file-dialog="openFileDialog"
+      />
       <div class="flex justify-end">
         <div class="flex items-center justify-center pt-4">
           <div v-if="isLoading" class="pr-5 text-sm">
