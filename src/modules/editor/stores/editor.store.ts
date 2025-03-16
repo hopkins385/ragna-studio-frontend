@@ -1,7 +1,3 @@
-import CommentsExtension, { type Comment } from '@/components/editor/extensions/comments-extension';
-import { HighlightSelection } from '@/components/editor/extensions/highlight-selection.extension';
-import { InvisibleCharacters } from '@/components/editor/extensions/invisible-characters';
-import { NodeTracker } from '@/components/editor/extensions/node-tracker';
 import {
   EditorCommand,
   editorCommandDefaultArgsSchema,
@@ -21,6 +17,10 @@ import type { ParseOptions } from '@tiptap/pm/model';
 import StarterKit from '@tiptap/starter-kit';
 import { Editor } from '@tiptap/vue-3';
 import { defineStore } from 'pinia';
+import CommentsExtension, { type Comment } from '../extensions/comments-extension';
+import { HighlightSelection } from '../extensions/highlight-selection.extension';
+import { InvisibleCharacters } from '../extensions/invisible-characters';
+import { NodeTracker } from '../extensions/node-tracker';
 
 export const useEditorStore = defineStore('editor-store', () => {
   const { t } = useI18n();

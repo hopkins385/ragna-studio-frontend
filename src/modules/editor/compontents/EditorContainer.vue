@@ -5,13 +5,13 @@ import { useErrorAlert } from '@/composables/useErrorAlert';
 import { editorService } from '@/modules/editor/services/editor.service';
 import { useEditorStore } from '@/modules/editor/stores';
 import { EditorContent } from '@tiptap/vue-3';
-import EditorAssistantDropdownMenu from './EditorAssistantDropdownMenu.vue';
-import EditorAssistantPromptContainer from './EditorAssistantPromptContainer.vue';
-import EditorMenu from './EditorMenu.vue';
 import {
   type CompletionRequestContext,
   type InlineCompletionResponse,
-} from './extensions/inline-completion/inline-completion.extension';
+} from '../extensions/inline-completion/inline-completion.extension';
+import EditorAssistantDropdownMenu from './EditorAssistantDropdownMenu.vue';
+import EditorAssistantPromptContainer from './EditorAssistantPromptContainer.vue';
+import EditorMenu from './EditorMenu.vue';
 
 // Stores
 const editorStore = useEditorStore();

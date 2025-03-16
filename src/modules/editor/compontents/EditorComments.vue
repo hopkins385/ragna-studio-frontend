@@ -2,9 +2,9 @@
 // Imports
 import Illustration from '@/assets/illustrations/empty-comments.svg';
 import CommentAddForm from '@/components/comment/CommentAddForm.vue';
-import EditorCommentMenu from '@/components/editor/EditorCommentMenu.vue';
-import EditorSidePanel from '@/components/editor/EditorSidePanel.vue';
 import { useEditorStore } from '@/modules/editor/stores/editor.store';
+import EditorCommentMenu from './EditorCommentMenu.vue';
+import EditorSidePanel from './EditorSidePanel.vue';
 
 // Props
 // Emits

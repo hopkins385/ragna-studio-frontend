@@ -3,7 +3,6 @@
 import Illustration from '@/assets/illustrations/undraw_saying.svg';
 import ChatAssistantSelect from '@/components/chat/ChatAssistantSelect.vue';
 import ChatInputTextarea from '@/components/chat/ChatInputTextarea.vue';
-import EditorSidePanel from '@/components/editor/EditorSidePanel.vue';
 import TooltipWrapper from '@/components/tooltip/TooltipWrapper.vue';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,6 +18,7 @@ import { useEditorStore } from '@/modules/editor/stores/editor.store';
 import { markdownService } from '@/modules/markdown/services/markdown.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { EllipsisIcon, HistoryIcon, PlusIcon } from 'lucide-vue-next';
+import EditorSidePanel from './EditorSidePanel.vue';
 
 // Props
 // Emits

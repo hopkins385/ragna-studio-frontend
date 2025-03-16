@@ -112,7 +112,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <transition name="sidepanel-slide">
+  <transition name="sidepanel-slide" appear>
     <div
       id="sidepanel-container"
       ref="sidepanel-container"
@@ -164,24 +164,53 @@ onBeforeUnmount(() => {
 .sidepanel-slide-enter-active,
 .sidepanel-slide-leave-active {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0; /* Start with zero width */
+}
+
+.sidepanel-slide-enter-active {
+  animation: slide-in 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.sidepanel-slide-leave-active {
+  animation: slide-out 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .sidepanel-slide-enter-from,
 .sidepanel-slide-leave-to {
   transform: translateX(100%);
-  width: 0;
   opacity: 0;
+  width: 0;
 }
 
 .sidepanel-slide-enter-to,
 .sidepanel-slide-leave-from {
   transform: translateX(0);
   opacity: 1;
-  /* Width will be controlled by panelWidth ref */
 }
 
-/* Add some user feedback for the resize handle */
-.resize-handle-active {
-  background-color: rgba(59, 130, 246, 0.5);
+@keyframes slide-in {
+  0% {
+    transform: translateX(100%);
+    width: 0;
+    opacity: 0;
+  }
+  100% {
+    width: calc(v-bind(panelWidth) * 1px);
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    width: calc(v-bind(panelWidth) * 1px);
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    width: 0;
+    opacity: 0;
+  }
 }
 </style>
