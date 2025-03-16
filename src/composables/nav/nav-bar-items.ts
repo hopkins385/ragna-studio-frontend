@@ -11,12 +11,10 @@ import {
   FileTextIcon,
   FolderIcon,
   FolderKanbanIcon,
-  HammerIcon,
   HistoryIcon,
   HomeIcon,
   ImageIcon,
   KanbanSquareIcon,
-  LayoutTemplateIcon,
   ListTodoIcon,
   MessagesSquareIcon,
   MonitorCogIcon,
@@ -220,13 +218,13 @@ export const assistantItems: NavItem[] = [
     hidden: false,
     children: [],
   },
-  {
+  /*{
     icon: LayoutTemplateIcon,
     path: '/assistant/template',
     label: 'nav.templates',
     hidden: false,
     children: [],
-  },
+  },*/
   {
     icon: BotIcon,
     path: '/assistant',
@@ -234,13 +232,13 @@ export const assistantItems: NavItem[] = [
     hidden: false,
     children: [],
   },
-  {
+  /*{
     icon: HammerIcon,
     path: '/assistant/tool',
     label: 'nav.tools',
     hidden: false,
     children: [],
-  },
+  },*/
 ];
 
 export const collectionItems: NavItem[] = [
@@ -441,16 +439,6 @@ export const architectureItems: NavItem[] = [
     icon: NetworkIcon,
     path: '/architecture',
     label: 'nav.architecture',
-    hidden: false,
-    children: [],
-  },
-];
-
-export const testItems: NavItem[] = [
-  {
-    icon: ListTodoIcon,
-    path: '/test',
-    label: 'nav.tests',
     hidden: false,
     children: [],
   },

@@ -12,7 +12,6 @@ import {
   kanbanItems,
   mediaManagerItems,
   settingsItems,
-  testItems,
   workflowItems,
 } from './nav-bar-items';
 
@@ -37,9 +36,6 @@ export function useNavBarItems() {
         break;
       case 'architecture':
         items.push(...architectureItems);
-        break;
-      case 'test':
-        items.push(...testItems);
         break;
       case 'document':
         items.push(...documentItems);

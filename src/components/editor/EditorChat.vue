@@ -109,7 +109,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <EditorSidePanel :title="$t('chat.title')" v-model="editorStore.showAiChat">
+  <EditorSidePanel
+    :panel-id="'chat'"
+    :resizable="true"
+    :show-reset-button="true"
+    :title="$t('chat.title')"
+    v-model="editorStore.showAiChat"
+  >
     <template #header>
       <div class="flex items-center">
         <div>
@@ -160,11 +166,11 @@ onBeforeUnmount(() => {
       >
         <div class="h-full space-y-2">
           <!-- Empty Chat Placeholder -->
-          <div v-if="!aiChatStore.hasChatMessages">
-            <div class="px-28 pt-20 pb-10">
+          <div v-if="!aiChatStore.hasChatMessages" class="pt-20">
+            <div class="w-32 mx-auto">
               <Illustration />
             </div>
-            <div class="px-14 text-center text-sm space-y-4">
+            <div class="px-14 pt-10 text-center text-sm space-y-4">
               <p class="opacity-75 font-bold">{{ $t('chat.empty.title') }}</p>
               <p class="opacity-75">
                 {{ $t('chat.empty.subtitle') }}

@@ -1,29 +1,132 @@
 <script setup lang="ts">
+import { useSidepanelStore } from '@/common/stores/sidepanel.store';
 import { Button } from '@/components/ui/button';
 import { XIcon } from 'lucide-vue-next';
-
-// Imports
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 // Props
 const props = defineProps<{
   title: string;
+  panelId: string;
+  minWidth?: number;
+  maxWidth?: number;
+  resizable?: boolean;
+  showResetButton?: boolean;
 }>();
+
 const modelValue = defineModel();
+
 // Emits
+const emit = defineEmits(['resize']);
 
 // Refs
+const sidepanelContainer = useTemplateRef('sidepanel-container');
+const isResizing = ref(false);
 
-// Composables
+// Store
+const sidepanelStore = useSidepanelStore();
+
+// Set custom constraints if provided
+if (props.minWidth || props.maxWidth) {
+  sidepanelStore.setConstraints(props.minWidth, props.maxWidth);
+}
+
+// Initialize panel width from store
+const panelWidth = ref(sidepanelStore.getPanelSize(props.panelId));
 
 // Computed
+const resizeHandleClasses = computed(() => [
+  'absolute',
+  'left-0',
+  'top-0',
+  'w-1',
+  'h-full',
+  'transition-colors',
+  'z-10',
+  {
+    'cursor-ew-resize': props.resizable,
+    'hover:bg-blue-500/50': props.resizable,
+    'bg-blue-500/50': isResizing.value,
+    invisible: !props.resizable,
+  },
+]);
+
 // Functions
+const startResize = (e: MouseEvent) => {
+  if (!props.resizable) return;
+
+  isResizing.value = true;
+  document.addEventListener('mousemove', handleResize);
+  document.addEventListener('mouseup', stopResize);
+  document.body.style.cursor = 'ew-resize';
+  e.preventDefault();
+};
+
+const handleResize = (e: MouseEvent) => {
+  if (!isResizing.value || !sidepanelContainer.value) return;
+
+  const newWidth = window.innerWidth - e.clientX;
+  // Apply min/max constraints
+  panelWidth.value = Math.min(Math.max(newWidth, sidepanelStore.minWidth), sidepanelStore.maxWidth);
+
+  // Emit resize event with new width
+  emit('resize', panelWidth.value);
+};
+
+const stopResize = () => {
+  isResizing.value = false;
+  document.removeEventListener('mousemove', handleResize);
+  document.removeEventListener('mouseup', stopResize);
+  document.body.style.cursor = '';
+
+  // Save the panel width to store when done resizing
+  sidepanelStore.setPanelSize(props.panelId, panelWidth.value);
+};
+
+const resetSize = () => {
+  sidepanelStore.resetPanelSize(props.panelId);
+  panelWidth.value = sidepanelStore.defaultWidth;
+  emit('resize', panelWidth.value);
+};
+
+// Save panel size when unmounting or when panel width changes
+watch(panelWidth, newWidth => {
+  if (!isResizing.value) {
+    sidepanelStore.setPanelSize(props.panelId, newWidth);
+  }
+});
 
 // Hooks
+onMounted(() => {
+  if (sidepanelContainer.value) {
+    sidepanelContainer.value.style.width = `${panelWidth.value}px`;
+  }
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('mousemove', handleResize);
+  document.removeEventListener('mouseup', stopResize);
+  // Save final panel size when unmounting
+  sidepanelStore.setPanelSize(props.panelId, panelWidth.value);
+});
 </script>
 
 <template>
   <transition name="sidepanel-slide">
-    <div v-if="modelValue" class="w-96 h-full overflow-x-hidden overflow-y-scroll shrink-0">
+    <div
+      id="sidepanel-container"
+      ref="sidepanel-container"
+      v-if="modelValue"
+      class="h-full overflow-x-hidden overflow-y-scroll shrink-0 relative"
+      :style="{ width: `${panelWidth}px` }"
+    >
+      <!-- Resize handle -->
+      <div
+        class="absolute left-0 top-0 w-1 h-full"
+        :class="resizeHandleClasses"
+        @mousedown="startResize"
+      ></div>
+
       <div class="border-l h-full p-4 space-y-5">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-1">
@@ -36,9 +139,21 @@ const modelValue = defineModel();
               <h3 class="font-semibold text-base">{{ props.title }}</h3>
             </div>
           </div>
-          <slot name="header" />
+          <!-- Header Slot -->
+          <div class="flex items-center gap-2">
+            <Button
+              v-if="showResetButton"
+              variant="ghost"
+              size="sm"
+              class="opacity-75"
+              @click="resetSize"
+            >
+              Reset Size
+            </Button>
+            <slot name="header" />
+          </div>
         </div>
-        <!-- Content -->
+        <!-- Content Slot -->
         <slot />
       </div>
     </div>
@@ -61,7 +176,12 @@ const modelValue = defineModel();
 .sidepanel-slide-enter-to,
 .sidepanel-slide-leave-from {
   transform: translateX(0);
-  width: 24rem;
   opacity: 1;
+  /* Width will be controlled by panelWidth ref */
+}
+
+/* Add some user feedback for the resize handle */
+.resize-handle-active {
+  background-color: rgba(59, 130, 246, 0.5);
 }
 </style>

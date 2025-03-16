@@ -29,6 +29,9 @@ const editorStore = useEditorStore();
 <template>
   <EditorSidePanel
     title="Review"
+    :resizable="true"
+    :show-reset-button="true"
+    :panel-id="'comments'"
     :model-value="editorStore.showComments"
     @update:modelValue="editorStore.toggleShowComments"
   >
@@ -36,11 +39,11 @@ const editorStore = useEditorStore();
       <CommentAddForm @submit="editorStore.addCommentToSelection" />
     </div>
     <!-- Empty Comments Placeholder -->
-    <div v-if="!editorStore.hasComments">
-      <div class="px-20 pt-20 pb-10">
+    <div v-if="!editorStore.hasComments" class="pt-20">
+      <div class="w-40 mx-auto">
         <Illustration />
       </div>
-      <div class="px-14 text-center text-sm space-y-4">
+      <div class="px-14 pt-10 text-center text-sm space-y-4">
         <p class="opacity-75 font-bold">{{ $t('comment.empty.title') }}</p>
         <p class="opacity-75">
           {{ $t('comment.empty.subtitle') }}
