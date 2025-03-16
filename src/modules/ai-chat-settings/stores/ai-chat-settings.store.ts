@@ -46,7 +46,7 @@ export const useAiChatSettingsStore = defineStore(
         ][thinkLevel.value?.[0] || 0],
     );
     const getTemperature = computed(
-      () => (temperature.value?.[0] || defaultSettings.temperature[0]) / 100,
+      () => (temperature.value?.[0] ?? defaultSettings.temperature[0]) / 20,
     );
     const getPresencePenalty = computed(
       () => presencePenalty.value?.[0] ?? defaultSettings.presencePenalty[0],

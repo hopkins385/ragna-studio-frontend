@@ -110,9 +110,9 @@ function onEditAssistantClick() {
         </div>
         <Slider
           v-model="settings.temperature"
-          :default-value="[20]"
-          :max="100"
-          :step="1"
+          :default-value="[80]"
+          :max="200"
+          :step="10"
           class="slider"
         />
       </div>

@@ -537,8 +537,8 @@
         "reset_chat": "Chat zurücksetzen"
       },
       "temperature": {
-        "title": "Temperatur",
-        "description": "Die Temperatur steuert die Kreativität der Antworten. Eine höhere Temperatur führt zu kreativeren Antworten, während eine niedrigere Temperatur zu weniger kreativen Antworten führt."
+        "title": "Kreativität",
+        "description": "Stellt ein wie kreativ der Agent sein soll. Eine höherer Wert führt zu kreativeren Antworten, während ein niedrigerer Wert zu weniger kreativen Antworten führt."
       },
       "max_tokens": {
         "title": "Maximale Tokens",
