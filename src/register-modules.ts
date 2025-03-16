@@ -1,8 +1,5 @@
+import type { Module } from '@/common/interfaces/module.interface';
 import router from './router';
-
-interface Module {
-  router?: (router: any) => void;
-}
 
 const registerModule = (name: string, module: Module) => {
   if (module.router) {
