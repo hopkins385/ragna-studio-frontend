@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useForHumans from '@/composables/useForHumans';
-import useGoogleDriveIcons from '@/composables/useGoogleDriveIcons';
+import useGoogleDriveIcons from '@/modules/google-drive/composables/useGoogleDriveIcons';
 import { googleDriveService } from '@/modules/google-drive/services/google-drive.service';
 import { Button } from '@ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';

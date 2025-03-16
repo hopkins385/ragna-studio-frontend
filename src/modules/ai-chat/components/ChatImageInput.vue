@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ChatImage } from '@/composables/chat/useChatImages';
+import type { ChatImage } from '@/modules/ai-chat/composables/useChatImages';
 import { LoaderCircleIcon, XIcon } from 'lucide-vue-next';
 
 interface ChatImageInputProps {

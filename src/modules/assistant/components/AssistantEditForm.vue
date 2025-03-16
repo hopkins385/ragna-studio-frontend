@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import ButtonLoading from '@/common/components/button/ButtonLoading.vue';
 import PromptWizardDialog from '@/components/prompt/PromptWizardDialog.vue';
-import { useToolIcons } from '@/composables/useToolIcons';
 import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
+import { useToolIcons } from '@/modules/assistant-tool/composables/useToolIcons';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
 import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import TemplatePreviewDialog from '@/components/template/TemplatePreviewDialog.vue';
-import { useTemplatePreview } from '@/composables/useTemplatePreview';
 import type {
   AssistantTemplateCategory,
   CategoryWithTemplates,
 } from '@/modules/assistant-template/interfaces/assistant-template.interfaces';
 import { assistantTemplateService } from '@/modules/assistant-template/services/assistant-template.service';
+import { useTemplatePreview } from '@/modules/assistant/composables/useTemplatePreview';
 import Heading from '@components/heading/Heading.vue';
 import HeadingTitle from '@components/heading/HeadingTitle.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
