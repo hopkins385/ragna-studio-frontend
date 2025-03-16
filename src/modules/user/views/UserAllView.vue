@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
-import UserAllTable from '@/components/user/UserAllTable.vue';
+import UserAllTable from '@/modules/user/components/UserAllTable.vue';
 
 // State
 </script>
@@ -9,9 +9,7 @@ import UserAllTable from '@/components/user/UserAllTable.vue';
   <div class="rounded-2xl p-5 h-full">
     <div class="flex justify-between items-center mb-5">
       <h1 class="text-xl font-semibold">Users</h1>
-      <Button @click="$router.push({ path: '/user/create' })">
-        Create User
-      </Button>
+      <Button @click="$router.push({ path: '/user/create' })"> Create User </Button>
     </div>
     <Suspense>
       <UserAllTable />
