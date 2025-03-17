@@ -1,4 +1,5 @@
 import type { NavItem } from '@/common/interfaces/nav-item.interface';
+import { RouteName } from '@/router/enums/route-names.enum';
 import {
   adminItems,
   architectureItems,
@@ -11,7 +12,6 @@ import {
   imageGenItems,
   kanbanItems,
   mediaManagerItems,
-  settingsItems,
   workflowItems,
 } from './nav-bar-items';
 
@@ -25,40 +25,57 @@ export function useNavBarItems() {
   const dynamicNavItems: Ref<NavItem[]> = computed((): NavItem[] => {
     const items = [homeNavItem];
 
-    const routePathStartsWith = route.path.split('/')[1];
-
-    switch (routePathStartsWith) {
+    switch (route.name) {
       case 'admin':
         items.push(...adminItems);
         break;
-      case 'kanban':
+      case RouteName.KANBAN_INDEX:
         items.push(...kanbanItems);
         break;
-      case 'architecture':
+      case RouteName.ARCHITECTURE_INDEX:
         items.push(...architectureItems);
         break;
-      case 'document':
+      case RouteName.DOCUMENT_INDEX:
+      case RouteName.DOCUMENT_SHOW:
         items.push(...documentItems);
         break;
-      case 'workflow':
+      case RouteName.WORKFLOW_INDEX:
+      case RouteName.WORKFLOW_CREATE:
+      case RouteName.WORKFLOW_EDIT:
+      case RouteName.WORKFLOW_SHOW:
         items.push(...workflowItems);
         break;
-      case 'chat':
+      case RouteName.CHAT_RECENT:
+      case RouteName.CHAT_CREATE:
+      case RouteName.CHAT_HISTORY:
+      case RouteName.CHAT_SHOW:
         items.push(...chatItems);
         break;
-      case 'assistant':
+      case RouteName.ASSISTANT_INDEX:
+      case RouteName.ASSISTANT_CREATE:
+      case RouteName.ASSISTANT_EDIT:
+      case RouteName.ASSISTANT_TEMPLATE:
         items.push(...assistantItems);
         break;
-      case 'collection':
+      case RouteName.COLLECTION_INDEX:
+      case RouteName.COLLECTION_CREATE:
+      case RouteName.COLLECTION_SHOW:
+      case RouteName.COLLECTION_MEDIA:
         items.push(...collectionItems);
         break;
-      case 'media':
+      case RouteName.MEDIA_INDEX:
+      case RouteName.MEDIA_UPLOAD:
+      case RouteName.MEDIA_GOOGLE_DRIVE_INDEX:
+      case RouteName.MEDIA_GOOGLE_DRIVE_CALLBACK:
+      case RouteName.MEDIA_GOOGLE_DRIVE_SHOW:
+      case RouteName.MEDIA_ONE_DRIVE:
         items.push(...mediaManagerItems);
         break;
-      case 'settings':
-        items.push(...settingsItems);
-        break;
-      case 'text-to-image':
+      // case 'settings':
+      //   items.push(...settingsItems);
+      //   break;
+      case RouteName.TEXT_TO_IMAGE_INDEX:
+      case RouteName.TEXT_TO_IMAGE_EXPLORE:
         items.push(...imageGenItems);
         break;
       default:

@@ -45,11 +45,11 @@ export const RouteName = {
   // Architecture routes
   ARCHITECTURE_INDEX: 'architecture.index',
 
-  // Test routes
-  TEST_INDEX: 'test.index',
-  TEST_SHOW: 'test.show',
-  TEST_CREATE: 'test.create',
-  TEST_EDIT: 'test.edit',
+  // Validation routes
+  VALIDATION_INDEX: 'validation.index',
+  VALIDATION_SHOW: 'validation.show',
+  VALIDATION_CREATE: 'validation.create',
+  VALIDATION_EDIT: 'validation.edit',
 
   // Analytics routes
   ANALYTICS_INDEX: 'analytics.index',
