@@ -8,6 +8,7 @@ import AutoImport from 'unplugin-auto-import/vite';
 import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'vite';
 import { imagetools } from 'vite-imagetools';
+import { VitePWA } from 'vite-plugin-pwa';
 import svgLoader from 'vite-svg-loader';
 
 // https://vite.dev/config/
@@ -43,6 +44,61 @@ export default defineConfig({
     vue(),
     // vueDevTools(),
     UnheadVite(),
+    VitePWA({
+      // mode: 'development',
+      // base: '/',
+      includeAssets: ['favicon.png'],
+      registerType: 'autoUpdate',
+      strategies: 'generateSW',
+      srcDir: 'src',
+      manifest: {
+        name: 'RAGNA Studio',
+        short_name: 'RAGNA',
+        description: 'Intelligent Solution for Systems Engineering',
+        theme_color: '#292524',
+        icons: [
+          {
+            src: 'pwa-64x64.png',
+            sizes: '64x64',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+          {
+            src: 'maskable-icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: ['any', 'maskable'],
+          },
+        ],
+      },
+      workbox: {
+        // globPatterns: ['**/*.{js,css,html,svg,png,svg,ico}'],
+        cleanupOutdatedCaches: true,
+        // clientsClaim: true,
+        disableDevLogs: false,
+      },
+      injectManifest: {
+        // minify: true,
+        // globPatterns: ['**/*.{js,css,html,svg,png,svg,ico}'],
+        // enableWorkboxModulesLogs: true,
+      },
+      devOptions: {
+        enabled: process.env.VITE_ENV !== 'production',
+        /* when using generateSW the PWA plugin will switch to classic */
+        type: 'module',
+        navigateFallback: 'index.html',
+        suppressWarnings: true,
+      },
+    }),
   ],
   resolve: {
     alias: {

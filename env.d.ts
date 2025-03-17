@@ -2,6 +2,7 @@
 /// <reference types="vite-svg-loader" />
 /// <reference types="vite-imagetools" />
 /// <reference types="unplugin-icons/types/vue" />
+/// <reference types="vite-plugin-pwa/client" />
 
 interface OutputMetadata {
   src: string; // URL of the generated image
