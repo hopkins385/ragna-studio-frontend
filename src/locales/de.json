@@ -1,8 +1,8 @@
 {
   "nav": {
     "home": "Startseite",
-    "kanban": "Workitems",
-    "architecture": "Modelle",
+    "kanban": "Lean Kanban",
+    "architecture": "Architektur",
     "documents": "Dokumente",
     "editor": "Editor",
     "tests": "Validierung",

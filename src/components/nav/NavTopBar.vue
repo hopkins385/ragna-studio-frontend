@@ -3,7 +3,6 @@ import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { Bell, Expand } from 'lucide-vue-next';
 import BrandLogo from '../brand/BrandLogo.vue';
 import NavBarProject from './NavBarProject.vue';
-import NavBarTeam from './NavBarTeam.vue';
 import NavTopPopover from './NavTopPopover.vue';
 import NavUserMenu from './NavUserMenu.vue';
 
@@ -34,9 +33,11 @@ const onExpandClick = () => {
           <BrandLogo class="" :text-visible="true" />
         </div>
         <div></div>
+        <!--
         <div>
           <NavBarTeam />
         </div>
+        -->
         <div></div>
         <div>
           <NavBarProject />
