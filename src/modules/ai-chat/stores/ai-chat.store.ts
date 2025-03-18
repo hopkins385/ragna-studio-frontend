@@ -9,7 +9,7 @@ import { AiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import { defineStore } from 'pinia';
 
 export const useAiChatStore = defineStore('ai-chat-store', () => {
-  const aiChatService = new AiChatService();
+  const aiChatClient = new AiChatService(); // ragnaClient.aiChat;
   const chatSettingsStore = useAiChatSettingsStore();
 
   // internal state
@@ -62,7 +62,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       throw new Error('Assistant ID is required to create a new chat');
     }
 
-    const { chat } = await aiChatService.createChat({ assistantId: payload.assistantId });
+    const { chat } = await aiChatClient.createChat({ assistantId: payload.assistantId });
     if (!chat) {
       throw new Error('Failed to create chat');
     }
@@ -81,7 +81,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     };
 
     try {
-      const data = await aiChatService.createChatMessage({
+      const data = await aiChatClient.createChatMessage({
         chatId: payload.chatId,
         message: userChatMessage,
       });
@@ -117,7 +117,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     const temperature = Math.min(Math.max(chatSettingsStore.temperature?.[0] ?? 80, 0), 100);
 
     try {
-      const stream = await aiChatService.createChatStream({
+      const stream = await aiChatClient.createChatStream({
         chatId: payload.chatId,
         chatMessages: _chatMessages.value,
         reasoningEffort: chatSettingsStore.thinkLevel?.[0] || 0,
@@ -150,7 +150,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       throw new Error('Chat ID is required to hydrate chat');
     }
 
-    const { chat } = await aiChatService.fetchChatById(chatId);
+    const { chat } = await aiChatClient.fetchChatById(chatId);
 
     if (!chat) {
       throw new Error('Failed to hydrate chat');
@@ -192,7 +192,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       throw new Error('Chat ID is required to reset chat');
     }
 
-    await aiChatService.deleteAllChatMessages({ chatId: payload.chatId });
+    await aiChatClient.deleteAllChatMessages({ chatId: payload.chatId });
     return hydrateChatById(payload.chatId);
   }
 
@@ -205,7 +205,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   }
 
   function abortChatRequest() {
-    aiChatService.abortRequest();
+    aiChatClient.abortRequest();
     finalizeChatStream();
   }
 
