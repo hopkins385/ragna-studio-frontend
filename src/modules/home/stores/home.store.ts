@@ -1,4 +1,3 @@
-// home.store.ts
 import {
   BotIcon,
   FileTextIcon,
@@ -10,8 +9,9 @@ import {
   WorkflowIcon,
 } from 'lucide-vue-next';
 import { defineStore } from 'pinia';
+import type { QuickAccessItem } from './../interfaces/quick-access.interface';
 
-const _quickAccessItems = [
+const _quickAccessItems: QuickAccessItem[] = [
   {
     id: 1,
     icon: KanbanSquareIcon,
@@ -70,10 +70,7 @@ const _quickAccessItems = [
   },
 ];
 
-const _quickAccessItemsMap = new Map<
-  number,
-  { id: number; icon: any; class: string; label: string; route: string }
->();
+const _quickAccessItemsMap = new Map<number, QuickAccessItem>();
 _quickAccessItems.forEach(item => {
   _quickAccessItemsMap.set(item.id, item);
 });
@@ -85,8 +82,8 @@ export const useHomeStore = defineStore(
     const _quickAccessIsSortable = ref(false);
 
     // exposed state (and persisted)
-    const quickAccessItemsOrder = ref(_quickAccessItems.map(item => item.id));
-    const quickAccessItems = computed(() => {
+    const quickAccessItemsOrder = ref<number[]>(_quickAccessItems.map(item => item.id));
+    const quickAccessItems = computed<QuickAccessItem[]>(() => {
       return quickAccessItemsOrder.value.map(itemId => {
         const item = _quickAccessItemsMap.get(itemId);
         if (!item) {
@@ -102,13 +99,8 @@ export const useHomeStore = defineStore(
       if (fromIndex === undefined || toIndex === undefined) return;
       if (fromIndex === toIndex) return;
 
-      const itemId = quickAccessItemsOrder.value[fromIndex];
-      const newOrder = [...quickAccessItemsOrder.value];
-      newOrder.splice(fromIndex, 1);
-      newOrder.splice(toIndex, 0, itemId);
-      quickAccessItemsOrder.value = newOrder;
-
-      console.log('New order:', newOrder);
+      const item = quickAccessItemsOrder.value.splice(fromIndex, 1)[0];
+      quickAccessItemsOrder.value.splice(toIndex, 0, item);
     }
 
     function toggleQuickAccessIsSortable() {

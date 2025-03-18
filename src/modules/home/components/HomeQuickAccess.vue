@@ -32,7 +32,6 @@ const sortableOptions = computed(() => {
     <Sortable
       :options="sortableOptions"
       :list="homeStore.quickAccessItems"
-      :animation="200"
       class="flex flex-wrap gap-4"
       item-key="route"
       @end="e => homeStore.moveQuickAccessItem(e.oldIndex, e.newIndex)"
