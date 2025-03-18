@@ -4,37 +4,64 @@ import { computed, ref } from 'vue';
 
 export const useDrawerStore = defineStore('drawer-store', () => {
   // State
-  const _isVisible = ref(false);
-  const _currentComponent = ref<string>();
+  const _leftIsVisible = ref(false);
+  const _leftComponent = ref<string>();
+  const _rightIsVisible = ref(false);
+  const _rightComponent = ref<string>();
 
   // Getters
-  const isVisible = computed(() => _isVisible.value);
-  const currentComponent = computed(() => _currentComponent.value);
+  const leftIsVisible = computed(() => _leftIsVisible.value);
+  const leftComponent = computed(() => _leftComponent.value);
+  const rightIsVisible = computed(() => _rightIsVisible.value);
+  const rightComponent = computed(() => _rightComponent.value);
 
   // Actions
-  function show(component: string) {
-    _currentComponent.value = component;
-    _isVisible.value = true;
+  function showLeftDrawer(component: string) {
+    _leftIsVisible.value = true;
+    _leftComponent.value = component;
   }
-
-  function hide() {
-    _isVisible.value = false;
-    _currentComponent.value = undefined;
+  function hideLeftDrawer() {
+    _leftIsVisible.value = false;
+    _leftComponent.value = undefined;
   }
-
-  function toggle(component: string) {
-    if (currentComponent.value === component && isVisible.value) {
-      hide();
+  function showRightDrawer(component: string) {
+    _rightIsVisible.value = true;
+    _rightComponent.value = component;
+  }
+  function hideRightDrawer() {
+    _rightIsVisible.value = false;
+    _rightComponent.value = undefined;
+  }
+  function toggleLeftDrawer(component: string) {
+    if (_leftIsVisible.value) {
+      hideLeftDrawer();
     } else {
-      show(component);
+      showLeftDrawer(component);
     }
+  }
+  function toggleRightDrawer(component: string) {
+    if (_rightIsVisible.value) {
+      hideRightDrawer();
+    } else {
+      showRightDrawer(component);
+    }
+  }
+  function closeAllDrawers() {
+    hideLeftDrawer();
+    hideRightDrawer();
   }
 
   return {
-    isVisible,
-    currentComponent,
-    show,
-    hide,
-    toggle,
+    leftIsVisible,
+    leftComponent,
+    rightIsVisible,
+    rightComponent,
+    showLeftDrawer,
+    hideLeftDrawer,
+    showRightDrawer,
+    hideRightDrawer,
+    toggleLeftDrawer,
+    toggleRightDrawer,
+    closeAllDrawers,
   };
 });

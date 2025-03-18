@@ -1,7 +1,18 @@
 <script setup lang="ts">
+import { useDrawerStore } from '@/common/stores/drawer.store';
 import EditorChat from '@/modules/editor/components/EditorChat.vue';
 import EditorComments from '@/modules/editor/components/EditorComments.vue';
 import EditorContainer from '@/modules/editor/components/EditorContainer.vue';
+
+const drawer = useDrawerStore();
+
+onMounted(() => {
+  drawer.toggleRightDrawer('editor-sidebar');
+});
+
+onBeforeUnmount(() => {
+  drawer.hideRightDrawer();
+});
 </script>
 
 <template>

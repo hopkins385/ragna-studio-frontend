@@ -1,3 +1,4 @@
+import type { SidebarButton } from '@/modules/editor/interfaces';
 import {
   EditorCommand,
   editorCommandDefaultArgsSchema,
@@ -16,6 +17,7 @@ import Underline from '@tiptap/extension-underline';
 import type { ParseOptions } from '@tiptap/pm/model';
 import StarterKit from '@tiptap/starter-kit';
 import { Editor } from '@tiptap/vue-3';
+import { BotMessageSquare, MessageCircle } from 'lucide-vue-next';
 import { defineStore } from 'pinia';
 import CommentsExtension, { type Comment } from '../extensions/comments-extension';
 import { HighlightSelection } from '../extensions/highlight-selection.extension';
@@ -32,6 +34,19 @@ export const useEditorStore = defineStore('editor-store', () => {
   const _comments = ref<Comment[]>([]);
   const _selectedCommentId = ref<string | null>(null);
 
+  const _sidebarButtons = ref<SidebarButton[]>([
+    {
+      icon: BotMessageSquare,
+      action: toggleShowAiChat,
+      tooltip: 'AI Chat',
+    },
+    {
+      icon: MessageCircle,
+      action: toggleShowComments,
+      tooltip: 'Comments',
+    },
+  ]);
+
   // external state refs
   const showComments = ref(false);
   const showAiChat = ref(false);
@@ -42,8 +57,13 @@ export const useEditorStore = defineStore('editor-store', () => {
   const editorContent = computed(() => _editorContent.value);
   const comments = computed<Comment[]>(() => _comments.value || []);
   const selectedCommentId = computed(() => _selectedCommentId.value);
+  const sidebarButtons = computed(() => _sidebarButtons.value);
 
   // actions
+  function registerSidebarButton(button: SidebarButton) {
+    _sidebarButtons.value.push(button);
+  }
+
   function resetState() {
     _editorContent.value = '';
     _hasTextSelected.value = false;
@@ -477,5 +497,8 @@ export const useEditorStore = defineStore('editor-store', () => {
     redo,
     runCommand,
     runManyCommands,
+    // Sidebar
+    registerSidebarButton,
+    sidebarButtons,
   };
 });

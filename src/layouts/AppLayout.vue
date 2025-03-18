@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useWebSocketStore } from '@/common/stores/websocket.store';
+import DrawerLeftPanel from '@/components/drawer/DrawerLeftPanel.vue';
+import DrawerRightPanel from '@/components/drawer/DrawerRightPanel.vue';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
-import EditorSidebar from '@/modules/editor/components/EditorSidebar.vue';
 import { RouteName } from '@/router/enums/route-names.enum';
-import DrawerPanel from '@components/drawer/DrawerPanel.vue';
 import NavBar from '@components/nav/NavBar.vue';
 import NavTopBar from '@components/nav/NavTopBar.vue';
 import { Toaster } from '@components/ui/sonner';
@@ -58,7 +58,7 @@ onUnmounted(() => {
       <!-- Nav SideBar -->
       <NavBar />
       <!-- Drawer -->
-      <DrawerPanel />
+      <DrawerLeftPanel />
       <!-- Main -->
       <div
         id="main"
@@ -68,7 +68,7 @@ onUnmounted(() => {
       >
         <slot />
       </div>
-      <EditorSidebar />
+      <DrawerRightPanel />
     </div>
   </body>
 </template>

@@ -1,3 +1,5 @@
+import type { Component } from 'vue';
+
 export interface PromptCompletionPayload {
   context: string;
   selectedText: string;
@@ -12,4 +14,10 @@ export interface InlineCompletionPayload {}
 
 export interface InlineCompletionResponse {
   inlineCompletion: string;
+}
+
+export interface SidebarButton {
+  icon: Component;
+  action: () => any;
+  tooltip?: string;
 }

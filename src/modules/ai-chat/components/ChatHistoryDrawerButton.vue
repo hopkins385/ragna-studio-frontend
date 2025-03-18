@@ -11,7 +11,12 @@ const drawer = useDrawerStore();
   <TooltipProvider :delay-duration="300">
     <Tooltip>
       <TooltipTrigger as-child>
-        <Button variant="outline" size="icon" class="group" @click="drawer.toggle('ChatHistory')">
+        <Button
+          variant="outline"
+          size="icon"
+          class="group"
+          @click="drawer.toggleLeftDrawer('chat-history')"
+        >
           <HistoryIcon class="size-4 stroke-1.5 group-hover:stroke-2" />
         </Button>
       </TooltipTrigger>

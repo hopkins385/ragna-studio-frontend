@@ -76,7 +76,7 @@ watch(
   () => router.currentRoute.value.name?.toString(),
   name => {
     if (!name?.startsWith(RouteName.CHAT_SHOW)) {
-      drawer.hide();
+      drawer.hideLeftDrawer();
     }
   },
   { immediate: true },
@@ -115,7 +115,7 @@ Example API response
         <Button variant="ghost" size="icon" class="group" @click="toggleGroupBy">
           <CalendarIcon class="size-4 stroke-1.5 group-hover:stroke-2 opacity-75" />
         </Button>
-        <Button variant="ghost" size="icon" class="group" @click="() => drawer.hide()">
+        <Button variant="ghost" size="icon" class="group" @click="() => drawer.hideLeftDrawer()">
           <XIcon class="size-4 stroke-2 group-hover:stroke-2 opacity-75" />
         </Button>
       </div>
