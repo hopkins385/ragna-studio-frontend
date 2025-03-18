@@ -25,7 +25,6 @@ import EditorSidePanel from './EditorSidePanel.vue';
 
 // Refs
 const chatContainer = useTemplateRef('chatContainerRef');
-const textareaInput = ref<string | undefined>(undefined);
 
 // Stores
 const editorStore = useEditorStore();
@@ -43,8 +42,8 @@ const submitLocked = computed<boolean>(() => {
 });
 
 // Functions
-async function submitForm(args_0?: void | undefined) {
-  const userMessageContent = textareaInput.value?.trim();
+async function submitForm(inputText: string) {
+  const userMessageContent = inputText.trim();
   if (!userMessageContent || userMessageContent.length < 1) {
     console.warn('Input is empty or chatId is not set');
     return;
@@ -54,9 +53,6 @@ async function submitForm(args_0?: void | undefined) {
     console.warn('Submit is locked');
     return;
   }
-
-  // Clear the textarea input
-  textareaInput.value = undefined;
 
   // Check if chat is set, if not create a new chat on first message
   if (!aiChatStore.hasChat) {
@@ -197,10 +193,9 @@ onBeforeUnmount(() => {
       <!-- Chat input -->
       <div class="relative pt-1">
         <ChatInputTextarea
-          v-model="textareaInput"
           :show-abort-button="aiChatStore.isThinking || aiChatStore.isStreaming"
           :submit-locked="submitLocked"
-          @submit-form="submitForm"
+          @submit-form="value => submitForm(value)"
           @abort="abortRequest"
         />
         <div class="absolute bottom-[0.3rem] z-10 right-8">

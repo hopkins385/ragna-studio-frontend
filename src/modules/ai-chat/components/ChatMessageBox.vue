@@ -35,10 +35,10 @@ defineProps<ChatMessageBoxProps>();
     </div>
     <!-- Text Content -->
     <div
+      v-if="role === 'assistant'"
       v-dompurify-html="markdownService.toHtml(text)"
-      :class="{
-        'w-full pr-10': role === 'assistant',
-      }"
+      class="w-full pr-10"
     ></div>
+    <div v-else class="whitespace-pre-line">{{ text }}</div>
   </ChatMessageBoxWrapper>
 </template>

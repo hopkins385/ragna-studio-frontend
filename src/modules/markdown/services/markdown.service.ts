@@ -3,6 +3,7 @@ import hljs from 'highlight.js/lib/core';
 import c from 'highlight.js/lib/languages/c';
 import java from 'highlight.js/lib/languages/java';
 import javascript from 'highlight.js/lib/languages/javascript';
+import json from 'highlight.js/lib/languages/json';
 import python from 'highlight.js/lib/languages/python';
 import typescript from 'highlight.js/lib/languages/typescript';
 import type { Options as LinkifyOptions } from 'linkify-it';
@@ -14,6 +15,7 @@ hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('python', python);
 hljs.registerLanguage('java', java);
 hljs.registerLanguage('c', c);
+hljs.registerLanguage('json', json);
 
 const linkifyOptions: LinkifyOptions = {
   fuzzyLink: false,

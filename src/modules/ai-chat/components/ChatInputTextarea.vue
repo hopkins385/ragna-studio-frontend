@@ -1,8 +1,10 @@
 <script setup lang="ts">
 // Imports
 import { Button } from '@/components/ui/button';
+import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
+import { chatInputFormSchema } from '@/modules/ai-chat/schemas/chat-input-text.schema';
 import { SendHorizontalIcon, SquareIcon } from 'lucide-vue-next';
 
 interface Props {
@@ -11,12 +13,11 @@ interface Props {
 }
 
 // Props
-const modelValue = defineModel<string | undefined>();
 const { showAbortButton = false, submitLocked = false } = defineProps<Props>();
 
 // Emits
 const emit = defineEmits<{
-  submitForm: [void];
+  submitForm: [string];
   abort: [void];
 }>();
 
@@ -27,9 +28,17 @@ const chatInputFormRef = useTemplateRef('chat-input-form');
 const aiChatSettings = useAiChatSettingsStore();
 
 // Composables
+const {
+  handleSubmit,
+  values: formValues,
+  resetForm,
+} = useForm({
+  validationSchema: chatInputFormSchema,
+});
+
 // Computed
 const submitReleased = computed(() => {
-  return !submitLocked && modelValue.value;
+  return !submitLocked && formValues.input && formValues.input.length > 0;
 });
 
 // Functions
@@ -55,21 +64,23 @@ const focusTextarea = () => {
 };
 
 const onKeyDownEnter = (event: KeyboardEvent) => {
+  if (!submitReleased.value) {
+    return;
+  }
   if (event.key === 'Enter' && !event.shiftKey && aiChatSettings.submitOnEnter) {
     event.preventDefault();
-    emit('submitForm');
+    submitForm();
   }
-  adjustTextareaHeight();
-  focusTextarea();
 };
 
-const submitForm = () => {
+const submitForm = handleSubmit(values => {
   if (submitReleased.value) {
-    emit('submitForm');
+    emit('submitForm', values.input);
+    resetForm();
   }
   adjustTextareaHeight();
   focusTextarea();
-};
+});
 
 const abortRequest = () => {
   emit('abort');
@@ -87,14 +98,21 @@ const abortRequest = () => {
     @submit.prevent="submitForm"
   >
     <div class="relative z-0 max-h-96 w-full">
-      <Textarea
-        v-model="modelValue"
-        :placeholder="$t('chat.input.placeholder')"
-        resize="none"
-        class="no-scrollbar resize-none rounded-lg py-3 pr-14 focus:shadow-lg bg-stone-50"
-        @keydown.enter="onKeyDownEnter"
-        @input="adjustTextareaHeight"
-      />
+      <FormField v-slot="{ componentField }" name="input">
+        <FormItem>
+          <FormMessage />
+          <FormControl>
+            <Textarea
+              v-bind="componentField"
+              :placeholder="$t('chat.input.placeholder')"
+              resize="none"
+              class="no-scrollbar resize-none rounded-lg py-3 pr-14 focus:shadow-lg bg-stone-50"
+              @keydown.enter="onKeyDownEnter"
+              @input="adjustTextareaHeight"
+            />
+          </FormControl>
+        </FormItem>
+      </FormField>
     </div>
 
     <Button
