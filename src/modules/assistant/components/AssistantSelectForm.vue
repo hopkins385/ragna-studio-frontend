@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { workflowStepService } from '@/modules/workflow-step/services/workflow-step.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { FormControl, FormField, FormItem, FormMessage } from '@ui/form';
 import {
   Select,
@@ -29,6 +29,8 @@ const formSchema = toTypedSchema(
   }),
 );
 
+const client = useRagnaClient();
+
 const { handleSubmit } = useForm({
   validationSchema: formSchema,
   initialValues: {
@@ -37,7 +39,7 @@ const { handleSubmit } = useForm({
 });
 
 const onSubmit = handleSubmit(async values => {
-  await workflowStepService.updateWorkflowStepAssistant(props.workflowStepId, {
+  await client.workflowStep.updateWorkflowStepAssistant(props.workflowStepId, {
     assistantId: values.assistantId,
   });
   emit('refresh');

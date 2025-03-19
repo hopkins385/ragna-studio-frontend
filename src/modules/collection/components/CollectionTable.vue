@@ -2,8 +2,7 @@
 // Imports
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
-import type { CollectionsPaginatedResponse } from '@/modules/collection/interfaces';
-import { collectionService } from '@/modules/collection/services/collection.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
@@ -14,6 +13,7 @@ import ButtonLink from '@ui/button/ButtonLink.vue';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { DatabaseIcon, FolderClosedIcon, Trash2Icon } from 'lucide-vue-next';
+import type { CollectionsPaginatedResponse } from 'ragna-sdk';
 
 // Props
 // Emits
@@ -28,6 +28,7 @@ const limit = ref(route.query.limit ? parseInt(route.query.limit.toString(), 10)
 const allCollections = ref<CollectionsPaginatedResponse | null>(null);
 
 // Composables
+const client = useRagnaClient();
 const { t } = useI18n();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
@@ -45,7 +46,7 @@ const meta = computed(() => {
 // Functions
 async function handleDelete(collectionId: string) {
   try {
-    await collectionService.deleteCollection(collectionId);
+    await client.collection.deleteCollection(collectionId);
     await initCollections();
     toast.success({ description: t('collection.delete.success') });
   } catch (error: unknown) {
@@ -71,7 +72,7 @@ const onUpdatePage = async (val: number) => {
 };
 
 const initCollections = async () => {
-  allCollections.value = await collectionService.fetchAllPaginated({
+  allCollections.value = await client.collection.fetchAllPaginated({
     page: page.value,
     limit: limit.value,
   });

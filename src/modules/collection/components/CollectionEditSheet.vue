@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { collectionService } from '@/modules/collection/services/collection.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';
@@ -32,6 +32,7 @@ interface CollectionSettingsEmits {
 const props = defineProps<CollectionSettingsProps>();
 const emit = defineEmits<CollectionSettingsEmits>();
 
+const client = useRagnaClient();
 const toast = useToast();
 
 const sheetIsOpen = ref(false);
@@ -57,7 +58,7 @@ const onSettingsButtonClick = () => {
 
 const onSubmit = handleSubmit(async values => {
   try {
-    await collectionService.editCollection(props.collectionId, {
+    await client.collection.editCollection(props.collectionId, {
       name: values.name,
       description: values.description,
     });
@@ -71,7 +72,7 @@ const onSubmit = handleSubmit(async values => {
 });
 
 // watch open state and reset form if sheet is opened
-watch(sheetIsOpen, isOpen => {
+watch(sheetIsOpen, (isOpen: boolean) => {
   if (isOpen) {
     resetForm();
   }

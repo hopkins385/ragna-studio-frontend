@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useAiChatStore } from '@/modules/ai-chat/stores';
-import type { UserFavorite } from '@/modules/user-favorite/interfaces';
-import { userFavoriteService } from '@/modules/user-favorite/services/user-favorite.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { Star } from 'lucide-vue-next';
+import type { UserFavorite } from 'ragna-sdk';
 
 /*
 Example of the response from the fetchAllFavorites method:
@@ -43,6 +43,8 @@ Example of the response from the fetchAllFavorites method:
 }
 */
 
+const client = useRagnaClient();
+
 const myFavorites = ref<UserFavorite[]>();
 const favoriteAssistants = computed(() => {
   return (
@@ -73,7 +75,7 @@ const onStartChat = async (assistantId: string) => {
 };
 
 onMounted(async () => {
-  const { favorites } = await userFavoriteService.fetchAllFavorites();
+  const { favorites } = await client.userFavorite.fetchAllFavorites();
   myFavorites.value = favorites;
 });
 </script>

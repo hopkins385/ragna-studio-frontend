@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { textToImageService } from '@/modules/text-to-image/services/text-to-image.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useImgGenSettingsStore } from '@/modules/text-to-image/stores/image-gen-settings.store';
 import { useInfiniteScroll } from '@vueuse/core';
 import { Loader2Icon } from 'lucide-vue-next';
@@ -32,10 +32,11 @@ const runs = ref<any>([]);
 const meta = ref<any>(null);
 const hasRuns = computed(() => runs.value && runs.value.length > 0);
 
+const client = useRagnaClient();
 const settings = useImgGenSettingsStore();
 
 const initFolder = async () => {
-  const response = await textToImageService.fetchFolders();
+  const response = await client.textToImage.fetchFolders();
   if (!response?.folders.length) {
     throw new Error('No folder found');
   }
@@ -44,7 +45,7 @@ const initFolder = async () => {
 
 const fetchRuns = async (payload: { page: number }) => {
   isLoading.value = true;
-  const response = await textToImageService.fetchRunsPaginated(
+  const response = await client.textToImage.fetchRunsPaginated(
     {
       folderId: folderId.value,
     },

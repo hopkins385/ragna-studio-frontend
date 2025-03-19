@@ -3,15 +3,16 @@ import Button from '@/components/ui/button/Button.vue';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useNotification } from '@/composables/useNotification';
-import type { User } from '@/modules/user/interfaces';
-import { userService } from '@/modules/user/services/user.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { RouteName } from '@/router/enums/route-names.enum';
+import type { User } from 'ragna-sdk';
 
 const route = useRoute();
 const router = useRouter();
 
 const userData = ref<User | null>(null);
 
+const client = useRagnaClient();
 const { showError } = useNotification();
 
 const onEditClick = () => {
@@ -25,7 +26,7 @@ const initUser = async () => {
     return;
   }
   try {
-    const user = await userService.fetchUserById(id);
+    const user = await client.user.fetchUserById(id);
     if (!user) {
       throw new Error('User not found');
     }

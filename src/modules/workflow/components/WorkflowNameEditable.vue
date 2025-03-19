@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { workflowNameSchema } from '@/modules/workflow/schemas/workflow-settings.schema';
-import { workflowService } from '@/modules/workflow/services/workflow.service';
 import { FormControl, FormField, FormItem, FormMessage } from '@ui/form';
 import { Input } from '@ui/input';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -16,6 +16,8 @@ const emit = defineEmits<{
 
 const showForm = ref(false);
 
+const client = useRagnaClient();
+
 const { handleSubmit } = useForm({
   validationSchema: toTypedSchema(workflowNameSchema),
   initialValues: {
@@ -25,7 +27,7 @@ const { handleSubmit } = useForm({
 
 const onSubmit = handleSubmit(async values => {
   try {
-    await workflowService.updateWorkflow(props.workflowId, { name: values.name });
+    await client.workflow.updateWorkflow(props.workflowId, { name: values.name });
   } catch (error) {
     console.error(error);
   } finally {

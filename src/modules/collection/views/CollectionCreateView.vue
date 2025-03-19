@@ -5,7 +5,7 @@
  */
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
-import { collectionService } from '@/modules/collection/services/collection.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { RouteName } from '@/router/enums/route-names.enum';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import useToast from '@composables/useToast';
@@ -36,6 +36,7 @@ const createCollectionSchema = toTypedSchema(
   }),
 );
 
+const client = useRagnaClient();
 const { t } = useI18n();
 
 const { handleSubmit } = useForm({
@@ -44,7 +45,7 @@ const { handleSubmit } = useForm({
 
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
   try {
-    const { collection } = await collectionService.createCollection({
+    const { collection } = await client.collection.createCollection({
       name: values.name,
       description: values.description || '',
     });

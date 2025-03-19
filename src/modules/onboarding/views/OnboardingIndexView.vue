@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import imageUrl from '@/assets/images/home2.jpg?q=100&format=webp&imagetools';
 import { Input } from '@/components/ui/input';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
-import { onboardingService } from '@/modules/onboarding/services/onboarding.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import {
@@ -19,6 +19,7 @@ import {
  * Route: /onboarding
  */
 
+const client = useRagnaClient();
 const router = useRouter();
 const authStore = useAuthStore();
 
@@ -29,7 +30,7 @@ const isLoading = ref(false);
 async function onSubmit() {
   isLoading.value = true;
   try {
-    const res = await onboardingService.onboardUser({ orgName: orgName.value });
+    const res = await client.onboarding.onboardUser({ orgName: orgName.value });
     if (res.success !== true) {
       throw new Error('Failed to onboard user');
     }

@@ -3,8 +3,8 @@
 import TableMetaCaption from '@/components/table/TableMetaCaption.vue';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
-import { mediaService } from '@/modules/media/services/media.service';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
@@ -31,6 +31,7 @@ const mediaData = ref<any | null>(null);
 const showAddToCollectionDialog = ref(false);
 
 // Composables
+const client = useRagnaClient();
 const toast = useToast();
 const authStore = useAuthStore();
 const { t } = useI18n();
@@ -43,7 +44,7 @@ const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 // Functions
 const initMedia = async () => {
   if (!authStore.user?.id) return;
-  const response = await mediaService.fetchAllMediaFor(
+  const response = await client.media.fetchAllMediaFor(
     { id: authStore.user.id, type: 'user' },
     { page: props.page },
   );
@@ -69,7 +70,7 @@ function onPlusClick(id: string) {
 
 const handleDelete = async (mediaId: string) => {
   try {
-    await mediaService.deleteMedia(mediaId);
+    await client.media.deleteMedia(mediaId);
     await initMedia();
     toast.success({ description: t('media.delete.success') });
   } catch (error) {

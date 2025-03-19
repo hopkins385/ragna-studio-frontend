@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { useWebSocketStore } from '@/common/stores/websocket.store';
 import { useRagnaClient } from '@/composables/useRagnaClient';
-import { workflowStepService } from '@/modules/workflow-step/services/workflow-step.service';
 import { useResizeSheet } from '@/modules/workflow/composables/useResizeSheet';
-import type { Workflow } from '@/modules/workflow/interfaces';
-import { workflowService } from '@/modules/workflow/services/workflow.service';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
 import { Checkbox } from '@ui/checkbox';
@@ -18,6 +15,7 @@ import {
   TriangleAlertIcon,
   WorkflowIcon,
 } from 'lucide-vue-next';
+import type { Workflow } from 'ragna-sdk';
 import StepManagementCard from './step/StepManagementCard.vue';
 import WorkflowCellCard from './WorkflowCellCard.vue';
 import WorkflowExportSidebar from './WorkflowExportSidebar.vue';
@@ -96,7 +94,7 @@ const workflowStepCardActive = computed(() => {
 });
 
 const initWorkflow = async () => {
-  const { workflow: data } = await workflowService.fetchFullWorkflow(props.workflowId);
+  const { workflow: data } = await client.workflow.fetchFullWorkflow(props.workflowId);
   workflow.value = data;
   nextTick(() => {
     initSheetDimensions(props.workflowId);
@@ -115,7 +113,7 @@ async function onAddWorkflowStep() {
     console.error('No assistant found');
     return;
   }
-  await workflowStepService.createWorkflowStep(props.workflowId, {
+  await client.workflowStep.createWorkflowStep(props.workflowId, {
     assistantId: assistant.id,
     name: t('workflow.create.new_step_name'),
     description: t('workflow.create.new_step_description'),
@@ -141,7 +139,7 @@ async function onAddWorkflowRow() {
       type: 'text',
     };
   });
-  await workflowStepService.createWorkflowRow(props.workflowId, { items: items ?? [] });
+  await client.workflowStep.createWorkflowRow(props.workflowId, { items: items ?? [] });
   await initWorkflow();
 }
 
@@ -196,7 +194,7 @@ function onCloseCellCard() {
 }
 
 async function onInputStepsUpdated(payload: { inputSteps: string[]; stepId: string }) {
-  await workflowStepService.updateInputSteps(payload.stepId, { inputStepIds: payload.inputSteps });
+  await client.workflowStep.updateInputSteps(payload.stepId, { inputStepIds: payload.inputSteps });
   await initWorkflow();
 }
 
@@ -220,7 +218,7 @@ function onAllRowsSelected() {
 }
 
 async function onDeleteSelectedRows() {
-  await workflowService.deleteWorkflowRows(props.workflowId, selectedRows.value);
+  await client.workflow.deleteWorkflowRows(props.workflowId, selectedRows.value);
   deselectAllRows();
   await initWorkflow();
 }
@@ -250,7 +248,7 @@ const onRunFlow = async () => {
   flowProgress.show = true;
   flowProgress.completed = 0;
   flowProgress.total = totalCellCount.value;
-  await workflowService.executeWorkflow(props.workflowId);
+  await client.workflow.executeWorkflow(props.workflowId);
 };
 
 const onRefresh = async () => {

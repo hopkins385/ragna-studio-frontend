@@ -4,27 +4,28 @@
  * Route: /collection/:id
  */
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import CollectionEditSheet from '@/modules/collection/components/CollectionEditSheet.vue';
-import type { Collection } from '@/modules/collection/interfaces';
-import { collectionService } from '@/modules/collection/services/collection.service';
 import RecordAllTable from '@/modules/record/components/RecordAllTable.vue';
 import RecordCreateModal from '@/modules/record/components/RecordCreateModal.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import Heading from '@components/heading/Heading.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import bgImgUrl from '@images/bg_databases.png?q=100&format=webp&imagetools';
+import type { Collection } from 'ragna-sdk';
 
+const client = useRagnaClient();
 const route = useRoute();
 const refresh = ref(false);
 
 const collectionId = route.params.id.toString();
-const collection = ref<Collection | null>(null);
+const collectionData = ref<Collection | null>(null);
 
 const { t } = useI18n();
 
 const initCollection = async () => {
-  const response = await collectionService.fetchFirst(collectionId);
-  collection.value = response.collection;
+  const response = await client.collection.fetchFirst(collectionId);
+  collectionData.value = response.collection;
 };
 
 async function onRefresh() {
@@ -52,22 +53,25 @@ useHead({
   <SectionContainer>
     <Heading :img-url="bgImgUrl" bg-position="bottom">
       <template #top>
-        <HeadingTitle :title="collection?.name ?? ''" :subtitle="collection?.description ?? ''" />
+        <HeadingTitle
+          :title="collectionData?.name ?? ''"
+          :subtitle="collectionData?.description ?? ''"
+        />
       </template>
       <template #bottom>
         <div class="flex w-full justify-between space-x-4">
           <div></div>
           <div class="flex space-x-2">
             <RecordCreateModal
-              v-if="collection"
-              :collection-id="collection.id"
+              v-if="collectionData"
+              :collection-id="collectionData.id"
               @refresh="onRefresh"
             />
             <CollectionEditSheet
-              v-if="collection"
-              :collection-id="collection.id"
-              :collection-name="collection.name"
-              :collection-description="collection.description"
+              v-if="collectionData"
+              :collection-id="collectionData.id"
+              :collection-name="collectionData.name"
+              :collection-description="collectionData.description"
               @refresh="initCollection"
             />
           </div>

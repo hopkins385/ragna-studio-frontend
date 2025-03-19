@@ -3,7 +3,6 @@
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useRagnaClient } from '@/composables/useRagnaClient';
-import { userFavoriteService } from '@/modules/user-favorite/services/user-favorite.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
@@ -102,7 +101,7 @@ watch(
 const onAddFavorite = async (assistantId: string) => {
   unsetErrorAlert();
   try {
-    await userFavoriteService.addFavorite({ id: assistantId, type: 'assistant' });
+    await client.userFavorite.addFavorite({ id: assistantId, type: 'assistant' });
     await initAssistantFavorites();
   } catch (error) {
     return setErrorAlert(error);
@@ -113,7 +112,7 @@ const onDeleteFavorite = async (assistantId: string) => {
   unsetErrorAlert();
   const entityId = assistantFavorites.value.find((f: any) => f.favoriteId === assistantId).id;
   try {
-    await userFavoriteService.deleteFavorite({ entityId, favoriteType: 'assistant' });
+    await client.userFavorite.deleteFavorite({ entityId, favoriteType: 'assistant' });
     await initAssistantFavorites();
   } catch (error) {
     return setErrorAlert(error);
@@ -121,7 +120,7 @@ const onDeleteFavorite = async (assistantId: string) => {
 };
 
 const initAssistantFavorites = async () => {
-  const { favorites: all } = await userFavoriteService.fetchAllFavoritesByType('assistant');
+  const { favorites: all } = await client.userFavorite.fetchAllFavoritesByType('assistant');
   assistantFavorites.value = all;
 };
 

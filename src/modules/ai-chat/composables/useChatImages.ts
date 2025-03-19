@@ -1,5 +1,5 @@
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useAiChatStore } from '@/modules/ai-chat/stores';
-import { mediaService } from '@/modules/media/services/media.service';
 
 export interface ChatImage {
   src: string;
@@ -14,6 +14,7 @@ const dummyImage = {
 export function useChatImages() {
   const allowedFileMimeTypes = ['image/jpg', 'image/png', 'image/jpeg', 'image/gif', 'image/webp'];
 
+  const client = useRagnaClient();
   const aiChat = useAiChatStore();
   const inputImages = ref<ChatImage[]>([]);
 
@@ -39,7 +40,7 @@ export function useChatImages() {
     }
     const isVisonEnabled = aiChat.assistantHasImageInput;
 
-    const uploadedImages = await mediaService.uploadFiles([file], isVisonEnabled);
+    const uploadedImages = await client.media.uploadFiles([file], isVisonEnabled);
     if (!uploadedImages || uploadedImages.length === 0) {
       updateInputImage(index, { src: imageSrc, status: 'error' });
       return;

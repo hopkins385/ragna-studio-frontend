@@ -20,7 +20,6 @@
     "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/favicon.png"
   },
   "dependencies": {
-    "ragna-sdk": "*",
     "@casl/ability": "^6.7.3",
     "@casl/vue": "^2.2.2",
     "@tiptap/extension-bubble-menu": "^2.11.5",
@@ -52,7 +51,6 @@
     "@vueuse/components": "^13.0.0",
     "@vueuse/core": "^13.0.0",
     "@vueuse/integrations": "^13.0.0",
-    "axios": "^1.8.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dompurify": "^3.2.4",
@@ -67,6 +65,7 @@
     "pinia": "^3.0.1",
     "pinia-plugin-persistedstate": "^4.2.0",
     "radix-vue": "^1.9.17",
+    "ragna-sdk": "*",
     "socket.io-client": "^4.8.1",
     "sortablejs": "^1.15.6",
     "sortablejs-vue3": "^1.2.11",

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import TableSkeleton from '@/components/table/TableSkeleton.vue';
 import useForHumans from '@/composables/useForHumans';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import useGoogleDriveIcons from '@/modules/google-drive/composables/useGoogleDriveIcons';
-import { googleDriveService } from '@/modules/google-drive/services/google-drive.service';
 import { Button } from '@ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
@@ -35,6 +35,7 @@ const RAGMimeTypes = [
 
 const router = useRouter();
 const route = useRoute();
+const client = useRagnaClient();
 
 const searchFileName = ref('');
 const pageTokenHistory = ref<string[]>([]);
@@ -55,7 +56,7 @@ const data = reactive<Data>({
 const init = async () => {
   dataIsLoading.value = true;
   try {
-    const result = await googleDriveService.fetchDriveData({
+    const result = await client.googleDrive.fetchDriveData({
       fileName: searchFileName.value,
       folderId: folderId.value,
       pageToken: nextPageToken.value,

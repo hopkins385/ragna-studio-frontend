@@ -2,14 +2,15 @@
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useNotification } from '@/composables/useNotification';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { createUserSchema } from '@/modules/user/schemas/user.schema';
-import { userService } from '@/modules/user/services/user.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { toTypedSchema } from '@vee-validate/zod';
 
 const isLoading = ref(false);
 const router = useRouter();
+const client = useRagnaClient();
 
 const { showError, showSuccess } = useNotification();
 
@@ -20,7 +21,7 @@ const { handleSubmit } = useForm({
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
   isLoading.value = true;
   try {
-    await userService.createUser(values);
+    await client.user.createUser(values);
     resetForm();
     showSuccess('User created');
     router.push({ name: RouteName.USER_LIST });

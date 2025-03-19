@@ -39,9 +39,3 @@ declare module '*&imagetools' {
   const outputs: string;
   export default outputs;
 }
-
-declare module 'vue' {
-  interface ComponentCustomProperties {
-    $ragnaClient: RagnaClient;
-  }
-}

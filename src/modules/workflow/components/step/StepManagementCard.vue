@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import AssistantSelectForm from '@/modules/assistant/components/AssistantSelectForm.vue';
-import { workflowStepService } from '@/modules/workflow-step/services/workflow-step.service';
 import { Trash2Icon } from 'lucide-vue-next';
 import type { AssistantsPaginatedResponse } from 'ragna-sdk';
 
@@ -46,14 +45,14 @@ const fetchData = async () => {
 };
 
 async function onDeleteClick() {
-  await workflowStepService.deleteWorkflowStep(props.workflowStep.id);
+  await client.workflowStep.deleteWorkflowStep(props.workflowStep.id);
   emits('close');
   emits('refresh');
 }
 
 async function submitForm() {
   if (!workflowStepName.value || workflowStepName.value === '') return;
-  await workflowStepService.updateWorkflowStep(props.workflowStep.id, {
+  await client.workflowStep.updateWorkflowStep(props.workflowStep.id, {
     name: workflowStepName.value,
   });
   emits('refresh');

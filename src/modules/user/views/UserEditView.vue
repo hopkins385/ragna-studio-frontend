@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useNotification } from '@/composables/useNotification';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { updateUserSchema } from '@/modules/user/schemas/user.schema';
-import { userService } from '@/modules/user/services/user.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
@@ -14,6 +14,7 @@ const isLoading = ref(false);
 
 const route = useRoute();
 const router = useRouter();
+const client = useRagnaClient();
 
 // userId
 const userId = route.params.id.toString();
@@ -37,7 +38,7 @@ const handleError = (error: unknown, message: string) => {
 const onSubmit = handleSubmit(async values => {
   try {
     isLoading.value = true;
-    await userService.updateUser(userId, values);
+    await client.user.updateUser(userId, values);
     await initUser();
     showSuccess('User updated successfully');
     resetForm();
@@ -51,7 +52,7 @@ const onSubmit = handleSubmit(async values => {
 const initUser = async () => {
   try {
     isLoading.value = true;
-    const user = await userService.fetchUserById(userId);
+    const user = await client.user.fetchUserById(userId);
     if (!user) throw new Error('User not found');
     resetForm({
       values: {

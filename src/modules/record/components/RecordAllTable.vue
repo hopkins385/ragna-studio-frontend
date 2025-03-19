@@ -1,7 +1,6 @@
 <script setup lang="ts">
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import useToast from '@/composables/useToast';
-import type { RecordsPaginatedResponse } from '@/modules/record/interfaces';
-import { recordService } from '@/modules/record/services/record.service';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
@@ -10,12 +9,14 @@ import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/tabl
 import Table from '@ui/table/Table.vue';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { FileIcon, LoaderIcon, Trash2Icon } from 'lucide-vue-next';
+import type { RecordsPaginatedResponse } from 'ragna-sdk';
 
 const props = defineProps<{
   collectionId: string | undefined;
   refresh: boolean;
 }>();
 
+const client = useRagnaClient();
 const toast = useToast();
 const page = ref(1);
 
@@ -23,7 +24,7 @@ const data = ref<RecordsPaginatedResponse | null>(null);
 
 const initRecords = async () => {
   if (!props.collectionId) return;
-  data.value = await recordService.fetchAllPaginated({
+  data.value = await client.record.fetchAllPaginated({
     collectionId: props.collectionId,
     params: { page: page.value },
   });
@@ -64,7 +65,7 @@ const handleDelete = async () => {
   addIsLoading(deleteRecordId.value);
   showConfirmDialog.value = false;
   try {
-    await recordService.deleteRecord(deleteRecordId.value);
+    await client.record.deleteRecord(deleteRecordId.value);
     toast.success({
       description: 'Record deleted.',
     });

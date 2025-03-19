@@ -2,10 +2,8 @@
 // Imports
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import useToast from '@/composables/useToast';
-import { userFavoriteService } from '@/modules/user-favorite/services/user-favorite.service';
-import type { WorkflowsPaginatedResponse } from '@/modules/workflow/interfaces';
-import { workflowService } from '@/modules/workflow/services/workflow.service';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
@@ -19,6 +17,7 @@ import TableHead from '@ui/table/TableHead.vue';
 import TableHeader from '@ui/table/TableHeader.vue';
 import TableRow from '@ui/table/TableRow.vue';
 import { StarIcon, Trash2Icon, WorkflowIcon } from 'lucide-vue-next';
+import type { WorkflowsPaginatedResponse } from 'ragna-sdk';
 
 // Props
 // Emits
@@ -29,6 +28,7 @@ const data = ref<WorkflowsPaginatedResponse | null>(null);
 const workflowFavorites = ref<any>([]); // TODO: type
 
 // Composables
+const client = useRagnaClient();
 const toast = useToast();
 const { t } = useI18n();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
@@ -46,7 +46,7 @@ const meta = computed(() => {
 
 // Functions
 const initWorkflows = async () => {
-  data.value = await workflowService.fetchWorkflowsPaginated();
+  data.value = await client.workflow.fetchWorkflowsPaginated();
 };
 
 const setPage = (value: number) => {
@@ -55,7 +55,7 @@ const setPage = (value: number) => {
 
 const handleDelete = async (workflowId: string) => {
   try {
-    await workflowService.deleteWorkflow(workflowId);
+    await client.workflow.deleteWorkflow(workflowId);
     await initWorkflows();
     toast.success({ description: t('workflow.delete.success') });
   } catch (error: unknown) {
@@ -75,7 +75,7 @@ const onDelete = (workflowId: string) => {
 
 const onAddFavorite = async (workflowId: string) => {
   try {
-    await userFavoriteService.addFavorite({ id: workflowId, type: 'workflow' });
+    await client.userFavorite.addFavorite({ id: workflowId, type: 'workflow' });
     await initWorkflowFavorites();
   } catch (error: any) {
     return setErrorAlert(error);
@@ -85,7 +85,7 @@ const onAddFavorite = async (workflowId: string) => {
 const onDeleteFavorite = async (workflowId: string) => {
   const entityId = workflowFavorites.value.find((f: any) => f.favoriteId === workflowId).id;
   try {
-    await userFavoriteService.deleteFavorite({ entityId, favoriteType: 'workflow' });
+    await client.userFavorite.deleteFavorite({ entityId, favoriteType: 'workflow' });
     await initWorkflowFavorites();
   } catch (error: any) {
     return setErrorAlert(error);
@@ -93,7 +93,7 @@ const onDeleteFavorite = async (workflowId: string) => {
 };
 
 const initWorkflowFavorites = async () => {
-  const { favorites: all } = await userFavoriteService.fetchAllFavoritesByType('workflow');
+  const { favorites: all } = await client.userFavorite.fetchAllFavoritesByType('workflow');
   workflowFavorites.value = all;
 };
 

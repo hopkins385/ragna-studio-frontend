@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import useToast from '@/composables/useToast';
-import { workflowService } from '@/modules/workflow/services/workflow.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { Button } from '@ui/button';
 import Separator from '@ui/separator/Separator.vue';
 import { SheetContent, SheetHeader, SheetTrigger } from '@ui/sheet';
@@ -19,7 +18,7 @@ const emit = defineEmits<{
   refresh: [void];
 }>();
 
-const toast = useToast();
+const client = useRagnaClient();
 
 const sheetIsOpen = ref(false);
 
@@ -28,7 +27,7 @@ const onClick = () => {
 };
 
 const onExcelClick = async () => {
-  const response = await workflowService.exportWorkflow(props.workflowId, 'xlsx');
+  const response = await client.workflow.exportWorkflow(props.workflowId, 'xlsx');
 
   const url = window.URL.createObjectURL(response);
   const a = document.createElement('a');

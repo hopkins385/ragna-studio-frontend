@@ -9,8 +9,6 @@ import veeConfigPlugin from './plugins/vee-validate.plugin';
 import router from './router';
 import pinia from './store';
 
-import { setupAxiosJwtInterceptor } from './axios/setupJwt';
-
 import VueDOMPurifyHTML from 'vue-dompurify-html';
 
 import { createHead } from '@unhead/vue';
@@ -94,7 +92,5 @@ app.use(VueDOMPurifyHTML, {
 app.use(abilitiesPlugin, ability, {
   useGlobalProperties: true,
 });
-
-setupAxiosJwtInterceptor();
 
 app.mount('#app');

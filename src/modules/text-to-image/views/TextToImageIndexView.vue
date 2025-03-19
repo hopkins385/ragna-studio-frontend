@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import TextToImageAssetsList from '@/modules/text-to-image/components/TextToImageAssetsList.vue';
 import TextToImageCountPopover from '@/modules/text-to-image/components/TextToImageCountPopover.vue';
 import TextToImageMimeTypePopover from '@/modules/text-to-image/components/TextToImageMimeTypePopover.vue';
@@ -6,7 +7,6 @@ import TextToImagePricingPopover from '@/modules/text-to-image/components/TextTo
 import TextToImageProviderPopover from '@/modules/text-to-image/components/TextToImageProviderPopover.vue';
 import TextToImageSettings from '@/modules/text-to-image/components/TextToImageSettings.vue';
 import TextToImageSizePopover from '@/modules/text-to-image/components/TextToImageSizePopover.vue';
-import { textToImageService } from '@/modules/text-to-image/services/text-to-image.service';
 import { useImgGenSettingsStore } from '@/modules/text-to-image/stores/image-gen-settings.store';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import { Button } from '@ui/button';
@@ -23,6 +23,7 @@ const promptFormRef = ref<HTMLFormElement | null>(null);
 
 const settings = useImgGenSettingsStore();
 
+const client = useRagnaClient();
 const { t } = useI18n();
 
 async function generateImage(submitPrompt: string) {
@@ -33,13 +34,13 @@ async function generateImage(submitPrompt: string) {
   });
   isLoading.value = true;
   try {
-    const folderResult = await textToImageService.fetchFolders();
+    const folderResult = await client.textToImage.fetchFolders();
     if (!folderResult?.folders.length) {
       throw new Error('No folder found');
     }
     if (settings.getRawProvider === 'fluxpro') {
       const { width, height } = settings.getImageWidthAndHeight;
-      const { imageUrls } = await textToImageService.generateFluxProImages({
+      const { imageUrls } = await client.textToImage.generateFluxProImages({
         folderId: folderResult.folders[0].id,
         prompt: submitPrompt,
         imgCount: settings.getImageCount,
@@ -53,7 +54,7 @@ async function generateImage(submitPrompt: string) {
       }
       return imageUrls;
     } else if (settings.getRawProvider === 'fluxultra') {
-      const { imageUrls } = await textToImageService.generateFluxUltraImages({
+      const { imageUrls } = await client.textToImage.generateFluxUltraImages({
         folderId: folderResult.folders[0].id,
         prompt: submitPrompt,
         imgCount: settings.getImageCount,
@@ -119,7 +120,7 @@ function usePrompt(value: string) {
 }
 
 function handleToggleHideRun(runId: string) {
-  textToImageService
+  client.textToImage
     .toggleHideRun({ runId })
     .then(() => {
       refreshData();

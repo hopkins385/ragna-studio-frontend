@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { promptWizardService } from '@/modules/prompt-wizard/services/prompt-wizard.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { Button } from '@ui/button';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import {
@@ -25,6 +25,8 @@ const emit = defineEmits<{
 
 const isLoading = ref<boolean>(false);
 const generatedPrompt = ref<string>('');
+
+const client = useRagnaClient();
 
 const promptWizardSchema = z.object({
   input: z.string().trim().min(1, 'Input prompt is required').max(4000, 'Input prompt is too long'),
@@ -67,7 +69,7 @@ const onSubmit = handleSubmit(async values => {
   if (isLoading.value) return;
   initSubmit();
   try {
-    const { prompt } = await promptWizardService.createPrompt(payload);
+    const { prompt } = await client.promptWizard.createPrompt(payload);
     handleSubmitSuccess(prompt);
   } catch (error) {
     handleSubmitError(error);

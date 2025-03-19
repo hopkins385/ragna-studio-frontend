@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { collectionService } from '@/modules/collection/services/collection.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { Button } from '@ui/button';
 import {
   Dialog,
@@ -23,11 +23,12 @@ const emits = defineEmits<{
 }>();
 
 const open = ref(false);
-
 const collections = ref<any[]>([]);
 
+const client = useRagnaClient();
+
 const initCollections = async () => {
-  const response = await collectionService.fetchAll();
+  const response = await client.collection.fetchAll();
   collections.value = response.collections;
 };
 

@@ -2,7 +2,7 @@
 import { useWebSocketStore } from '@/common/stores/websocket.store';
 import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import { useErrorAlert } from '@/composables/useErrorAlert';
-import { editorService } from '@/modules/editor/services/editor.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useEditorStore } from '@/modules/editor/stores';
 import { EditorContent } from '@tiptap/vue-3';
 import {
@@ -18,6 +18,7 @@ const editorStore = useEditorStore();
 const socket = useWebSocketStore();
 
 // Injections
+const client = useRagnaClient();
 const editor = editorStore.getEditor();
 
 const isLoading = ref(false);
@@ -55,10 +56,10 @@ const fetchInlineCompletionHandler = async (params: {
   isLoading.value = true;
 
   // listen for abort signal and abort the request via abortCompletion
-  params.signal.addEventListener('abort', editorService.abortRequest);
+  params.signal.addEventListener('abort', client.editor.abortRequest);
 
   try {
-    const { inlineCompletion } = await editorService.fetchInlineCompletion({
+    const { inlineCompletion } = await client.editor.fetchInlineCompletion({
       context: params.context,
     });
     return { inlineCompletion };
@@ -68,7 +69,7 @@ const fetchInlineCompletionHandler = async (params: {
   } finally {
     isLoading.value = false;
     // remove abort signal listener
-    params.signal.removeEventListener('abort', editorService.abortRequest);
+    params.signal.removeEventListener('abort', client.editor.abortRequest);
   }
 };
 

@@ -2,9 +2,9 @@
 // Imports
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import MediaFileDropzone from '@/modules/media/components/MediaFileDropzone.vue';
 import MediaList from '@/modules/media/components/MediaList.vue';
-import { mediaService } from '@/modules/media/services/media.service';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import bgImgUrl from '@images/bg_upload.png?q=100&format=webp&imagetools';
@@ -24,6 +24,7 @@ const dropzoneFiles = ref<File[]>([]);
 const isLoading = ref(false);
 
 // Composables
+const client = useRagnaClient();
 const router = useRouter();
 const route = useRoute();
 const { t } = useI18n();
@@ -42,7 +43,7 @@ const onSubmit = async (e: Event) => {
   }
   dropzoneFiles.value = [];
   isLoading.value = true;
-  await mediaService.uploadFiles(files);
+  await client.media.uploadFiles(files);
   onRefreshData();
   isLoading.value = false;
 };

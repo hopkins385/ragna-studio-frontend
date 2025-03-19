@@ -1,7 +1,6 @@
 <script setup lang="ts">
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
-import { mediaService } from '@/modules/media/services/media.service';
-import { recordService } from '@/modules/record/services/record.service';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
@@ -29,6 +28,7 @@ const emits = defineEmits<{
 
 const { getFileSizeForHumans } = useForHumans();
 
+const client = useRagnaClient();
 const toast = useToast();
 const authStore = useAuthStore();
 
@@ -56,7 +56,7 @@ const initAllRecords = async () => {
     throw new Error('Collection ID is required');
   }
 
-  const data = await recordService.fetchAll({
+  const data = await client.record.fetchAll({
     collectionId: props.collectionId.toString(),
   });
 
@@ -71,7 +71,7 @@ const initMedia = async () => {
     id: authStore.user.id,
     type: 'user',
   };
-  const data = await mediaService.fetchAllMediaFor(userModel, {
+  const data = await client.media.fetchAllMediaFor(userModel, {
     page: page.value,
   });
 
@@ -89,7 +89,7 @@ async function onAdd(id: string) {
   pendingUpdateId.value = id;
   errorAlert.show = false;
   try {
-    await recordService.createRecord({
+    await client.record.createRecord({
       collectionId: props.collectionId.toString(),
       mediaId: id,
     });

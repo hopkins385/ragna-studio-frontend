@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import useToast from '@/composables/useToast';
 import { workflowSettingsSchema } from '@/modules/workflow/schemas/workflow-settings.schema';
-import { workflowService } from '@/modules/workflow/services/workflow.service';
 import { Button } from '@ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';
 import { Input } from '@ui/input';
@@ -26,6 +26,7 @@ const emit = defineEmits<{
 }>();
 
 const toast = useToast();
+const client = useRagnaClient();
 
 const sheetIsOpen = ref(false);
 
@@ -43,7 +44,7 @@ const onClick = () => {
 
 const onSubmit = handleSubmit(async values => {
   try {
-    await workflowService.updateWorkflow(props.workflowId, {
+    await client.workflow.updateWorkflow(props.workflowId, {
       name: values.name,
       description: values.description,
     });

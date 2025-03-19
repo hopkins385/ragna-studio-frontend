@@ -3,9 +3,7 @@ import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useToolIcons } from '@/modules/assistant-tool/composables/useToolIcons';
 import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
-import { collectionAbleService } from '@/modules/collection-able/services/collection-able.service';
 import CollectionSelectModal from '@/modules/collection/components/CollectionSelectModal.vue';
-import type { Collection } from '@/modules/collection/interfaces';
 import LlmSelectModal from '@/modules/llm/components/LlmSelectModal.vue';
 import PromptWizardDialog from '@/modules/prompt-wizard/components/PromptWizardDialog.vue';
 import { RouteName } from '@/router/enums/route-names.enum';
@@ -33,7 +31,7 @@ import {
   Stars,
   Workflow,
 } from 'lucide-vue-next';
-import type { Assistant, AssistantTool } from 'ragna-sdk';
+import type { Assistant, AssistantTool, Collection } from 'ragna-sdk';
 
 interface Props {
   assistant: Assistant;
@@ -114,7 +112,7 @@ async function updateCollection(collectionId: string) {
     type: 'assistant',
     id: props.assistant.id,
   };
-  await collectionAbleService.replaceCollectionTo(collectionId, { model });
+  await client.collectionAble.replaceCollectionTo(collectionId, { model });
   // update assistant has collections
   await client.assistant.updateHasKnowledgeBase(props.assistant.id, true);
   emit('refreshCollections');
@@ -128,7 +126,7 @@ async function resetCollections() {
     type: 'assistant',
     id: props.assistant.id,
   };
-  await collectionAbleService.detachAllCollectionsFrom({ model });
+  await client.collectionAble.detachAllCollectionsFrom({ model });
   // update assistant does not has collections
   await client.assistant.updateHasKnowledgeBase(props.assistant.id, false);
   emit('refreshCollections');

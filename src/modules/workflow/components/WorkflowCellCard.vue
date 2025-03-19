@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { workflowStepService } from '@/modules/workflow-step/services/workflow-step.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { Textarea } from '@ui/textarea';
 import { onClickOutside, useDebounceFn } from '@vueuse/core';
 import { XIcon } from 'lucide-vue-next';
@@ -22,12 +22,14 @@ const text = ref(props.content || '');
 const pending = ref(false);
 const cellCardRef = ref<HTMLDivElement | null>(null);
 
+const client = useRagnaClient();
+
 async function updateItem(value: string) {
   if (!props.itemId) {
     throw new Error('itemId is required');
   }
   try {
-    await workflowStepService.updateItemContent({
+    await client.workflowStep.updateItemContent({
       stepId: props.stepId,
       itemId: props.itemId,
       content: value,

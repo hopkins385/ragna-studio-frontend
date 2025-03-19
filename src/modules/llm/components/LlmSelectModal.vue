@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { LargeLangModel } from '@/modules/llm/interfaces';
-import { llmService } from '@/modules/llm/services/llm.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
+import type { LargeLangModel } from 'ragna-sdk';
 import LlmInfoBox from './LlmInfoBox.vue';
 
 const props = defineProps<{
@@ -15,9 +15,11 @@ const open = ref(false);
 const models = ref<LargeLangModel[] | null>(null);
 const activeModelId = ref(props.currentLlmId);
 
+const client = useRagnaClient();
+
 const initModels = async () => {
   if (models.value) return;
-  const { llms } = await llmService.getAllModels();
+  const { llms } = await client.llm.getAllModels();
   models.value = llms;
 };
 

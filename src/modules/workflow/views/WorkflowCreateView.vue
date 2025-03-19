@@ -3,14 +3,12 @@
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { useErrorAlert } from '@/composables/useErrorAlert';
-import { mediaAbleService } from '@/modules/media-able/services/media-able.service';
-import { mediaService } from '@/modules/media/services/media.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import {
   allowedMimeTypes,
   createWorkflowSchema,
   maxFileSize,
 } from '@/modules/workflow/schemas/create-workflow.schema';
-import { workflowService } from '@/modules/workflow/services/workflow.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
@@ -38,6 +36,7 @@ import { toTypedSchema } from '@vee-validate/zod';
 const isLoading = ref(false);
 
 // Composables
+const client = useRagnaClient();
 const router = useRouter();
 const toast = useToast();
 const { t } = useI18n();
@@ -62,14 +61,14 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
   const file = values.file;
 
   try {
-    const { workflow } = await workflowService.createWorkflow({
+    const { workflow } = await client.workflow.createWorkflow({
       name: values.name,
       description: values.description,
     });
 
     if (file) {
       // handle file upload
-      const medias = await mediaService.uploadFiles([file]);
+      const medias = await client.media.uploadFiles([file]);
       const mediaId = medias?.[0].id;
       if (!mediaId) {
         throw new Error('Workflow created but unable to upload file');
@@ -79,11 +78,11 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         type: 'workflow',
       };
       throw new Error('Workflow created but file upload not implemented yet');
-      const mediaAble = await mediaAbleService.attachMediaTo(mediaId, { model: mediaAbleModel });
-      const updatedWorkflow = await workflowService.reCreateWorkflowFromMedia({
-        workflowId: workflow.id,
-        mediaId: mediaId,
-      });
+      // const mediaAble = await client.mediaAble.attachMediaTo(mediaId, { model: mediaAbleModel });
+      // const updatedWorkflow = await client.workflow.reCreateWorkflowFromMedia({
+      //   workflowId: workflow.id,
+      //   mediaId: mediaId,
+      // });
     }
 
     toast.success({

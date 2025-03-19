@@ -10,12 +10,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useNotification } from '@/composables/useNotification';
-import type { User, UsersPaginated } from '@/modules/user/interfaces';
-import { userService } from '@/modules/user/services/user.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import ButtonLink from '@ui/button/ButtonLink.vue';
 import { Settings, Trash2, User2 } from 'lucide-vue-next';
+import type { User, UsersPaginated } from 'ragna-sdk';
 
 // Composables
+const client = useRagnaClient();
 const { showError, showSuccess } = useNotification();
 
 // Data
@@ -29,7 +30,7 @@ const hasUsers = computed(() => users.value && users.value.length > 0);
 // Methods
 const onDelete = async (id: string) => {
   try {
-    await userService.deleteUser(id);
+    await client.user.deleteUser(id);
     await initUsers();
     showSuccess('User deleted successfully');
   } catch (err) {
@@ -39,7 +40,7 @@ const onDelete = async (id: string) => {
 
 const initUsers = async () => {
   try {
-    data.value = await userService.fetchAllUsers();
+    data.value = await client.user.fetchAllUsers();
   } catch (err) {
     //
   } finally {

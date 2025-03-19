@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { textToImageService } from '@/modules/text-to-image/services/text-to-image.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { Button } from '@ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
@@ -17,6 +17,8 @@ defineEmits<{
 }>();
 
 const isLoading = ref(false);
+
+const client = useRagnaClient();
 
 function getFilenameFromUrl(url: string): string {
   // Extract filename from URL or use a default name
@@ -64,7 +66,7 @@ const onOpenAutoFocus = (event: Event) => {
 async function downloadImageFile(): Promise<void> {
   isLoading.value = true;
   try {
-    const res = await textToImageService.downloadImage(props.imgId);
+    const res = await client.textToImage.downloadImage(props.imgId);
     const url = window.URL.createObjectURL(new Blob([res]));
     const link = document.createElement('a');
     link.href = url;

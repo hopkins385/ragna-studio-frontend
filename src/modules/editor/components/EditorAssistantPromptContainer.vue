@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Imports
 import { UnknownError } from '@/common/errors/unknown.error';
-import { editorService } from '@/modules/editor/services/editor.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useEditorStore } from '@/modules/editor/stores/editor.store';
 import { markdownService } from '@/modules/markdown/services/markdown.service';
 import { Button } from '@ui/button';
@@ -30,6 +30,7 @@ const originalSelection = ref({ from: 0, to: 0 });
 const textareaContainerRef = ref<HTMLDivElement | null>(null);
 
 // Composables
+const client = useRagnaClient();
 
 // Computed
 const hasInput = computed(() => input.value.length > 1);
@@ -54,7 +55,7 @@ const runCompletion = async () => {
       prompt: input.value,
     };
 
-    const { completion } = await editorService.fetchPromptCompletion(completionPayload);
+    const { completion } = await client.editor.fetchPromptCompletion(completionPayload);
     if (!completion) {
       return;
     }
@@ -127,7 +128,7 @@ const handleGenerate = async () => {
 const handleDiscard = () => discardChanges();
 
 const handleAbort = () => {
-  editorService.abortRequest();
+  client.editor.abortRequest();
   // input.value = '';
 };
 
