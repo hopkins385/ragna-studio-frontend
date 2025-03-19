@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import type { AssistantTemplate } from '@/modules/assistant-template/interfaces/assistant-template.interfaces';
-import { assistantTemplateService } from '@/modules/assistant-template/services/assistant-template.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import TemplatePreviewDialog from '@/modules/assistant/components/TemplatePreviewDialog.vue';
 import { useTemplatePreview } from '@/modules/assistant/composables/useTemplatePreview';
 import { BotIcon } from 'lucide-vue-next';
+import type { AssistantTemplate } from 'ragna-sdk';
 
+const client = useRagnaClient();
 const { previewDialog, openPreviewDialog } = useTemplatePreview();
 
 const templates = ref<AssistantTemplate[]>([]);
 
 const initTemplates = async () => {
-  const { templates: data } = await assistantTemplateService.fetchRandomTemplates({ limit: 9 });
+  const { templates: data } = await client.assistantTemplate.fetchRandomTemplates({ limit: 9 });
   templates.value = data;
 };
 

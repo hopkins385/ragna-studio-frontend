@@ -1,4 +1,4 @@
-import type { AssistantTemplate } from '@/modules/assistant-template/interfaces/assistant-template.interfaces';
+import type { AssistantTemplate } from 'ragna-sdk';
 
 type ColorMap = {
   [key: string]: string;

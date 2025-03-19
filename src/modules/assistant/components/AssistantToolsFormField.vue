@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
-import { assistantToolService } from '@/modules/assistant-tool/services/assistant-tool.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { Checkbox } from '@components/ui/checkbox';
 import {
   FormControl,
@@ -10,6 +9,9 @@ import {
   FormLabel,
   FormMessage,
 } from '@components/ui/form';
+import type { AssistantTool } from 'ragna-sdk';
+
+const client = useRagnaClient();
 
 const tools = ref<AssistantTool[]>([]);
 const status = ref('idle');
@@ -17,7 +19,7 @@ const status = ref('idle');
 const getTools = async () => {
   status.value = 'pending';
   try {
-    const { tools: theTools } = await assistantToolService.fetchAllTools();
+    const { tools: theTools } = await client.assistantTool.fetchAllTools();
     tools.value = theTools;
     status.value = 'success';
   } catch (error) {

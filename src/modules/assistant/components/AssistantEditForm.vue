@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useToolIcons } from '@/modules/assistant-tool/composables/useToolIcons';
-import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { collectionAbleService } from '@/modules/collection-able/services/collection-able.service';
@@ -34,7 +33,7 @@ import {
   Stars,
   Workflow,
 } from 'lucide-vue-next';
-import type { Assistant } from 'ragna-sdk';
+import type { Assistant, AssistantTool } from 'ragna-sdk';
 
 interface Props {
   assistant: Assistant;
@@ -80,7 +79,7 @@ const { handleSubmit, meta: formMeta } = useForm({
     systemPrompt: props.assistant?.systemPrompt || '',
     temperature: [80], // props.assistant?.temperature ||
     isShared: props.assistant?.isShared || false,
-    tools: props.assistant?.tools.map(tool => tool?.toolId) || [],
+    tools: props.assistant?.tools.map((tool: AssistantTool) => tool?.toolId) || [],
   },
 });
 

@@ -5,15 +5,17 @@ import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import SectionContainer from '@/components/section/SectionContainer.vue';
 import TableSkeleton from '@/components/table/TableSkeleton.vue';
 import Button from '@/components/ui/button/Button.vue';
-import { authProviderService } from '@/modules/auth/services/auth-provider.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import GoogleDriveTable from '@/modules/google-drive/components/GoogleDriveTable.vue';
+
+const client = useRagnaClient();
 
 const isLoading = ref(true);
 const hasAccess = ref(false);
 
 const init = async () => {
   try {
-    const response = await authProviderService.fetchUserHasAccess('google');
+    const response = await client.authProvider.fetchUserHasAccess('google');
     hasAccess.value = response.hasAccess;
   } catch (error: any) {
     console.error('[fetch google drive access]', error);
@@ -23,7 +25,7 @@ const init = async () => {
 };
 
 async function onConnectClick() {
-  const { url } = await authProviderService.fetchConsentURL('google');
+  const { url } = await client.authProvider.fetchConsentURL('google');
   if (!url) return;
   window.open(url, '_self');
 }

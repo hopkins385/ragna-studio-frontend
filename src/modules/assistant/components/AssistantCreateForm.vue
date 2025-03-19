@@ -2,8 +2,6 @@
 // Imports
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useRagnaClient } from '@/composables/useRagnaClient';
-import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
-import { assistantToolService } from '@/modules/assistant-tool/services/assistant-tool.service';
 import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import LlmSelectModal from '@/modules/llm/components/LlmSelectModal.vue';
@@ -33,6 +31,7 @@ import {
   Stars,
   Workflow,
 } from 'lucide-vue-next';
+import type { AssistantTool } from 'ragna-sdk';
 
 // Props
 // Emits
@@ -56,7 +55,7 @@ const initialCollectionName = computed(() => t('assistant.knowledge.select'));
 
 // Functions
 const initAssistantTools = async () => {
-  const { tools } = await assistantToolService.fetchAllTools();
+  const { tools } = await client.assistantTool.fetchAllTools();
   assistantTools.value = tools;
 };
 
@@ -104,7 +103,7 @@ const onSubmit = handleSubmit(async values => {
 
 watch(
   () => formErrors.value,
-  errors => {
+  (errors: unknown[]) => {
     if (Object.keys(errors).length > 0) {
       return setErrorAlert(errors[Object.keys(errors)[0] as any] as string);
     } else {

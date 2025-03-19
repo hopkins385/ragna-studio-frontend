@@ -1,35 +1,33 @@
 <script setup lang="ts">
-import type {
-  AssistantTemplateCategory,
-  CategoryWithTemplates,
-} from '@/modules/assistant-template/interfaces/assistant-template.interfaces';
-import { assistantTemplateService } from '@/modules/assistant-template/services/assistant-template.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import TemplatePreviewDialog from '@/modules/assistant/components/TemplatePreviewDialog.vue';
 import { useTemplatePreview } from '@/modules/assistant/composables/useTemplatePreview';
 import Heading from '@components/heading/Heading.vue';
 import HeadingTitle from '@components/heading/HeadingTitle.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import bgImgUrl from '@images/bg_template_2.png?q=100&format=webp&imagetools';
+import type { AssistantTemplateCategory, CategoryWithTemplates } from 'ragna-sdk';
 
+const client = useRagnaClient();
 const { previewDialog, getBgColorClass, openPreviewDialog } = useTemplatePreview();
 
 const categories = ref<AssistantTemplateCategory[]>([]);
 const catsWithTemplates = ref<CategoryWithTemplates[]>([]);
 
 const initTemplateCategories = async () => {
-  const { categories: cats } = await assistantTemplateService.fetchAllCategories();
+  const { categories: cats } = await client.assistantTemplate.fetchAllCategories();
   categories.value = cats;
 };
 
 const getTemplatesByCategoryIds = async (payload: { categoryIds: string[] }) => {
-  const { categories } = await assistantTemplateService.fetchTemplatesByCategoryIds(payload);
+  const { categories } = await client.assistantTemplate.fetchTemplatesByCategoryIds(payload);
   catsWithTemplates.value = categories;
 };
 
 onMounted(async () => {
   await initTemplateCategories();
   if (categories.value.length > 0) {
-    const ids = categories.value.map(cat => cat.id);
+    const ids = categories.value.map((cat: any) => cat.id);
     await getTemplatesByCategoryIds({
       categoryIds: ids,
     });

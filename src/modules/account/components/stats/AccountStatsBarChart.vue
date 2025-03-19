@@ -7,13 +7,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { TokenUsage } from '@/modules/account/interfaces';
-import { accountStatsService } from '@/modules/account/services/account-stats.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import getDaysInMonth from '@/utils/date';
 import { BarChart, type BarSeriesOption } from 'echarts/charts';
 import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
+import type { TokenUsage } from 'ragna-sdk';
 import Chart from 'vue-echarts';
 // import 'echarts';
 
@@ -41,6 +41,7 @@ const monthYear = reactive<{ month: string; year: string }>({
 });
 
 // Composables
+const client = useRagnaClient();
 
 // Computed
 const formattedData = computed(() => {
@@ -49,7 +50,7 @@ const formattedData = computed(() => {
   }
 
   const result: Record<string, number[]> = {};
-  data.value.forEach(item => {
+  data.value.forEach((item: TokenUsage) => {
     const monthYearMonth = parseInt(monthYear.month);
     const monthYearYear = parseInt(monthYear.year);
     const date = new Date(item.createdAt);
@@ -136,7 +137,7 @@ const initData = async (payload: { month: string; year: string }) => {
   isLoading.value = true;
   await new Promise(resolve => setTimeout(resolve, 1000));
   try {
-    const { tokenUsages } = await accountStatsService.fetchTokenHistory(payload);
+    const { tokenUsages } = await client.accountStats.fetchTokenHistory(payload);
     data.value = tokenUsages;
   } catch (error) {
     console.error(error);

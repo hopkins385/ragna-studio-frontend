@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import AuthProcessing from '@/modules/auth/components/AuthProcessing.vue';
-import { authProviderService } from '@/modules/auth/services/auth-provider.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 
+const client = useRagnaClient();
 const router = useRouter();
 const route = useRoute();
 const query = route.query;
@@ -23,7 +24,7 @@ onMounted(async () => {
     return;
   }
   try {
-    await authProviderService.connectGoogleDrive({ code });
+    await client.authProvider.connectGoogleDrive({ code });
     router.push({ name: RouteName.MEDIA_GOOGLE_DRIVE_INDEX });
   } catch (error: any) {
     console.error('[fetch google drive callback]', error);

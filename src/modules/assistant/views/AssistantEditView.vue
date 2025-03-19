@@ -2,14 +2,12 @@
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { useRagnaClient } from '@/composables/useRagnaClient';
-import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
-import { assistantToolService } from '@/modules/assistant-tool/services/assistant-tool.service';
 import AssistantEditForm from '@/modules/assistant/components/AssistantEditForm.vue';
 import type { Collection } from '@/modules/collection/interfaces';
 import { collectionService } from '@/modules/collection/services/collection.service';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
-import type { Assistant } from 'ragna-sdk';
+import type { Assistant, AssistantTool } from 'ragna-sdk';
 
 const assistant = ref<Assistant | null>(null);
 const assistantTools = ref<AssistantTool[]>([]);
@@ -50,7 +48,7 @@ const initAssistant = async () => {
 
 const initAssistantTools = async () => {
   try {
-    const { tools } = await assistantToolService.fetchAllTools();
+    const { tools } = await client.assistantTool.fetchAllTools();
     assistantTools.value = tools;
   } catch (error) {
     console.error(error);
