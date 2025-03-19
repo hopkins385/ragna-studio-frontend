@@ -1,10 +1,10 @@
 <script setup lang="ts">
 // Imports
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantToolService } from '@/modules/assistant-tool/services/assistant-tool.service';
 import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
-import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import LlmSelectModal from '@/modules/llm/components/LlmSelectModal.vue';
 import PromptWizardDialog from '@/modules/prompt-wizard/components/PromptWizardDialog.vue';
@@ -43,6 +43,7 @@ const isLoading = ref(false);
 const assistantTools = ref<AssistantTool[] | null>(null);
 
 // Composables
+const client = useRagnaClient();
 const authStore = useAuthStore();
 const toast = useToast();
 const router = useRouter();
@@ -84,7 +85,7 @@ const onSubmit = handleSubmit(async values => {
   isLoading.value = true;
 
   try {
-    await assistantService.createAssistant({
+    await client.assistant.createAssistant({
       ...values,
     });
     toast.success({
@@ -127,7 +128,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  assistantService.abortRequest();
+  client.assistant.abortRequest();
 });
 </script>
 

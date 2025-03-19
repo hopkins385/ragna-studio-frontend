@@ -1,5 +1,5 @@
+import { getRagnaClient } from '@/common/http/ragna.client';
 import { defineAbilityFor } from '@/modules/ability/services/ability.service';
-import { accountService } from '@/modules/account/services/account.service';
 import { authService } from '@/modules/auth/services/auth.service';
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
@@ -29,6 +29,7 @@ interface AuthUser {
 }
 
 export const useAuthStore = defineStore('auth-store', () => {
+  const client = getRagnaClient();
   // State
   const user = ref<AuthUser | null>(null);
   const accessToken = ref<string | null>(null);
@@ -46,7 +47,6 @@ export const useAuthStore = defineStore('auth-store', () => {
   const userCredits = computed(() => user.value?.totalCredits || 0);
   const onboardingIsComplete = computed(() => !!user.value?.onboardedAt);
   const hasAccessToken = computed(() => !!accessToken.value);
-  const getAccessToken = computed(() => accessToken.value);
   const getAccessTokenExpiresAt = computed(() => accessTokenExpiresAt.value);
   const accessTokenExpired = computed(
     () => !!accessTokenExpiresAt.value && accessTokenExpiresAt.value < Date.now(),
@@ -55,6 +55,8 @@ export const useAuthStore = defineStore('auth-store', () => {
     const token = useStorage('refreshToken', null, localStorage);
     return !!token.value;
   });
+
+  const getAccessToken = computed(() => accessToken.value);
   const getRefreshToken = computed(() => localStorage.getItem('refreshToken'));
 
   // Actions
@@ -80,7 +82,7 @@ export const useAuthStore = defineStore('auth-store', () => {
     if (isFetchingUser.value) return;
     isFetchingUser.value = true;
     try {
-      const data = await accountService.fetchAccountData();
+      const data = await client.account.fetchAccountData();
       user.value = {
         id: data.id,
         firstTeamId: data.firstTeamId,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
-import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { EditIcon } from 'lucide-vue-next';
 
@@ -8,6 +8,7 @@ const props = defineProps<{
   assistant: any;
 }>();
 
+const client = useRagnaClient();
 const router = useRouter();
 
 const onStartClick = async () => {
@@ -15,7 +16,7 @@ const onStartClick = async () => {
     throw new Error('Assistant ID is required');
   }
   try {
-    const { chat } = await aiChatService.createChat({ assistantId: props.assistant.id });
+    const { chat } = await client.aiChat.createChat({ assistantId: props.assistant.id });
     if (!chat || !chat.id) {
       throw new Error('Failed to create chat');
     }

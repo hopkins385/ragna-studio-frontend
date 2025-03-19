@@ -2,18 +2,19 @@
 import type { PaginateDto } from '@/common/interfaces/paginate.interface';
 import { useDrawerStore } from '@/common/stores/drawer.store';
 import useForHumans from '@/composables/useForHumans';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import {
   groupByOptions,
   useAiChatSettingsStore,
 } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import type { GroupByOption } from '@/modules/ai-chat-settings/types/ai-chat-settings.type';
-import type { ChatsPaginatedResponse } from '@/modules/ai-chat/interfaces/chat.interfaces';
-import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { Button } from '@ui/button';
 import { Separator } from '@ui/separator';
 import { CalendarIcon, XIcon } from 'lucide-vue-next';
+import type { ChatsPaginatedResponse } from 'ragna-sdk';
 
+const client = useRagnaClient();
 const router = useRouter();
 const drawer = useDrawerStore();
 const chatSettings = useAiChatSettingsStore();
@@ -23,7 +24,7 @@ const selectedGroupBy = ref<GroupByOption>(chatSettings.getHistoryGroupBy);
 const chats = computed(() => data.value?.chats || []);
 
 const initChatHistory = async ({ page, limit }: PaginateDto) => {
-  data.value = await aiChatService.fetchAllChatsPaginated({ page, limit });
+  data.value = await client.aiChat.fetchAllChatsPaginated({ page, limit });
 };
 
 const { getDateForHumans } = useForHumans();

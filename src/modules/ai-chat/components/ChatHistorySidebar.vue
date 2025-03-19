@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { PaginateDto } from '@/common/interfaces/paginate.interface';
 import useForHumans from '@/composables/useForHumans';
-import type { ChatsPaginatedResponse } from '@/modules/ai-chat/interfaces/chat.interfaces';
-import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { Button } from '@ui/button';
 import { Separator } from '@ui/separator';
@@ -16,6 +15,7 @@ import {
 } from '@ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { History, SettingsIcon } from 'lucide-vue-next';
+import type { ChatsPaginatedResponse } from 'ragna-sdk';
 
 const groupByOptions = ['day', 'month', 'year'] as const;
 type GroupByOption = (typeof groupByOptions)[number];
@@ -27,10 +27,11 @@ const chats = computed(() => data.value?.chats || []);
 const sheetIsOpen = ref(false);
 const sheetDisplaySide = 'left';
 
+const client = useRagnaClient();
 const router = useRouter();
 
 const initChatHistory = async ({ page, limit }: PaginateDto) => {
-  data.value = await aiChatService.fetchAllChatsPaginated({ page, limit });
+  data.value = await client.aiChat.fetchAllChatsPaginated({ page, limit });
 };
 
 const navigateToChat = (chatId: string) => {

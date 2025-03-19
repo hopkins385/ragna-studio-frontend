@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantToolService } from '@/modules/assistant-tool/services/assistant-tool.service';
 import AssistantCreateForm from '@/modules/assistant/components/AssistantCreateForm.vue';
 import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
-import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import useToast from '@composables/useToast';
 import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
 import { useForm } from 'vee-validate';
 
-const router = useRouter();
+const client = useRagnaClient();
 
 const { t } = useI18n();
 const authStore = useAuthStore();
@@ -32,7 +32,7 @@ const { handleSubmit } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values, { resetForm }) => {
-  await assistantService
+  await client.assistant
     .createAssistant({
       ...values,
     })

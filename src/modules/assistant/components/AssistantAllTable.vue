@@ -2,8 +2,7 @@
 // Imports
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
-import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
-import { assistantService } from '@/modules/assistant/services/assistant.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { userFavoriteService } from '@/modules/user-favorite/services/user-favorite.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
@@ -34,6 +33,7 @@ const assistantFavorites = ref<any>([]); // TODO: type
 const page = defineModel<number>('page');
 
 // Composables
+const client = useRagnaClient();
 const router = useRouter();
 const toast = useToast();
 const { t } = useI18n();
@@ -53,12 +53,12 @@ const meta = computed(() => {
 
 // Functions
 const initAllAssistants = async ({ page }: { page: number }) => {
-  data.value = await assistantService.fetchAllAssistants({ page });
+  data.value = await client.assistant.fetchAllAssistants({ page });
 };
 
 const handleDelete = async (assistantId: string) => {
   try {
-    await assistantService.deleteAssistant(assistantId);
+    await client.assistant.deleteAssistant(assistantId);
     await initAllAssistants({ page: page.value ?? 1 });
     toast.success({ description: t('assistant.delete.success') });
   } catch (error: unknown) {
@@ -67,7 +67,7 @@ const handleDelete = async (assistantId: string) => {
 };
 
 const onStart = async (assistantId: string) => {
-  const { chat } = await aiChatService.createChat({ assistantId });
+  const { chat } = await client.aiChat.createChat({ assistantId });
   if (!chat) {
     return setErrorAlert('Failed to create chat');
   }
@@ -129,7 +129,7 @@ await initAllAssistants({ page: page.value ?? 1 });
 await initAssistantFavorites();
 
 onBeforeUnmount(() => {
-  assistantService.abortRequest();
+  client.assistant.abortRequest();
 });
 </script>
 

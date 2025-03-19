@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import type { AssistantsPaginatedResponse } from '@/modules/assistant/interfaces/assistant.interfaces';
-import { assistantService } from '@/modules/assistant/services/assistant.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
+import type { AssistantsPaginatedResponse } from 'ragna-sdk';
 import AssistantCard from './AssistantCard.vue';
 import AssistantEmptyList from './AssistantEmptyList.vue';
+
+const client = useRagnaClient();
 
 const data = ref<AssistantsPaginatedResponse>();
 
@@ -10,11 +12,11 @@ const assistants = computed(() => data.value?.assistants || []);
 const meta = computed(() => data.value?.meta || '');
 
 onMounted(async () => {
-  data.value = await assistantService.fetchAllAssistants({ page: 1, limit: 10 });
+  data.value = await client.assistant.fetchAllAssistants({ page: 1, limit: 10 });
 });
 
 onBeforeUnmount(() => {
-  assistantService.abortRequest();
+  client.assistant.abortRequest();
 });
 </script>
 

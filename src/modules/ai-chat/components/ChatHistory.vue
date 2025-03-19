@@ -3,9 +3,8 @@
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useProviderIcons } from '@/composables/useProviderIcons';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import useToast from '@/composables/useToast';
-import type { ChatsPaginatedResponse } from '@/modules/ai-chat/interfaces/chat.interfaces';
-import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
@@ -15,6 +14,7 @@ import { Button } from '@ui/button';
 import ButtonLink from '@ui/button/ButtonLink.vue';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { MessageCircleMoreIcon, MessagesSquareIcon, Trash2Icon } from 'lucide-vue-next';
+import type { ChatsPaginatedResponse } from 'ragna-sdk';
 
 // Props
 const props = defineProps<{
@@ -32,6 +32,7 @@ const emit = defineEmits<{
 const data = ref<ChatsPaginatedResponse | null>(null);
 
 // Composables
+const client = useRagnaClient();
 const toast = useToast();
 const { t } = useI18n();
 const { getDateTimeForHumans } = useForHumans();
@@ -52,8 +53,9 @@ const meta = computed(() => {
 
 // Functions
 const initChatHistory = async ({ page }: { page: number }) => {
+  console.log('initChatHistory', client);
   try {
-    data.value = await aiChatService.fetchAllChatsPaginated({ page });
+    data.value = await client.aiChat.fetchAllChatsPaginated({ page });
   } catch (error) {
     return setErrorAlert(error);
   }
@@ -61,7 +63,7 @@ const initChatHistory = async ({ page }: { page: number }) => {
 
 const handleDelete = async (chatId: string) => {
   try {
-    await aiChatService.deleteChat({ chatId });
+    await client.aiChat.deleteChat({ chatId });
     await initChatHistory({ page: props.page });
     toast.success({ description: t('chat.delete.success') });
   } catch (error) {

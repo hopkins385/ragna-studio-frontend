@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useWebSocketStore } from '@/common/stores/websocket.store';
-import { assistantService } from '@/modules/assistant/services/assistant.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { workflowStepService } from '@/modules/workflow-step/services/workflow-step.service';
 import { useResizeSheet } from '@/modules/workflow/composables/useResizeSheet';
 import type { Workflow } from '@/modules/workflow/interfaces';
@@ -45,6 +45,7 @@ const MAX_COLUMN_COUNT = 10;
 const sideBarOpen = ref(false);
 const sheetRef = ref<HTMLElement | null>(null);
 
+const client = useRagnaClient();
 const toast = useToast();
 const socket = useWebSocketStore();
 const { t } = useI18n();
@@ -108,7 +109,7 @@ async function onAddWorkflowStep() {
     toast.info({ description: `Max ${MAX_COLUMN_COUNT} steps reached` });
     return;
   }
-  const result = await assistantService.fetchAllAssistants({ page: 1, limit: 1 });
+  const result = await client.assistant.fetchAllAssistants({ page: 1, limit: 1 });
   const assistant = result.assistants[0];
   if (!assistant || !assistant?.id) {
     console.error('No assistant found');
@@ -294,7 +295,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   socket.off(`workflow-update:${props.workflowId}`, onWorkflowUpdateEvent);
-  assistantService.abortRequest();
+  client.assistant.abortRequest();
 });
 
 await initWorkflow();

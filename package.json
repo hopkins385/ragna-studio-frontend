@@ -20,6 +20,7 @@
     "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/favicon.png"
   },
   "dependencies": {
+    "ragna-sdk": "*",
     "@casl/ability": "^6.7.3",
     "@casl/vue": "^2.2.2",
     "@tiptap/extension-bubble-menu": "^2.11.5",

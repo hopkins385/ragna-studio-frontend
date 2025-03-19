@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
 import { assistantToolService } from '@/modules/assistant-tool/services/assistant-tool.service';
 import AssistantEditForm from '@/modules/assistant/components/AssistantEditForm.vue';
-import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
-import { assistantService } from '@/modules/assistant/services/assistant.service';
 import type { Collection } from '@/modules/collection/interfaces';
 import { collectionService } from '@/modules/collection/services/collection.service';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
+import type { Assistant } from 'ragna-sdk';
 
 const assistant = ref<Assistant | null>(null);
 const assistantTools = ref<AssistantTool[]>([]);
@@ -17,6 +17,7 @@ const collections = ref<Collection[]>([]);
 
 const assistantIsLoading = ref(true);
 
+const client = useRagnaClient();
 // assistantId
 const route = useRoute();
 const assistantId = route.params.id.toString();
@@ -40,7 +41,7 @@ const initCollections = async () => {
 
 const initAssistant = async () => {
   try {
-    const { assistant: rAss } = await assistantService.fetchAssistant(assistantId);
+    const { assistant: rAss } = await client.assistant.fetchAssistant(assistantId);
     assistant.value = rAss;
   } catch (error) {
     console.error(error);

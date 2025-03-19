@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { accountService } from '@/modules/account/services/account.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import useToast from '@composables/useToast';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';
@@ -21,6 +21,7 @@ const emits = defineEmits<{
   refresh: [void];
 }>();
 
+const client = useRagnaClient();
 const toast = useToast();
 const { t } = useI18n();
 
@@ -41,7 +42,7 @@ const isLoading = ref(false);
 const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
   isLoading.value = true;
   try {
-    await accountService.updateName({
+    await client.account.updateName({
       firstName,
       lastName,
     });

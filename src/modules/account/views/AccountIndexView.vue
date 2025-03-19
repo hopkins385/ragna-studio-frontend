@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import AccountDeleteDialog from '@/modules/account/components/AccountDeleteDialog.vue';
 import AccountProfileForm from '@/modules/account/components/AccountProfileForm.vue';
-import type { AccountData } from '@/modules/account/interfaces';
-import { accountService } from '@/modules/account/services/account.service';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
+import type { AccountData } from 'ragna-sdk';
 import AccountEditLoginForm from './AccountEditLoginForm.vue';
+
+const client = useRagnaClient();
 
 const isLoading = ref(false);
 const account = ref<AccountData | null>(null);
@@ -17,7 +19,7 @@ const org = computed(() => account.value?.organisation ?? null);
 const teams = computed(() => account.value?.teams ?? null);
 
 const initAccountData = async () => {
-  const data = await accountService.fetchAccountData();
+  const data = await client.account.fetchAccountData();
   account.value = data;
 };
 

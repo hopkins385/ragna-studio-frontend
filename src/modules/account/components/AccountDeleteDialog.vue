@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { accountService } from '@/modules/account/services/account.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { Button } from '@ui/button';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
@@ -42,6 +42,7 @@ const { handleSubmit, setErrors } = useForm({
   },
 });
 
+const client = useRagnaClient();
 const router = useRouter();
 const { t } = useI18n();
 
@@ -50,7 +51,7 @@ const onSubmit = handleSubmit(async ({ password }, { resetForm }) => {
   isLoading.value = true;
 
   try {
-    const result = await accountService.deleteAccount({
+    const result = await client.account.deleteAccount({
       password,
     });
     router.push({ name: RouteName.LOGOUT });

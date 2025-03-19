@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { CreateAssistantFromTemplatePayload } from '@/modules/assistant/interfaces/assistant.interfaces';
-import { assistantService } from '@/modules/assistant/services/assistant.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { RouteName } from '@/router/enums/route-names.enum';
 import useToast from '@composables/useToast';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { Dialog, DialogContent } from '@ui/dialog';
+import type { CreateAssistantFromTemplatePayload } from 'ragna-sdk';
 
 interface Props {
   templateId: string;
@@ -17,6 +17,7 @@ interface Props {
 const props = defineProps<Props>();
 const modelValue = defineModel<boolean>({ required: true });
 
+const client = useRagnaClient();
 const router = useRouter();
 const toast = useToast();
 
@@ -36,7 +37,7 @@ const createAssistant = async () => {
 
   try {
     // clone the template
-    const { assistant } = await assistantService.createAssistantFromTemplate(payload);
+    const { assistant } = await client.assistant.createAssistantFromTemplate(payload);
     // toast success
     toast.success({ description: t('assistant.clone.success') });
     // return the assistant
@@ -75,7 +76,7 @@ const onCloneTemplateClick = async (payload: { startNewChat: boolean }) => {
 };
 
 onBeforeUnmount(() => {
-  assistantService.abortRequest();
+  client.assistant.abortRequest();
 });
 </script>
 

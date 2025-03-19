@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { RouteName } from '@/router/enums/route-names.enum';
 
+const client = useRagnaClient();
 const router = useRouter();
 
 const forwardToChat = async () => {
-  const { chat } = await aiChatService.fetchLatestChat();
+  const { chat } = await client.aiChat.fetchLatestChat();
   if (!chat || !chat?.id) {
     return router.push({
       name: RouteName.CHAT_CREATE,

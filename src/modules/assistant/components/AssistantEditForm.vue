@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { aiChatService } from '@/modules/ai-chat/services/ai-chat.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useToolIcons } from '@/modules/assistant-tool/composables/useToolIcons';
 import type { AssistantTool } from '@/modules/assistant-tool/interfaces/assistant-tool.interfaces';
-import type { Assistant } from '@/modules/assistant/interfaces/assistant.interfaces';
 import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
-import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { collectionAbleService } from '@/modules/collection-able/services/collection-able.service';
 import CollectionSelectModal from '@/modules/collection/components/CollectionSelectModal.vue';
@@ -36,6 +34,7 @@ import {
   Stars,
   Workflow,
 } from 'lucide-vue-next';
+import type { Assistant } from 'ragna-sdk';
 
 interface Props {
   assistant: Assistant;
@@ -66,6 +65,7 @@ const firstCollection = computed(
   () => props.collections?.[0] ?? { id: '-1', name: '+ Add Knowledge' },
 );
 
+const client = useRagnaClient();
 const { t } = useI18n();
 const { getToolIcon } = useToolIcons();
 
@@ -92,7 +92,7 @@ const onSubmit = handleSubmit(async values => {
   updateIsLoading.value = true;
 
   try {
-    await assistantService.updateAssistant(props.assistant.id, {
+    await client.assistant.updateAssistant(props.assistant.id, {
       ...values,
     });
     toast.success({
@@ -117,7 +117,7 @@ async function updateCollection(collectionId: string) {
   };
   await collectionAbleService.replaceCollectionTo(collectionId, { model });
   // update assistant has collections
-  await assistantService.updateHasKnowledgeBase(props.assistant.id, true);
+  await client.assistant.updateHasKnowledgeBase(props.assistant.id, true);
   emit('refreshCollections');
   toast.success({
     description: 'Collection updated successfully',
@@ -131,7 +131,7 @@ async function resetCollections() {
   };
   await collectionAbleService.detachAllCollectionsFrom({ model });
   // update assistant does not has collections
-  await assistantService.updateHasKnowledgeBase(props.assistant.id, false);
+  await client.assistant.updateHasKnowledgeBase(props.assistant.id, false);
   emit('refreshCollections');
   toast.success({
     description: 'Collection updated successfully',
@@ -155,7 +155,7 @@ const onStartChat = async () => {
   newChatIsLoading.value = true;
 
   try {
-    const { chat } = await aiChatService.createChat({ assistantId: props.assistant.id });
+    const { chat } = await client.aiChat.createChat({ assistantId: props.assistant.id });
     router.push({
       name: RouteName.CHAT_SHOW,
       params: { id: chat.id },
@@ -201,7 +201,7 @@ const supportedProviders = [
 ];
 
 onBeforeUnmount(() => {
-  assistantService.abortRequest();
+  client.assistant.abortRequest();
 });
 </script>
 

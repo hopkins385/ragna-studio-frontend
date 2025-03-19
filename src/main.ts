@@ -42,6 +42,7 @@ import onboardingModule from '@/modules/onboarding';
 import textToImageModule from '@/modules/text-to-image';
 import userModule from '@/modules/user';
 import workflowModule from '@/modules/workflow';
+import ragnaClientPlugin from '@/plugins/ragna-client.plugin';
 
 registerModules({
   admin: adminModule,
@@ -79,6 +80,7 @@ app.use(head);
 app.use(pinia);
 app.use(router);
 app.use(veeConfigPlugin);
+app.use(ragnaClientPlugin);
 app.use(VueDOMPurifyHTML, {
   hooks: {
     afterSanitizeAttributes: (currentNode: any) => {

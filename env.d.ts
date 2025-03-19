@@ -4,6 +4,8 @@
 /// <reference types="unplugin-icons/types/vue" />
 /// <reference types="vite-plugin-pwa/client" />
 
+import type { RagnaClient } from '@/sdk/ragnaClient';
+
 interface OutputMetadata {
   src: string; // URL of the generated image
   width: number; // Width of the image
@@ -18,6 +20,12 @@ interface OutputMetadata {
   hasAlpha: boolean; // presence of an alpha transparency channel
   hasProfile: boolean; // presence of an embedded ICC profile
   isProgressive: boolean; // indicating whether the image is interlaced using a progressive scan
+}
+
+declare module 'vue' {
+  interface ComponentCustomProperties {
+    $ragnaClient: RagnaClient;
+  }
 }
 
 declare module '*&as=metadata&imagetools-gallery' {

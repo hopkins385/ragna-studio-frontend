@@ -2,11 +2,11 @@
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import AssistantSelectForm from '@/modules/assistant/components/AssistantSelectForm.vue';
-import type { AssistantsPaginatedResponse } from '@/modules/assistant/interfaces/assistant.interfaces';
-import { assistantService } from '@/modules/assistant/services/assistant.service';
 import { workflowStepService } from '@/modules/workflow-step/services/workflow-step.service';
 import { Trash2Icon } from 'lucide-vue-next';
+import type { AssistantsPaginatedResponse } from 'ragna-sdk';
 
 const props = defineProps<{
   workflowId: string;
@@ -20,6 +20,8 @@ const emits = defineEmits<{
   'show-settings': [void];
   'prev-steps-updated': [{ inputSteps: string[]; stepId: string }];
 }>();
+
+const client = useRagnaClient();
 
 const stepCardRef = ref<HTMLElement | null>(null);
 const workflowStepName = ref<string>(props.workflowStep.name);
@@ -40,7 +42,7 @@ const allAssistants = computed(
 );
 
 const fetchData = async () => {
-  data.value = await assistantService.fetchAllAssistants({ page: 1, limit: 100 });
+  data.value = await client.assistant.fetchAllAssistants({ page: 1, limit: 100 });
 };
 
 async function onDeleteClick() {

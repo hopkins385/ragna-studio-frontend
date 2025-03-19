@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { accountService } from '@/modules/account/services/account.service';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
 import { FormControl, FormField, FormLabel, FormMessage } from '@ui/form';
@@ -30,6 +30,7 @@ const passwordFormSchema = toTypedSchema(
     }),
 );
 
+const client = useRagnaClient();
 const toast = useToast();
 const { t } = useI18n();
 
@@ -42,7 +43,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
   error.value = '';
 
   try {
-    await accountService.updatePassword({
+    await client.account.updatePassword({
       oldPassword: values.password,
       newPassword: values.newPassword,
     });
