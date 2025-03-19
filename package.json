@@ -1,7 +1,7 @@
 {
   "name": "ragna-studio-frontend",
-  "version": "0.0.2",
-  "description": "Ragna Studio Frontend",
+  "version": "0.4.2",
+  "description": "RAGNA Studio Frontend",
   "author": "Sven Stadhouders",
   "private": true,
   "type": "module",

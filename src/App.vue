@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import logRagnaLogo from '@/utils/console.util';
 import { setLocale as setVeeLocale } from '@vee-validate/i18n';
 import { RouterView } from 'vue-router';
 import { useLocaleStore } from './common/stores/locale.store';
@@ -53,6 +54,7 @@ initializeLocale();
 onMounted(() => {
   // Set the document lang attribute
   setDocumentLang(localeStore.currentLocale);
+  logRagnaLogo();
 });
 </script>
 
