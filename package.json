@@ -17,7 +17,8 @@
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
-    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/favicon.png"
+    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/favicon.png",
+    "release": "release-it"
   },
   "dependencies": {
     "@casl/ability": "^6.7.3",
