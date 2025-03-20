@@ -6,16 +6,13 @@ FROM node:22-slim AS build
 WORKDIR /app
 
 # Copy package files
-COPY frontend/package*.json ./
-
-# Copy source files
-COPY ./frontend .
-
-#Copy ragna-sdk
-COPY ./ragna-sdk ./ragna-sdk
+COPY package*.json ./
 
 # Install dependencies
-RUN npm i
+RUN npm ci
+
+# Copy source files
+COPY . .
 
 # Build the app
 RUN npm run build-prod

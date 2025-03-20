@@ -1,6 +1,5 @@
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RagnaClient } from 'ragna-sdk';
-import type { Plugin } from 'vue';
 
 let ragnaClient: RagnaClient;
 
@@ -13,7 +12,7 @@ export function getRagnaClient() {
 
   ragnaClient = new RagnaClient({
     baseURL: import.meta.env.VITE_BACKEND_URL,
-    timeout: 10000,
+    timeout: 300000, // 5 minutes
     getAccessTokenCallback: () => authStore.getAccessToken,
     getRefreshTokenCallback: () => authStore.getRefreshToken,
     refreshAuthCallback: authStore.refreshAuth,
@@ -21,11 +20,3 @@ export function getRagnaClient() {
 
   return ragnaClient;
 }
-
-const ragnaClientPlugin: Plugin = {
-  install(app) {
-    app.config.globalProperties.$ragnaClient = ragnaClient;
-  },
-};
-export default ragnaClientPlugin;
-export { ragnaClient };

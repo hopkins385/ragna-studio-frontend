@@ -13,9 +13,6 @@ import svgLoader from 'vite-svg-loader';
 
 // https://vite.dev/config/
 export default defineConfig({
-  optimizeDeps: {
-    exclude: ['ragna-sdk'],
-  },
   build: {
     chunkSizeWarningLimit: 1600,
     emptyOutDir: true,
