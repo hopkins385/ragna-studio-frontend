@@ -30,7 +30,7 @@ docker build \
   --tag "$IMAGE_NAME:$TAG" \
   --file "$DOCKERFILE" \
   --platform linux/amd64 \
-  .
+  ..
 
 echo "Build successful! Image: $IMAGE_NAME:$TAG"
 
