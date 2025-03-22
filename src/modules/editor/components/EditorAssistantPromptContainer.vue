@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // Imports
-import { UnknownError } from '@/common/errors/unknown.error';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useEditorStore } from '@/modules/editor/stores/editor.store';
 import { markdownService } from '@/modules/markdown/services/markdown.service';
@@ -8,6 +7,7 @@ import { Button } from '@ui/button';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { Textarea } from '@ui/textarea';
 import { RefreshCcwIcon, SquareIcon, Trash2Icon } from 'lucide-vue-next';
+import { UnknownError } from 'ragna-sdk';
 
 // Props
 // Emits

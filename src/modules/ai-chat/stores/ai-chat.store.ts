@@ -1,8 +1,12 @@
-import { RequestAbortError } from '@/common/errors/abort.error';
 import { getRagnaClient } from '@/common/http/ragna.client';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import { defineStore } from 'pinia';
-import type { Chat, ChatMessage, CreateChatMessageStreamPayload } from 'ragna-sdk';
+import {
+  RequestAbortError,
+  type Chat,
+  type ChatMessage,
+  type CreateChatMessageStreamPayload,
+} from 'ragna-sdk';
 
 export const useAiChatStore = defineStore('ai-chat-store', () => {
   const client = getRagnaClient();
@@ -125,7 +129,13 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       setIsThinking(false);
       setIsStreaming(true);
 
-      await streamChatMessages(stream);
+      const jsonStream = client.utils.streamToJson(stream);
+
+      for await (const chunk of jsonStream) {
+        if (chunk?.message) {
+          _messageTextChunks.value.push(chunk.message);
+        }
+      }
       //
     } catch (error: unknown) {
       // if abort error is thrown, we can ignore it
@@ -203,32 +213,6 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   function abortChatRequest() {
     client.aiChat.abortRequest();
     finalizeChatStream();
-  }
-
-  async function streamChatMessages(stream: ReadableStream<Uint8Array>) {
-    const reader = stream.pipeThrough(new TextDecoderStream()).getReader();
-
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) {
-        break;
-      }
-
-      const lines = value.split('\n');
-
-      for (const line of lines) {
-        try {
-          if (line.trim().startsWith('data: ')) {
-            const parsedData = JSON.parse(line.slice(6).trim());
-            if (parsedData?.message) {
-              _messageTextChunks.value.push(parsedData.message);
-            }
-          }
-        } catch (e) {
-          console.error('Error parsing JSON:', e, 'line:', line);
-        }
-      }
-    }
   }
 
   function finalizeChatStream() {

@@ -22,5 +22,14 @@
     "noImplicitThis": true,
     "useUnknownInCatchVariables": true,
     "alwaysStrict": true,
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "dev-dist",
+    "nginx",
+    "_backup",
+    ".vscode",
+    "public",
+  ]
 }

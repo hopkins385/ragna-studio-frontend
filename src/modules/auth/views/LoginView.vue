@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ConnectionError } from '@/common/errors/connection.error';
-import { UnauthorizedError } from '@/common/errors/unauthorized.error';
 import BrandHeader from '@/components/brand/BrandHeader.vue';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -8,6 +6,7 @@ import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { toTypedSchema } from '@vee-validate/zod';
+import { ConnectionError, UnauthorizedError } from 'ragna-sdk';
 import { useForm } from 'vee-validate';
 import { z } from 'zod';
 import LogosGoogleIcon from '~icons/logos/google-icon';
