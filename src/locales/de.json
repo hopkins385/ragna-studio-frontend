@@ -382,6 +382,14 @@
       "knowledge": {
         "label": "Wissensdatenbank",
         "description": "Wissensdatenbank nach Informationen durchsuchen"
+      },
+      "texteditor": {
+        "label": "Kommentare hinzufügen",
+        "description": "Kommentare zu einem Dokument im Editor hinzufügen"
+      },
+      "think": {
+        "label": "Gedanken aufschreiben",
+        "description": "Gedanken aufschreiben um über etwas schwieriges nachzudenken"
       }
     },
     "workflow": {

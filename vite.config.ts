@@ -9,6 +9,7 @@ import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'vite';
 import { imagetools } from 'vite-imagetools';
 import { VitePWA } from 'vite-plugin-pwa';
+import vueDevTools from 'vite-plugin-vue-devtools';
 import svgLoader from 'vite-svg-loader';
 
 // https://vite.dev/config/
@@ -45,7 +46,7 @@ export default defineConfig({
       },
     }),
     vue(),
-    // vueDevTools(),
+    vueDevTools(),
     UnheadVite(),
     VitePWA({
       // mode: 'development',

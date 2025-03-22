@@ -6,14 +6,15 @@ export interface ToolInfoData {
 export function useChatTools() {
   const activeTools = ref<ToolInfoData[]>([]);
 
-  function setActiveTool(toolInfoData: ToolInfoData) {
-    activeTools.value.push(toolInfoData);
+  function setActiveTool(payload: ToolInfoData) {
+    activeTools.value.push({
+      toolName: payload.toolName,
+      toolInfo: payload.toolInfo,
+    });
   }
 
   function unsetActiveTool(toolName: string) {
-    activeTools.value = activeTools.value.filter(
-      data => data.toolName !== toolName,
-    );
+    activeTools.value = activeTools.value.filter(data => data.toolName !== toolName);
   }
 
   function clearActiveTools() {

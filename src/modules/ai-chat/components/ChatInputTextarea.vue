@@ -23,6 +23,8 @@ const emit = defineEmits<{
 
 // Refs
 const chatInputFormRef = useTemplateRef('chat-input-form');
+const textareaRef = useTemplateRef('textarea');
+const input = ref<string>('');
 
 // Stores
 const aiChatSettings = useAiChatSettingsStore();
@@ -67,7 +69,13 @@ const onKeyDownEnter = (event: KeyboardEvent) => {
   if (!submitReleased.value) {
     return;
   }
-  if (event.key === 'Enter' && !event.shiftKey && aiChatSettings.submitOnEnter) {
+
+  // allow line breaks
+  if (event.key === 'Enter' && (event.shiftKey || event.metaKey || event.ctrlKey)) {
+    return;
+  }
+
+  if (event.key === 'Enter' && aiChatSettings.submitOnEnter) {
     event.preventDefault();
     submitForm();
   }
@@ -77,8 +85,9 @@ const submitForm = handleSubmit(values => {
   if (submitReleased.value) {
     emit('submitForm', values.input);
     resetForm();
+    adjustTextareaHeight();
+    input.value = '';
   }
-  adjustTextareaHeight();
   focusTextarea();
 });
 
@@ -86,8 +95,16 @@ const abortRequest = () => {
   emit('abort');
   adjustTextareaHeight();
 };
-
 // Hooks
+// watch for changes in the textarea value
+watch(
+  () => input,
+  newValue => {
+    if (newValue) {
+      adjustTextareaHeight();
+    }
+  },
+);
 </script>
 
 <template>
@@ -103,7 +120,9 @@ const abortRequest = () => {
           <FormMessage />
           <FormControl>
             <Textarea
+              ref="textarea"
               v-bind="componentField"
+              v-model="input"
               :placeholder="$t('chat.input.placeholder')"
               resize="none"
               class="no-scrollbar resize-none rounded-lg py-3 pr-14 focus:shadow-lg bg-stone-50"
