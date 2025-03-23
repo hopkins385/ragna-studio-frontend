@@ -93,7 +93,10 @@ const sendChatMessage = async (payload: { chatId: string; inputText: string }) =
     await aiChatStore.sendChatMessage({
       chatId: payload.chatId,
       type: msgType,
-      content: userMessageContent.toString(),
+      content: {
+        type: 'text',
+        text: userMessageContent.toString(),
+      },
       visionContent,
     });
   } catch (e: any) {
@@ -228,7 +231,7 @@ onMounted(() => {});
         v-for="(message, index) in aiChatStore.chatMessages"
         :key="index"
         :type="message.type"
-        :text="message.content.toString()"
+        :text="message.content.text"
         :vision-contents="message.visionContent"
         :display-name="
           message.role === 'user' ? authStore.userFirstName : aiChatStore.assistant?.title

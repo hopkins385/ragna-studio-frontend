@@ -66,7 +66,10 @@ async function submitForm(inputText: string) {
   await aiChatStore.sendChatMessage({
     chatId: aiChatStore.chat?.id,
     type: 'text',
-    content: userMessageContent,
+    content: {
+      type: 'text',
+      text: userMessageContent,
+    },
     context: JSON.stringify(editorStore.getJSONContent()),
   });
 }
@@ -178,7 +181,7 @@ onBeforeUnmount(() => {
             v-for="(message, index) in aiChatStore.chatMessages"
             :key="index"
             class="p-2 rounded-md text-sm"
-            v-dompurify-html="markdownService.toHtml(message.content.toString())"
+            v-dompurify-html="markdownService.toHtml(message.content.text.toString())"
           ></div>
           <div v-if="aiChatStore.isThinking">...</div>
           <!-- Chat messages stream chunks -->

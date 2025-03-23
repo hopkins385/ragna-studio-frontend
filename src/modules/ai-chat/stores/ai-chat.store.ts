@@ -228,7 +228,10 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     appendChatMessage({
       type: 'text',
       role: 'assistant',
-      content: assistantContent,
+      content: {
+        type: 'text',
+        text: assistantContent,
+      },
     });
   }
 
