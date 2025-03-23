@@ -93,10 +93,12 @@ const sendChatMessage = async (payload: { chatId: string; inputText: string }) =
     await aiChatStore.sendChatMessage({
       chatId: payload.chatId,
       type: msgType,
-      content: {
-        type: 'text',
-        text: userMessageContent.toString(),
-      },
+      content: [
+        {
+          type: 'text',
+          text: userMessageContent.toString(),
+        },
+      ],
       visionContent,
     });
   } catch (e: any) {
@@ -227,17 +229,19 @@ onMounted(() => {});
       class="no-scrollbar relative grow overflow-y-scroll rounded-lg w-full max-w-[70rem] mx-auto"
     >
       <!-- chat messages -->
-      <ChatMessageBox
-        v-for="(message, index) in aiChatStore.chatMessages"
-        :key="index"
-        :type="message.type"
-        :text="message.content.text"
-        :vision-contents="message.visionContent"
-        :display-name="
-          message.role === 'user' ? authStore.userFirstName : aiChatStore.assistant?.title
-        "
-        :role="message.role === 'user' ? ChatMessageRole.USER : ChatMessageRole.ASSISTANT"
-      />
+      <template v-for="(message, index) in aiChatStore.chatMessages" :key="index">
+        <ChatMessageBox
+          v-if="message.type !== 'tool-call'"
+          :type="message.type"
+          :content="message.content"
+          :vision-contents="message.visionContent"
+          :display-name="
+            message.role === 'user' ? authStore.userFirstName : aiChatStore.assistant?.title
+          "
+          :role="message.role === 'user' ? ChatMessageRole.USER : ChatMessageRole.ASSISTANT"
+        />
+      </template>
+
       <!-- thinking message -->
       <ChatThinkingBox v-if="aiChatStore.isThinking" :display-name="aiChatStore.assistant?.title" />
       <!-- streaming message -->

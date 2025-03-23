@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import type { ChatMessageRole } from '@/modules/ai-chat/enums/chat-role.enum';
+import { ChatMessageRole } from '@/modules/ai-chat/enums/chat-role.enum';
 import { markdownService } from '@/modules/markdown/services/markdown.service';
 import 'highlight.js/styles/stackoverflow-light.min.css';
-import type { ChatMessageVisionContent } from 'ragna-sdk';
+import type { ChatMessageContent, ChatMessageType, ChatMessageVisionContent } from 'ragna-sdk';
 import ChatMessageBoxWrapper from './ChatMessageBoxWrapper.vue';
 
 interface ChatMessageBoxProps {
   role: ChatMessageRole;
-  type: 'text' | 'image' | 'video' | 'audio' | null | undefined;
-  text: string;
+  type: ChatMessageType;
+  content: ChatMessageContent[];
   displayName?: string;
   visionContents?: ChatMessageVisionContent[] | null;
 }
@@ -35,10 +35,16 @@ defineProps<ChatMessageBoxProps>();
     </div>
     <!-- Text Content -->
     <div
-      v-if="role === 'assistant'"
-      v-dompurify-html="markdownService.toHtml(text)"
+      v-if="role === ChatMessageRole.ASSISTANT && (type === 'text' || type === 'image')"
+      v-dompurify-html="markdownService.toHtml(content[0].text)"
       class="w-full pr-10"
     ></div>
-    <div v-else class="whitespace-pre-line">{{ text }}</div>
+    <div
+      v-else-if="role === ChatMessageRole.USER && (type === 'text' || type === 'image')"
+      class="whitespace-pre-line"
+    >
+      {{ content[0].text }}
+    </div>
+    <div v-else>{{ content }}</div>
   </ChatMessageBoxWrapper>
 </template>

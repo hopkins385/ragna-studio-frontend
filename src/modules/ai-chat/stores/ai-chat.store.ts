@@ -119,7 +119,9 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     try {
       const stream = await client.aiChat.createChatStream({
         chatId: payload.chatId,
-        chatMessages: _chatMessages.value,
+        chatMessages: _chatMessages.value.filter(
+          message => message.type !== 'tool-call' && message.type !== 'tool-result',
+        ),
         reasoningEffort: chatSettingsStore.thinkLevel?.[0] || 0,
         maxTokens: chatSettingsStore.maxTokens?.[0] || 4000,
         temperature,
@@ -147,14 +149,17 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       }
       throw error;
     } finally {
-      finalizeChatStream();
+      // finalizeChatStream();
+      await hydrateChatById(payload.chatId);
     }
   }
 
-  async function hydrateChatById(chatId: string | undefined) {
+  async function hydrateChatById(chatId: string | null | undefined) {
     if (!chatId) {
       throw new Error('Chat ID is required to hydrate chat');
     }
+
+    resetStreamStates();
 
     const { chat } = await client.aiChat.fetchChatById(chatId);
 
@@ -166,12 +171,14 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   }
 
   function hydrateChatMessages(messages: ChatMessage[]) {
-    _chatMessages.value = messages.map(message => ({
-      type: message.type,
-      role: message.role,
-      content: message.content,
-      visionContent: message.visionContent,
-    }));
+    _chatMessages.value = messages
+      // .filter(message => message.type === 'text')
+      .map(message => ({
+        type: message.type,
+        role: message.role,
+        content: message.content,
+        visionContent: message.visionContent,
+      }));
   }
 
   function hydrateChat(payload: Chat) {
@@ -228,10 +235,12 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     appendChatMessage({
       type: 'text',
       role: 'assistant',
-      content: {
-        type: 'text',
-        text: assistantContent,
-      },
+      content: [
+        {
+          type: 'text',
+          text: assistantContent,
+        },
+      ],
     });
   }
 
