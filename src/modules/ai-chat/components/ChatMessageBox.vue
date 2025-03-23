@@ -36,15 +36,15 @@ defineProps<ChatMessageBoxProps>();
     <!-- Text Content -->
     <div
       v-if="role === ChatMessageRole.ASSISTANT && (type === 'text' || type === 'image')"
-      v-dompurify-html="markdownService.toHtml(content[0].text)"
+      v-dompurify-html="markdownService.toHtml(content[0].text.toString())"
       class="w-full pr-10"
     ></div>
     <div
       v-else-if="role === ChatMessageRole.USER && (type === 'text' || type === 'image')"
       class="whitespace-pre-line"
     >
-      {{ content[0].text }}
+      {{ content[0].text.toString() }}
     </div>
-    <div v-else>{{ content }}</div>
+    <div v-else>{{ content.toString() }}</div>
   </ChatMessageBoxWrapper>
 </template>

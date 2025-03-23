@@ -149,7 +149,9 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       }
       throw error;
     } finally {
-      // finalizeChatStream();
+      finalizeChatStream();
+      // wait 250ms to ensure the stream is finished
+      await new Promise(resolve => setTimeout(resolve, 250));
       await hydrateChatById(payload.chatId);
     }
   }
@@ -158,8 +160,6 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     if (!chatId) {
       throw new Error('Chat ID is required to hydrate chat');
     }
-
-    resetStreamStates();
 
     const { chat } = await client.aiChat.fetchChatById(chatId);
 
@@ -171,18 +171,18 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   }
 
   function hydrateChatMessages(messages: ChatMessage[]) {
-    _chatMessages.value = messages
-      // .filter(message => message.type === 'text')
-      .map(message => ({
-        type: message.type,
-        role: message.role,
-        content: message.content,
-        visionContent: message.visionContent,
-      }));
+    _chatMessages.value = messages.map(message => ({
+      type: message.type,
+      role: message.role,
+      content: message.content,
+      visionContent: message.visionContent,
+    }));
   }
 
   function hydrateChat(payload: Chat) {
     resetStreamStates();
+
+    _messageTextChunks.value = [];
 
     _chat.value = {
       id: payload.id,
@@ -194,8 +194,6 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     };
 
     hydrateChatMessages(payload.messages || []);
-
-    _messageTextChunks.value = [];
 
     return _chat.value;
   }

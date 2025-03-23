@@ -44,18 +44,20 @@ onBeforeUnmount(() => {
 <template>
   <Select v-model="aiChatSettings.selectedAssistantId" class="w-full" :disabled="selectDisabled">
     <SelectTrigger
-      class="h-7 text-xs bg-transparent border-0 focus:ring-0 focus:ring-offset-0 opacity-90"
+      class="h-7 text-xs bg-transparent border-0 focus:ring-0 focus:ring-offset-0 opacity-90 max-w-52"
     >
       <SelectValue :placeholder="$t('assistant.select.placeholder')" />
     </SelectTrigger>
-    <SelectContent class="min-w-96">
+    <SelectContent class="min-w-48">
       <SelectItem
         v-for="assistant in assistants"
         :key="assistant.id"
         :value="assistant.id"
         class="text-xs"
       >
-        <span class="opacity-80">{{ assistant.title }}</span>
+        <p class="max-w-60 overflow-hidden truncate">
+          <span class="opacity-80">{{ assistant.title }}</span>
+        </p>
       </SelectItem>
     </SelectContent>
   </Select>

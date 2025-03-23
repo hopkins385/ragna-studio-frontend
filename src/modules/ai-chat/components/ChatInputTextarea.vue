@@ -23,7 +23,6 @@ const emit = defineEmits<{
 
 // Refs
 const chatInputFormRef = useTemplateRef('chat-input-form');
-const textareaRef = useTemplateRef('textarea');
 const input = ref<string>('');
 
 // Stores
@@ -49,13 +48,22 @@ const submitReleased = computed(() => {
  */
 const adjustTextareaHeight = () => {
   const maxHeight = 364;
-  const textarea = chatInputFormRef.value?.querySelector('textarea');
-  if (textarea) {
-    // Reset height to auto to calculate the new height
-    textarea.style.height = 'auto';
-    // Set the height to match the scrollHeight
-    textarea.style.height = `${Math.min(maxHeight, textarea.scrollHeight)}px`;
-  }
+  requestAnimationFrame(() => {
+    const textarea = chatInputFormRef.value?.querySelector('textarea');
+    if (!textarea) return;
+
+    // Temporarily collapse to get the correct scrollHeight
+    textarea.style.height = '0px';
+
+    // Get the computed line-height to ensure proper calculation
+    const computedStyle = window.getComputedStyle(textarea);
+    const lineHeight = parseInt(computedStyle.lineHeight) || 20;
+
+    // Calculate new height (minimum of one line)
+    const newHeight = Math.max(lineHeight, Math.min(maxHeight, textarea.scrollHeight));
+
+    textarea.style.height = `${newHeight}px`;
+  });
 };
 
 const focusTextarea = () => {
@@ -95,16 +103,23 @@ const abortRequest = () => {
   emit('abort');
   adjustTextareaHeight();
 };
+
+let resizeObserver: ResizeObserver | null = null;
 // Hooks
-// watch for changes in the textarea value
-watch(
-  () => input,
-  newValue => {
-    if (newValue) {
+onMounted(() => {
+  const textarea = chatInputFormRef.value?.querySelector('textarea');
+  if (textarea) {
+    resizeObserver = new ResizeObserver(() => {
       adjustTextareaHeight();
-    }
-  },
-);
+    });
+    resizeObserver.observe(textarea);
+  }
+});
+
+// Cleanup
+onUnmounted(() => {
+  resizeObserver?.disconnect();
+});
 </script>
 
 <template>
@@ -120,14 +135,13 @@ watch(
           <FormMessage />
           <FormControl>
             <Textarea
-              ref="textarea"
               v-bind="componentField"
               v-model="input"
               :placeholder="$t('chat.input.placeholder')"
               resize="none"
               class="no-scrollbar resize-none rounded-lg py-3 pr-14 focus:shadow-lg bg-stone-50"
               @keydown.enter="onKeyDownEnter"
-              @input="adjustTextareaHeight"
+              @update:model-value="adjustTextareaHeight"
             />
           </FormControl>
         </FormItem>
