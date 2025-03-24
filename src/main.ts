@@ -11,7 +11,7 @@ import pinia from './store';
 
 import VueDOMPurifyHTML from 'vue-dompurify-html';
 
-import { createHead } from '@unhead/vue';
+import { createHead } from '@unhead/vue/client';
 // NProgress styles
 import 'nprogress/nprogress.css';
 
