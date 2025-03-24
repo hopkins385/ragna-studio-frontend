@@ -17,6 +17,7 @@ const defaultSettings = {
   presencePenalty: [0],
   maxTokens: [4000],
   submitOnEnter: true,
+  includeToolCalls: true,
   historyGroupBy: 'day',
 };
 
@@ -31,6 +32,7 @@ export const useAiChatSettingsStore = defineStore(
     const presencePenalty = ref<PresencePenalty>(defaultSettings.presencePenalty);
     const maxTokens = ref<MaxTokens>(defaultSettings.maxTokens);
     const submitOnEnter = ref(defaultSettings.submitOnEnter);
+    const includeToolCalls = ref(defaultSettings.includeToolCalls);
     const historyGroupBy = ref<GroupByOption>(defaultSettings.historyGroupBy as GroupByOption);
 
     // Getters as computed
@@ -53,6 +55,8 @@ export const useAiChatSettingsStore = defineStore(
     );
     const getMaxTokens = computed(() => maxTokens.value?.[0] ?? defaultSettings.maxTokens[0]);
     const getHistoryGroupBy = computed(() => historyGroupBy.value);
+    const getSubmitOnEnter = computed(() => submitOnEnter.value);
+    const hideToolCalls = computed(() => !includeToolCalls.value);
 
     // Actions as functions
     function setThinkLevel(thinkingLevel: ThinkLevel) {
@@ -97,6 +101,7 @@ export const useAiChatSettingsStore = defineStore(
       maxTokens,
       submitOnEnter,
       historyGroupBy,
+      includeToolCalls,
       // Getters
       getThinkLevel,
       getThinkLevelLabel,
@@ -104,6 +109,8 @@ export const useAiChatSettingsStore = defineStore(
       getPresencePenalty,
       getMaxTokens,
       getHistoryGroupBy,
+      getSubmitOnEnter,
+      hideToolCalls,
       // Actions
       setThinkLevel,
       setTemperature,

@@ -115,13 +115,16 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     setIsThinking(true);
 
     const temperature = Math.min(Math.max(chatSettingsStore.temperature?.[0] ?? 80, 0), 100);
+    const chatMessages = chatSettingsStore.hideToolCalls
+      ? _chatMessages.value.filter(
+          message => message.type !== 'tool-call' && message.type !== 'tool-result',
+        )
+      : _chatMessages.value;
 
     try {
       const stream = await client.aiChat.createChatStream({
         chatId: payload.chatId,
-        chatMessages: _chatMessages.value.filter(
-          message => message.type !== 'tool-call' && message.type !== 'tool-result',
-        ),
+        chatMessages,
         reasoningEffort: chatSettingsStore.thinkLevel?.[0] || 0,
         maxTokens: chatSettingsStore.maxTokens?.[0] || 4000,
         temperature,

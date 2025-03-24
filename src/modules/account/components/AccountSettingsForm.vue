@@ -22,6 +22,8 @@ const langLookup: Record<string, string> = {
 const getLocale = (lang: string) => {
   return langLookup[lang];
 };
+
+const version = import.meta.env.VITE_APP_VERSION;
 </script>
 
 <template>
@@ -54,4 +56,7 @@ const getLocale = (lang: string) => {
       </div>
     </template>
   </TabSidebar>
+  <div class="py-10">
+    <p class="text-gray-400 dark:text-gray-400 text-sm">App Version: {{ version }}</p>
+  </div>
 </template>

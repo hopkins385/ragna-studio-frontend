@@ -116,46 +116,21 @@ function onEditAssistantClick() {
           class="slider"
         />
       </div>
-      <div v-if="hasPresencePenaltySetting" class="mb-5 flex flex-col space-y-4">
-        <div class="flex w-full justify-between">
-          <div>
-            Presence Penalty
+      <div class="flex flex-col">
+        <div>
+          {{ $t('chat.settings.include_tool_call.title') }}
+          <QuestionToolTip
+            :title="$t('chat.settings.include_tool_call.title')"
+            :content="$t('chat.settings.include_tool_call.description')"
+          />
+        </div>
+        <Switch
+          class="-ml-2 mt-1 scale-75"
+          :checked="settings.includeToolCalls"
+          @update:checked="val => (settings.includeToolCalls = val)"
+        />
+      </div>
 
-            <QuestionToolTip
-              title="$t('chat.settings.presencePenalty.title')"
-              content="$t('chat.settings.presencePenalty.description')"
-            />
-          </div>
-          <div>{{ settings.getPresencePenalty }}</div>
-        </div>
-        <Slider
-          v-model="settings.presencePenalty"
-          :default-value="[0]"
-          :min="-200"
-          :max="200"
-          :step="1"
-          class="slider"
-        />
-      </div>
-      <div v-if="hasMaxTokensSetting" class="mb-5 flex flex-col space-y-4">
-        <div class="flex w-full justify-between">
-          <div>
-            {{ $t('chat.settings.max_tokens.title') }}
-            <QuestionToolTip
-              :title="$t('chat.settings.max_tokens.title')"
-              :content="$t('chat.settings.max_tokens.description')"
-            />
-          </div>
-          <div>{{ settings.getMaxTokens }}</div>
-        </div>
-        <Slider
-          v-model="settings.maxTokens"
-          :default-value="[500]"
-          :max="4000"
-          :step="1"
-          class="slider"
-        />
-      </div>
       <div class="flex flex-col">
         <div>
           {{ $t('chat.settings.on_enter_submit.title') }}

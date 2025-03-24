@@ -556,6 +556,10 @@
         "title": "Mit Enter senden",
         "description": "Wenn aktiviert, wird die Nachricht gesendet, wenn die Enter-Taste gedrückt wird. Andernfalls wird eine neue Zeile hinzugefügt."
       },
+      "include_tool_call": {
+        "title": "Tool-Ausgaben mitsenden",
+        "description": "Wenn aktiviert, werden die Ausgaben der Tools, die der Agent verwendet hat, mitgesendet. Andernfalls werden die Ausgaben nicht mitgesendet. Dies ist insbesondere hilfreich, um Credits zu sparen, und um den Chatverlauf zu kürzen."
+      },
       "think": {
         "title": "Denk-Intensität",
         "description": "Bestimmt wie aufwending der Agent über seine Antworten nachdenkt – je höher die Einstellung, desto mehr Zeit nimmt sich der Agent für schrittweise Überlegungen und tiefere Analysen, ähnlich wie ein Mensch, der zwischen einer schnellen Antwort und einem durchdachten Lösungsweg wählen kann.",

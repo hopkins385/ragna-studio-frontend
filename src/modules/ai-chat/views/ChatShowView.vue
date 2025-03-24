@@ -229,7 +229,10 @@ onMounted(() => {});
       class="no-scrollbar relative grow overflow-y-scroll rounded-lg w-full max-w-[70rem] mx-auto"
     >
       <!-- chat messages -->
-      <template v-for="(message, index) in aiChatStore.chatMessages" :key="index">
+      <template
+        v-for="(message, index) in aiChatStore.chatMessages"
+        :key="message.content?.[0]?.text ?? index"
+      >
         <ChatMessageBox
           v-if="message.type !== 'tool-call'"
           :type="message.type"

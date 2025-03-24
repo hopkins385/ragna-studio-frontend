@@ -11,6 +11,7 @@ defineProps<{
 
 <template>
   <div
+    id="chat-message-box-wrapper"
     class="chatbox__text-box flex bg-white px-10 text-sm py-4"
     :class="['items-start', role === ChatMessageRole.USER ? 'justify-end' : 'justify-start']"
   >
