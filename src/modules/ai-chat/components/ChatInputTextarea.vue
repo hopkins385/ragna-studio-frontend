@@ -139,7 +139,7 @@ onUnmounted(() => {
               v-model="input"
               :placeholder="$t('chat.input.placeholder')"
               resize="none"
-              class="no-scrollbar resize-none rounded-lg py-3 pr-14 focus:shadow-lg bg-stone-50"
+              class="no-scrollbar resize-none rounded-lg py-3 pr-14 focus:shadow-lg bg-stone-50 shadow-inner"
               @keydown.enter="onKeyDownEnter"
               @update:model-value="adjustTextareaHeight"
             />
@@ -152,10 +152,12 @@ onUnmounted(() => {
       v-if="showAbortButton"
       variant="outline"
       size="icon"
-      class="group absolute bottom-[0.6rem] right-3 z-20 mr-1 size-5 rounded-full bg-slate-100"
+      class="group absolute bottom-[0.6rem] right-3 z-20 mr-1 size-6 rounded-full bg-stone-50 border-stone-400 shadow-sm hover:border-stone-500 hover:scale-110 transition-colors duration-200 ease-in-out"
       @click="abortRequest"
     >
-      <SquareIcon class="!size-3 stroke-1.5 text-slate-500 group-hover:text-slate-900" />
+      <SquareIcon
+        class="!size-3 stroke-1.5 text-slate-500 group-hover:text-slate-900 group-hover:fill-stone-500 fill-stone-400"
+      />
     </Button>
     <Button
       v-else

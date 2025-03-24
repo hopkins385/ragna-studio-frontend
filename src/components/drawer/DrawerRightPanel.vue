@@ -10,7 +10,7 @@ const drawer = useDrawerStore();
 
 const components: ComponentMap = {
   'editor-sidebar': defineAsyncComponent(
-    () => import('@/modules/editor/components/EditorSidebar.vue'),
+    () => import('@/modules/editor/components/EditorSideNav.vue'),
   ),
 };
 </script>

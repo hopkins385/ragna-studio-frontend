@@ -12,6 +12,7 @@ import {
 import { useAutoScroll } from '@/composables/useAutoScroll';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import ChatAssistantSelect from '@/modules/ai-chat/components/ChatAssistantSelect.vue';
+import ChatAssistantTaskSelect from '@/modules/ai-chat/components/ChatAssistantTaskSelect.vue';
 import ChatInputTextarea from '@/modules/ai-chat/components/ChatInputTextarea.vue';
 import { useAiChatStore } from '@/modules/ai-chat/stores';
 import { useEditorStore } from '@/modules/editor/stores/editor.store';
@@ -204,7 +205,8 @@ onBeforeUnmount(() => {
           @submit-form="value => submitForm(value)"
           @abort="abortRequest"
         />
-        <div class="absolute bottom-[0.3rem] z-10 right-8">
+        <div class="absolute bottom-[0.3rem] z-10 right-8 flex items-center -space-x-3">
+          <ChatAssistantTaskSelect :select-locked="aiChatStore.isLoading" />
           <ChatAssistantSelect :select-locked="aiChatStore.hasChat" />
         </div>
       </div>

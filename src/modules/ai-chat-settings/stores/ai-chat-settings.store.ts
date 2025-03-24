@@ -89,6 +89,7 @@ export const useAiChatSettingsStore = defineStore(
       maxTokens.value = defaultSettings.maxTokens;
       submitOnEnter.value = defaultSettings.submitOnEnter;
       historyGroupBy.value = defaultSettings.historyGroupBy as GroupByOption;
+      includeToolCalls.value = defaultSettings.includeToolCalls;
     }
 
     return {

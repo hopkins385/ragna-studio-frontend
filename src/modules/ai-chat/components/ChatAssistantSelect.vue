@@ -37,6 +37,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  // aborts fetchAllAssistants request
   client.assistant.abortRequest();
 });
 </script>
@@ -44,7 +45,7 @@ onBeforeUnmount(() => {
 <template>
   <Select v-model="aiChatSettings.selectedAssistantId" class="w-full" :disabled="selectDisabled">
     <SelectTrigger
-      class="h-7 text-xs bg-transparent border-0 focus:ring-0 focus:ring-offset-0 opacity-90 max-w-52"
+      class="h-7 text-xs bg-transparent border-0 focus:ring-0 focus:ring-offset-0 max-w-52"
     >
       <SelectValue :placeholder="$t('assistant.select.placeholder')" />
     </SelectTrigger>
@@ -56,7 +57,7 @@ onBeforeUnmount(() => {
         class="text-xs"
       >
         <p class="max-w-60 overflow-hidden truncate">
-          <span class="opacity-80">{{ assistant.title }}</span>
+          <span class="opacity-90">{{ assistant.title }}</span>
         </p>
       </SelectItem>
     </SelectContent>

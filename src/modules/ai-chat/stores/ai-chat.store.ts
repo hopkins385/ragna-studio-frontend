@@ -33,6 +33,9 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   const isPending = computed<boolean>(() => _isPending.value);
   const isStreaming = computed<boolean>(() => _isStreaming.value);
   const isThinking = computed<boolean>(() => _isThinking.value);
+  const isLoading = computed<boolean>(
+    () => _isPending.value || _isStreaming.value || _isThinking.value,
+  );
 
   const hasChat = computed(() => !!_chat.value);
   const hasAssistant = computed(() => !!_chat.value?.assistant);
@@ -260,6 +263,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     isPending,
     isStreaming,
     isThinking,
+    isLoading,
     chat,
     chatMessages,
     chatId,

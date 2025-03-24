@@ -346,6 +346,9 @@
       "description_label": "Beschreibung",
       "description_description": "Die Beschreibung ist insbesondere hilfreich für andere Agenten, die diesen Agenten verwenden oder für Workflows"
     },
+    "task": {
+      "placeholder": "Aufgabe auswählen"
+    },
     "select": {
       "placeholder": "Agent auswählen"
     },
@@ -389,7 +392,7 @@
       },
       "think": {
         "label": "Gedanken aufschreiben",
-        "description": "Gedanken aufschreiben um über etwas schwieriges nachzudenken"
+        "description": "Gedanken aufschreiben, um über etwas schwieriges nachzudenken"
       }
     },
     "workflow": {
@@ -557,8 +560,8 @@
         "description": "Wenn aktiviert, wird die Nachricht gesendet, wenn die Enter-Taste gedrückt wird. Andernfalls wird eine neue Zeile hinzugefügt."
       },
       "include_tool_call": {
-        "title": "Tool-Ausgaben mitsenden",
-        "description": "Wenn aktiviert, werden die Ausgaben der Tools, die der Agent verwendet hat, mitgesendet. Andernfalls werden die Ausgaben nicht mitgesendet. Dies ist insbesondere hilfreich, um Credits zu sparen, und um den Chatverlauf zu kürzen."
+        "title": "Tool Historie",
+        "description": "Wenn aktiviert, werden die bereits vorhandenen Ausgaben der Tools, die der Agent verwendet hat, erneut verarbeitet. Andernfalls werden die Tool-Ausgaben nicht nochmal verarbeitet. Dies ist insbesondere hilfreich, um Platz zu schaffen und den Verbrauch zu reduzieren, wenn viele Informationen verarbeitet werden oder der Chatverlauf sehr lang ist."
       },
       "think": {
         "title": "Denk-Intensität",

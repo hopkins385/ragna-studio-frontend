@@ -294,6 +294,16 @@ onBeforeUnmount(() => {
         ref="editorWrapperRef"
         class="max-w-5xl mt-8 mx-auto shadow-md border px-32 py-28 rounded-sm bg-white min-h-full relative"
       >
+        <!-- Assistant Status Indicator -->
+        <div
+          v-if="false"
+          class="absolute z-20 pointer-events-none border top-4 right-4 min-w-32 px-3 py-2 shadow-md rounded-lg flex items-center space-x-3"
+        >
+          <div
+            class="size-4 border-2 border-primary border-t-transparent rounded-full animate-spin opacity-75"
+          ></div>
+          <p class="text-sm">Editiere Dokument ...</p>
+        </div>
         <!-- Assistant Dropdown Menu -->
         <div
           v-if="assistantDropdownMenu.show"
