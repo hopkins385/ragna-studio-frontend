@@ -100,7 +100,7 @@ const navItems = {
         </div>
       </Button>
     </PopoverTrigger>
-    <PopoverContent class="w-[250px] rounded-2xl overflow-hidden p-0" side="bottom" align="end">
+    <PopoverContent class="w-[15.6rem] rounded-2xl overflow-hidden p-0" side="bottom" align="end">
       <Command>
         <div class="flex items-center gap-3 p-4">
           <div

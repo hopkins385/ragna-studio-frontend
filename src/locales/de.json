@@ -119,10 +119,10 @@
   },
   "account": {
     "title": "Account",
-    "subtitle": "Auf dieser Seite kannst du deinen Account verwalten",
+    "subtitle": "Hier kannst du deinen Account verwalten",
     "settings": {
-      "title": "Account Einstellungen",
-      "subtitle": "Auf dieser Seite kannst du deine Account Einstellungen bearbeiten"
+      "title": "App Einstellungen",
+      "subtitle": "Hier kannst du deine App Einstellungen bearbeiten"
     },
     "form": {
       "name": "Name",

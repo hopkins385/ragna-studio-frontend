@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import NavBarProject from '@/components/nav/NavBarProject.vue';
+import NavHelpMenu from '@/components/nav/NavHelpMenu.vue';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { Bell, Expand } from 'lucide-vue-next';
 import BrandLogo from '../brand/BrandLogo.vue';
@@ -38,11 +40,10 @@ const onExpandClick = () => {
         </div>
         -->
         <div></div>
-        <!--
+
         <div>
           <NavBarProject />
         </div>
-        -->
       </div>
     </div>
     <div class="flex h-full items-center space-x-5">
@@ -54,6 +55,9 @@ const onExpandClick = () => {
       <button>
         <Bell class="size-5 stroke-1 hover:stroke-1.5" />
       </button>
+      <div>
+        <NavHelpMenu />
+      </div>
       <button @click="onExpandClick">
         <Expand class="size-5 stroke-1 hover:stroke-1.5" />
       </button>
