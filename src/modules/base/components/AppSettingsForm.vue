@@ -30,7 +30,7 @@ const getLocale = (lang: string) => {
     :tabs="[
       // { id: 'tab1', icon: Settings, label: $t('settings.label.standards') },
       { id: 'tab2', icon: Settings, label: $t('settings.label.language') },
-      // { id: 'tab3', icon: Settings, label: $t('settings.label.theme') },
+      { id: 'tab3', icon: Settings, label: $t('settings.label.theme') },
     ]"
   >
     <template #tab1> </template>
@@ -52,6 +52,9 @@ const getLocale = (lang: string) => {
           </SelectContent>
         </Select>
       </div>
+    </template>
+    <template #tab3>
+      <div>Colors</div>
     </template>
   </TabSidebar>
 </template>

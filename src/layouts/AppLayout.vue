@@ -3,14 +3,17 @@ import { useWebSocketStore } from '@/common/stores/websocket.store';
 import DrawerLeftPanel from '@/components/drawer/DrawerLeftPanel.vue';
 import DrawerRightPanel from '@/components/drawer/DrawerRightPanel.vue';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
+import { useThemeStore } from '@/modules/base/stores/app-theme.store';
 import { RouteName } from '@/router/enums/route-names.enum';
 import NavBar from '@components/nav/NavBar.vue';
 import NavTopBar from '@components/nav/NavTopBar.vue';
 import { Toaster } from '@components/ui/sonner';
+import { twMerge } from 'tailwind-merge';
 
 const router = useRouter();
 const authStore = useAuthStore();
 const socket = useWebSocketStore();
+const theme = useThemeStore();
 
 // Token refresh logic
 const getSession = async () => {
@@ -49,7 +52,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <body class="bg-stone-50">
+  <body :class="twMerge('bg-stone-50', theme.bodyClass)">
     <NavTopBar />
     <div class="flex overflow-hidden" style="height: calc(100vh - 3.5rem)">
       <!-- Toast -->
