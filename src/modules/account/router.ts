@@ -14,12 +14,6 @@ const moduleRoute = {
       meta: defaultAppMeta,
     },
     {
-      path: 'settings',
-      name: RouteName.ACCOUNT_SETTINGS,
-      component: () => import('./views/AccountSettingsView.vue'),
-      meta: defaultAppMeta,
-    },
-    {
       path: 'statistics',
       name: RouteName.ACCOUNT_STATISTICS,
       component: () => import('./views/stats/AccountStatsIndexView.vue'),

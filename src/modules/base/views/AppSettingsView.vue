@@ -2,22 +2,19 @@
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import SectionContainer from '@/components/section/SectionContainer.vue';
-import AccountSettingsForm from '@/modules/account/components/AccountSettingsForm.vue';
+import AppSettingsForm from '@/modules/base/components/AppSettingsForm.vue';
 </script>
 
 <template>
   <SectionContainer>
     <Heading>
       <template #top>
-        <HeadingTitle
-          :title="$t('account.settings.title')"
-          :subtitle="$t('account.settings.subtitle')"
-        />
+        <HeadingTitle :title="$t('settings.title')" :subtitle="$t('settings.subtitle')" />
       </template>
       <template #bottom> </template>
     </Heading>
     <div class="px-10">
-      <AccountSettingsForm />
+      <AppSettingsForm />
     </div>
   </SectionContainer>
 </template>

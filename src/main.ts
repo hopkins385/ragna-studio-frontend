@@ -30,6 +30,7 @@ import aiChatModule from '@/modules/ai-chat';
 import architectureModule from '@/modules/architecture';
 import assistantModule from '@/modules/assistant';
 import authModule from '@/modules/auth';
+import appBaseModule from '@/modules/base';
 import collectionModule from '@/modules/collection';
 import documentModule from '@/modules/document';
 import homeModule from '@/modules/home';
@@ -43,6 +44,7 @@ import workflowModule from '@/modules/workflow';
 import ragnaClientPlugin from '@/plugins/ragna-client.plugin';
 
 registerModules({
+  app: appBaseModule,
   admin: adminModule,
   auth: authModule,
   user: userModule,

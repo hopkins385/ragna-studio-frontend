@@ -157,7 +157,7 @@ const navItems = {
             <CommandItem
               class="px-4 py-2 hover:cursor-pointer"
               value="settings"
-              @select="() => onSelect('account.settings')"
+              @select="() => onSelect('app.settings')"
             >
               <Settings class="mr-2 size-4 stroke-1.5" />
               <span>
