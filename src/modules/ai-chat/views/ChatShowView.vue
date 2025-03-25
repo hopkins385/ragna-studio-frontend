@@ -15,6 +15,7 @@ import ChatMessageChunk from '@/modules/ai-chat/components/ChatMessageChunk.vue'
 import ChatPresets from '@/modules/ai-chat/components/ChatPresets.vue';
 import ChatThinkingBox from '@/modules/ai-chat/components/ChatThinkingBox.vue';
 import ChatToolCallMessage from '@/modules/ai-chat/components/ChatToolCallMessage.vue';
+import ChatToolCallResult from '@/modules/ai-chat/components/ChatToolCallResult.vue';
 import { useChatImages, type ChatImage } from '@/modules/ai-chat/composables/useChatImages';
 import { useChatTools } from '@/modules/ai-chat/composables/useChatTools';
 import { ChatMessageRole } from '@/modules/ai-chat/enums/chat-role.enum';
@@ -229,12 +230,14 @@ onMounted(() => {});
       class="no-scrollbar relative grow overflow-y-scroll rounded-lg w-full max-w-[70rem] mx-auto"
     >
       <!-- chat messages -->
-      <template
-        v-for="(message, index) in aiChatStore.chatMessages"
-        :key="message.content?.[0]?.text ?? index"
-      >
+      <template v-for="message in aiChatStore.chatMessages" :key="message.id">
+        <ChatToolCallResult
+          :display-name="aiChatStore.assistant?.title"
+          :content="message.content"
+          v-if="message.type === 'tool-result'"
+        />
         <ChatMessageBox
-          v-if="message.type !== 'tool-call'"
+          v-if="message.type !== 'tool-call' && message.type !== 'tool-result'"
           :type="message.type"
           :content="message.content"
           :vision-contents="message.visionContent"

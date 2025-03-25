@@ -1,5 +1,6 @@
 import { getRagnaClient } from '@/common/http/ragna.client';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
+import { createUUID } from '@/utils/uuid';
 import { defineStore } from 'pinia';
 import {
   RequestAbortError,
@@ -21,11 +22,15 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   const _chatMessages = ref<ChatMessage[]>([]);
   const _messageTextChunks = ref<string[]>([]);
 
+  const _chatToolCalls = ref<any[]>([]);
+
   // external state
   const chat = computed(() => _chat.value);
   const chatId = computed(() => _chat.value?.id);
   const chatTitle = computed(() => _chat.value?.title);
   const chatMessages = computed(() => _chatMessages.value);
+
+  const chatToolCalls = computed(() => _chatToolCalls.value);
 
   const assistant = computed(() => _chat.value?.assistant);
   const assistantHasImageInput = computed(() => assistant.value?.llm.capabilities?.imageInput);
@@ -77,6 +82,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     payload: CreateChatMessageStreamPayload,
   ): Promise<ChatMessage> {
     const userChatMessage: ChatMessage = {
+      id: createUUID(),
       type: payload.type,
       role: 'user',
       content: payload.content,
@@ -90,6 +96,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       });
 
       appendChatMessage({
+        id: data.id,
         type: data.type,
         role: data.role,
         content: data.content,
@@ -177,12 +184,19 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   }
 
   function hydrateChatMessages(messages: ChatMessage[]) {
-    _chatMessages.value = messages.map(message => ({
-      type: message.type,
-      role: message.role,
-      content: message.content,
-      visionContent: message.visionContent,
-    }));
+    _chatMessages.value = messages
+      // .filter(message => message.type !== 'tool-call' && message.type !== 'tool-result')
+      .map(message => ({
+        id: message.id,
+        type: message.type,
+        role: message.role,
+        content: message.content,
+        visionContent: message.visionContent,
+      }));
+
+    _chatToolCalls.value = messages.filter(
+      message => message.type === 'tool-call' || message.type === 'tool-result',
+    );
   }
 
   function hydrateChat(payload: Chat) {
@@ -237,6 +251,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     _messageTextChunks.value = [];
 
     appendChatMessage({
+      id: createUUID(),
       type: 'text',
       role: 'assistant',
       content: [
@@ -266,6 +281,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     isLoading,
     chat,
     chatMessages,
+    chatToolCalls,
     chatId,
     chatTitle,
     joinedMessageTextChunks,

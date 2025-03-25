@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import TooltipWrapper from '@/components/tooltip/TooltipWrapper.vue';
 import { Button } from '@/components/ui/button';
+import { CheckIcon, CopyIcon } from 'lucide-vue-next';
 
 // Imports
 
 // Props
 const props = defineProps<{
-  text: string;
+  label: string;
+  content: string;
 }>();
 // Emits
 
@@ -19,16 +22,27 @@ const { copy, copied } = useClipboard();
 // Hooks
 
 const handleClick = () => {
-  copy(props.text.trim());
+  copy(props.content.trim());
 };
 </script>
 
 <template>
-  <Button @click="handleClick" class="absolute top-2 right-2" size="sm" variant="outline">
-    <!--
+  <TooltipWrapper :content="label" :delay-duration="100">
+    <Button
+      @click="handleClick"
+      class="absolute top-2 right-2 bg-transparent"
+      size="icon"
+      variant="ghost"
+    >
+      <!--
     <CheckIcon v-if="copied" class="size-4" />
     <CopyIcon v-else class="size-4" />
+    {{  }}
     -->
-    {{ copied ? 'Copied!' : 'Copy' }}
-  </Button>
+      <span class="opacity-60">
+        <CopyIcon v-if="!copied" class="size-4" />
+        <CheckIcon v-else class="size-4" />
+      </span>
+    </Button>
+  </TooltipWrapper>
 </template>

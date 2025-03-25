@@ -78,7 +78,10 @@
       "update": "Aktualisieren",
       "done": "Fertig",
       "settings": "Einstellungen",
-      "back": "Zurück"
+      "back": "Zurück",
+      "edit": "Bearbeiten",
+      "refresh": "Aktualisieren",
+      "copy": "Kopieren"
     },
     "file_input": {
       "label": "Eine Datei auswählen",

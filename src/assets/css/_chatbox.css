@@ -26,10 +26,10 @@
 }
 
 .chatbox__text-box pre {
-  @apply rounded-md bg-stone-200 p-1 pt-12 text-sm min-w-0 max-w-[50rem] overflow-x-auto my-2 relative;
+  @apply rounded-md p-0  text-sm min-w-0 max-w-[50rem] overflow-x-auto my-2 relative;
   /* add to first child a border*/
   > :first-child {
-    @apply border-2;
+    @apply border p-8 shadow-inner;
   }
 }
 
