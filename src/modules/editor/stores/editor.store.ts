@@ -3,6 +3,7 @@ import {
   EditorCommand,
   editorCommandDefaultArgsSchema,
   editorCommandSchema,
+  editorCommentArgsSchema,
 } from '@/modules/editor/schemas/command.schema';
 import type { CallbackFunction, EditorContent } from '@/modules/editor/types/editor.types';
 import type { EditorEvents, JSONContent } from '@tiptap/core';
@@ -393,11 +394,11 @@ export const useEditorStore = defineStore('editor-store', () => {
   }
 
   function handleReplaceText(payload: { args: any }) {
-    const args = editorCommandDefaultArgsSchema.parse(payload.args);
+    const validatedArgs = editorCommandDefaultArgsSchema.parse(payload.args);
     return replaceText({
-      from: args.from,
-      to: args.to,
-      text: args.text,
+      from: validatedArgs.from,
+      to: validatedArgs.to,
+      text: validatedArgs.text,
     });
   }
 
@@ -410,11 +411,11 @@ export const useEditorStore = defineStore('editor-store', () => {
   }
 
   function handleAddComment(payload: { args: any }) {
-    const args = editorCommandDefaultArgsSchema.parse(payload.args);
+    const validatedArgs = editorCommentArgsSchema.parse(payload.args);
     return addComment({
-      from: args.from,
-      to: args.to,
-      text: args.text,
+      from: validatedArgs.from,
+      to: validatedArgs.to,
+      text: validatedArgs.commentText,
     });
   }
 

@@ -123,6 +123,12 @@ useHead({
           </FormItem>
         </FormField>
       </form>
+      <!-- Dropzone for media files -->
+      <!--
+      <div class="mt-10">
+        <MediaFileDropzone />
+      </div>
+      -->
     </div>
   </SectionContainer>
 </template>

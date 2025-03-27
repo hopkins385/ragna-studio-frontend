@@ -14,3 +14,9 @@ export const editorCommandDefaultArgsSchema = z.object({
   to: z.number(),
   text: z.string().trim(),
 });
+
+export const editorCommentArgsSchema = z.object({
+  from: z.number(),
+  to: z.number(),
+  commentText: z.string().trim(),
+});

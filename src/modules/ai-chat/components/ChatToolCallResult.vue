@@ -22,17 +22,56 @@ const toolCallDisplayName = computed(() => {
   return `Tool Call - ${props.displayName ?? 'Agent'}`;
 });
 const toolCalls = computed(() => {
-  return props.content.map((toolCall: any) => {
-    return {
-      toolCallId: toolCall?.toolCallId ?? 'Unknown',
-      toolName: toolCall?.toolName ?? 'Unknown',
-      toolArgs: toolCall?.args ?? 'Unknown',
-      toolResult: toolCall?.result ?? 'Unknown',
-    };
-  });
+  return (
+    props.content
+      // map the tool calls to a new object
+      .map((toolCall: any) => {
+        return {
+          toolCallId: toolCall?.toolCallId ?? '',
+          toolName: toolCall?.toolName ?? 'Unknown Tool',
+          toolArgs: toolCall?.args ? getKeyValue(toolCall?.args) : [],
+          toolResults: toolCall?.result ? getKeyValue(toolCall?.result) : [],
+        };
+      })
+  );
 });
+
 // Functions
-const toggleDetails = () => {
+function getKeyValue(obj: any): string[] {
+  if (!obj) {
+    return [];
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(item => {
+      return item;
+    });
+  }
+  if (typeof obj === 'string') {
+    // try to parse the string as JSON
+    try {
+      const parsedObj = JSON.parse(obj);
+      return getKeyValue(parsedObj);
+    } catch (e) {
+      // if parsing fails, return the string as is
+      return [obj];
+    }
+  }
+  const objEntries = Object.entries(obj)
+    // filter keys "to" and "from"
+    .filter(([key]) => key !== 'to' && key !== 'from')
+    .map(([key, value]) => {
+      // check if value is an object
+      if (typeof value === 'object' && value !== null) {
+        // if it is an object, return the key and the stringified value
+        return `${key}: ${JSON.stringify(value)}`;
+      }
+      return `${value}`;
+    });
+  return objEntries;
+}
+
+const toggleDetails = (e: MouseEvent) => {
+  e.preventDefault();
   showDetails.value = !showDetails.value;
 };
 
@@ -55,11 +94,22 @@ const toggleDetails = () => {
           <ChevronDownIcon class="size-4 stroke-1.5" :class="{ 'rotate-180': showDetails }" />
         </div>
       </div>
-      <ul class="pr-10" v-if="showDetails">
-        <li v-if="call.toolArgs !== call.toolResult">
-          <div class=""><strong>Input:</strong> {{ call.toolArgs }}</div>
+      <ul class="pr-14 !ml-5" v-if="showDetails">
+        <li class="flex space-x-2">
+          <div class="whitespace-nowrap"><strong>Agent Input:</strong></div>
+          <div>
+            <div v-for="(args, index) in call.toolArgs" :key="index" class="">{{ args }}</div>
+          </div>
         </li>
-        <li><strong>Result:</strong> {{ call.toolResult }}</li>
+
+        <li class="flex space-x-2">
+          <div class="whitespace-nowrap"><strong>Tool Output:</strong></div>
+          <div>
+            <div class="" v-for="(result, index) in call.toolResults" :key="index">
+              {{ result }}
+            </div>
+          </div>
+        </li>
       </ul>
     </div>
   </ChatMessageBoxWrapper>
