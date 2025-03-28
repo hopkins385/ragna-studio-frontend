@@ -50,11 +50,6 @@ async function submitForm(inputText: string) {
     return;
   }
 
-  if (submitLocked.value !== false) {
-    console.warn('Submit is locked');
-    return;
-  }
-
   // Check if chat is set, if not create a new chat on first message
   if (!aiChatStore.hasChat) {
     if (!aiChatSettings.selectedAssistantId) {
@@ -63,8 +58,7 @@ async function submitForm(inputText: string) {
     await aiChatStore.createNewChat({ assistantId: aiChatSettings.selectedAssistantId });
   }
 
-  // Creates a new message and streams the response via chatTextChunks
-  await aiChatStore.sendChatMessage({
+  await aiChatStore.createAndStreamUserChatMessage({
     chatId: aiChatStore.chat?.id,
     type: 'text',
     content: [
@@ -76,6 +70,14 @@ async function submitForm(inputText: string) {
     context: JSON.stringify(editorStore.getJSONContent()),
   });
 }
+
+const onSubmitTextareaForm = async (inputText: string) => {
+  if (submitLocked.value !== false) {
+    console.warn('Submit is locked');
+    return;
+  }
+  await submitForm(inputText);
+};
 
 const createEmptyChat = async () => {
   aiChatStore.resetChat();
@@ -200,9 +202,10 @@ onBeforeUnmount(() => {
       <!-- Chat input -->
       <div class="relative pt-1">
         <ChatInputTextarea
+          textarea-class="pb-10 pr-3"
           :show-abort-button="aiChatStore.isThinking || aiChatStore.isStreaming"
           :submit-locked="submitLocked"
-          @submit-form="value => submitForm(value)"
+          @submit-form="onSubmitTextareaForm"
           @abort="abortRequest"
         />
         <div class="absolute bottom-[0.3rem] z-10 right-8 flex items-center -space-x-3">

@@ -110,7 +110,12 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     }
   }
 
-  async function sendChatMessage(payload: CreateChatMessageStreamPayload) {
+  /**
+   * Creates a new user message and streams the response via joinedMessageTextChunks
+   * @param payload - The payload for the chat message
+   * @returns Promise<void>
+   */
+  async function createAndStreamUserChatMessage(payload: CreateChatMessageStreamPayload) {
     const userChatMessage = await createUserChatMessage({
       chatId: payload.chatId,
       type: payload.type,
@@ -293,7 +298,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     abortChatRequest,
     createNewChat,
     createUserChatMessage,
-    sendChatMessage,
+    createAndStreamUserChatMessage,
     clearChatMessages,
     resetChatById,
     hydrateChatById,

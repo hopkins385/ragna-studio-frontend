@@ -27,9 +27,20 @@ const editorStore = useEditorStore();
         size="icon"
         @click="() => btn.action()"
         :title="btn.tooltip"
+        :class="{
+          active:
+            (editorStore.showAiChat && btn.name === 'aichat') ||
+            (editorStore.showComments && btn.name === 'comments'),
+        }"
       >
         <component :is="btn.icon" class="size-5" />
       </Button>
     </div>
   </div>
 </template>
+
+<style scoped>
+.active {
+  @apply bg-blue-100 text-blue-900 border-blue-200 border;
+}
+</style>

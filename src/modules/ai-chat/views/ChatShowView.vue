@@ -3,6 +3,7 @@ import { useWebSocketStore } from '@/common/stores/websocket.store';
 import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import { useAutoScroll } from '@/composables/useAutoScroll';
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import ChatSettings from '@/modules/ai-chat-settings/components/ChatSettings.vue';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import ChatAssistantDetails from '@/modules/ai-chat/components/ChatAssistantDetails.vue';
@@ -31,6 +32,7 @@ const socket = useWebSocketStore();
 const aiChatStore = useAiChatStore();
 const authStore = useAuthStore();
 const settings = useAiChatSettingsStore();
+const client = useRagnaClient();
 
 const { t } = useI18n();
 
@@ -58,12 +60,19 @@ function getVisionContent(images: ChatImage[]): any {
   });
 }
 
+/**
+ * Clear the vision content of the chat input.
+ * @returns
+ */
 const clearVisionContent = () => {
   inputImages.value = [];
 };
 
-// SUBMIT
-const sendChatMessage = async (payload: { chatId: string; inputText: string }) => {
+/**
+ * Submit the user chat message.
+ * @param payload - The payload containing the chatId and inputText.
+ */
+const submitUserChatMessage = async (payload: { chatId: string; inputText: string }) => {
   unsetErrorAlert();
 
   if (!payload.chatId || !payload.chatId.trim()) {
@@ -71,18 +80,33 @@ const sendChatMessage = async (payload: { chatId: string; inputText: string }) =
     return;
   }
 
-  const userMessageContent = payload.inputText.trim();
+  const userMessageContent = payload.inputText.toString().trim();
 
   if (!userMessageContent || userMessageContent.length < 1) {
     return;
   }
 
   // validate input
-  const result = chatInputTextSchema.safeParse({ input: userMessageContent });
-  if (!result.success) {
-    setErrorAlert(result.error.format()._errors[0]);
+  const validationResult = chatInputTextSchema.safeParse({ input: userMessageContent });
+  if (!validationResult.success) {
+    setErrorAlert(validationResult.error.format()._errors[0]);
     return;
   }
+
+  // optional NER extraction
+  /*
+  try {
+    const nerResult = await client.ner.extractEntities({
+      text: userMessageContent,
+    });
+    const cleanedText = nerResult.maskedText;
+    if (cleanedText) {
+      userMessageContent = cleanedText;
+    }
+  } catch (e) {
+    console.error('Failed to extract entities:', e);
+  }
+    */
 
   const hasImages = inputImages.value.some(image => image.status === 'loaded');
   const msgType = hasImages ? 'image' : 'text';
@@ -91,13 +115,13 @@ const sendChatMessage = async (payload: { chatId: string; inputText: string }) =
   clearVisionContent();
 
   try {
-    await aiChatStore.sendChatMessage({
+    await aiChatStore.createAndStreamUserChatMessage({
       chatId: payload.chatId,
       type: msgType,
       content: [
         {
           type: 'text',
-          text: userMessageContent.toString(),
+          text: userMessageContent,
         },
       ],
       visionContent,
@@ -117,8 +141,15 @@ const scrollToBottom = (options: { instant: boolean } = { instant: false }) => {
   });
 };
 
-const onPresetClick = (prompt: string) => {
-  sendChatMessage({ chatId: activeChatId.value, inputText: prompt });
+const onSubmitTextareaForm = async (value: string) => {
+  if (!value || value.length < 1) {
+    return;
+  }
+  await submitUserChatMessage({ chatId: activeChatId.value, inputText: value });
+};
+
+const onPresetClick = async (prompt: string) => {
+  await submitUserChatMessage({ chatId: activeChatId.value, inputText: prompt });
 };
 
 const abortChatRequest = () => {
@@ -353,7 +384,7 @@ onMounted(() => {});
           <ChatInputTextarea
             :show-abort-button="aiChatStore.isThinking || aiChatStore.isStreaming"
             :submit-locked="aiChatStore.isThinking || aiChatStore.isStreaming"
-            @submit-form="value => sendChatMessage({ chatId: activeChatId, inputText: value })"
+            @submit-form="onSubmitTextareaForm"
             @abort="() => abortChatRequest()"
           />
           <div class="w-10"></div>

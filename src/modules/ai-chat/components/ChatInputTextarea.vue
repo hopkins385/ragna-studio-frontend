@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import { chatInputFormSchema } from '@/modules/ai-chat/schemas/chat-input-text.schema';
 import { SendHorizontalIcon, SquareIcon } from 'lucide-vue-next';
@@ -10,10 +11,11 @@ import { SendHorizontalIcon, SquareIcon } from 'lucide-vue-next';
 interface Props {
   showAbortButton?: boolean;
   submitLocked?: boolean;
+  textareaClass?: string;
 }
 
 // Props
-const { showAbortButton = false, submitLocked = false } = defineProps<Props>();
+const { showAbortButton = false, submitLocked = false, textareaClass } = defineProps<Props>();
 
 // Emits
 const emit = defineEmits<{
@@ -139,7 +141,12 @@ onUnmounted(() => {
               v-model="input"
               :placeholder="$t('chat.input.placeholder')"
               resize="none"
-              class="no-scrollbar resize-none rounded-lg py-3 pr-14 focus:shadow-lg bg-stone-50 shadow-inner"
+              :class="
+                cn(
+                  'no-scrollbar resize-none rounded-lg py-3 pr-14 focus:shadow-lg bg-stone-50 shadow-inner',
+                  textareaClass,
+                )
+              "
               @keydown.enter="onKeyDownEnter"
               @update:model-value="adjustTextareaHeight"
             />

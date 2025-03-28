@@ -37,11 +37,13 @@ export const useEditorStore = defineStore('editor-store', () => {
 
   const _sidebarButtons = ref<SidebarButton[]>([
     {
+      name: 'aichat',
       icon: BotMessageSquare,
       action: toggleShowAiChat,
       tooltip: 'AI Chat',
     },
     {
+      name: 'comments',
       icon: MessageCircle,
       action: toggleShowComments,
       tooltip: 'Comments',
