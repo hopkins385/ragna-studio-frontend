@@ -1,4 +1,4 @@
-function logRagnaLogo() {
+function logRagnaLogo(appVersion?: string) {
   console.log(`
     ██████╗  █████╗  ██████╗ ███╗   ██╗ █████╗
     ██╔══██╗██╔══██╗██╔════╝ ████╗  ██║██╔══██╗
@@ -7,7 +7,7 @@ function logRagnaLogo() {
     ██║  ██║██║  ██║╚██████╔╝██║ ╚████║██║  ██║
     ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝
       `);
-  console.log('RAGNA SPA has been loaded');
+  console.log(`RAGNA SPA ${appVersion ? `version ${appVersion}` : ''}`);
 }
 
 export default logRagnaLogo;

@@ -17,7 +17,7 @@ import ChatThinkingBox from '@/modules/ai-chat/components/ChatThinkingBox.vue';
 import ChatToolCallMessage from '@/modules/ai-chat/components/ChatToolCallMessage.vue';
 import ChatToolCallResult from '@/modules/ai-chat/components/ChatToolCallResult.vue';
 import { useChatImages, type ChatImage } from '@/modules/ai-chat/composables/useChatImages';
-import { useChatTools } from '@/modules/ai-chat/composables/useChatTools';
+import { useChatTools, type ToolInfoData } from '@/modules/ai-chat/composables/useChatTools';
 import { ChatMessageRole } from '@/modules/ai-chat/enums/chat-role.enum';
 import { chatInputTextSchema } from '@/modules/ai-chat/schemas/chat-input-text.schema';
 import { useAiChatStore } from '@/modules/ai-chat/stores';
@@ -133,13 +133,39 @@ const onResetChat = async () => {
   await aiChatStore.resetChatById({ chatId: activeChatId.value });
 };
 
+const onToolStartEvent = (payload: ToolInfoData) => {
+  setActiveTool(payload);
+  /*console.log('Tool start event:', payload);
+  if (!payload.toolInfo) {
+    console.error('Tool info is missing');
+    return;
+  }
+  if (!payload.toolName) {
+    console.error('Tool name is missing');
+    return;
+  }*/
+  /*aiChatStore.appendChatMessage({
+    id: new Date().getTime().toString(),
+    type: 'tool-call',
+    role: 'assistant',
+    content: [
+      {
+        args: payload.toolInfo,
+        type: 'tool-call',
+        toolName: payload.toolName,
+        toolCallId: undefined,
+      },
+    ] as any,
+  });*/
+};
+
 const setupSocketListeners = (chatId: string) => {
-  socket.on(`chat:${chatId}-tool-start-event`, setActiveTool);
+  socket.on(`chat:${chatId}-tool-start-event`, onToolStartEvent);
   socket.on(`chat:${chatId}-tool-end-event`, unsetActiveTool);
 };
 
 const removeSocketListeners = (chatId: string) => {
-  socket.off(`chat:${chatId}-tool-start-event`, setActiveTool);
+  socket.off(`chat:${chatId}-tool-start-event`, onToolStartEvent);
   socket.off(`chat:${chatId}-tool-end-event`, unsetActiveTool);
 };
 

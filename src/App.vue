@@ -7,6 +7,9 @@ import { useLocaleStore } from './common/stores/locale.store';
 // Types
 type LocaleStatus = 'loading' | 'ready' | 'error';
 
+// Const
+const appVersion = import.meta.env.VITE_APP_VERSION;
+
 // Composables
 const localeStore = useLocaleStore();
 const { locale } = useI18n();
@@ -54,7 +57,7 @@ initializeLocale();
 onMounted(() => {
   // Set the document lang attribute
   setDocumentLang(localeStore.currentLocale);
-  logRagnaLogo();
+  logRagnaLogo(appVersion);
 });
 </script>
 
