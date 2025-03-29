@@ -18,6 +18,7 @@ const defaultSettings = {
   maxTokens: [4000],
   submitOnEnter: true,
   includeToolCalls: true,
+  privacyNerActive: false,
   historyGroupBy: 'day',
 };
 
@@ -33,6 +34,7 @@ export const useAiChatSettingsStore = defineStore(
     const maxTokens = ref<MaxTokens>(defaultSettings.maxTokens);
     const submitOnEnter = ref(defaultSettings.submitOnEnter);
     const includeToolCalls = ref(defaultSettings.includeToolCalls);
+    const privacyNerActive = ref(defaultSettings.privacyNerActive);
     const historyGroupBy = ref<GroupByOption>(defaultSettings.historyGroupBy as GroupByOption);
 
     // Getters as computed
@@ -56,6 +58,7 @@ export const useAiChatSettingsStore = defineStore(
     const getMaxTokens = computed(() => maxTokens.value?.[0] ?? defaultSettings.maxTokens[0]);
     const getHistoryGroupBy = computed(() => historyGroupBy.value);
     const getSubmitOnEnter = computed(() => submitOnEnter.value);
+    const getPrivacyNerActive = computed(() => privacyNerActive.value);
     const hideToolCalls = computed(() => !includeToolCalls.value);
 
     // Actions as functions
@@ -103,6 +106,7 @@ export const useAiChatSettingsStore = defineStore(
       submitOnEnter,
       historyGroupBy,
       includeToolCalls,
+      privacyNerActive,
       // Getters
       getThinkLevel,
       getThinkLevelLabel,
@@ -111,6 +115,7 @@ export const useAiChatSettingsStore = defineStore(
       getMaxTokens,
       getHistoryGroupBy,
       getSubmitOnEnter,
+      getPrivacyNerActive,
       hideToolCalls,
       // Actions
       setThinkLevel,
@@ -122,6 +127,6 @@ export const useAiChatSettingsStore = defineStore(
     };
   },
   {
-    persist: false,
+    persist: true,
   },
 );

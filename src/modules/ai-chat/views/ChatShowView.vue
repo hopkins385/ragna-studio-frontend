@@ -14,6 +14,7 @@ import ChatInputTextarea from '@/modules/ai-chat/components/ChatInputTextarea.vu
 import ChatMessageBox from '@/modules/ai-chat/components/ChatMessageBox.vue';
 import ChatMessageChunk from '@/modules/ai-chat/components/ChatMessageChunk.vue';
 import ChatPresets from '@/modules/ai-chat/components/ChatPresets.vue';
+import ChatPrivacy from '@/modules/ai-chat/components/ChatPrivacy.vue';
 import ChatThinkingBox from '@/modules/ai-chat/components/ChatThinkingBox.vue';
 import ChatToolCallMessage from '@/modules/ai-chat/components/ChatToolCallMessage.vue';
 import ChatToolCallResult from '@/modules/ai-chat/components/ChatToolCallResult.vue';
@@ -93,21 +94,6 @@ const submitUserChatMessage = async (payload: { chatId: string; inputText: strin
     return;
   }
 
-  // optional NER extraction
-  /*
-  try {
-    const nerResult = await client.ner.extractEntities({
-      text: userMessageContent,
-    });
-    const cleanedText = nerResult.maskedText;
-    if (cleanedText) {
-      userMessageContent = cleanedText;
-    }
-  } catch (e) {
-    console.error('Failed to extract entities:', e);
-  }
-    */
-
   const hasImages = inputImages.value.some(image => image.status === 'loaded');
   const msgType = hasImages ? 'image' : 'text';
   const visionContent = getVisionContent(inputImages.value);
@@ -141,11 +127,26 @@ const scrollToBottom = (options: { instant: boolean } = { instant: false }) => {
   });
 };
 
-const onSubmitTextareaForm = async (value: string) => {
-  if (!value || value.length < 1) {
+const onSubmitTextareaForm = async (inputString: string) => {
+  let text = inputString.toString().trim();
+  if (!text || text.length < 1) {
     return;
   }
-  await submitUserChatMessage({ chatId: activeChatId.value, inputText: value });
+
+  // optional NER extraction
+  if (settings.privacyNerActive) {
+    const { maskedText, error } = await aiChatStore.maskText(text);
+    if (error) {
+      setErrorAlert(error);
+      return;
+    }
+    if (maskedText) {
+      text = maskedText;
+    }
+  }
+
+  await submitUserChatMessage({ chatId: activeChatId.value, inputText: text });
+  return;
 };
 
 const onPresetClick = async (prompt: string) => {
@@ -201,7 +202,6 @@ const removeSocketListeners = (chatId: string) => {
 };
 
 const setupChat = async (chatId: string) => {
-  // console.log('Setting up chat:', chatId);
   setupChatIsCompleted.value = false;
   activeChatId.value = chatId;
   settings.resetSettings();
@@ -223,8 +223,8 @@ const { isOverDropZone } = useDropZone(chatBoxContainerRef, {
   dataTypes: allowedFileMimeTypes,
 });
 
-// Auto SCROLL
-const { isAutoScrolling } = useAutoScroll(chatMessagesContainerRef);
+// Auto Scroll
+useAutoScroll(chatMessagesContainerRef);
 
 // watch route changes and setup chat onMount
 // onMounted setupChat is not required, because the watcher is immediate
@@ -242,6 +242,15 @@ useHead({
       content: t('chat.subtitle'),
     },
   ],
+});
+
+// Listen for ESC to abort chat request
+useEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (aiChatStore.isThinking || aiChatStore.isStreaming) {
+      abortChatRequest();
+    }
+  }
 });
 
 onBeforeUnmount(() => {
@@ -269,12 +278,16 @@ onMounted(() => {});
     <!-- right quick controls -->
     <div class="absolute right-10 top-5 border-0 z-10">
       <div class="flex justify-center items-center shrink-0 space-x-5">
+        <!-- chat title and assistant details -->
         <ChatAssistantDetails
           :chat-title="aiChatStore.chatTitle"
           :llm-provider="aiChatStore.assistant?.llm.provider"
           :llm-name="aiChatStore.assistant?.llm.displayName"
           :title="aiChatStore.assistant?.title"
         />
+        <!-- chat privacy -->
+        <ChatPrivacy />
+        <!-- chat settings -->
         <ChatSettings :assistant-id="aiChatStore.assistant?.id" @reset-chat="onResetChat" />
       </div>
     </div>

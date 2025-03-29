@@ -541,6 +541,11 @@
     },
     "settings": {
       "title": "Chat Einstellungen",
+      "privacy": {
+        "title": "Datenschutz",
+        "label": "Anonymisierung",
+        "description": "Wenn aktiviert, werden persönliche Daten anonymisiert bevor diese an das KI System übermittelt werden. Dies ist insbesondere hilfreich, um persönliche Daten wie zum Beispiel Adressen, Namen, Emails, Kontodaten und mehr automatisiert unkenntlich zu machen."
+      },
       "tooltip": {
         "settings": "Einstellungen"
       },

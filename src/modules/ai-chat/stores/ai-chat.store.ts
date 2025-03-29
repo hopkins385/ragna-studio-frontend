@@ -9,6 +9,12 @@ import {
   type CreateChatMessageStreamPayload,
 } from 'ragna-sdk';
 
+interface MaskTextResult {
+  maskedText: string | undefined;
+  entities: any[] | undefined;
+  error: string | undefined;
+}
+
 export const useAiChatStore = defineStore('ai-chat-store', () => {
   const client = getRagnaClient();
   const chatSettingsStore = useAiChatSettingsStore();
@@ -232,6 +238,31 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     return hydrateChatById(payload.chatId);
   }
 
+  async function maskText(text: string): Promise<MaskTextResult> {
+    const result: MaskTextResult = {
+      maskedText: undefined,
+      entities: undefined,
+      error: undefined,
+    };
+
+    try {
+      const nerResult = await client.ner.extractEntities({
+        text,
+      });
+      if (!nerResult) {
+        throw new Error('The anonymization service returned an empty response');
+      }
+      result.maskedText = nerResult.maskedText;
+      result.entities = nerResult.entities;
+      result.error = undefined;
+    } catch (e) {
+      console.error('Failed to extract entities:', e);
+      result.error = 'The anonymization service is currently unavailable';
+    }
+
+    return result;
+  }
+
   // Helpers
 
   function resetStreamStates() {
@@ -304,6 +335,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     hydrateChatById,
     hydrateChatMessages,
     hydrateChat,
+    maskText,
     resetChat,
     resetStore,
   };

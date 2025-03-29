@@ -43,6 +43,13 @@ const {
 const submitReleased = computed(() => {
   return !submitLocked && formValues.input && formValues.input.length > 0;
 });
+const textAreaClass = computed(() => {
+  return cn(
+    'no-scrollbar resize-none rounded-lg py-3 pr-14 focus:shadow-lg bg-stone-50 shadow-inner',
+    textareaClass,
+    aiChatSettings.getPrivacyNerActive ? 'focus-visible:ring-blue-600' : '',
+  );
+});
 
 // Functions
 /**
@@ -137,16 +144,11 @@ onUnmounted(() => {
           <FormMessage />
           <FormControl>
             <Textarea
+              resize="none"
               v-bind="componentField"
               v-model="input"
               :placeholder="$t('chat.input.placeholder')"
-              resize="none"
-              :class="
-                cn(
-                  'no-scrollbar resize-none rounded-lg py-3 pr-14 focus:shadow-lg bg-stone-50 shadow-inner',
-                  textareaClass,
-                )
-              "
+              :class="textAreaClass"
               @keydown.enter="onKeyDownEnter"
               @update:model-value="adjustTextareaHeight"
             />
