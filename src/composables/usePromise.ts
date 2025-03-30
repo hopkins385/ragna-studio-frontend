@@ -1,7 +1,6 @@
 // usePromise composable
 
 import type { UnwrapRef } from 'vue';
-import { reactive, toRefs } from 'vue';
 
 interface PromiseError {
   message: string;
@@ -15,36 +14,37 @@ interface State<T> {
   loading: boolean;
 }
 
-export async function usePromise<T>(promise: Promise<T>, options?: { lazy?: boolean }) {
+export async function usePromise<T>(
+  promiseFactory: () => Promise<T>,
+  options?: { lazy?: boolean },
+) {
   const { lazy = false } = options || {};
-  const state = reactive<State<T>>({
-    data: undefined,
-    error: null,
-    loading: false,
-  });
+  const data = shallowRef<T | undefined>(undefined);
+  const loading = shallowRef(false);
+  const error = shallowRef<PromiseError | null>(null);
 
   const execute = async () => {
-    state.loading = true;
-    state.error = null;
-    state.data = undefined;
+    loading.value = true;
+    error.value = null;
+    data.value = undefined;
     try {
-      const result = await promise;
-      state.data = result as unknown as UnwrapRef<T>;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        state.error = {
-          message: error.message,
-          name: error.name,
-          stack: error.stack,
+      const result = await promiseFactory();
+      data.value = result as unknown as UnwrapRef<T>;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        error.value = {
+          message: err.message,
+          name: err.name,
+          stack: err.stack,
         };
       } else {
-        state.error = {
+        error.value = {
           message: String(error),
           name: 'UnknownError',
         };
       }
     } finally {
-      state.loading = false;
+      loading.value = false;
     }
   };
 
@@ -54,7 +54,9 @@ export async function usePromise<T>(promise: Promise<T>, options?: { lazy?: bool
   }
 
   return {
-    ...toRefs(state),
+    data,
+    error,
+    loading: readonly(loading),
     execute,
   };
 }

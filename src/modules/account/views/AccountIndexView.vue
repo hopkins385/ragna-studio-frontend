@@ -11,7 +11,7 @@ import type { AccountData } from '@hopkins385/ragna-sdk';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import AccountEditLoginForm from './AccountEditLoginForm.vue';
 
-const { account } = useRagnaClient();
+const client = useRagnaClient();
 
 const isLoading = ref(false);
 const accountData = ref<AccountData>();
@@ -20,8 +20,7 @@ const org = computed(() => accountData.value?.organisation ?? null);
 const teams = computed(() => accountData.value?.teams ?? null);
 
 const initAccountData = async () => {
-  const { data, error, execute } = await usePromise(account.fetchAccountData(), { lazy: true });
-  await execute();
+  const { data, error } = await usePromise(() => client.account.fetchAccountData());
   if (error.value) {
     console.error('Error fetching account data:', error.value);
     return;
