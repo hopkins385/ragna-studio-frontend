@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Settings } from 'lucide-vue-next';
+import { GlobeIcon, Paintbrush } from 'lucide-vue-next';
 
 const { availableLocales } = useI18n();
 
@@ -29,8 +29,8 @@ const getLocale = (lang: string) => {
     v-model="currentTab"
     :tabs="[
       // { id: 'tab1', icon: Settings, label: $t('settings.label.standards') },
-      { id: 'tab2', icon: Settings, label: $t('settings.label.language') },
-      { id: 'tab3', icon: Settings, label: $t('settings.label.theme') },
+      { id: 'tab2', icon: GlobeIcon, label: $t('settings.label.language') },
+      { id: 'tab3', icon: Paintbrush, label: $t('settings.label.theme') },
     ]"
   >
     <template #tab1> </template>
