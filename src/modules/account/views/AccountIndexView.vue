@@ -13,7 +13,6 @@ import AccountEditLoginForm from './AccountEditLoginForm.vue';
 
 const client = useRagnaClient();
 
-const isLoading = ref(false);
 const accountData = ref<AccountData>();
 
 const org = computed(() => accountData.value?.organisation ?? null);
@@ -29,7 +28,6 @@ const initAccountData = async () => {
 };
 
 const onManageSubscriptionClick = () => {
-  // isLoading.value = true;
   throw new Error('Not implemented');
 };
 
@@ -97,7 +95,7 @@ onBeforeMount(async () => {
       </div>
       <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
         <h2 class="pb-5">Subscription</h2>
-        <ButtonLoading :loading="isLoading" variant="outline" @click="onManageSubscriptionClick">
+        <ButtonLoading :loading="false" variant="outline" @click="onManageSubscriptionClick">
           Manage Subscription
         </ButtonLoading>
       </BoxContainer>
