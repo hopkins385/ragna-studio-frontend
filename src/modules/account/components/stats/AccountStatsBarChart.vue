@@ -13,7 +13,7 @@ import { BarChart, type BarSeriesOption } from 'echarts/charts';
 import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
-import type { TokenUsage } from 'ragna-sdk';
+import type { TokenUsage } from '@hopkins385/ragna-sdk';
 import Chart from 'vue-echarts';
 // import 'echarts';
 

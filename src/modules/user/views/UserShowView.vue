@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { useNotification } from '@/composables/useNotification';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { RouteName } from '@/router/enums/route-names.enum';
-import type { User } from 'ragna-sdk';
+import type { User } from '@hopkins385/ragna-sdk';
 
 const route = useRoute();
 const router = useRouter();

@@ -14,7 +14,7 @@ import { Button } from '@ui/button';
 import ButtonLink from '@ui/button/ButtonLink.vue';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { MessageCircleMoreIcon, MessagesSquareIcon, Trash2Icon } from 'lucide-vue-next';
-import type { ChatsPaginatedResponse } from 'ragna-sdk';
+import type { ChatsPaginatedResponse } from '@hopkins385/ragna-sdk';
 
 // Props
 const props = defineProps<{

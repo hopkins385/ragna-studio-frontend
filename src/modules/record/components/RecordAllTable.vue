@@ -9,7 +9,7 @@ import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/tabl
 import Table from '@ui/table/Table.vue';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { FileIcon, LoaderIcon, Trash2Icon } from 'lucide-vue-next';
-import type { RecordsPaginatedResponse } from 'ragna-sdk';
+import type { RecordsPaginatedResponse } from '@hopkins385/ragna-sdk';
 
 const props = defineProps<{
   collectionId: string | undefined;

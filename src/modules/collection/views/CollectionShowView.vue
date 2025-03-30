@@ -12,7 +12,7 @@ import BoxContainer from '@components/box/BoxContainer.vue';
 import Heading from '@components/heading/Heading.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import bgImgUrl from '@images/bg_databases.png?q=100&format=webp&imagetools';
-import type { Collection } from 'ragna-sdk';
+import type { Collection } from '@hopkins385/ragna-sdk';
 
 const client = useRagnaClient();
 const route = useRoute();

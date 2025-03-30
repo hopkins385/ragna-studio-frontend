@@ -3,7 +3,7 @@
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/select';
-import type { Assistant } from 'ragna-sdk';
+import type { Assistant } from '@hopkins385/ragna-sdk';
 
 // Props
 const { selectLocked = false } = defineProps<{

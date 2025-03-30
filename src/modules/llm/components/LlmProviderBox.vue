@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useProviderIcons } from '@/composables/useProviderIcons';
 import { CheckCircle } from 'lucide-vue-next';
-import type { LargeLangModelInfos } from 'ragna-sdk';
+import type { LargeLangModelInfos } from '@hopkins385/ragna-sdk';
 import CircleFlagEu from '~icons/circle-flags/eu?width=512px&height=512px';
 import CircleFlagUs from '~icons/circle-flags/us?width=512px&height=512px';
 import LlmRatingBar from './LlmRatingBar.vue';

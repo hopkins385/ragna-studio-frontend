@@ -31,7 +31,7 @@ import {
   Stars,
   Workflow,
 } from 'lucide-vue-next';
-import type { Assistant, AssistantTool, Collection } from 'ragna-sdk';
+import type { Assistant, AssistantTool, Collection } from '@hopkins385/ragna-sdk';
 
 interface Props {
   assistant: Assistant;

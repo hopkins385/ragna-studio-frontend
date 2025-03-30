@@ -17,7 +17,7 @@ import TableHead from '@ui/table/TableHead.vue';
 import TableHeader from '@ui/table/TableHeader.vue';
 import TableRow from '@ui/table/TableRow.vue';
 import { StarIcon, Trash2Icon, WorkflowIcon } from 'lucide-vue-next';
-import type { WorkflowsPaginatedResponse } from 'ragna-sdk';
+import type { WorkflowsPaginatedResponse } from '@hopkins385/ragna-sdk';
 
 // Props
 // Emits

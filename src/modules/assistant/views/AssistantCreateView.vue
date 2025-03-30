@@ -8,7 +8,7 @@ import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import useToast from '@composables/useToast';
 import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
-import type { AssistantTool } from 'ragna-sdk';
+import type { AssistantTool } from '@hopkins385/ragna-sdk';
 import { useForm } from 'vee-validate';
 
 const client = useRagnaClient();

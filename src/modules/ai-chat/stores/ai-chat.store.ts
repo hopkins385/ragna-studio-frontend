@@ -1,13 +1,13 @@
 import { getRagnaClient } from '@/common/http/ragna.client';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import { createUUID } from '@/utils/uuid';
-import { defineStore } from 'pinia';
 import {
   RequestAbortError,
   type Chat,
   type ChatMessage,
   type CreateChatMessageStreamPayload,
-} from 'ragna-sdk';
+} from '@hopkins385/ragna-sdk';
+import { defineStore } from 'pinia';
 
 interface MaskTextResult {
   maskedText: string | undefined;

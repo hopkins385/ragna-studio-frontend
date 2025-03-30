@@ -1,5 +1,5 @@
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
-import { RagnaClient } from 'ragna-sdk';
+import { RagnaClient } from '@hopkins385/ragna-sdk';
 
 let ragnaClient: RagnaClient;
 

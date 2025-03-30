@@ -11,7 +11,7 @@ import { RouteName } from '@/router/enums/route-names.enum';
 import { Button } from '@ui/button';
 import { Separator } from '@ui/separator';
 import { CalendarIcon, XIcon } from 'lucide-vue-next';
-import type { ChatsPaginatedResponse, PaginateParams } from 'ragna-sdk';
+import type { ChatsPaginatedResponse, PaginateParams } from '@hopkins385/ragna-sdk';
 
 const client = useRagnaClient();
 const router = useRouter();

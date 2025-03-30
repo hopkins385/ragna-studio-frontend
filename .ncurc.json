@@ -1,4 +1,5 @@
 {
   "upgrade": false,
+  "interactive": true,
   "reject": ["tailwindcss", "typescript", "eslint", "eslint-plugin-vue"]
 }

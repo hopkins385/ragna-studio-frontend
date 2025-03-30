@@ -7,7 +7,7 @@ import AccountProfileForm from '@/modules/account/components/AccountProfileForm.
 import BoxContainer from '@components/box/BoxContainer.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
-import type { AccountData } from 'ragna-sdk';
+import type { AccountData } from '@hopkins385/ragna-sdk';
 import AccountEditLoginForm from './AccountEditLoginForm.vue';
 
 const client = useRagnaClient();

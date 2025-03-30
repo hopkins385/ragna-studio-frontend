@@ -15,7 +15,7 @@ import {
   TriangleAlertIcon,
   WorkflowIcon,
 } from 'lucide-vue-next';
-import type { Workflow } from 'ragna-sdk';
+import type { Workflow } from '@hopkins385/ragna-sdk';
 import StepManagementCard from './step/StepManagementCard.vue';
 import WorkflowCellCard from './WorkflowCellCard.vue';
 import WorkflowExportSidebar from './WorkflowExportSidebar.vue';

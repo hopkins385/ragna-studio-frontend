@@ -6,7 +6,7 @@ import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { toTypedSchema } from '@vee-validate/zod';
-import { ConnectionError, UnauthorizedError } from 'ragna-sdk';
+import { ConnectionError, UnauthorizedError } from '@hopkins385/ragna-sdk';
 import { useForm } from 'vee-validate';
 import { z } from 'zod';
 import LogosGoogleIcon from '~icons/logos/google-icon';

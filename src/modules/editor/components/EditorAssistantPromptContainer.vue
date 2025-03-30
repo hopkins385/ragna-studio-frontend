@@ -7,7 +7,7 @@ import { Button } from '@ui/button';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { Textarea } from '@ui/textarea';
 import { RefreshCcwIcon, SquareIcon, Trash2Icon } from 'lucide-vue-next';
-import { UnknownError } from 'ragna-sdk';
+import { UnknownError } from '@hopkins385/ragna-sdk';
 
 // Props
 // Emits

@@ -4,7 +4,7 @@ import { RouteName } from '@/router/enums/route-names.enum';
 import useToast from '@composables/useToast';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { Dialog, DialogContent } from '@ui/dialog';
-import type { CreateAssistantFromTemplatePayload } from 'ragna-sdk';
+import type { CreateAssistantFromTemplatePayload } from '@hopkins385/ragna-sdk';
 
 interface Props {
   templateId: string;

@@ -5,7 +5,7 @@ import { useRagnaClient } from '@/composables/useRagnaClient';
 import AssistantEditForm from '@/modules/assistant/components/AssistantEditForm.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
-import type { Assistant, AssistantTool, Collection } from 'ragna-sdk';
+import type { Assistant, AssistantTool, Collection } from '@hopkins385/ragna-sdk';
 
 const assistant = ref<Assistant | null>(null);
 const assistantTools = ref<AssistantTool[]>([]);

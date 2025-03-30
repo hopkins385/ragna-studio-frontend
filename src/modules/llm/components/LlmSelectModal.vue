@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRagnaClient } from '@/composables/useRagnaClient';
-import type { LargeLangModel } from 'ragna-sdk';
+import type { LargeLangModel } from '@hopkins385/ragna-sdk';
 import LlmInfoBox from './LlmInfoBox.vue';
 
 const props = defineProps<{

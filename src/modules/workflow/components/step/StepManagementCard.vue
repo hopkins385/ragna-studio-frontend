@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import AssistantSelectForm from '@/modules/assistant/components/AssistantSelectForm.vue';
 import { Trash2Icon } from 'lucide-vue-next';
-import type { AssistantsPaginatedResponse } from 'ragna-sdk';
+import type { AssistantsPaginatedResponse } from '@hopkins385/ragna-sdk';
 
 const props = defineProps<{
   workflowId: string;

@@ -3,7 +3,7 @@ import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useAiChatStore } from '@/modules/ai-chat/stores';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { Star } from 'lucide-vue-next';
-import type { UserFavorite } from 'ragna-sdk';
+import type { UserFavorite } from '@hopkins385/ragna-sdk';
 
 /*
 Example of the response from the fetchAllFavorites method:

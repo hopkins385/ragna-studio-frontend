@@ -14,7 +14,7 @@ import {
 } from '@ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { History, SettingsIcon } from 'lucide-vue-next';
-import type { ChatsPaginatedResponse, PaginateParams } from 'ragna-sdk';
+import type { ChatsPaginatedResponse, PaginateParams } from '@hopkins385/ragna-sdk';
 
 const groupByOptions = ['day', 'month', 'year'] as const;
 type GroupByOption = (typeof groupByOptions)[number];

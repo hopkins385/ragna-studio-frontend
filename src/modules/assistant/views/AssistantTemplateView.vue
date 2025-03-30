@@ -6,7 +6,7 @@ import Heading from '@components/heading/Heading.vue';
 import HeadingTitle from '@components/heading/HeadingTitle.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import bgImgUrl from '@images/bg_template_2.png?q=100&format=webp&imagetools';
-import type { AssistantTemplateCategory, CategoryWithTemplates } from 'ragna-sdk';
+import type { AssistantTemplateCategory, CategoryWithTemplates } from '@hopkins385/ragna-sdk';
 
 const client = useRagnaClient();
 const { previewDialog, getBgColorClass, openPreviewDialog } = useTemplatePreview();

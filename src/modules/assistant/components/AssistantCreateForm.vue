@@ -31,7 +31,7 @@ import {
   Stars,
   Workflow,
 } from 'lucide-vue-next';
-import type { AssistantTool } from 'ragna-sdk';
+import type { AssistantTool } from '@hopkins385/ragna-sdk';
 
 // Props
 // Emits

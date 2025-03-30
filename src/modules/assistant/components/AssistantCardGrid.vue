@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRagnaClient } from '@/composables/useRagnaClient';
-import type { AssistantsPaginatedResponse } from 'ragna-sdk';
+import type { AssistantsPaginatedResponse } from '@hopkins385/ragna-sdk';
 import AssistantCard from './AssistantCard.vue';
 import AssistantEmptyList from './AssistantEmptyList.vue';
 

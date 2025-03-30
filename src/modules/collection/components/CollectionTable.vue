@@ -13,7 +13,7 @@ import ButtonLink from '@ui/button/ButtonLink.vue';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { DatabaseIcon, FolderClosedIcon, Trash2Icon } from 'lucide-vue-next';
-import type { CollectionsPaginatedResponse } from 'ragna-sdk';
+import type { CollectionsPaginatedResponse } from '@hopkins385/ragna-sdk';
 
 // Props
 // Emits

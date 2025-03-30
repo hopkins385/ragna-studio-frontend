@@ -13,7 +13,7 @@ import { useNotification } from '@/composables/useNotification';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import ButtonLink from '@ui/button/ButtonLink.vue';
 import { Settings, Trash2, User2 } from 'lucide-vue-next';
-import type { User, UsersPaginated } from 'ragna-sdk';
+import type { User, UsersPaginated } from '@hopkins385/ragna-sdk';
 
 // Composables
 const client = useRagnaClient();

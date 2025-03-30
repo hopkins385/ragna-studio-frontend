@@ -3,7 +3,7 @@ import { useRagnaClient } from '@/composables/useRagnaClient';
 import TemplatePreviewDialog from '@/modules/assistant/components/TemplatePreviewDialog.vue';
 import { useTemplatePreview } from '@/modules/assistant/composables/useTemplatePreview';
 import { BotIcon } from 'lucide-vue-next';
-import type { AssistantTemplate } from 'ragna-sdk';
+import type { AssistantTemplate } from '@hopkins385/ragna-sdk';
 
 const client = useRagnaClient();
 const { previewDialog, openPreviewDialog } = useTemplatePreview();

@@ -9,7 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@components/ui/form';
-import type { AssistantTool } from 'ragna-sdk';
+import type { AssistantTool } from '@hopkins385/ragna-sdk';
 
 const client = useRagnaClient();
 

@@ -3,7 +3,11 @@ import ChatCopyButton from '@/modules/ai-chat/components/ChatCopyButton.vue';
 import { ChatMessageRole } from '@/modules/ai-chat/enums/chat-role.enum';
 import { markdownService } from '@/modules/markdown/services/markdown.service';
 import 'highlight.js/styles/stackoverflow-light.min.css';
-import type { ChatMessageContent, ChatMessageType, ChatMessageVisionContent } from 'ragna-sdk';
+import type {
+  ChatMessageContent,
+  ChatMessageType,
+  ChatMessageVisionContent,
+} from '@hopkins385/ragna-sdk';
 import { render } from 'vue';
 import ChatMessageBoxWrapper from './ChatMessageBoxWrapper.vue';
 
