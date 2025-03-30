@@ -1,26 +1,32 @@
 <script setup lang="ts">
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import { usePromise } from '@/composables/usePromise';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import AccountDeleteDialog from '@/modules/account/components/AccountDeleteDialog.vue';
 import AccountProfileForm from '@/modules/account/components/AccountProfileForm.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import type { AccountData } from '@hopkins385/ragna-sdk';
+import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import AccountEditLoginForm from './AccountEditLoginForm.vue';
 
-const client = useRagnaClient();
+const { account } = useRagnaClient();
 
 const isLoading = ref(false);
-const account = ref<AccountData | null>(null);
+const accountData = ref<AccountData>();
 
-const org = computed(() => account.value?.organisation ?? null);
-const teams = computed(() => account.value?.teams ?? null);
+const org = computed(() => accountData.value?.organisation ?? null);
+const teams = computed(() => accountData.value?.teams ?? null);
 
 const initAccountData = async () => {
-  const data = await client.account.fetchAccountData();
-  account.value = data;
+  const { data, error, execute } = await usePromise(account.fetchAccountData(), { lazy: true });
+  await execute();
+  if (error.value) {
+    console.error('Error fetching account data:', error.value);
+    return;
+  }
+  accountData.value = data.value;
 };
 
 const onManageSubscriptionClick = () => {
@@ -32,8 +38,8 @@ const onRefresh = () => {
   initAccountData();
 };
 
-onBeforeMount(() => {
-  initAccountData();
+onBeforeMount(async () => {
+  await initAccountData();
 });
 </script>
 
@@ -50,10 +56,10 @@ onBeforeMount(() => {
         <BoxContainer class="col-span-3 border border-stone-100 bg-stone-50">
           <AccountProfileForm
             :user="{
-              id: account?.id ?? '',
-              name: account?.name ?? '',
-              firstName: account?.firstName ?? '',
-              lastName: account?.lastName ?? '',
+              id: accountData?.id ?? '',
+              name: accountData?.name ?? '',
+              firstName: accountData?.firstName ?? '',
+              lastName: accountData?.lastName ?? '',
             }"
             @refresh="onRefresh"
           />
@@ -61,21 +67,21 @@ onBeforeMount(() => {
         <div class="col-span-1 grid grid-cols-1 space-y-6 text-sm">
           <BoxContainer class="border border-stone-100 bg-stone-50">
             <h2 class="pb-5 font-semibold">Account Security</h2>
-            Email Verified: {{ account?.hasEmailVerified ? 'Yes' : 'No' }}
+            Email Verified: {{ accountData?.hasEmailVerified ? 'Yes' : 'No' }}
           </BoxContainer>
           <BoxContainer class="border border-stone-100 bg-stone-50">
             <h2 class="pb-2 font-semibold">Plan</h2>
             <p>Preview</p>
             <h2 class="mt-2 py-2 font-semibold">Credits</h2>
-            <p>{{ account?.totalCredits }}</p>
+            <p>{{ accountData?.totalCredits }}</p>
           </BoxContainer>
         </div>
       </div>
       <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
         <AccountEditLoginForm
           :user="{
-            id: account?.id ?? '',
-            email: account?.email ?? '',
+            id: accountData?.id ?? '',
+            email: accountData?.email ?? '',
           }"
         />
       </BoxContainer>
@@ -83,7 +89,7 @@ onBeforeMount(() => {
         <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
           <h2 class="pb-5">Organisation</h2>
           <p class="w-fit text-sm">{{ org?.name }}</p>
-          <p class="mt-4 w-fit text-sm opacity-50">ID: org_{{ account?.organisationId }}</p>
+          <p class="mt-4 w-fit text-sm opacity-50">ID: org_{{ accountData?.organisationId }}</p>
         </BoxContainer>
         <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
           <h2 class="pb-5">Team</h2>
@@ -108,7 +114,7 @@ onBeforeMount(() => {
     -->
       <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
         <h2 class="pb-5">Danger Zone</h2>
-        <AccountDeleteDialog :user-id="account?.id ?? '-1'" />
+        <AccountDeleteDialog :user-id="accountData?.id ?? '-1'" />
       </BoxContainer>
     </div>
   </SectionContainer>
