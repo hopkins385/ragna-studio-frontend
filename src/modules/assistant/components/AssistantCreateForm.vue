@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// Imports
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
@@ -10,6 +9,7 @@ import { RouteName } from '@/router/enums/route-names.enum';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import TabSidebar from '@components/tab/TabSidebar.vue';
 import useToast from '@composables/useToast';
+import type { AssistantTool } from '@hopkins385/ragna-sdk';
 import ButtonLink from '@ui/button/ButtonLink.vue';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import {
@@ -29,9 +29,7 @@ import {
   Settings,
   ShieldCheck,
   Stars,
-  Workflow,
 } from 'lucide-vue-next';
-import type { AssistantTool } from '@hopkins385/ragna-sdk';
 
 // Props
 // Emits
@@ -95,7 +93,7 @@ const onSubmit = handleSubmit(async values => {
     });
     resetForm();
   } catch (error) {
-    return setErrorAlert(error);
+    setErrorAlert(error);
   } finally {
     isLoading.value = false;
   }
@@ -118,8 +116,7 @@ const siderBarTabs = [
   { id: 'tab3', icon: Stars, label: t('assistant.genai.label') },
   { id: 'tab5', icon: BriefcaseBusiness, label: t('assistant.tools.label') },
   { id: 'tab4', icon: Book, label: t('assistant.knowledge.label') },
-  { id: 'tab6', icon: Workflow, label: t('assistant.workflow.label') },
-  { id: 'tab7', icon: ShieldCheck, label: t('assistant.privacy.label') },
+  { id: 'tab6', icon: ShieldCheck, label: t('assistant.privacy.label') },
 ];
 
 onMounted(() => {
@@ -278,12 +275,6 @@ onBeforeUnmount(() => {
     </template>
     <!-- TAB 6 -->
     <template #tab6>
-      <div class="text-sm border rounded-lg p-4 mt-4">
-        {{ $t('assistant.alert.create_first') }}
-      </div>
-    </template>
-    <!-- TAB 7 -->
-    <template #tab7>
       <div class="text-sm border rounded-lg p-4 mt-4">
         {{ $t('assistant.alert.create_first') }}
       </div>

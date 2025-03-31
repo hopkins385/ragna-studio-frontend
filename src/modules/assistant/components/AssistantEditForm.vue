@@ -9,6 +9,7 @@ import PromptWizardDialog from '@/modules/prompt-wizard/components/PromptWizardD
 import { RouteName } from '@/router/enums/route-names.enum';
 import TabSidebar from '@components/tab/TabSidebar.vue';
 import useToast from '@composables/useToast';
+import type { Assistant, AssistantTool, Collection } from '@hopkins385/ragna-sdk';
 import { Button } from '@ui/button';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import Checkbox from '@ui/checkbox/Checkbox.vue';
@@ -29,9 +30,7 @@ import {
   Settings,
   ShieldCheck,
   Stars,
-  Workflow,
 } from 'lucide-vue-next';
-import type { Assistant, AssistantTool, Collection } from '@hopkins385/ragna-sdk';
 
 interface Props {
   assistant: Assistant;
@@ -176,8 +175,7 @@ const siderBarTabs = [
   { id: 'tab2', icon: Stars, label: t('assistant.genai.label') },
   { id: 'tab5', icon: BriefcaseBusiness, label: t('assistant.tools.label') },
   { id: 'tab4', icon: Book, label: t('assistant.knowledge.label') },
-  { id: 'tab6', icon: Workflow, label: t('assistant.workflow.label') },
-  { id: 'tab7', icon: ShieldCheck, label: t('assistant.privacy.label') },
+  { id: 'tab6', icon: ShieldCheck, label: t('assistant.privacy.label') },
 ];
 
 const supportedProviders = [
@@ -366,23 +364,8 @@ onBeforeUnmount(() => {
         </FormItem>
       </FormField>
     </template>
-    <!-- TAB 6 -->
-    <template #tab6>
-      <FormField name="temperature">
-        <FormItem>
-          <FormLabel>{{ $t('assistant.workflow.label') }}</FormLabel>
-          <FormDescription>
-            {{ $t('assistant.workflow.description') }}
-          </FormDescription>
-          <FormControl>
-            <div class="text-sm border px-5 py-3 w-fit">Under Construction</div>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-    </template>
     <!-- TAB 7 -->
-    <template #tab7>
+    <template #tab6>
       <FormField name="temperature">
         <FormItem>
           <FormLabel>{{ $t('assistant.privacy.label') }}</FormLabel>
