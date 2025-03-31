@@ -27,7 +27,7 @@ import { SettingsIcon, Trash2Icon } from 'lucide-vue-next';
 
 // Refs
 const page = ref(1);
-const usersData = ref<UsersPaginated>();
+const usersData = shallowRef<UsersPaginated>();
 
 // Composables
 const client = useRagnaClient();
