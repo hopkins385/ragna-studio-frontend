@@ -39,17 +39,15 @@ import mediaModule from '@/modules/media';
 import notFoundModule from '@/modules/not-found';
 import onboardingModule from '@/modules/onboarding';
 import textToImageModule from '@/modules/text-to-image';
-import userModule from '@/modules/user';
 import workflowModule from '@/modules/workflow';
 import ragnaClientPlugin from '@/plugins/ragna-client.plugin';
 
 registerModules({
   app: appBaseModule,
+  account: accountModule,
   admin: adminModule,
   auth: authModule,
-  user: userModule,
   home: homeModule,
-  account: accountModule,
   aiChat: aiChatModule,
   assistant: assistantModule,
   collection: collectionModule,

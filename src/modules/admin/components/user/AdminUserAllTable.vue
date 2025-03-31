@@ -4,10 +4,13 @@ import ConfirmDialog from '@/components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import PaginateControls from '@/components/pagniate/PaginateControls.vue';
 import { Button } from '@/components/ui/button';
+import ButtonLink from '@/components/ui/button/ButtonLink.vue';
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { useErrorAlert } from '@/composables/useErrorAlert';
+import { useRagnaClient } from '@/composables/useRagnaClient';
 import useToast from '@/composables/useToast';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
+import type { UsersPaginated } from '@hopkins385/ragna-sdk';
 import {
   Table,
   TableBody,
@@ -24,10 +27,10 @@ import { SettingsIcon, Trash2Icon } from 'lucide-vue-next';
 
 // Refs
 const page = ref(1);
-const data = ref<Record<string, any> | null>(null);
+const usersData = ref<UsersPaginated>();
 
 // Composables
-const router = useRouter();
+const client = useRagnaClient();
 const toast = useToast();
 const auth = useAuthStore();
 const { t } = useI18n();
@@ -35,11 +38,11 @@ const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
 // Computed
-const users = computed(() => data.value?.users || []);
+const users = computed(() => usersData.value?.users || []);
 const meta = computed(() => {
   return {
-    totalCount: data.value?.meta?.totalCount || 0,
-    currentPage: data.value?.meta?.currentPage || 0,
+    totalCount: usersData.value?.meta?.totalCount || 0,
+    currentPage: usersData.value?.meta?.currentPage || 0,
   };
 });
 
@@ -47,7 +50,8 @@ const meta = computed(() => {
 const initAllUsers = async (params: { page: number }) => {
   unsetErrorAlert();
   try {
-    //TODO: data.value = await fetchAllUsers(params);
+    // TODO: Add pagination params
+    usersData.value = await client.user.fetchAllUsers();
   } catch (error: unknown) {
     return setErrorAlert(error);
   }
@@ -59,10 +63,11 @@ const handleDelete = async (userId: string) => {
   }
 
   try {
-    //TODO: await deleteUser({ userId });
+    await client.user.deleteUser(userId);
     await initAllUsers({ page: page.value });
     toast.success({ description: t('admin.user.delete.success') });
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error(error);
     return setErrorAlert(error);
   }
 };
@@ -118,9 +123,9 @@ await initAllUsers({ page: page.value });
           <TableCell class="whitespace-nowrap"> ... </TableCell>
           <TableCell class="whitespace-nowrap"> ... </TableCell>
           <TableCell class="flex justify-end space-x-2 whitespace-nowrap text-right">
-            <LinkButton :to="`/admin/users/${user.id}/edit`" variant="outline" size="icon">
+            <ButtonLink :to="`/admin/user/${user.id}/edit`" variant="outline" size="icon">
               <SettingsIcon class="size-4 stroke-1.5 text-primary" />
-            </LinkButton>
+            </ButtonLink>
             <Button variant="outline" size="icon" @click="onDelete(user.id)">
               <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
             </Button>
