@@ -10,10 +10,10 @@ import {
   maxFileSize,
 } from '@/modules/workflow/schemas/create-workflow.schema';
 import { RouteName } from '@/router/enums/route-names.enum';
+import { getFileSizeForHumans } from '@/utils/file-size.util';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import { Textarea } from '@components/ui/textarea';
-import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
 import bgImgUrl from '@images/bg_workflow.png?q=100&format=webp&imagetools';
 import ButtonLink from '@ui/button/ButtonLink.vue';
@@ -101,7 +101,6 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
   }
 });
 
-const { getFileSizeForHumans } = useForHumans();
 const acceptMimeTypes = allowedMimeTypes.join(',');
 </script>
 

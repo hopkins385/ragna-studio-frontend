@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import useForHumans from '@/composables/useForHumans';
+import { useDateTime } from '@/composables/useDateTime';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { RouteName } from '@/router/enums/route-names.enum';
+import type { ChatsPaginatedResponse, PaginateParams } from '@hopkins385/ragna-sdk';
 import { Button } from '@ui/button';
 import { Separator } from '@ui/separator';
 import {
@@ -14,7 +15,6 @@ import {
 } from '@ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { History, SettingsIcon } from 'lucide-vue-next';
-import type { ChatsPaginatedResponse, PaginateParams } from '@hopkins385/ragna-sdk';
 
 const groupByOptions = ['day', 'month', 'year'] as const;
 type GroupByOption = (typeof groupByOptions)[number];
@@ -42,7 +42,7 @@ const openSheet = () => {
   sheetIsOpen.value = true;
 };
 
-const { getDateForHumans } = useForHumans();
+const { getDateForHumans } = useDateTime();
 
 const groupedChats = computed(() => {
   const grouped = chats.value.reduce(

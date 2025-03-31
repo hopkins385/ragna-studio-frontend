@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import TableSkeleton from '@/components/table/TableSkeleton.vue';
-import useForHumans from '@/composables/useForHumans';
+import { useDateTime } from '@/composables/useDateTime';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import useGoogleDriveIcons from '@/modules/google-drive/composables/useGoogleDriveIcons';
+import { getFileSizeForHumans } from '@/utils/file-size.util';
 import { Button } from '@ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
@@ -128,7 +129,7 @@ const onSubmitSearch = async () => {
 };
 
 const { fileIcon } = useGoogleDriveIcons();
-const { getDateTimeForHumans, getFileSizeForHumans } = useForHumans();
+const { getDateTimeForHumans } = useDateTime();
 
 onMounted(init);
 </script>

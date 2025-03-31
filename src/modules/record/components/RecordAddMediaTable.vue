@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
+import { getFileSizeForHumans } from '@/utils/file-size.util';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
-import useForHumans from '@composables/useForHumans';
 import useToast from '@composables/useToast';
 import { Button } from '@ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
@@ -25,8 +25,6 @@ const props = defineProps<{
 const emits = defineEmits<{
   success: [void];
 }>();
-
-const { getFileSizeForHumans } = useForHumans();
 
 const client = useRagnaClient();
 const toast = useToast();

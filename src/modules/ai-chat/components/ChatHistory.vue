@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// Imports
 import { useConfirmDialog } from '@/composables/useConfirmDialog';
+import { useDateTime } from '@/composables/useDateTime';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useProviderIcons } from '@/composables/useProviderIcons';
 import { useRagnaClient } from '@/composables/useRagnaClient';
@@ -9,7 +9,6 @@ import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
-import useForHumans from '@composables/useForHumans';
 import type { ChatsPaginatedResponse } from '@hopkins385/ragna-sdk';
 import { Button } from '@ui/button';
 import ButtonLink from '@ui/button/ButtonLink.vue';
@@ -35,7 +34,7 @@ const data = shallowRef<ChatsPaginatedResponse | null>(null);
 const client = useRagnaClient();
 const toast = useToast();
 const { t } = useI18n();
-const { getDateTimeForHumans } = useForHumans();
+const { getDateTimeForHumans } = useDateTime();
 const { getProviderIcon } = useProviderIcons();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();

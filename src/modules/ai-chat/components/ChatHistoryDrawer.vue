@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useDrawerStore } from '@/common/stores/drawer.store';
-import useForHumans from '@/composables/useForHumans';
+import { useDateTime } from '@/composables/useDateTime';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import {
   groupByOptions,
@@ -8,25 +8,24 @@ import {
 } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import type { GroupByOption } from '@/modules/ai-chat-settings/types/ai-chat-settings.type';
 import { RouteName } from '@/router/enums/route-names.enum';
+import type { ChatsPaginatedResponse, PaginateParams } from '@hopkins385/ragna-sdk';
 import { Button } from '@ui/button';
 import { Separator } from '@ui/separator';
 import { CalendarIcon, XIcon } from 'lucide-vue-next';
-import type { ChatsPaginatedResponse, PaginateParams } from '@hopkins385/ragna-sdk';
 
 const client = useRagnaClient();
 const router = useRouter();
 const drawer = useDrawerStore();
 const chatSettings = useAiChatSettingsStore();
+const { getDateForHumans } = useDateTime();
 
-const data = ref<ChatsPaginatedResponse | null>(null);
+const data = shallowRef<ChatsPaginatedResponse | null>(null);
 const selectedGroupBy = ref<GroupByOption>(chatSettings.getHistoryGroupBy);
 const chats = computed(() => data.value?.chats || []);
 
 const initChatHistory = async ({ page, limit }: PaginateParams) => {
   data.value = await client.aiChat.fetchAllChatsPaginated({ page, limit });
 };
-
-const { getDateForHumans } = useForHumans();
 
 const groupedChats = computed(() => {
   const grouped = chats.value.reduce(
@@ -82,7 +81,7 @@ watch(
   { immediate: true },
 );
 
-onMounted(() => {
+onBeforeMount(() => {
   initChatHistory({ page: 1, limit: 60 });
 });
 

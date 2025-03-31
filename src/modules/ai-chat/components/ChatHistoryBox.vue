@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { useDateTime } from '@/composables/useDateTime';
 import { RouteName } from '@/router/enums/route-names.enum';
-import useForHumans from '@composables/useForHumans';
 
 interface ChatHistoryProps {
   id: string;
@@ -16,8 +16,7 @@ interface ChatHistoryProps {
 const props = defineProps<ChatHistoryProps>();
 
 const router = useRouter();
-
-const { getDateTimeForHumans } = useForHumans();
+const { getDateTimeForHumans } = useDateTime();
 
 const onClick = () => {
   router.push({ name: RouteName.CHAT_SHOW, params: { id: props.id } });
@@ -25,15 +24,9 @@ const onClick = () => {
 </script>
 
 <template>
-  <div
-    class="flex h-16 cursor-pointer border-0 text-xs text-muted-foreground"
-    @click="onClick"
-  >
+  <div class="flex h-16 cursor-pointer border-0 text-xs text-muted-foreground" @click="onClick">
     <div class="size-8 shrink-0 rounded-full bg-slate-100"></div>
-    <div
-      class="flex w-full justify-between pl-3 pt-1"
-      :class="{ 'font-semibold': active }"
-    >
+    <div class="flex w-full justify-between pl-3 pt-1" :class="{ 'font-semibold': active }">
       <div class="flex flex-col">
         <span class="">{{ title }}</span>
         <span class="truncate pt-1" style="max-width: 7rem">
