@@ -27,7 +27,7 @@ const emit = defineEmits<{
 }>();
 
 // Refs
-const data = ref();
+const data = shallowRef();
 const assistantFavorites = ref<any>([]); // TODO: type
 const page = defineModel<number>('page');
 

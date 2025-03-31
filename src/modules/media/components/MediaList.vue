@@ -27,7 +27,7 @@ const emits = defineEmits<{
 }>();
 
 // Refs
-const mediaData = ref<any | null>(null);
+const mediaData = shallowRef<any | null>(null);
 const showAddToCollectionDialog = ref(false);
 
 // Composables
@@ -40,17 +40,6 @@ const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
 // Computed
-
-// Functions
-const initMedia = async () => {
-  if (!authStore.user?.id) return;
-  const response = await client.media.fetchAllMediaFor(
-    { id: authStore.user.id, type: 'user' },
-    { page: props.page },
-  );
-  mediaData.value = response;
-};
-
 const medias = computed(() => mediaData.value?.medias || []);
 const mediasLength = computed(() => medias.value.length);
 const meta = computed(() => {
@@ -59,6 +48,16 @@ const meta = computed(() => {
     currentPage: mediaData.value?.meta?.currentPage || 0,
   };
 });
+
+// Functions
+const initMedia = async (payload: { page: number }) => {
+  if (!authStore.user?.id) return;
+  const response = await client.media.fetchAllMediaFor(
+    { id: authStore.user.id, type: 'user' },
+    { page: payload.page },
+  );
+  mediaData.value = response;
+};
 
 function onEdit(id: string) {
   //
@@ -71,7 +70,7 @@ function onPlusClick(id: string) {
 const handleDelete = async (mediaId: string) => {
   try {
     await client.media.deleteMedia(mediaId);
-    await initMedia();
+    await initMedia({ page: props.page });
     toast.success({ description: t('media.delete.success') });
   } catch (error) {
     return setErrorAlert(error);
@@ -91,26 +90,14 @@ watch(
   () => props.refresh,
   async value => {
     if (value) {
-      await initMedia();
+      await initMedia({ page: props.page });
       emits('update:refresh', false);
     }
   },
 );
 
-watch(
-  () => props.page,
-  async value => {
-    await initMedia();
-  },
-);
-
-// async function setPage(value: number) {
-//   emits('update:page', value);
-//   // await initMedia();
-// }
-
-onMounted(() => {
-  initMedia();
+watchEffect(async () => {
+  await initMedia({ page: props.page });
 });
 </script>
 

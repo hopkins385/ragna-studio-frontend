@@ -10,11 +10,11 @@ import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
 import useForHumans from '@composables/useForHumans';
+import type { ChatsPaginatedResponse } from '@hopkins385/ragna-sdk';
 import { Button } from '@ui/button';
 import ButtonLink from '@ui/button/ButtonLink.vue';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { MessageCircleMoreIcon, MessagesSquareIcon, Trash2Icon } from 'lucide-vue-next';
-import type { ChatsPaginatedResponse } from '@hopkins385/ragna-sdk';
 
 // Props
 const props = defineProps<{
@@ -29,7 +29,7 @@ const emit = defineEmits<{
 }>();
 
 // Refs
-const data = ref<ChatsPaginatedResponse | null>(null);
+const data = shallowRef<ChatsPaginatedResponse | null>(null);
 
 // Composables
 const client = useRagnaClient();
@@ -53,7 +53,6 @@ const meta = computed(() => {
 
 // Functions
 const initChatHistory = async ({ page }: { page: number }) => {
-  console.log('initChatHistory', client);
   try {
     data.value = await client.aiChat.fetchAllChatsPaginated({ page });
   } catch (error) {

@@ -8,12 +8,12 @@ import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
 import useToast from '@composables/useToast';
+import type { Collection, CollectionsPaginatedResponse } from '@hopkins385/ragna-sdk';
 import { Button } from '@ui/button';
 import ButtonLink from '@ui/button/ButtonLink.vue';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { DatabaseIcon, FolderClosedIcon, Trash2Icon } from 'lucide-vue-next';
-import type { CollectionsPaginatedResponse } from '@hopkins385/ragna-sdk';
 
 // Props
 // Emits
@@ -25,7 +25,7 @@ const toast = useToast();
 
 const page = ref(route.query.page ? parseInt(route.query.page.toString(), 10) : 1);
 const limit = ref(route.query.limit ? parseInt(route.query.limit.toString(), 10) : 10);
-const allCollections = ref<CollectionsPaginatedResponse | null>(null);
+const allCollections = shallowRef<CollectionsPaginatedResponse | null>(null);
 
 // Composables
 const client = useRagnaClient();
@@ -34,7 +34,7 @@ const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
 // Computed
-const collections = computed(() => allCollections.value?.collections || []);
+const collections = computed<Collection[]>(() => allCollections.value?.collections || []);
 const collectionsLength = computed(() => collections.value.length);
 const meta = computed(() => {
   return {

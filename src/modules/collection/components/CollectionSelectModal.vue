@@ -23,7 +23,7 @@ const emits = defineEmits<{
 }>();
 
 const open = ref(false);
-const collections = ref<any[]>([]);
+const collections = shallowRef<any[]>([]);
 
 const client = useRagnaClient();
 

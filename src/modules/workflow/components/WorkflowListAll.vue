@@ -8,6 +8,7 @@ import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@components/error/ErrorAlert.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
+import type { WorkflowsPaginatedResponse } from '@hopkins385/ragna-sdk';
 import Button from '@ui/button/Button.vue';
 import ButtonLink from '@ui/button/ButtonLink.vue';
 import Table from '@ui/table/Table.vue';
@@ -17,15 +18,14 @@ import TableHead from '@ui/table/TableHead.vue';
 import TableHeader from '@ui/table/TableHeader.vue';
 import TableRow from '@ui/table/TableRow.vue';
 import { StarIcon, Trash2Icon, WorkflowIcon } from 'lucide-vue-next';
-import type { WorkflowsPaginatedResponse } from '@hopkins385/ragna-sdk';
 
 // Props
 // Emits
 
 // Refs
 const page = ref(1);
-const data = ref<WorkflowsPaginatedResponse | null>(null);
 const workflowFavorites = ref<any>([]); // TODO: type
+const data = shallowRef<WorkflowsPaginatedResponse | null>(null);
 
 // Composables
 const client = useRagnaClient();

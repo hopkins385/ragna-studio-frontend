@@ -4,12 +4,12 @@ import useToast from '@/composables/useToast';
 import ConfirmDialog from '@components/confirm/ConfirmDialog.vue';
 import PaginateControls from '@components/pagniate/PaginateControls.vue';
 import TableMetaCaption from '@components/table/TableMetaCaption.vue';
+import type { Record, RecordsPaginatedResponse } from '@hopkins385/ragna-sdk';
 import { Button } from '@ui/button';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@ui/table';
 import Table from '@ui/table/Table.vue';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { FileIcon, LoaderIcon, Trash2Icon } from 'lucide-vue-next';
-import type { RecordsPaginatedResponse } from '@hopkins385/ragna-sdk';
 
 const props = defineProps<{
   collectionId: string | undefined;
@@ -20,7 +20,7 @@ const client = useRagnaClient();
 const toast = useToast();
 const page = ref(1);
 
-const data = ref<RecordsPaginatedResponse | null>(null);
+const data = shallowRef<RecordsPaginatedResponse | null>(null);
 
 const initRecords = async () => {
   if (!props.collectionId) return;
@@ -30,7 +30,7 @@ const initRecords = async () => {
   });
 };
 
-const records = computed(() => {
+const records = computed<Record[]>(() => {
   return data.value?.records || [];
 });
 const recordsLength = computed(() => {

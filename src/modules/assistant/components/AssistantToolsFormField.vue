@@ -13,7 +13,7 @@ import type { AssistantTool } from '@hopkins385/ragna-sdk';
 
 const client = useRagnaClient();
 
-const tools = ref<AssistantTool[]>([]);
+const tools = shallowRef<AssistantTool[]>([]);
 const status = ref('idle');
 
 const getTools = async () => {
