@@ -19,8 +19,8 @@ const status = ref('idle');
 const getTools = async () => {
   status.value = 'pending';
   try {
-    const { tools: theTools } = await client.assistantTool.fetchAllTools();
-    tools.value = theTools;
+    const response = await client.assistantTool.fetchAllTools();
+    tools.value = response.tools;
     status.value = 'success';
   } catch (error) {
     console.error(error);
@@ -28,7 +28,7 @@ const getTools = async () => {
   }
 };
 
-onMounted(async () => await getTools());
+onBeforeMount(async () => await getTools());
 </script>
 
 <template>

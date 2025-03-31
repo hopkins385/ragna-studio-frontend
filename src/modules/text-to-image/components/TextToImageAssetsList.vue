@@ -28,8 +28,8 @@ const mainContainer = ref<HTMLElement | null>(null);
 const isLoading = ref(false);
 const folderId = ref('');
 
-const runs = shallowRef<any>([]);
-const meta = shallowRef<any>(null);
+const runs = ref<any>([]);
+const meta = ref<any>(null);
 const hasRuns = computed(() => runs.value && runs.value.length > 0);
 
 const client = useRagnaClient();
