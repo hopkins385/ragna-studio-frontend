@@ -4,8 +4,8 @@ import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import AssistantEditForm from '@/modules/assistant/components/AssistantEditForm.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
-import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
 import type { Assistant, AssistantTool, Collection } from '@hopkins385/ragna-sdk';
+import bgImgUrl from '@images/bg_robots.png?q=100&format=webp&imagetools';
 
 const assistant = ref<Assistant | null>(null);
 const assistantTools = ref<AssistantTool[]>([]);
@@ -56,7 +56,7 @@ const initAssistantTools = async () => {
 const headingTitle = computed(() => `${assistant.value?.title} - ${t('assistant.edit.title')}`);
 
 // noasync = Non-blocking, allows component to render before data is fetched
-onMounted(async () => {
+onBeforeMount(async () => {
   await initAssistant();
   await initAssistantTools();
   await initCollections();
@@ -91,7 +91,7 @@ useHead({
         @refresh-collections="async () => await initCollections()"
         @refresh-assistant="async () => await initAssistant()"
       />
-      <div v-else-if="assistantIsLoading">Loading ...</div>
+      <div v-else-if="assistantIsLoading"></div>
       <div v-else>Assistant Not Found</div>
     </div>
   </SectionContainer>

@@ -39,7 +39,10 @@ const settings = useAiChatSettingsStore();
 
     <PopoverContent align="end" class="mt-1 w-60 text-sm">
       <div class="flex items-center justify-between">
-        <span>{{ $t('chat.settings.privacy.title') }}</span>
+        <div class="flex items-center gap-2">
+          <ShieldIcon class="size-4 text-primary/60" />
+          {{ $t('chat.settings.privacy.title') }}
+        </div>
         <button>
           <RotateCcwIcon class="size-3 opacity-60" />
         </button>

@@ -48,6 +48,12 @@ const moduleRoute = {
       component: () => import('./views/onedrive/OneDriveIndexView.vue'),
       meta: defaultAppMeta,
     },
+    // {
+    //   path: 'capture',
+    //   name: 'media.capture',
+    //   component: () => import('./views/MediaCaptureView.vue'),
+    //   meta: defaultAppMeta,
+    // },
   ],
 };
 

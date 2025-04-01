@@ -184,7 +184,7 @@
       "form": {
         "name": "Datenbankname",
         "description": "Beschreibung",
-        "description_hint": "Die Beschreibung ist insbesondere hilfreich für Agenten, die die Wissensdatenbank verwenden"
+        "description_hint": "Kurze Beschreibung der Wissensdatenbank"
       },
       "button": "Wissensdatenbank erstellen",
       "toast": {
@@ -252,7 +252,7 @@
     "create": {
       "title": "Workflow erstellen",
       "subtitle": "Hier kannst du einen neuen Workflow erstellen",
-      "description_hint": "Die Beschreibung ist insbesondere hilfreich für Agenten, die den Workflow verwenden",
+      "description_hint": "Kurze Beschreibung des Workflows",
       "from_file": "Von Datei erstellen",
       "button": "Workflow erstellen",
       "new_step_name": "Neuer Schritt",
@@ -345,7 +345,7 @@
       "name_label": "Name",
       "name_description": "Dies ist der Anzeigename des Agenten",
       "description_label": "Beschreibung",
-      "description_description": "Die Beschreibung ist insbesondere hilfreich für andere Agenten, die diesen Agenten verwenden oder für Workflows"
+      "description_description": "Kurze Beschreibung des Agenten"
     },
     "task": {
       "placeholder": "Aufgabe auswählen"

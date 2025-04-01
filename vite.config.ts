@@ -55,7 +55,7 @@ export default defineConfig({
       strategies: 'generateSW',
       srcDir: 'src',
       manifest: {
-        name: 'RAGNA Studio',
+        name: `RAGNA Studio${process.env.VITE_ENV !== 'production' ? ' (dev)' : ''}`,
         short_name: 'RAGNA',
         description: 'Intelligent Solution for Systems Engineering',
         theme_color: '#292524',
