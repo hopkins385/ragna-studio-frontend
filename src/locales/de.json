@@ -275,7 +275,7 @@
     },
     "button": {
       "refresh": "Aktualisieren",
-      "run": "Flow Starten"
+      "run": "Flow starten"
     },
     "step": {
       "agent": "Agent",

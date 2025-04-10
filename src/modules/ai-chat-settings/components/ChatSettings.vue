@@ -36,6 +36,7 @@ function onEditAssistantClick() {
   router.push({
     name: RouteName.ASSISTANT_EDIT,
     params: { id: props.assistantId },
+    query: { tab: 'behavior' },
   });
 }
 </script>

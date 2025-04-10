@@ -47,10 +47,10 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 const toast = useToast();
 
-const currentTab = ref('tab1');
 const updateIsLoading = ref(false);
 const newChatIsLoading = ref(false);
 
@@ -166,34 +166,33 @@ const onStartChat = async () => {
   }
 };
 
+const siderBarTabs = [
+  { id: 'general', icon: Settings, label: t('assistant.settings.label') },
+  { id: 'behavior', icon: CircleUserRound, label: t('assistant.behavior.label') },
+  { id: 'llm', icon: Stars, label: t('assistant.genai.label') },
+  { id: 'tools', icon: BriefcaseBusiness, label: t('assistant.tools.label') },
+  { id: 'knowledge', icon: Book, label: t('assistant.knowledge.label') },
+  { id: 'privacy', icon: ShieldCheck, label: t('assistant.privacy.label') },
+];
+
+// Current tab and query parameter
+const queryTab = computed(() => {
+  const tab = route.query.tab?.toString();
+  if (tab && siderBarTabs.some(t => t.id === tab)) {
+    return tab;
+  }
+  return 'general';
+});
+const currentTab = ref(queryTab.value);
+
+watch(currentTab, (newTab: string) => {
+  router.replace({
+    query: { ...route.query, tab: newTab },
+  });
+});
+
 // onBeforeRouteLeave
 onBeforeRouteLeave(canLeavePage);
-
-const siderBarTabs = [
-  { id: 'tab1', icon: Settings, label: t('assistant.settings.label') },
-  { id: 'tab3', icon: CircleUserRound, label: t('assistant.behavior.label') },
-  { id: 'tab2', icon: Stars, label: t('assistant.genai.label') },
-  { id: 'tab5', icon: BriefcaseBusiness, label: t('assistant.tools.label') },
-  { id: 'tab4', icon: Book, label: t('assistant.knowledge.label') },
-  { id: 'tab6', icon: ShieldCheck, label: t('assistant.privacy.label') },
-];
-
-const supportedProviders = [
-  {
-    name: 'Anthropic',
-    region: 'EU',
-    infos: {
-      qualityIndex: 90,
-    },
-  },
-  {
-    name: 'OpenAI',
-    region: 'EU',
-    infos: {
-      qualityIndex: 85,
-    },
-  },
-];
 
 onBeforeUnmount(() => {
   client.assistant.abortRequest();
@@ -216,7 +215,7 @@ onBeforeUnmount(() => {
   </div>
   <TabSidebar v-model="currentTab" :tabs="siderBarTabs">
     <!-- TAB 1-->
-    <template #tab1>
+    <template #general>
       <div class="space-y-8">
         <FormField v-slot="{ componentField }" name="title">
           <FormItem>
@@ -246,7 +245,7 @@ onBeforeUnmount(() => {
       </div>
     </template>
     <!-- TAB 2-->
-    <template #tab2>
+    <template #llm>
       <FormField v-slot="{ handleChange }" name="llmId">
         <FormItem>
           <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
@@ -275,7 +274,7 @@ onBeforeUnmount(() => {
       </FormField>
     </template>
     <!-- TAB 3-->
-    <template #tab3>
+    <template #behavior>
       <div class="space-y-8">
         <FormField v-slot="{ componentField, value, handleChange }" name="systemPrompt">
           <div>
@@ -295,8 +294,8 @@ onBeforeUnmount(() => {
       </div>
     </template>
     <!-- TAB 4 -->
-    <template #tab4>
-      <FormField v-slot="{ handleChange }" name="collectionId">
+    <template #knowledge>
+      <FormField v-slot="{ handleChange }" name="knowledge">
         <FormItem>
           <FormLabel>{{ $t('assistant.knowledge.label') }}</FormLabel>
           <FormDescription>
@@ -319,7 +318,7 @@ onBeforeUnmount(() => {
       </FormField>
     </template>
     <!-- TAB 5 -->
-    <template #tab5>
+    <template #tools>
       <FormField name="tools">
         <FormItem>
           <div class="mb-4 space-y-2">
@@ -365,8 +364,8 @@ onBeforeUnmount(() => {
       </FormField>
     </template>
     <!-- TAB 7 -->
-    <template #tab6>
-      <FormField name="temperature">
+    <template #privacy>
+      <FormField name="privacy">
         <FormItem>
           <FormLabel>{{ $t('assistant.privacy.label') }}</FormLabel>
           <FormDescription>
