@@ -148,12 +148,24 @@ export const useAuthStore = defineStore('auth-store', () => {
     }
   };
 
+  const resetPassword = async (payload: { token: string; password: string }) => {
+    try {
+      await client.auth.resetPassword({
+        token: payload.token,
+        password: payload.password,
+      });
+    } catch (error) {
+      clearUser();
+      throw error;
+    }
+  };
+
   const register = async (payload: {
     name: string;
     email: string;
     password: string;
     termsAndConditions: boolean;
-    invitationCode?: string;
+    invitationCode: string;
   }) => {
     try {
       await client.auth.registerUser(payload);
@@ -228,6 +240,7 @@ export const useAuthStore = defineStore('auth-store', () => {
     login,
     logout,
     refreshAuth,
+    resetPassword,
     register,
     socialGoogleLogin,
     getSession,

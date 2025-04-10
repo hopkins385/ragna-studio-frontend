@@ -6,7 +6,7 @@ import {
 } from '@casl/ability';
 
 export const ability = defineAbility(can => {
-  can(['create', 'read', 'edit', 'delete'], ['Assistant', 'Collection']);
+  can(['create', 'read', 'edit', 'delete'], ['Assistant', 'Collection', 'User', 'Workflow']);
 });
 
 export function defineAbilityFor(user: any) {
@@ -24,6 +24,6 @@ export function defineAbilityFor(user: any) {
 }
 
 type Actions = 'create' | 'read' | 'edit' | 'delete';
-type Subjects = 'Assistant' | 'Collection';
+type Subjects = 'Assistant' | 'Collection' | 'User' | 'Workflow';
 
 export type AppAbility = MongoAbility<[Actions, Subjects]>;

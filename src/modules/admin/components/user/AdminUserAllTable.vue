@@ -51,7 +51,10 @@ const initAllUsers = async (params: { page: number }) => {
   unsetErrorAlert();
   try {
     // TODO: Add pagination params
-    usersData.value = await client.user.fetchAllUsers();
+    usersData.value = await client.admin.user.fetchAllUsers({
+      page: params.page,
+      limit: 10,
+    });
   } catch (error: unknown) {
     return setErrorAlert(error);
   }
@@ -63,7 +66,7 @@ const handleDelete = async (userId: string) => {
   }
 
   try {
-    await client.user.deleteUser(userId);
+    await client.admin.user.deleteUser(userId);
     await initAllUsers({ page: page.value });
     toast.success({ description: t('admin.user.delete.success') });
   } catch (error: unknown) {
@@ -135,13 +138,7 @@ await initAllUsers({ page: page.value });
     </Table>
     <!-- Pagination Controls -->
     <div class="pb-10">
-      <PaginateControls
-        v-if="meta.totalCount > 10"
-        :page="page || 1"
-        :meta="meta"
-        :limit="10"
-        @update:page="onUpdatePage"
-      />
+      <PaginateControls :page="page" :meta="meta" @update:page="onUpdatePage" />
     </div>
   </div>
 </template>

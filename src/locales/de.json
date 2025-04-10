@@ -65,6 +65,7 @@
     "name": "Name",
     "email": "E-Mail",
     "password": "Passwort",
+    "password_confirm": "Passwort bestätigen",
     "description": "Beschreibung",
     "supported_file_types": "Unterstützte Dateitypen",
     "button": {
@@ -470,7 +471,14 @@
       "required": "Dieses Feld ist erforderlich",
       "code_required": "Einladungscode erforderlich",
       "code_invalid": "Ungültiger Einladungscode",
-      "invalid_credentials": "Benutzername oder Passwort falsch"
+      "invalid_credentials": "Benutzername oder Passwort falsch",
+      "token_required": "Token erforderlich",
+      "token_invalid": "Ungültiges Token"
+    },
+    "success": {
+      "registered": "Registrierung erfolgreich",
+      "password_reset": "Dein Passwort wurde erfolgreich geändert. Du kannst dich jetzt mit deinem neuen Passwort anmelden.",
+      "password_updated": "Passwort aktualisiert"
     }
   },
   "prompt_wizard": {
@@ -627,6 +635,16 @@
     "user": {
       "title": "Benutzer",
       "subtitle": "Hier kannst du Benutzer verwalten",
+      "create": {
+        "title": "Benutzer erstellen",
+        "subtitle": "Hier kannst du einen neuen Benutzer erstellen",
+        "button": "Benutzer erstellen"
+      },
+      "invite_dialog": {
+        "title": "Link kopieren",
+        "description": "Kopiere den Link und sende ihn an den Benutzer. Der Benutzer muss auf den Link klicken, um die Registrierung abzuschließen. Achtung, der Link ist nur kurz gültig und wird nicht nochmal angezeigt.",
+        "done": "Fertig"
+      },
       "delete": {
         "title": "Benutzer löschen",
         "description": "Bist du sicher, dass du den Benutzer löschen möchtest? Der Benutzer wird unwiderruflich gelöscht.",
@@ -636,6 +654,18 @@
           "submit": "Benutzer löschen"
         },
         "success": "Benutzer gelöscht"
+      },
+      "form": {
+        "name": "Vor- und Nachname",
+        "name_description": "Vollständiger Name des Benutzers",
+        "email": "E-Mail Adresse",
+        "email_description": "Login E-Mail-Adresse des Benutzers (muss nicht zwingend existieren)",
+        "password": "Passwort",
+        "role": "Rolle",
+        "role_description": "Wähle die Rolle des Benutzers aus"
+      },
+      "error": {
+        "email_exists": "Die E-Mail-Adresse ist bereits vergeben"
       }
     }
   },

@@ -4,9 +4,9 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
+import { ConnectionError, UnauthorizedError } from '@hopkins385/ragna-sdk';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { toTypedSchema } from '@vee-validate/zod';
-import { ConnectionError, UnauthorizedError } from '@hopkins385/ragna-sdk';
 import { useForm } from 'vee-validate';
 import { z } from 'zod';
 import LogosGoogleIcon from '~icons/logos/google-icon';
@@ -74,7 +74,7 @@ const onGoogleLogin = async () => {
   throw new Error('Google login not implemented');
 };
 
-const showRegister = true;
+const showRegister = false;
 </script>
 
 <template>

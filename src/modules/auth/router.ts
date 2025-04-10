@@ -6,8 +6,9 @@ import type { Router } from 'vue-router';
 export const AuthRoutePath = {
   LOGIN: '/login',
   LOGOUT: '/logout',
-  REGISTER: '/register',
+  REGISTER: '/auth/register',
   REFRESH: '/auth/refresh', // api backend route
+  RESET_PASSWORD: '/auth/reset-password/:token',
   SOCIAL_AUTH_URL: undefined, // '/auth/:provider/url',
   CALLBACK_GOOGLE: undefined, // '/auth/google/callback',
 } as const;
@@ -26,6 +27,15 @@ const moduleRoutes = [
     path: AuthRoutePath.REGISTER,
     name: RouteName.REGISTER,
     component: () => import('./views/RegisterView.vue'),
+    meta: {
+      requiresAuth: false,
+      layout: Layout.Login,
+    },
+  },
+  {
+    path: AuthRoutePath.RESET_PASSWORD,
+    name: RouteName.RESET_PASSWORD,
+    component: () => import('./views/ResetPasswordView.vue'),
     meta: {
       requiresAuth: false,
       layout: Layout.Login,

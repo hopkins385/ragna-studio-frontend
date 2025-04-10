@@ -67,6 +67,7 @@ export const RouteName = {
   // Login and register routes
   LOGIN: 'login',
   REGISTER: 'register',
+  RESET_PASSWORD: 'reset-password',
   LOGOUT: 'logout',
   // 404 route
   NOT_FOUND: 'not-found',
