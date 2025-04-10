@@ -52,7 +52,7 @@ const meta = computed(() => {
 const initMedia = async (payload: { page: number }) => {
   if (!authStore.user?.id) return;
   const response = await client.media.fetchAllMediaFor(
-    { id: authStore.user.id, type: 'user' },
+    { id: authStore.user.firstTeamId, type: 'team' },
     { page: payload.page },
   );
   mediaData.value = response;

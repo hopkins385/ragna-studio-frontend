@@ -65,11 +65,11 @@ const initMedia = async () => {
   if (!authStore.user?.id) {
     throw new Error('User ID is required');
   }
-  const userModel = {
-    id: authStore.user.id,
-    type: 'user',
+  const teamModel = {
+    id: authStore.user.firstTeamId,
+    type: 'team',
   };
-  const data = await client.media.fetchAllMediaFor(userModel, {
+  const data = await client.media.fetchAllMediaFor(teamModel, {
     page: page.value,
   });
 
