@@ -58,7 +58,7 @@ watch(
     </Heading>
     <div class="rounded-lg px-10">
       <!-- User Details Section -->
-      <AdminUserEditForm v-if="userData" :userData="userData" :editable="true" />
+      <AdminUserEditForm v-if="userData" :userData="userData" :editable="false" />
     </div>
   </SectionContainer>
 </template>

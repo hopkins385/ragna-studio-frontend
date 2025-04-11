@@ -27,6 +27,13 @@ const moduleRoute = {
       meta: defaultAdminMeta,
     },
     {
+      path: 'user/:id',
+      name: AdminRouteName.ADMIN_USER_SHOW,
+      beforeEnter: [hasValidRouteId],
+      component: () => import('./views/user/AdminUserShowView.vue'),
+      meta: defaultAdminMeta,
+    },
+    {
       path: 'user/:id/edit',
       name: AdminRouteName.ADMIN_USER_EDIT,
       beforeEnter: [hasValidRouteId],

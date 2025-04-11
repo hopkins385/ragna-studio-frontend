@@ -640,6 +640,14 @@
         "subtitle": "Hier kannst du einen neuen Benutzer erstellen",
         "button": "Benutzer erstellen"
       },
+      "show": {
+        "title": "Benutzerprofil",
+        "subtitle": "Hier kannst du die Benutzerdetails einsehen"
+      },
+      "update": {
+        "success": "Benutzer aktualisiert",
+        "failed": "Benutzer konnte nicht aktualisiert werden"
+      },
       "invite_dialog": {
         "title": "Link kopieren",
         "description": "Kopiere den Link und sende ihn an den Benutzer. Der Benutzer muss auf den Link klicken, um die Registrierung abzuschließen. Achtung, der Link ist nur kurz gültig und wird nicht nochmal angezeigt.",

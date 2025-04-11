@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from '@ui/table';
-import { SettingsIcon, Trash2Icon } from 'lucide-vue-next';
+import { EyeIcon, SettingsIcon, Trash2Icon } from 'lucide-vue-next';
 
 // Props
 // Emits
@@ -126,6 +126,9 @@ await initAllUsers({ page: page.value });
           <TableCell class="whitespace-nowrap"> ... </TableCell>
           <TableCell class="whitespace-nowrap"> ... </TableCell>
           <TableCell class="flex justify-end space-x-2 whitespace-nowrap text-right">
+            <ButtonLink :to="`/admin/user/${user.id}`" variant="outline" size="icon">
+              <EyeIcon class="size-4 stroke-1.5 text-primary" />
+            </ButtonLink>
             <ButtonLink :to="`/admin/user/${user.id}/edit`" variant="outline" size="icon">
               <SettingsIcon class="size-4 stroke-1.5 text-primary" />
             </ButtonLink>

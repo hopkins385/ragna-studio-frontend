@@ -3,11 +3,6 @@ export const RouteName = {
   APP_SETTINGS: 'app.settings',
   //
   HOME: 'home',
-  // User routes
-  USER_LIST: 'user.list',
-  USER_CREATE: 'user.create',
-  USER_SHOW: 'user.show',
-  USER_EDIT: 'user.edit',
   // Document routes
   DOCUMENT_INDEX: 'document.index',
   DOCUMENT_SHOW: 'document.show',
