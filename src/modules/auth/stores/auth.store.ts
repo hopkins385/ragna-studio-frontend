@@ -16,7 +16,7 @@ interface Team {
 
 interface AuthUser {
   id: string;
-  activeTeamId: string;
+  // activeTeamId: string;
   name: string;
   firstName: string;
   lastName: string;
@@ -42,7 +42,7 @@ export const useAuthStore = defineStore('auth-store', () => {
   const isAuthenticated = computed(() => !!user.value && !!accessToken.value);
   const userHasAdminRole = computed(() => !!user.value?.roles?.includes(UserRoles.ADMIN));
   const userFirstName = computed(() => user.value?.firstName || 'Guest User');
-  const userFirstTeamId = computed(() => user.value?.activeTeamId || '-1');
+  // const userFirstTeamId = computed(() => user.value?.activeTeamId || '-1');
   const userCredits = computed(() => user.value?.totalCredits || 0);
   const onboardingIsComplete = computed(() => !!user.value?.onboardedAt);
   const hasAccessToken = computed(() => !!accessToken.value);
@@ -84,7 +84,7 @@ export const useAuthStore = defineStore('auth-store', () => {
       const data = await client.account.fetchAccountData();
       user.value = {
         id: data.id,
-        activeTeamId: '-1',
+        // activeTeamId: '-1',
         name: data.name,
         firstName: data.firstName,
         lastName: data.lastName,
@@ -221,7 +221,6 @@ export const useAuthStore = defineStore('auth-store', () => {
     isAuthenticated,
     userHasAdminRole,
     userFirstName,
-    userFirstTeamId,
     userCredits,
     onboardingIsComplete,
     hasAccessToken,

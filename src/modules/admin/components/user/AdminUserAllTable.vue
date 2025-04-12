@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// Imports
 import ConfirmDialog from '@/components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import PaginateControls from '@/components/pagniate/PaginateControls.vue';
@@ -66,7 +65,7 @@ const handleDelete = async (userId: string) => {
   }
 
   try {
-    await client.admin.user.deleteUser(userId);
+    await client.admin.user.deleteUser({ userId });
     await initAllUsers({ page: page.value });
     toast.success({ description: t('admin.user.delete.success') });
   } catch (error: unknown) {
