@@ -2,7 +2,6 @@
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
-import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import LlmSelectModal from '@/modules/llm/components/LlmSelectModal.vue';
 import PromptWizardDialog from '@/modules/prompt-wizard/components/PromptWizardDialog.vue';
 import { RouteName } from '@/router/enums/route-names.enum';
@@ -41,7 +40,6 @@ const assistantTools = ref<AssistantTool[] | null>(null);
 
 // Composables
 const client = useRagnaClient();
-const authStore = useAuthStore();
 const toast = useToast();
 const router = useRouter();
 const { t } = useI18n();
@@ -64,7 +62,6 @@ const {
 } = useForm({
   validationSchema: assistantFormSchema,
   initialValues: {
-    teamId: authStore.userFirstTeamId,
     llmId: '',
     title: '',
     description: '',
@@ -99,7 +96,7 @@ const onSubmit = handleSubmit(async values => {
   }
 });
 
-watch(
+/*watch(
   () => formErrors.value,
   (errors: unknown[]) => {
     if (Object.keys(errors).length > 0) {
@@ -108,7 +105,7 @@ watch(
       unsetErrorAlert();
     }
   },
-);
+);*/
 
 const siderBarTabs = [
   { id: 'tab1', icon: Settings, label: t('assistant.settings.label') },
@@ -129,6 +126,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  {{ formErrors }}
   <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
   <div class="w-full flex justify-end">
     <div class="flex items-center space-x-4">

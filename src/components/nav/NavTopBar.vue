@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NavBarProject from '@/components/nav/NavBarProject.vue';
+import NavBarTeam from '@/components/nav/NavBarTeam.vue';
 import NavHelpMenu from '@/components/nav/NavHelpMenu.vue';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { Bell, Expand } from 'lucide-vue-next';
@@ -34,16 +34,17 @@ const onExpandClick = () => {
           <BrandLogo class="" :text-visible="true" />
         </div>
         <div></div>
-        <!--
+
         <div>
           <NavBarTeam />
         </div>
-        -->
-        <div></div>
 
+        <div></div>
+        <!--
         <div>
           <NavBarProject />
         </div>
+        -->
       </div>
     </div>
     <div class="flex h-full items-center space-x-5">

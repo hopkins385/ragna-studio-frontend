@@ -3,7 +3,6 @@ import * as z from 'zod';
 import { cuidSchema } from '../../../common/schemas/cuid.schema';
 
 export const assistantSchema = z.object({
-  teamId: cuidSchema,
   llmId: cuidSchema,
   title: z.string().min(3).max(255),
   description: z.string().min(3).max(255),
