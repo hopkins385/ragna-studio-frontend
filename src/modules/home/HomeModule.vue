@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import imageUrl from '@/assets/images/home8.jpg?q=100&imagetools';
-import HomeEditImageDialog from '@/modules/home/components/HomeEditImageDialog.vue';
 import HomeFavorites from './components/HomeFavorites.vue';
 import HomeQuickAccess from './components/HomeQuickAccess.vue';
 
@@ -22,9 +21,11 @@ const backgroundStyles = computed(() => {
         class="bg-blue-50 p-5 flex items-center h-44 rounded-xl overflow-hidden bg-center bg-cover relative group"
         :style="backgroundStyles"
       >
+        <!--
         <div class="absolute bottom-2 right-2">
           <HomeEditImageDialog />
         </div>
+        -->
       </div>
     </div>
     <div class="max-w-[75rem] mx-auto">
