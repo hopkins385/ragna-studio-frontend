@@ -21,18 +21,12 @@ const selected = ref('');
 const authStore = useAuthStore();
 
 // Computed
-const userTeams = computed(() => {
-  return authStore.user?.teams.map(t => ({
-    id: t.team.id,
-    name: t.team.name,
-  }));
-});
 // Functions
 
 // Hooks
 onMounted(() => {
   // set default value
-  selected.value = userTeams.value?.[0]?.name;
+  selected.value = authStore.user?.teams[0]?.name || '';
 });
 </script>
 
@@ -44,7 +38,7 @@ onMounted(() => {
     <SelectContent class="w-40">
       <SelectGroup class="">
         <SelectLabel class="text-xs">Teams</SelectLabel>
-        <template v-for="team in userTeams" :key="team.id">
+        <template v-for="team in authStore.user?.teams" :key="team.id">
           <SelectItem class="text-xs" :value="team.name">{{ team.name }}</SelectItem>
         </template>
       </SelectGroup>

@@ -1,17 +1,10 @@
 <script setup lang="ts">
 import NavBarTeam from '@/components/nav/NavBarTeam.vue';
 import NavHelpMenu from '@/components/nav/NavHelpMenu.vue';
-import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { Bell, Expand } from 'lucide-vue-next';
 import BrandLogo from '../brand/BrandLogo.vue';
 import NavTopPopover from './NavTopPopover.vue';
 import NavUserMenu from './NavUserMenu.vue';
-
-const authStore = useAuthStore();
-
-const userCredits = computed(() => {
-  return authStore.userCredits;
-});
 
 const onExpandClick = () => {
   const rootNode = document.documentElement;
@@ -48,11 +41,6 @@ const onExpandClick = () => {
       </div>
     </div>
     <div class="flex h-full items-center space-x-5">
-      <div class="hidden">
-        <div class="py-1 px-2 border-0 rounded-sm bg-parent">
-          <span class="text-sm">{{ userCredits }}</span>
-        </div>
-      </div>
       <button>
         <Bell class="size-5 stroke-1 hover:stroke-1.5" />
       </button>

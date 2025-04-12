@@ -11,6 +11,13 @@ defineProps<{
   };
 }>();
 
+const form = useForm({
+  initialValues: {
+    email: '',
+    password: '',
+  },
+});
+
 const onSubmit = () => {};
 </script>
 
@@ -26,7 +33,13 @@ const onSubmit = () => {};
         </FormLabel>
         <FormControl>
           <div class="flex">
-            <Input type="text" placeholder="email" v-bind="componentField" disabled />
+            <Input
+              type="text"
+              placeholder="email"
+              v-bind="componentField"
+              autocomplete="off"
+              disabled
+            />
             <div class="flex w-1/2">
               <div class="w-full"></div>
             </div>
@@ -50,7 +63,7 @@ const onSubmit = () => {};
                 type="password"
                 placeholder=""
                 v-bind="componentField"
-                autocomplete="current-password"
+                autocomplete="off"
                 disabled
               />
             </div>

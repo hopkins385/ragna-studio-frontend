@@ -14,7 +14,7 @@ const client = useRagnaClient();
 const accountData = ref<AccountData>();
 
 const teams = computed(() => accountData.value?.teams ?? null);
-const organisation = computed(() => teams.value?.[0].team.organisation ?? null);
+const organisation = computed(() => accountData.value?.organisation ?? null);
 
 const initAccountData = async () => {
   const { data, error } = await usePromise(() => client.account.fetchAccountData());
@@ -22,7 +22,7 @@ const initAccountData = async () => {
     console.error('Error fetching account data:', error.value);
     return;
   }
-  accountData.value = data.value;
+  accountData.value = data.value?.account;
 };
 
 const onManageSubscriptionClick = () => {
@@ -62,7 +62,7 @@ onBeforeMount(async () => {
         <div class="col-span-1 grid grid-cols-1 space-y-6 text-sm">
           <BoxContainer class="border border-stone-100 bg-stone-50">
             <h2 class="pb-5 font-semibold">Teams</h2>
-            <p v-for="t in teams" :key="t.team.id" class="w-fit text-sm">{{ t.team.name }}</p>
+            <p v-for="team in teams" :key="team.id" class="w-fit text-sm">{{ team.name }}</p>
           </BoxContainer>
           <BoxContainer class="border border-stone-100 bg-stone-50">
             <h2 class="pb-5 font-semibold">Organisation</h2>

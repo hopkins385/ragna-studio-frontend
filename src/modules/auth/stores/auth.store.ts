@@ -11,7 +11,6 @@ const UserRoles = {
 interface Team {
   id: string;
   name: string;
-  description: string;
 }
 
 interface AuthUser {
@@ -21,7 +20,6 @@ interface AuthUser {
   firstName: string;
   lastName: string;
   email: string;
-  totalCredits: number;
   onboardedAt: string | null;
   teams: Team[];
   roles: string[];
@@ -42,8 +40,6 @@ export const useAuthStore = defineStore('auth-store', () => {
   const isAuthenticated = computed(() => !!user.value && !!accessToken.value);
   const userHasAdminRole = computed(() => !!user.value?.roles?.includes(UserRoles.ADMIN));
   const userFirstName = computed(() => user.value?.firstName || 'Guest User');
-  // const userFirstTeamId = computed(() => user.value?.activeTeamId || '-1');
-  const userCredits = computed(() => user.value?.totalCredits || 0);
   const onboardingIsComplete = computed(() => !!user.value?.onboardedAt);
   const hasAccessToken = computed(() => !!accessToken.value);
   const getAccessTokenExpiresAt = computed(() => accessTokenExpiresAt.value);
@@ -81,7 +77,7 @@ export const useAuthStore = defineStore('auth-store', () => {
     if (isFetchingUser.value) return;
     isFetchingUser.value = true;
     try {
-      const data = await client.account.fetchAccountData();
+      const { account: data } = await client.account.fetchAccountData();
       user.value = {
         id: data.id,
         // activeTeamId: '-1',
@@ -89,7 +85,6 @@ export const useAuthStore = defineStore('auth-store', () => {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
-        totalCredits: data.totalCredits,
         onboardedAt: data.onboardedAt,
         teams: data.teams,
         roles: data.roles,
@@ -221,7 +216,6 @@ export const useAuthStore = defineStore('auth-store', () => {
     isAuthenticated,
     userHasAdminRole,
     userFirstName,
-    userCredits,
     onboardingIsComplete,
     hasAccessToken,
     getAccessToken,

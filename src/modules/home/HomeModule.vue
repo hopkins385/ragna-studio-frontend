@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import imageUrl from '@/assets/images/home8.jpg?q=100&imagetools';
+import HomeEditImageDialog from '@/modules/home/components/HomeEditImageDialog.vue';
 import HomeFavorites from './components/HomeFavorites.vue';
 import HomeQuickAccess from './components/HomeQuickAccess.vue';
 
@@ -18,11 +19,11 @@ const backgroundStyles = computed(() => {
   <div class="h-full">
     <div class="p-4 overflow-hidden">
       <div
-        class="bg-blue-50 p-5 flex items-center h-44 rounded-xl overflow-hidden bg-center bg-cover"
+        class="bg-blue-50 p-5 flex items-center h-44 rounded-xl overflow-hidden bg-center bg-cover relative group"
         :style="backgroundStyles"
       >
-        <div v-if="false" class="h-20 border-0 w-full flex items-center justify-center">
-          <p class="text-4xl text-white font-semibold">Was gestaltest du heute?</p>
+        <div class="absolute bottom-2 right-2">
+          <HomeEditImageDialog />
         </div>
       </div>
     </div>
@@ -47,5 +48,14 @@ const backgroundStyles = computed(() => {
 <style scoped>
 .custom-shadow {
   box-shadow: 0px -5px 5px rgba(0, 0, 0, 0.1);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 </style>
