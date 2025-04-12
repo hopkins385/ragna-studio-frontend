@@ -112,7 +112,7 @@ const onDialogSuccess = () => {
         {{ $t('form.button.cancel') }}
       </ButtonLink>
       <ButtonLoading :loading="isLoading">
-        {{ $t('admin.user.create.title') }}
+        {{ $t('form.button.save') }}
       </ButtonLoading>
     </div>
   </form>

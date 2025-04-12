@@ -17,7 +17,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <Button :variant="variant ?? 'outline'" as-child>
+  <Button :variant="props.variant ?? 'outline'" as-child>
     <RouterLink :to="to">
       <slot />
     </RouterLink>

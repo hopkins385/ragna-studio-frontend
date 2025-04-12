@@ -635,9 +635,9 @@
       "title": "Benutzer",
       "subtitle": "Hier kannst du Benutzer verwalten",
       "create": {
-        "title": "Benutzer erstellen",
-        "subtitle": "Hier kannst du einen neuen Benutzer erstellen",
-        "button": "Benutzer erstellen"
+        "title": "Benutzer hinzufügen",
+        "subtitle": "Hier kannst du einen neuen Benutzer hinzufügen",
+        "button": "Benutzer hinzufügen"
       },
       "show": {
         "title": "Benutzerprofil",
