@@ -2,7 +2,6 @@
 import { useNavBarStore } from '@/common/stores/nav-bar.store';
 import { useNavBarItems } from '@/composables/nav/useNavBarItems';
 import { Separator } from '@ui/separator';
-import { useMousePressed } from '@vueuse/core';
 import { EllipsisIcon } from 'lucide-vue-next';
 import {
   DropdownMenu,
@@ -19,7 +18,7 @@ const navBar = useNavBarStore();
 
 const { dynamicNavItems } = useNavBarItems();
 
-const { pressed } = useMousePressed({ target: navBarResizerRef });
+/*const { pressed } = useMousePressed({ target: navBarResizerRef });
 
 watch(pressed, isPressed => {
   if (isPressed && navBar.isOpen) {
@@ -27,7 +26,7 @@ watch(pressed, isPressed => {
   } else {
     removeEventListener('mousemove', navBar.setWidth);
   }
-});
+});*/
 </script>
 
 <template>
@@ -36,6 +35,7 @@ watch(pressed, isPressed => {
     class="relative flex shrink-0 flex-col justify-between transition-all duration-300 ease-out"
     :style="{ width: navBar.isFullClosed ? 0 : `${navBar.width}rem` }"
   >
+    <!--
     <div
       ref="navBarResizerRef"
       class="absolute right-0 top-0 z-10 h-full"
@@ -45,6 +45,7 @@ watch(pressed, isPressed => {
       }"
       style="width: 0.25rem"
     ></div>
+    -->
     <div
       class="relative h-full overflow-y-hidden transition-opacity duration-200 ease-in-out"
       :class="{

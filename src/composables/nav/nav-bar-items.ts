@@ -14,8 +14,6 @@ import {
   HistoryIcon,
   HomeIcon,
   ImageIcon,
-  KanbanSquareIcon,
-  ListTodoIcon,
   MessagesSquareIcon,
   MonitorCogIcon,
   NetworkIcon,
@@ -47,20 +45,20 @@ export const spacerNavItem: NavItem = {
 };
 
 const baseMoreMenuItems: NavItem[] = [
-  {
-    icon: MessagesSquareIcon,
-    path: '/chat',
-    label: 'nav.chat',
-    hidden: false,
-    children: [],
-  },
-  {
-    icon: ImageIcon,
-    path: '/text-to-image',
-    label: 'nav.textToImage',
-    hidden: false,
-    children: [],
-  },
+  // {
+  //   icon: MessagesSquareIcon,
+  //   path: '/chat',
+  //   label: 'nav.chat',
+  //   hidden: false,
+  //   children: [],
+  // },
+  // {
+  //   icon: ImageIcon,
+  //   path: '/text-to-image',
+  //   label: 'nav.textToImage',
+  //   hidden: false,
+  //   children: [],
+  // },
   {
     icon: DatabaseIcon,
     path: '/collection',
@@ -77,7 +75,7 @@ const baseMoreMenuItems: NavItem[] = [
   },
   {
     icon: PieChartIcon,
-    path: '/analytics',
+    path: '/account/statistics',
     label: 'nav.analytics',
     hidden: false,
     children: [],
@@ -86,16 +84,9 @@ const baseMoreMenuItems: NavItem[] = [
 
 export const defaultItems = computed((): NavItem[] => [
   {
-    icon: KanbanSquareIcon,
-    path: '/kanban',
-    label: 'nav.kanban',
-    hidden: false,
-    children: [],
-  },
-  {
-    icon: NetworkIcon,
-    path: '/architecture',
-    label: 'nav.architecture',
+    icon: WorkflowIcon,
+    path: '/workflow',
+    label: 'nav.workflows',
     hidden: false,
     children: [],
   },
@@ -107,16 +98,16 @@ export const defaultItems = computed((): NavItem[] => [
     children: [],
   },
   {
-    icon: ListTodoIcon,
-    path: '/test',
-    label: 'nav.tests',
+    icon: MessagesSquareIcon,
+    path: '/chat',
+    label: 'nav.chat',
     hidden: false,
     children: [],
   },
   {
-    icon: WorkflowIcon,
-    path: '/workflow',
-    label: 'nav.workflows',
+    icon: ImageIcon,
+    path: '/text-to-image',
+    label: 'nav.textToImage',
     hidden: false,
     children: [],
   },
@@ -127,13 +118,55 @@ export const defaultItems = computed((): NavItem[] => [
     hidden: false,
     children: [],
   },
-  /*{
-    icon: SpeechIcon,
-    path: '/speech',
-    label: 'Speech',
-    hidden: false,
-    children: [],
-  },*/
+  // {
+  //   icon: DatabaseIcon,
+  //   path: '/collection',
+  //   label: 'nav.collections',
+  //   hidden: false,
+  //   children: [],
+  // },
+  // {
+  //   icon: FolderIcon,
+  //   path: '/media',
+  //   label: 'nav.media',
+  //   hidden: false,
+  //   children: [],
+  // },
+  // {
+  //   icon: PieChartIcon,
+  //   path: '/analytics',
+  //   label: 'nav.analytics',
+  //   hidden: false,
+  //   children: [],
+  // },
+  // {
+  //   icon: KanbanSquareIcon,
+  //   path: '/kanban',
+  //   label: 'nav.kanban',
+  //   hidden: false,
+  //   children: [],
+  // },
+  // {
+  //   icon: NetworkIcon,
+  //   path: '/architecture',
+  //   label: 'nav.architecture',
+  //   hidden: false,
+  //   children: [],
+  // },
+  // {
+  //   icon: ListTodoIcon,
+  //   path: '/test',
+  //   label: 'nav.tests',
+  //   hidden: false,
+  //   children: [],
+  // },
+  // {
+  //   icon: SpeechIcon,
+  //   path: '/speech',
+  //   label: 'Speech',
+  //   hidden: false,
+  //   children: [],
+  // },
   {
     icon: EllipsisIcon,
     path: '',
