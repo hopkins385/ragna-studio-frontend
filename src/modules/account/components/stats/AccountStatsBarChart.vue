@@ -187,13 +187,7 @@ watchEffect(async () => {
       </div>
     </div>
   </div>
-  <div class="flex items-center justify-between pb-8 pl-4">
-    <div>
-      <h2 class="text-2xl font-semibold">
-        {{ $t('account.stats.tokenUsage') }}
-      </h2>
-    </div>
-  </div>
+  <div class="h-4" id="spacer"></div>
   <Chart
     class="h-80 w-full max-w-3xl"
     :option="option"
