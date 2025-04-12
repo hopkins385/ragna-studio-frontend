@@ -1,4 +1,5 @@
 import type { NavItem } from '@/common/interfaces/nav-item.interface';
+import { AdminRouteName } from '@/modules/admin/enums/admin-route-names.enum';
 import { RouteName } from '@/router/enums/route-names.enum';
 import {
   adminItems,
@@ -18,15 +19,16 @@ import {
 export function useNavBarItems() {
   const route = useRoute();
 
-  const getDefaultItems = (): NavItem[] => {
-    return defaultItems.value;
-  };
+  const getDefaultItems = (): NavItem[] => defaultItems.value;
 
   const dynamicNavItems: Ref<NavItem[]> = computed((): NavItem[] => {
     const items = [homeNavItem];
 
     switch (route.name) {
-      case 'admin':
+      case AdminRouteName.ADMIN_INDEX:
+      case AdminRouteName.ADMIN_USER:
+      case AdminRouteName.ADMIN_USER_CREATE:
+      case AdminRouteName.ADMIN_USER_SHOW:
         items.push(...adminItems);
         break;
       case RouteName.KANBAN_INDEX:

@@ -196,20 +196,20 @@ export const workflowItems: NavItem[] = [
 ];
 
 export const documentItems: NavItem[] = [
-  {
-    icon: PlusCircleIcon,
-    path: '/document/create',
-    label: 'nav.create',
-    hidden: false,
-    children: [],
-  },
-  {
-    icon: FolderIcon,
-    path: '/document/folders',
-    label: 'nav.folders',
-    hidden: false,
-    children: [],
-  },
+  // {
+  //   icon: PlusCircleIcon,
+  //   path: '/document/create',
+  //   label: 'nav.create',
+  //   hidden: false,
+  //   children: [],
+  // },
+  // {
+  //   icon: FolderIcon,
+  //   path: '/document/folders',
+  //   label: 'nav.folders',
+  //   hidden: false,
+  //   children: [],
+  // },
   {
     icon: FilePenIcon,
     path: '/document',
