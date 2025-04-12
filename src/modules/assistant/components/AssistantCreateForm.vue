@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useRagnaClient } from '@/composables/useRagnaClient';
-import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
+import { createAssistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
 import LlmSelectModal from '@/modules/llm/components/LlmSelectModal.vue';
 import PromptWizardDialog from '@/modules/prompt-wizard/components/PromptWizardDialog.vue';
 import { RouteName } from '@/router/enums/route-names.enum';
@@ -34,7 +34,7 @@ import {
 // Emits
 
 // Refs
-const currentTab = ref('tab1');
+const currentTab = ref('title');
 const isLoading = ref(false);
 const assistantTools = ref<AssistantTool[] | null>(null);
 
@@ -60,18 +60,30 @@ const {
   handleSubmit,
   resetForm,
 } = useForm({
-  validationSchema: assistantFormSchema,
+  validationSchema: createAssistantFormSchema,
   initialValues: {
     llmId: '',
     title: '',
     description: '',
     systemPrompt: '',
-    temperature: [80],
-    hasKnowledgeBase: false,
-    hasWorkflow: false,
+    // temperature: [80],
+    // hasKnowledgeBase: false,
+    // hasWorkflow: false,
     isShared: false,
     tools: [],
   },
+});
+
+const tabsWithErrors = computed<string[]>(() => {
+  if (!formErrors.value) return [];
+  const errorTabs = new Set();
+  Object.keys(formErrors.value).forEach(fieldName => {
+    const tabId = siderBarTabs.find(tab => tab.id === fieldName)?.id;
+    if (tabId) {
+      errorTabs.add(tabId);
+    }
+  });
+  return Array.from(errorTabs) as string[];
 });
 
 const onSubmit = handleSubmit(async values => {
@@ -80,7 +92,15 @@ const onSubmit = handleSubmit(async values => {
 
   try {
     await client.assistant.createAssistant({
-      ...values,
+      llmId: values.llmId,
+      title: values.title,
+      description: values.description,
+      systemPrompt: values.systemPrompt,
+      isShared: values.isShared,
+      hasKnowledgeBase: false,
+      hasWorkflow: false,
+      tools: values.tools,
+      // temperature: values.temperature,
     });
     toast.success({
       description: t('assistant.create.success'),
@@ -96,21 +116,10 @@ const onSubmit = handleSubmit(async values => {
   }
 });
 
-/*watch(
-  () => formErrors.value,
-  (errors: unknown[]) => {
-    if (Object.keys(errors).length > 0) {
-      return setErrorAlert(errors[Object.keys(errors)[0] as any] as string);
-    } else {
-      unsetErrorAlert();
-    }
-  },
-);*/
-
 const siderBarTabs = [
-  { id: 'tab1', icon: Settings, label: t('assistant.settings.label') },
-  { id: 'tab2', icon: CircleUserRound, label: t('assistant.behavior.label') },
-  { id: 'tab3', icon: Stars, label: t('assistant.genai.label') },
+  { id: 'title', icon: Settings, label: t('assistant.settings.label') },
+  { id: 'systemPrompt', icon: CircleUserRound, label: t('assistant.behavior.label') },
+  { id: 'llmId', icon: Stars, label: t('assistant.genai.label') },
   { id: 'tab5', icon: BriefcaseBusiness, label: t('assistant.tools.label') },
   { id: 'tab4', icon: Book, label: t('assistant.knowledge.label') },
   { id: 'tab6', icon: ShieldCheck, label: t('assistant.privacy.label') },
@@ -126,21 +135,20 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  {{ formErrors }}
   <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
   <div class="w-full flex justify-end">
     <div class="flex items-center space-x-4">
       <ButtonLink to="/assistant" variant="secondary">
         {{ $t('form.button.cancel') }}
       </ButtonLink>
-      <ButtonLoading :loading="isLoading" @click="onSubmit">
+      <ButtonLoading :loading="isLoading" @click="onSubmit" type="submit">
         {{ $t('assistant.create.button') }}
       </ButtonLoading>
     </div>
   </div>
-  <TabSidebar v-model="currentTab" :tabs="siderBarTabs">
+  <TabSidebar v-model="currentTab" :tabs="siderBarTabs" :error-tabs="tabsWithErrors">
     <!-- TAB 1-->
-    <template #tab1>
+    <template #title>
       <div class="space-y-8">
         <FormField v-slot="{ componentField }" name="title">
           <FormItem>
@@ -172,7 +180,7 @@ onBeforeUnmount(() => {
       </div>
     </template>
     <!-- TAB 2-->
-    <template #tab2>
+    <template #systemPrompt>
       <div class="space-y-8">
         <FormField v-slot="{ componentField, value, handleChange }" name="systemPrompt">
           <div>
@@ -192,7 +200,7 @@ onBeforeUnmount(() => {
       </div>
     </template>
     <!-- TAB 3-->
-    <template #tab3>
+    <template #llmId>
       <FormField v-slot="{ handleChange, value }" name="llmId">
         <FormItem>
           <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>

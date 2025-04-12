@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useToolIcons } from '@/modules/assistant-tool/composables/useToolIcons';
-import { assistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
-import { useAuthStore } from '@/modules/auth/stores/auth.store';
+import { updateAssistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
 import CollectionSelectModal from '@/modules/collection/components/CollectionSelectModal.vue';
 import LlmSelectModal from '@/modules/llm/components/LlmSelectModal.vue';
 import PromptWizardDialog from '@/modules/prompt-wizard/components/PromptWizardDialog.vue';
@@ -48,7 +47,6 @@ const emit = defineEmits<Emits>();
 
 const router = useRouter();
 const route = useRoute();
-const authStore = useAuthStore();
 const toast = useToast();
 
 const updateIsLoading = ref(false);
@@ -69,22 +67,33 @@ const { getToolIcon } = useToolIcons();
 const {
   handleSubmit,
   meta: formMeta,
-  errors,
+  errors: formErrors,
 } = useForm({
-  validationSchema: assistantFormSchema,
+  validationSchema: updateAssistantFormSchema,
   initialValues: {
     llmId: props.assistant?.llm.id || '',
     title: props.assistant?.title || '',
     description: props.assistant?.description || '',
     systemPrompt: props.assistant?.systemPrompt || '',
-    temperature: [80], // props.assistant?.temperature ||
+    // temperature: [80], // props.assistant?.temperature ||
     isShared: props.assistant?.isShared || false,
     tools: props.assistant?.tools.map((tool: AssistantTool) => tool?.toolId) || [],
   },
 });
 
+const tabsWithErrors = computed<string[]>(() => {
+  if (!formErrors.value) return [];
+  const errorTabs = new Set();
+  Object.keys(formErrors.value).forEach(fieldName => {
+    const tabId = siderBarTabs.find(tab => tab.id === fieldName)?.id;
+    if (tabId) {
+      errorTabs.add(tabId);
+    }
+  });
+  return Array.from(errorTabs) as string[];
+});
+
 const onSubmit = handleSubmit(async values => {
-  console.log('values', values);
   if (!props.assistant) {
     throw new Error('Agent not found');
   }
@@ -93,7 +102,15 @@ const onSubmit = handleSubmit(async values => {
 
   try {
     await client.assistant.updateAssistant(props.assistant.id, {
-      ...values,
+      llmId: values.llmId,
+      title: values.title,
+      description: values.description,
+      systemPrompt: values.systemPrompt,
+      isShared: values.isShared,
+      hasKnowledgeBase: values.hasKnowledgeBase,
+      hasWorkflow: values.hasWorkflow,
+      tools: values.tools,
+      // temperature: values.temperature[0],
     });
     toast.success({
       description: t('assistant.edit.success'),
@@ -171,29 +188,29 @@ const onStartChat = async () => {
 };
 
 const siderBarTabs = [
-  { id: 'general', icon: Settings, label: t('assistant.settings.label') },
-  { id: 'behavior', icon: CircleUserRound, label: t('assistant.behavior.label') },
-  { id: 'llm', icon: Stars, label: t('assistant.genai.label') },
+  { id: 'title', icon: Settings, label: t('assistant.settings.label') },
+  { id: 'systemPrompt', icon: CircleUserRound, label: t('assistant.behavior.label') },
+  { id: 'llmId', icon: Stars, label: t('assistant.genai.label') },
   { id: 'tools', icon: BriefcaseBusiness, label: t('assistant.tools.label') },
   { id: 'knowledge', icon: Book, label: t('assistant.knowledge.label') },
   { id: 'privacy', icon: ShieldCheck, label: t('assistant.privacy.label') },
 ];
 
 // Current tab and query parameter
-/*const queryTab = computed(() => {
+const queryTab = computed(() => {
   const tab = route.query.tab?.toString();
   if (tab && siderBarTabs.some(t => t.id === tab)) {
     return tab;
   }
-  return 'general';
-});*/
-const currentTab = ref('general');
+  return 'title';
+});
+const currentTab = ref(queryTab.value);
 
-/*watch(currentTab, (newTab: string) => {
+watch(currentTab, (newTab: string) => {
   router.replace({
     query: { ...route.query, tab: newTab },
   });
-});*/
+});
 
 // onBeforeRouteLeave
 onBeforeRouteLeave(canLeavePage);
@@ -204,64 +221,62 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  {{ errors }}
-  <form @submit.prevent="onSubmit" class="space-y-8">
-    <div class="w-full flex justify-end">
-      <div class="flex items-center space-x-4">
-        <Button @click="$router.back()" variant="secondary">
-          {{ $t('form.button.back') }}
-        </Button>
-        <ButtonLoading :loading="newChatIsLoading" @click="onStartChat" variant="outline">
-          {{ $t('assistant.button.new_chat') }}
-        </ButtonLoading>
-        <ButtonLoading :loading="updateIsLoading" type="submit">
-          {{ $t('form.button.save') }}
-        </ButtonLoading>
-      </div>
+  <div class="w-full flex justify-end">
+    <div class="flex items-center space-x-4">
+      <Button @click="$router.back()" variant="secondary">
+        {{ $t('form.button.back') }}
+      </Button>
+      <ButtonLoading :loading="newChatIsLoading" @click="onStartChat" variant="outline">
+        {{ $t('assistant.button.new_chat') }}
+      </ButtonLoading>
+      <ButtonLoading :loading="updateIsLoading" @click="onSubmit" type="submit">
+        {{ $t('form.button.save') }}
+      </ButtonLoading>
     </div>
-    <TabSidebar v-model="currentTab" :tabs="siderBarTabs">
-      <!-- TAB 1-->
-      <template #general>
-        <div class="space-y-8">
-          <FormField v-slot="{ componentField }" name="title">
-            <FormItem>
-              <FormLabel>{{ $t('assistant.form.name_label') }}</FormLabel>
-              <FormDescription>
-                {{ $t('assistant.form.name_description') }}
-              </FormDescription>
-              <FormControl>
-                <Input type="text" placeholder="" v-bind="componentField" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
-          <FormField v-slot="{ componentField }" name="description">
-            <FormItem>
-              <FormLabel>{{ $t('assistant.form.description_label') }}</FormLabel>
-              <FormDescription>
-                {{ $t('assistant.form.description_description') }}
-              </FormDescription>
-              <FormControl>
-                <Textarea type="text" placeholder="" v-bind="componentField" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-        </div>
-      </template>
-      <!-- TAB 2-->
-      <template #llm>
-        <FormField v-slot="{ handleChange }" name="llmId">
+  </div>
+  <TabSidebar v-model="currentTab" :tabs="siderBarTabs" :error-tabs="tabsWithErrors">
+    <!-- TAB 1-->
+    <template #title>
+      <div class="space-y-8">
+        <FormField v-slot="{ componentField }" name="title">
           <FormItem>
-            <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
+            <FormLabel>{{ $t('assistant.form.name_label') }}</FormLabel>
+            <FormDescription>
+              {{ $t('assistant.form.name_description') }}
+            </FormDescription>
             <FormControl>
-              <LlmSelectModal
-                :initial-display-name="initialAssistantName"
-                :current-llm-id="props.assistant?.llm.id"
-                @update:id="handleChange"
-              />
-              <!--
+              <Input type="text" placeholder="" v-bind="componentField" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+
+        <FormField v-slot="{ componentField }" name="description">
+          <FormItem>
+            <FormLabel>{{ $t('assistant.form.description_label') }}</FormLabel>
+            <FormDescription>
+              {{ $t('assistant.form.description_description') }}
+            </FormDescription>
+            <FormControl>
+              <Textarea type="text" placeholder="" v-bind="componentField" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
+    </template>
+    <!-- TAB 2-->
+    <template #llmId>
+      <FormField v-slot="{ handleChange }" name="llmId">
+        <FormItem>
+          <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
+          <FormControl>
+            <LlmSelectModal
+              :initial-display-name="initialAssistantName"
+              :current-llm-id="props.assistant?.llm.id"
+              @update:id="handleChange"
+            />
+            <!--
             <div class="flex items-center space-x-3">
               <LlmProviderBox
                 v-for="provider in supportedProviders"
@@ -274,116 +289,115 @@ onBeforeUnmount(() => {
               />
             </div>
             -->
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </template>
+    <!-- TAB 3-->
+    <template #systemPrompt>
+      <div class="space-y-8">
+        <FormField v-slot="{ componentField, value, handleChange }" name="systemPrompt">
+          <div>
+            <PromptWizardDialog :input-prompt="value" @update-prompt="handleChange" />
+          </div>
+          <FormItem>
+            <FormLabel>{{ $t('assistant.behavior.label') }}</FormLabel>
+            <FormDescription>
+              {{ $t('assistant.behavior.description') }}
+            </FormDescription>
+            <FormControl>
+              <Textarea rows="10" v-bind="componentField" />
             </FormControl>
             <FormMessage />
           </FormItem>
         </FormField>
-      </template>
-      <!-- TAB 3-->
-      <template #behavior>
-        <div class="space-y-8">
-          <FormField v-slot="{ componentField, value, handleChange }" name="systemPrompt">
-            <div>
-              <PromptWizardDialog :input-prompt="value" @update-prompt="handleChange" />
-            </div>
-            <FormItem>
-              <FormLabel>{{ $t('assistant.behavior.label') }}</FormLabel>
-              <FormDescription>
-                {{ $t('assistant.behavior.description') }}
-              </FormDescription>
+      </div>
+    </template>
+    <!-- TAB 4 -->
+    <template #knowledge>
+      <FormField v-slot="{ handleChange }" name="knowledge">
+        <FormItem>
+          <FormLabel>{{ $t('assistant.knowledge.label') }}</FormLabel>
+          <FormDescription>
+            {{ $t('assistant.knowledge.description') }}
+          </FormDescription>
+          <FormControl>
+            <CollectionSelectModal
+              :id="firstCollection.id"
+              :initial-display-name="firstCollection.name"
+              @update:id="
+                (id: string) => {
+                  handleChange(id), updateCollection(id);
+                }
+              "
+              @reset="resetCollections"
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </template>
+    <!-- TAB 5 -->
+    <template #tools>
+      <FormField name="tools">
+        <FormItem>
+          <div class="mb-4 space-y-2">
+            <FormLabel>{{ $t('assistant.tools.label') }}</FormLabel>
+            <FormDescription>
+              {{ $t('assistant.tools.description') }}
+            </FormDescription>
+          </div>
+
+          <FormField
+            v-for="tool in assistantTools"
+            v-slot="{ value, handleChange }"
+            :key="tool.id"
+            type="checkbox"
+            :value="tool.id"
+            :unchecked-value="false"
+            name="tools"
+          >
+            <FormItem
+              class="flex flex-row items-center space-x-3 border border-transparent space-y-4 w-fit"
+            >
               <FormControl>
-                <Textarea rows="10" v-bind="componentField" />
+                <Checkbox :checked="value?.includes(tool.id)" @update:checked="handleChange" />
               </FormControl>
-              <FormMessage />
+              <FormLabel class="font-normal flex space-x-3">
+                <div class="size-8 flex justify-center">
+                  <component
+                    :is="getToolIcon(tool?.iconName)"
+                    class="size-5 stroke-1.5 text-gray-500 shrink-0"
+                  />
+                </div>
+                <div class="space-y-1">
+                  <h2 class="text-sm">{{ $t(`assistant.tools.${tool.name}.label`) }}</h2>
+                  <p class="opacity-75 text-xs">
+                    {{ $t(`assistant.tools.${tool.name}.description`) }}
+                  </p>
+                </div>
+              </FormLabel>
             </FormItem>
           </FormField>
-        </div>
-      </template>
-      <!-- TAB 4 -->
-      <template #knowledge>
-        <FormField v-slot="{ handleChange }" name="knowledge">
-          <FormItem>
-            <FormLabel>{{ $t('assistant.knowledge.label') }}</FormLabel>
-            <FormDescription>
-              {{ $t('assistant.knowledge.description') }}
-            </FormDescription>
-            <FormControl>
-              <CollectionSelectModal
-                :id="firstCollection.id"
-                :initial-display-name="firstCollection.name"
-                @update:id="
-                  (id: string) => {
-                    handleChange(id), updateCollection(id);
-                  }
-                "
-                @reset="resetCollections"
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-      </template>
-      <!-- TAB 5 -->
-      <template #tools>
-        <FormField name="tools">
-          <FormItem>
-            <div class="mb-4 space-y-2">
-              <FormLabel>{{ $t('assistant.tools.label') }}</FormLabel>
-              <FormDescription>
-                {{ $t('assistant.tools.description') }}
-              </FormDescription>
-            </div>
-
-            <FormField
-              v-for="tool in assistantTools"
-              v-slot="{ value, handleChange }"
-              :key="tool.id"
-              type="checkbox"
-              :value="tool.id"
-              :unchecked-value="false"
-              name="tools"
-            >
-              <FormItem
-                class="flex flex-row items-center space-x-3 border border-transparent space-y-4 w-fit"
-              >
-                <FormControl>
-                  <Checkbox :checked="value?.includes(tool.id)" @update:checked="handleChange" />
-                </FormControl>
-                <FormLabel class="font-normal flex space-x-3">
-                  <div class="size-8 flex justify-center">
-                    <component
-                      :is="getToolIcon(tool?.iconName)"
-                      class="size-5 stroke-1.5 text-gray-500 shrink-0"
-                    />
-                  </div>
-                  <div class="space-y-1">
-                    <h2 class="text-sm">{{ $t(`assistant.tools.${tool.name}.label`) }}</h2>
-                    <p class="opacity-75 text-xs">
-                      {{ $t(`assistant.tools.${tool.name}.description`) }}
-                    </p>
-                  </div>
-                </FormLabel>
-              </FormItem>
-            </FormField>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-      </template>
-      <!-- TAB 7 -->
-      <template #privacy>
-        <FormField name="privacy">
-          <FormItem>
-            <FormLabel>{{ $t('assistant.privacy.label') }}</FormLabel>
-            <FormDescription>
-              {{ $t('assistant.privacy.description') }}
-            </FormDescription>
-            <FormControl>
-              <div class="text-sm border px-5 py-3 w-fit">Under Construction</div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-      </template>
-    </TabSidebar>
-  </form>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </template>
+    <!-- TAB 7 -->
+    <template #privacy>
+      <FormField name="privacy">
+        <FormItem>
+          <FormLabel>{{ $t('assistant.privacy.label') }}</FormLabel>
+          <FormDescription>
+            {{ $t('assistant.privacy.description') }}
+          </FormDescription>
+          <FormControl>
+            <div class="text-sm border px-5 py-3 w-fit">Under Construction</div>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </template>
+  </TabSidebar>
 </template>

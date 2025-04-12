@@ -8,6 +8,7 @@ interface Tab {
 interface Props {
   tabs: Tab[];
   modelValue: string; // for v-model support
+  errorTabs?: string[];
 }
 
 const props = defineProps<Props>();
@@ -33,6 +34,7 @@ const activeTab = computed({
             :class="{
               'shadow-sm': activeTab === tab.id,
               'hover:bg-gray-100 border-transparent': activeTab !== tab.id,
+              'border border-destructive': props.errorTabs?.includes(tab.id),
             }"
             class="w-full px-4 py-2 text-left transition flex items-center space-x-2 rounded-sm border"
             @click="activeTab = tab.id"
