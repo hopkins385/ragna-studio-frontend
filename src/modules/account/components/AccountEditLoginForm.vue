@@ -4,14 +4,12 @@ import { Input } from '@/components/ui/input';
 import AccountEditPasswordDialog from '@/modules/account/components/AccountEditPasswordDialog.vue';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@ui/form';
 
-interface EditLoginProps {
+defineProps<{
   user: {
     id: string;
     email: string;
   };
-}
-
-defineProps<EditLoginProps>();
+}>();
 
 const onSubmit = () => {};
 </script>

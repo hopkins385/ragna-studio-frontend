@@ -3,20 +3,18 @@ import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { usePromise } from '@/composables/usePromise';
 import { useRagnaClient } from '@/composables/useRagnaClient';
-import AccountDeleteDialog from '@/modules/account/components/AccountDeleteDialog.vue';
+import AccountEditLoginForm from '@/modules/account/components/AccountEditLoginForm.vue';
 import AccountProfileForm from '@/modules/account/components/AccountProfileForm.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
 import type { AccountData } from '@hopkins385/ragna-sdk';
-import ButtonLoading from '@ui/button/ButtonLoading.vue';
-import AccountEditLoginForm from './AccountEditLoginForm.vue';
 
 const client = useRagnaClient();
 
 const accountData = ref<AccountData>();
 
-const org = computed(() => accountData.value?.organisation ?? null);
 const teams = computed(() => accountData.value?.teams ?? null);
+const organisation = computed(() => teams.value?.[0].team.organisation ?? null);
 
 const initAccountData = async () => {
   const { data, error } = await usePromise(() => client.account.fetchAccountData());
@@ -63,6 +61,16 @@ onBeforeMount(async () => {
         </BoxContainer>
         <div class="col-span-1 grid grid-cols-1 space-y-6 text-sm">
           <BoxContainer class="border border-stone-100 bg-stone-50">
+            <h2 class="pb-5 font-semibold">Teams</h2>
+            <p v-for="t in teams" :key="t.team.id" class="w-fit text-sm">{{ t.team.name }}</p>
+          </BoxContainer>
+          <BoxContainer class="border border-stone-100 bg-stone-50">
+            <h2 class="pb-5 font-semibold">Organisation</h2>
+            <p class="w-fit text-sm">{{ organisation?.name }}</p>
+            <p class="mt-4 w-fit text-sm opacity-50">ID: org_{{ organisation?.id }}</p>
+          </BoxContainer>
+          <!--
+          <BoxContainer class="border border-stone-100 bg-stone-50">
             <h2 class="pb-5 font-semibold">Account Security</h2>
             Email Verified: {{ accountData?.hasEmailVerified ? 'Yes' : 'No' }}
           </BoxContainer>
@@ -72,6 +80,7 @@ onBeforeMount(async () => {
             <h2 class="mt-2 py-2 font-semibold">Credits</h2>
             <p>{{ accountData?.totalCredits }}</p>
           </BoxContainer>
+          -->
         </div>
       </div>
       <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
@@ -82,24 +91,13 @@ onBeforeMount(async () => {
           }"
         />
       </BoxContainer>
-      <div class="grid grid-cols-2 gap-5">
-        <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
-          <h2 class="pb-5">Organisation</h2>
-          <p class="w-fit text-sm">{{ org?.name }}</p>
-          <p class="mt-4 w-fit text-sm opacity-50">ID: org_{{ accountData?.organisationId }}</p>
-        </BoxContainer>
-        <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
-          <h2 class="pb-5">Team</h2>
-          <p class="w-fit text-sm">{{ teams?.[0]?.team.name }}</p>
-        </BoxContainer>
-      </div>
+      <!--
       <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
         <h2 class="pb-5">Subscription</h2>
         <ButtonLoading :loading="false" variant="outline" @click="onManageSubscriptionClick">
           Manage Subscription
         </ButtonLoading>
       </BoxContainer>
-      <!--
     <BoxContainer class="mt-5">
       <h2 class="pb-5">App Settings</h2>
       <p class="text-sm text-muted-foreground">coming soon</p>
@@ -108,11 +106,12 @@ onBeforeMount(async () => {
       <h2 class="pb-5">API Tokens</h2>
       <p class="text-sm text-muted-foreground">coming soon</p>
     </BoxContainer>
-    -->
+
       <BoxContainer class="mt-5 border border-stone-100 bg-stone-50">
         <h2 class="pb-5">Danger Zone</h2>
         <AccountDeleteDialog :user-id="accountData?.id ?? '-1'" />
       </BoxContainer>
+          -->
     </div>
   </SectionContainer>
 </template>
