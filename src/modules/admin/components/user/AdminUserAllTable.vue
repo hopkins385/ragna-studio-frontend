@@ -48,13 +48,13 @@ const meta = computed(() => {
 });
 
 // Functions
-const initAllUsers = async (params: { page: number }) => {
+const initAllUsers = async (params: { page: number; limit?: number }) => {
   unsetErrorAlert();
   try {
     // TODO: Add pagination params
     usersData.value = await client.admin.user.fetchAllUsers({
       page: params.page,
-      limit: 10,
+      limit: params.limit ?? 10,
     });
   } catch (error: unknown) {
     return setErrorAlert(error);
