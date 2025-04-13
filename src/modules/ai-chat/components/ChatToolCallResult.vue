@@ -100,7 +100,7 @@ const getToolDisplayName = ({ rawName }: { rawName: string }) => {
         class="border border-sky-100 shadow-sm mb-2 p-2 rounded-lg px-4 flex items-center space-x-2 cursor-pointer bg-sky-100"
         @click="toggleDetails"
       >
-        <div>Tool: {{ getToolDisplayName({ rawName: call.toolName }) }}</div>
+        <div>{{ getToolDisplayName({ rawName: call.toolName }) }}</div>
         <div>
           <ChevronDownIcon class="size-4 stroke-1.5" :class="{ 'rotate-180': showDetails }" />
         </div>
