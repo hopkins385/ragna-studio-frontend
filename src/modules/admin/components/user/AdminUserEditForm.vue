@@ -87,7 +87,7 @@ const onSubmit = () => {
       <FormItem>
         <FormLabel> Name </FormLabel>
         <FormControl>
-          <Input type="text" v-bind="componentField" :disabled="!editable" />
+          <Input type="text" v-bind="componentField" autocomplete="off" :disabled="!editable" />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -97,7 +97,7 @@ const onSubmit = () => {
       <FormItem>
         <FormLabel> Email </FormLabel>
         <FormControl>
-          <Input type="text" v-bind="componentField" :disabled="!editable" />
+          <Input type="text" v-bind="componentField" autocomplete="off" :disabled="!editable" />
         </FormControl>
         <FormMessage />
       </FormItem>

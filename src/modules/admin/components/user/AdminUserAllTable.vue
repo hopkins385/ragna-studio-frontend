@@ -117,7 +117,7 @@ onBeforeMount(async () => {
   <div>
     <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
     <ConfirmDialog v-model="confirmDialog.open" v-bind="confirmDialog" />
-    <Table>
+    <Table v-if="users.length" class="w-full">
       <TableCaption>
         Showing from
         {{ meta.totalCount > 10 ? meta.currentPage * 10 - 10 + 1 : 1 }}
