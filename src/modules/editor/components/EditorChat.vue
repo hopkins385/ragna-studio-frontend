@@ -15,6 +15,7 @@ import ChatAssistantSelect from '@/modules/ai-chat/components/ChatAssistantSelec
 import ChatAssistantTaskSelect from '@/modules/ai-chat/components/ChatAssistantTaskSelect.vue';
 import ChatInputTextarea from '@/modules/ai-chat/components/ChatInputTextarea.vue';
 import { useAiChatStore } from '@/modules/ai-chat/stores';
+import { transformEditorJsonContent } from '@/modules/editor/helpers/transform-json-payload.helper';
 import { useEditorStore } from '@/modules/editor/stores/editor.store';
 import { markdownService } from '@/modules/markdown/services/markdown.service';
 import { RouteName } from '@/router/enums/route-names.enum';
@@ -35,7 +36,7 @@ const aiChatSettings = useAiChatSettingsStore();
 // Injections
 // Composables
 const router = useRouter();
-const { isAutoScrolling } = useAutoScroll(chatContainer);
+useAutoScroll(chatContainer);
 
 // Computed
 const submitLocked = computed<boolean>(() => {
@@ -58,6 +59,9 @@ async function submitForm(inputText: string) {
     await aiChatStore.createNewChat({ assistantId: aiChatSettings.selectedAssistantId });
   }
 
+  const rawJsonContent = editorStore.getJSONContent();
+  const transformedJsonContent = transformEditorJsonContent(rawJsonContent?.content ?? []);
+
   await aiChatStore.createAndStreamUserChatMessage({
     chatId: aiChatStore.chat?.id,
     type: 'text',
@@ -67,7 +71,7 @@ async function submitForm(inputText: string) {
         text: userMessageContent,
       },
     ],
-    context: JSON.stringify(editorStore.getJSONContent()),
+    context: JSON.stringify(transformedJsonContent),
   });
 }
 
