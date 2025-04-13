@@ -62,6 +62,10 @@ async function submitForm(inputText: string) {
   const rawJsonContent = editorStore.getJSONContent();
   const transformedJsonContent = transformEditorJsonContent(rawJsonContent?.content ?? []);
 
+  // console.log('rawJsonContent:', rawJsonContent);
+  // console.log('Transformed JSON content:', transformedJsonContent);
+  // return;
+
   await aiChatStore.createAndStreamUserChatMessage({
     chatId: aiChatStore.chat?.id,
     type: 'text',

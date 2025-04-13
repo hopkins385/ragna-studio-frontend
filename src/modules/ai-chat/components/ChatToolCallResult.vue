@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ChatMessageBoxWrapper from '@/modules/ai-chat/components/ChatMessageBoxWrapper.vue';
+import { getToolDisplayName } from '@/modules/assistant-tool/helpers/tool-display-name.helper';
 import { ChevronDownIcon } from 'lucide-vue-next';
 
 // Props
@@ -14,7 +15,6 @@ const props = defineProps<ChatToolCallProps>();
 const showDetails = ref(false);
 
 // Composables
-const { t } = useI18n();
 
 // Computed
 const toolCallDisplayName = computed(() => {
@@ -74,18 +74,6 @@ const toggleDetails = (e: MouseEvent) => {
   showDetails.value = !showDetails.value;
 };
 
-const toolDisplayNames = {
-  searchWeb: t('tool.websearch.label'),
-  think: t('tool.think.label'),
-  texteditor: t('tool.texteditor.label'),
-  webscraper: t('tool.webscraper.label'),
-  knowledge: t('tool.knowledge.label'),
-};
-
-const getToolDisplayName = ({ rawName }: { rawName: string }) => {
-  return toolDisplayNames[rawName as keyof typeof toolDisplayNames] ?? rawName;
-};
-
 // Hooks
 </script>
 
@@ -100,7 +88,7 @@ const getToolDisplayName = ({ rawName }: { rawName: string }) => {
         class="border border-sky-100 shadow-sm mb-2 p-2 rounded-lg px-4 flex items-center space-x-2 cursor-pointer bg-sky-100"
         @click="toggleDetails"
       >
-        <div>{{ getToolDisplayName({ rawName: call.toolName }) }}</div>
+        <div>{{ $t(getToolDisplayName({ rawName: call.toolName })) }}</div>
         <div>
           <ChevronDownIcon class="size-4 stroke-1.5" :class="{ 'rotate-180': showDetails }" />
         </div>
@@ -115,7 +103,7 @@ const getToolDisplayName = ({ rawName }: { rawName: string }) => {
           </div>
         </li>
 
-        <li class="flex" v-if="call.toolName !== 'think'">
+        <li class="flex" v-if="call.toolName !== 'think' && call.toolName !== 'comment'">
           <div class="whitespace-nowrap min-w-14"><strong>Tool:</strong></div>
           <div class="">
             <div class="" v-for="(result, index) in call.toolResults" :key="index">

@@ -688,6 +688,10 @@
     "think": {
       "label": "Gedanken aufschreiben",
       "description": "Gedanken aufschreiben, um über etwas schwieriges nachzudenken"
+    },
+    "comment": {
+      "label": "(Editor) Kommentar hinzufügen",
+      "description": "Kommentar zu einem Dokument hinzufügen"
     }
   }
 }
