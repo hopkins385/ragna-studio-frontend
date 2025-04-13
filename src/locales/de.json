@@ -374,27 +374,7 @@
     },
     "tools": {
       "label": "Werkzeuge",
-      "description": "Wähle die Werkzeuge aus, die der Agent verwenden kann",
-      "websearch": {
-        "label": "Websuche",
-        "description": "Im Web nach Informationen suchen"
-      },
-      "webscraper": {
-        "label": "Webseite Scrapen",
-        "description": "Webseite besuchen und Informationen extrahieren"
-      },
-      "knowledge": {
-        "label": "Wissensdatenbank",
-        "description": "Wissensdatenbank nach Informationen durchsuchen"
-      },
-      "texteditor": {
-        "label": "Kommentare hinzufügen",
-        "description": "Kommentare zu einem Dokument im Editor hinzufügen"
-      },
-      "think": {
-        "label": "Gedanken aufschreiben",
-        "description": "Gedanken aufschreiben, um über etwas schwieriges nachzudenken"
-      }
+      "description": "Wähle die Werkzeuge aus, die der Agent verwenden kann"
     },
     "workflow": {
       "label": "Workflow",
@@ -686,6 +666,28 @@
     "empty": {
       "title": "Starte eine Diskussion",
       "subtitle": "Du kannst Kommentare hinzufügen und andere erwähnen, um sie zu diesem Dokument einzuladen"
+    }
+  },
+  "tool": {
+    "websearch": {
+      "label": "Websuche",
+      "description": "Im Web nach Informationen suchen"
+    },
+    "webscraper": {
+      "label": "Webseite Scrapen",
+      "description": "Webseite besuchen und Informationen extrahieren"
+    },
+    "knowledge": {
+      "label": "Wissensdatenbank",
+      "description": "Wissensdatenbank nach Informationen durchsuchen"
+    },
+    "texteditor": {
+      "label": "Kommentare hinzufügen",
+      "description": "Kommentare zu einem Dokument im Editor hinzufügen"
+    },
+    "think": {
+      "label": "Gedanken aufschreiben",
+      "description": "Gedanken aufschreiben, um über etwas schwieriges nachzudenken"
     }
   }
 }

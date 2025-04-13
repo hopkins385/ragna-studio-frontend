@@ -372,9 +372,9 @@ onBeforeUnmount(() => {
                   />
                 </div>
                 <div class="space-y-1">
-                  <h2 class="text-sm">{{ $t(`assistant.tools.${tool.name}.label`) }}</h2>
+                  <h2 class="text-sm">{{ $t(`tool.${tool.name.toString()}.label`) }}</h2>
                   <p class="opacity-75 text-xs">
-                    {{ $t(`assistant.tools.${tool.name}.description`) }}
+                    {{ $t(`tool.${tool.name.toString()}.description`) }}
                   </p>
                 </div>
               </FormLabel>

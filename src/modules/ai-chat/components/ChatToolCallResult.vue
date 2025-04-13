@@ -2,20 +2,19 @@
 import ChatMessageBoxWrapper from '@/modules/ai-chat/components/ChatMessageBoxWrapper.vue';
 import { ChevronDownIcon } from 'lucide-vue-next';
 
-// Imports
-
 // Props
 interface ChatToolCallProps {
   displayName?: string;
   content: any;
 }
 const props = defineProps<ChatToolCallProps>();
-// Emits
 
+// Emits
 // Refs
 const showDetails = ref(false);
 
 // Composables
+const { t } = useI18n();
 
 // Computed
 const toolCallDisplayName = computed(() => {
@@ -75,6 +74,18 @@ const toggleDetails = (e: MouseEvent) => {
   showDetails.value = !showDetails.value;
 };
 
+const toolDisplayNames = {
+  searchWeb: t('tool.websearch.label'),
+  think: t('tool.think.label'),
+  texteditor: t('tool.texteditor.label'),
+  webscraper: t('tool.webscraper.label'),
+  knowledge: t('tool.knowledge.label'),
+};
+
+const getToolDisplayName = ({ rawName }: { rawName: string }) => {
+  return toolDisplayNames[rawName as keyof typeof toolDisplayNames] ?? rawName;
+};
+
 // Hooks
 </script>
 
@@ -89,24 +100,26 @@ const toggleDetails = (e: MouseEvent) => {
         class="border border-sky-100 shadow-sm mb-2 p-2 rounded-lg px-4 flex items-center space-x-2 cursor-pointer bg-sky-100"
         @click="toggleDetails"
       >
-        <div>Tool: {{ call.toolName }}</div>
+        <div>Tool: {{ getToolDisplayName({ rawName: call.toolName }) }}</div>
         <div>
           <ChevronDownIcon class="size-4 stroke-1.5" :class="{ 'rotate-180': showDetails }" />
         </div>
       </div>
       <ul class="pr-14 !ml-5" v-if="showDetails">
-        <li class="flex space-x-2">
-          <div class="whitespace-nowrap"><strong>Agent Input:</strong></div>
-          <div>
-            <div v-for="(args, index) in call.toolArgs" :key="index" class="">{{ args }}</div>
+        <li class="flex">
+          <div class="whitespace-nowrap min-w-14"><strong>Agent:</strong></div>
+          <div class="">
+            <div v-for="(args, index) in call.toolArgs" :key="index" class="">
+              <p class="whitespace-pre-line">{{ args }}</p>
+            </div>
           </div>
         </li>
 
-        <li class="flex space-x-2">
-          <div class="whitespace-nowrap"><strong>Tool Output:</strong></div>
-          <div>
+        <li class="flex" v-if="call.toolName !== 'think'">
+          <div class="whitespace-nowrap min-w-14"><strong>Tool:</strong></div>
+          <div class="">
             <div class="" v-for="(result, index) in call.toolResults" :key="index">
-              {{ result }}
+              <p class="whitespace-pre-line">{{ result }}</p>
             </div>
           </div>
         </li>
