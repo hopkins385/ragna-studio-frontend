@@ -32,6 +32,8 @@ const usersData = shallowRef<UsersPaginated>();
 const client = useRagnaClient();
 const toast = useToast();
 const auth = useAuthStore();
+const route = useRoute();
+const router = useRouter();
 const { t } = useI18n();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
@@ -84,12 +86,31 @@ const onDelete = (userId: string) => {
   });
 };
 
-const onUpdatePage = async (currentPage: number) => {
-  page.value = currentPage;
-  await initAllUsers({ page: currentPage });
+const roleDisplayNames = {
+  admin: 'Administrator',
+  user: 'User',
 };
 
-await initAllUsers({ page: page.value });
+const getRoleDisplayName = (role: { name: string }) => {
+  return roleDisplayNames[role.name as keyof typeof roleDisplayNames] || '-';
+};
+
+const onUpdatePage = async (currentPage: number) => {
+  page.value = currentPage;
+  router.push({ query: { ...route.query, page: currentPage } });
+};
+
+onBeforeRouteUpdate(async (to, from) => {
+  if (to.query.page !== from.query.page) {
+    page.value = Number(to.query.page) || 1;
+    await initAllUsers({ page: page.value });
+  }
+});
+
+onBeforeMount(async () => {
+  page.value = Number(route.query.page) || 1;
+  await initAllUsers({ page: page.value });
+});
 </script>
 
 <template>
@@ -105,13 +126,13 @@ await initAllUsers({ page: page.value });
         of total
         {{ meta.totalCount }}
       </TableCaption>
-      <TableHeader>
+      <TableHeader class="bg-stone-50">
         <TableRow>
-          <TableHead> Avatar </TableHead>
-          <TableHead> Name </TableHead>
-          <TableHead> ... </TableHead>
-          <TableHead> ... </TableHead>
-          <TableHead class="text-right"> Actions </TableHead>
+          <TableHead class="font-semibold"> Avatar </TableHead>
+          <TableHead class="font-semibold"> Name </TableHead>
+          <TableHead class="font-semibold"> Roles </TableHead>
+          <TableHead class="font-semibold"> Teams </TableHead>
+          <TableHead class="text-right font-semibold"> Actions </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -122,8 +143,15 @@ await initAllUsers({ page: page.value });
           <TableCell class="max-w-full truncate">
             {{ user.name }}
           </TableCell>
-          <TableCell class="whitespace-nowrap"> ... </TableCell>
-          <TableCell class="whitespace-nowrap"> ... </TableCell>
+          <TableCell class="whitespace-nowrap">
+            <p v-if="!user.roles.length">-</p>
+            <p v-for="role in user.roles" :key="role.id">
+              {{ getRoleDisplayName({ name: role.name }) }}
+            </p>
+          </TableCell>
+          <TableCell class="whitespace-nowrap">
+            <p v-for="team in user.teams" :key="team.id">{{ team.name }}</p>
+          </TableCell>
           <TableCell class="flex justify-end space-x-2 whitespace-nowrap text-right">
             <ButtonLink :to="`/admin/user/${user.id}`" variant="outline" size="icon">
               <EyeIcon class="size-4 stroke-1.5 text-primary" />
