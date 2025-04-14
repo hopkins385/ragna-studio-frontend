@@ -15,7 +15,7 @@ export function getRagnaClient() {
     timeout: 300000, // 5 minutes
     getAccessTokenCallback: () => authStore.getAccessToken,
     getRefreshTokenCallback: () => authStore.getRefreshToken,
-    refreshAuthCallback: authStore.refreshAuth,
+    refreshAuthCallback: () => authStore.refreshAuth(),
   });
 
   return ragnaClient;

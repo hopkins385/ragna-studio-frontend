@@ -126,6 +126,7 @@ export const useAuthStore = defineStore('auth-store', () => {
 
   const refreshAuth = async () => {
     refreshAttempts.value++;
+    console.log('Refreshing auth. attempts:', refreshAttempts.value);
     if (refreshAttempts.value > maxRefreshAttempts.value) {
       clearUser();
       refreshAttempts.value = 0;
