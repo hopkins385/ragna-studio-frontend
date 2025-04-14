@@ -397,6 +397,9 @@ onMounted(() => {});
           <ChatInputTextarea
             :show-abort-button="aiChatStore.isThinking || aiChatStore.isStreaming"
             :submit-locked="aiChatStore.isThinking || aiChatStore.isStreaming"
+            :textarea-class="{
+              'min-h-28': showPresets,
+            }"
             @submit-form="onSubmitTextareaForm"
             @abort="() => abortChatRequest()"
           />
@@ -407,7 +410,7 @@ onMounted(() => {});
         </div>
       </div>
     </div>
-    <!-- Notification -->
+    <!-- Footer hint -->
     <div class="absolute bottom-2 left-0 w-full text-center">
       <p class="text-slate-500" style="font-size: 0.65rem">
         {{ $t('chat.footer.info') }}

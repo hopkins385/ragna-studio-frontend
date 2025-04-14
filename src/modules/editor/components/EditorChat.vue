@@ -211,6 +211,7 @@ onBeforeUnmount(() => {
       <div class="relative pt-1">
         <ChatInputTextarea
           textarea-class="pb-10 pr-3"
+          textarea-size="sm"
           :show-abort-button="aiChatStore.isThinking || aiChatStore.isStreaming"
           :submit-locked="submitLocked"
           @submit-form="onSubmitTextareaForm"

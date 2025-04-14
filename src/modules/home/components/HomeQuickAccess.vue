@@ -21,7 +21,7 @@ const sortableOptions = computed(() => {
   <div class="px-20 pt-5">
     <div class="flex items-center space-x-2">
       <div @click="() => homeStore.toggleQuickAccessIsSortable()" class="cursor-pointer group">
-        <LayoutGridIcon class="size-5 stroke-1.5 group-hover:scale-110" />
+        <LayoutGridIcon class="size-5 stroke-1.5 group-hover:scale-110 group-hover:stroke-2" />
       </div>
       <h2 class="text-2xl font-semibold">
         {{ $t('quickaccess.title') }}

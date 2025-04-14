@@ -8,14 +8,23 @@ import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-cha
 import { chatInputFormSchema } from '@/modules/ai-chat/schemas/chat-input-text.schema';
 import { SendHorizontalIcon, SquareIcon } from 'lucide-vue-next';
 
+type TextareaClass = string | string[] | Record<string, boolean>;
+type TextareaSize = 'sm' | 'default';
+
 interface Props {
   showAbortButton?: boolean;
   submitLocked?: boolean;
-  textareaClass?: string;
+  textareaClass?: TextareaClass;
+  textareaSize?: TextareaSize;
 }
 
 // Props
-const { showAbortButton = false, submitLocked = false, textareaClass } = defineProps<Props>();
+const {
+  showAbortButton = false,
+  submitLocked = false,
+  textareaSize = 'default',
+  textareaClass,
+} = defineProps<Props>();
 
 // Emits
 const emit = defineEmits<{
@@ -161,11 +170,19 @@ onUnmounted(() => {
       v-if="showAbortButton"
       variant="outline"
       size="icon"
-      class="group absolute bottom-[0.6rem] right-3 z-20 mr-1 size-6 rounded-full bg-stone-50 border-stone-400 shadow-sm hover:border-stone-500 hover:scale-110 transition-colors duration-200 ease-in-out"
+      class="group absolute bottom-[0.6rem] right-3 z-20 mr-1 rounded-full bg-stone-50 border-stone-400 shadow-sm hover:border-stone-500 hover:scale-110 transition-colors duration-200 ease-in-out"
+      :class="{
+        'size-6': textareaSize === 'default',
+        'size-5': textareaSize === 'sm',
+      }"
       @click="abortRequest"
     >
       <SquareIcon
-        class="!size-3 stroke-1.5 text-slate-500 group-hover:text-slate-900 group-hover:fill-stone-500 fill-stone-400"
+        class="stroke-1.5 text-slate-500 group-hover:text-slate-900 group-hover:fill-stone-500 fill-stone-500"
+        :class="{
+          '!size-3': textareaSize === 'default',
+          '!size-2': textareaSize === 'sm',
+        }"
       />
     </Button>
     <Button
@@ -177,8 +194,10 @@ onUnmounted(() => {
       :disabled="!submitReleased"
     >
       <SendHorizontalIcon
-        class="size-4 stroke-1.5"
+        class="stroke-1.5"
         :class="{
+          '!size-5': textareaSize === 'default',
+          '!size-4': textareaSize === 'sm',
           'opacity-100': submitReleased,
           'opacity-85': !submitReleased,
         }"
