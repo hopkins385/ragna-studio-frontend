@@ -44,14 +44,11 @@ const onUpdatePrompt = (prompt: string) => {
       <DialogHeader>
         <DialogTitle>Prompt Wizard</DialogTitle>
         <DialogDescription>
-          Create a new prompt for your assistant.
+          {{ $t('prompt_wizard.description') }}
         </DialogDescription>
       </DialogHeader>
       <!-- Form -->
-      <PromptWizardForm
-        :input-prompt="inputPrompt"
-        @updatePrompt="onUpdatePrompt"
-      />
+      <PromptWizardForm :input-prompt="inputPrompt" @updatePrompt="onUpdatePrompt" />
     </DialogContent>
   </Dialog>
 </template>

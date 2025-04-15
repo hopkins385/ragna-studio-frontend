@@ -461,6 +461,9 @@
     }
   },
   "prompt_wizard": {
+    "title": "Prompt Wizard",
+    "subtitle": "Hier kannst du deinen Prompt erstellen",
+    "description": "Der Prompt Wizard hilft dir dabei, den perfekten Prompt für deinen Agenten zu erstellen.",
     "input": {
       "label": "Verhalten",
       "description": "Beschreibe in deinen eigenen Worten, was du von dem Agenten möchtest"
@@ -687,7 +690,7 @@
     },
     "think": {
       "label": "Gedanken aufschreiben",
-      "description": "Gedanken aufschreiben, um über etwas schwieriges nachzudenken"
+      "description": "Gedanken aufschreiben, um über etwas nachzudenken"
     },
     "comment": {
       "label": "(Editor) Kommentar hinzufügen",

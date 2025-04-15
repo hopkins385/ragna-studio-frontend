@@ -14,7 +14,6 @@ import { Input } from '@/components/ui/input';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import AdminUserInviteDialog from '@/modules/admin/components/user/AdminUserInviteDialog.vue';
-import { ConflictError } from '@hopkins385/ragna-sdk';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
 
@@ -63,12 +62,16 @@ const onSubmit = handleSubmit(async values => {
       showDialog.value = true;
     }
   } catch (error: unknown) {
-    if (error instanceof ConflictError) {
+    // TODO: fix build crash when importing ConflictError
+    // import { ConflictError } from '@hopkins385/ragna-sdk';
+    /*if (error instanceof ConflictError) {
       setErrorAlert(t('admin.user.error.email_exists'));
     } else {
       console.error('Error inviting user:', error);
       setErrorAlert('An error occurred while inviting the user. Please try again.');
-    }
+    }*/
+    console.error('Error inviting user:', error);
+    setErrorAlert('An error occurred while inviting the user. Please try again.');
   } finally {
     isLoading.value = false;
   }

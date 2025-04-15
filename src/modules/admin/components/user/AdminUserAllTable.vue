@@ -126,7 +126,7 @@ onBeforeMount(async () => {
         of total
         {{ meta.totalCount }}
       </TableCaption>
-      <TableHeader class="bg-stone-50">
+      <TableHeader>
         <TableRow>
           <TableHead class="font-semibold"> Avatar </TableHead>
           <TableHead class="font-semibold"> Name </TableHead>

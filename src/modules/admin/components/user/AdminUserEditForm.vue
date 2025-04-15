@@ -8,9 +8,21 @@ import { Input } from '@/components/ui/input';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import useToast from '@/composables/useToast';
+import FormRoleSelector from '@/modules/admin/components/common/FormRoleSelector.vue';
 import { AdminRouteName } from '@/modules/admin/enums/admin-route-names.enum';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
+
+const roles = [
+  {
+    label: 'Admin',
+    value: 'admin',
+  },
+  {
+    label: 'User',
+    value: 'user',
+  },
+];
 
 // Props
 const props = defineProps<{
@@ -18,6 +30,7 @@ const props = defineProps<{
     id: string;
     name: string;
     email: string;
+    roles: string[];
   };
   editable: boolean;
 }>();
@@ -34,9 +47,14 @@ const toast = useToast();
 const { t } = useI18n();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 
+const roleSchema = z.enum(['admin', 'user'], {
+  errorMap: () => ({ message: t('auth.error.invalid_role') }),
+});
+
 const editUserSchema = z.object({
   name: z.string().min(4, { message: t('auth.error.name_min_length', { length: 4 }) }),
   email: z.string().email({ message: t('auth.error.invalid_email') }),
+  // roles: z.array(roleSchema).min(1, { message: t('auth.error.role_required') }),
 });
 
 const { handleSubmit } = useForm({
@@ -44,6 +62,7 @@ const { handleSubmit } = useForm({
   initialValues: {
     name: props.userData.name,
     email: props.userData.email,
+    // roles: (props.userData.roles as any[]) || [],
   },
 });
 
@@ -98,6 +117,20 @@ const onSubmit = () => {
         <FormLabel> Email </FormLabel>
         <FormControl>
           <Input type="text" v-bind="componentField" autocomplete="off" :disabled="!editable" />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+    <FormField v-slot="{ value, handleChange }" name="roleName">
+      <FormItem>
+        <FormLabel> Role </FormLabel>
+        <FormControl>
+          <FormRoleSelector
+            :roles="roles"
+            :modelValue="value"
+            @change="handleChange"
+            :disabled="!editable"
+          />
         </FormControl>
         <FormMessage />
       </FormItem>
