@@ -49,7 +49,7 @@ const formattedData = computed(() => {
     return null;
   }
 
-  const result: Record<string, number[]> = {};
+  const result: Record<string, Array<{ tokens: number; price: string }>> = {};
   data.value.forEach((item: TokenUsage) => {
     const monthYearMonth = parseInt(monthYear.month);
     const monthYearYear = parseInt(monthYear.year);
@@ -63,9 +63,14 @@ const formattedData = computed(() => {
     }
 
     if (!result[item.llm.displayName]) {
-      result[item.llm.displayName] = Array.from({ length: 31 }, () => 0);
+      result[item.llm.displayName] = Array.from({ length: 31 }, () => ({ tokens: 0, price: '0' }));
     }
-    result[item.llm.displayName][day - 1] += item.totalTokens;
+    // Add tokens to the corresponding day
+    result[item.llm.displayName][day - 1].tokens += item.totalTokens;
+    // Add price (converting string to number, adding, then back to string)
+    const currentPrice = parseFloat(result[item.llm.displayName][day - 1].price);
+    const itemPrice = item.totalPrice;
+    result[item.llm.displayName][day - 1].price = (currentPrice + itemPrice).toFixed(4);
   });
 
   return result;
@@ -95,7 +100,7 @@ const series = computed<BarSeriesOption[]>(() =>
         show: false,
         formatter: (params: any) => Math.round(params.value * 1000) / 10 + '%',
       },
-      data: formattedData.value ? formattedData.value[name] : [],
+      data: formattedData.value ? formattedData.value[name].map(item => item.tokens) : [],
     };
   }),
 );
@@ -120,12 +125,19 @@ const option = computed(() => ({
     },
     formatter: (params: any) => {
       let tooltipText = params[0].axisValue + '<br/>';
+      let totalPrice = 0;
+
       params.forEach((item: any) => {
         const value = Math.round(item.value);
         if (value === 0) {
           return;
         }
-        tooltipText += item.marker + ' ' + item.seriesName + ': ' + value + '<br/>';
+
+        const priceData = formattedData.value![item.seriesName][item.dataIndex].price;
+        const price = parseFloat(priceData);
+        totalPrice += price;
+
+        tooltipText += `${item.marker} ${item.seriesName}: ${value} ($${price.toFixed(2)})<br/>`;
       });
       return tooltipText;
     },
@@ -152,7 +164,19 @@ watchEffect(async () => {
 });
 
 /* Example fetch data response which is TokenUsage[]
-[ { "totalTokens": 486, "createdAt": "2025-02-19T17:15:04.665Z", "llm": { "provider": "openai", "displayName": "GPT-4o" } }, { "totalTokens": 14638, "createdAt": "2025-02-19T17:17:40.458Z", "llm": { "provider": "openai", "displayName": "GPT-4o" } }, { "totalTokens": 458, "createdAt": "2025-02-19T17:42:13.154Z", "llm": { "provider": "openai", "displayName": "o3-mini" } }, { "totalTokens": 578, "createdAt": "2025-02-20T11:29:14.772Z", "llm": { "provider": "openai", "displayName": "GPT-4o" } }, { "totalTokens": 625, "createdAt": "2025-02-20T15:18:02.056Z", "llm": { "provider": "openai", "displayName": "GPT-4o" } }, { "totalTokens": 645, "createdAt": "2025-02-20T15:18:18.326Z", "llm": { "provider": "openai", "displayName": "GPT-4o" } }, { "totalTokens": 656, "createdAt": "2025-02-20T15:18:31.649Z", "llm": { "provider": "openai", "displayName": "GPT-4o" } }, { "totalTokens": 694, "createdAt": "2025-02-20T15:18:51.196Z", "llm": { "provider": "openai", "displayName": "GPT-4o" } } ]
+[         {
+            "promptTokens": 413,
+            "completionTokens": 970,
+            "totalTokens": 1383,
+            "createdAt": "2025-04-08T14:15:48.536Z",
+            "promptPrice": 0.0310,
+            "completionPrice": 0.1455,
+            "totalPrice": 0.1765,
+            "llm": {
+                "provider": "openai",
+                "displayName": "GPT 4.5 (preview)"
+            }
+        },]
 */
 </script>
 
