@@ -103,12 +103,25 @@ const toggleDetails = (e: MouseEvent) => {
           </div>
         </li>
 
-        <li class="flex" v-if="call.toolName !== 'think' && call.toolName !== 'comment'">
+        <li
+          class="flex"
+          v-if="
+            call.toolName !== 'think' &&
+            call.toolName !== 'comment' &&
+            call.toolName !== 'knowledge'
+          "
+        >
           <div class="whitespace-nowrap min-w-14"><strong>Tool:</strong></div>
           <div class="">
             <div class="" v-for="(result, index) in call.toolResults" :key="index">
               <p class="whitespace-pre-line">{{ result }}</p>
             </div>
+          </div>
+        </li>
+        <li class="flex" v-if="call.toolName === 'knowledge'">
+          <div class="whitespace-nowrap min-w-14"><strong>Tool:</strong></div>
+          <div>
+            References: /* please be patient, we are working on it to display the references here */
           </div>
         </li>
       </ul>
