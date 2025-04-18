@@ -15,7 +15,7 @@ interface Team {
 
 interface AuthUser {
   id: string;
-  // activeTeamId: string;
+  activeTeamId: string;
   name: string;
   firstName: string;
   lastName: string;
@@ -80,7 +80,7 @@ export const useAuthStore = defineStore('auth-store', () => {
       const { account: data } = await client.account.fetchAccountData();
       user.value = {
         id: data.id,
-        // activeTeamId: '-1',
+        activeTeamId: data.activeTeamId,
         name: data.name,
         firstName: data.firstName,
         lastName: data.lastName,

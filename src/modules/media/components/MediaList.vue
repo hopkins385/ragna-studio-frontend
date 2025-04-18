@@ -50,10 +50,9 @@ const meta = computed(() => {
 
 // Functions
 const initMedia = async (payload: { page: number }) => {
-  const response = await client.media.fetchAllMediaFor(
-    { id: authStore.user?.teams?.[0].team.id, type: 'team' }, //TODO: change to activeTeamId from session
-    { page: payload.page },
-  );
+  const model = { id: authStore.user?.activeTeamId, type: 'team' };
+  console.log('model', model);
+  const response = await client.media.fetchAllMediaFor(model, { page: payload.page });
   mediaData.value = response;
 };
 
