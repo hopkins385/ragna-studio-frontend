@@ -117,9 +117,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="">
+    <!-- -->
+    <div v-if="pendingUpdateId" class="absolute inset-0 size-full z-10">
+      <div class="absolute inset-0 bg-white opacity-80" />
+      <div class="absolute inset-0 flex items-center justify-center">
+        <Loader2Icon class="size-8 animate-spin text-gray-500" />
+      </div>
+    </div>
     <ErrorAlert v-model="errorAlert.show" :message="errorAlert.message" />
-
     <Table class="rounded-lg border bg-white">
       <TableHeader>
         <TableRow>
