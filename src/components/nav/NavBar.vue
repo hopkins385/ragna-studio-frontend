@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useNavBarStore } from '@/common/stores/nav-bar.store';
 import { useNavBarItems } from '@/composables/nav/useNavBarItems';
 import { Separator } from '@ui/separator';
 import { EllipsisIcon } from 'lucide-vue-next';
@@ -11,50 +10,19 @@ import {
 } from '../ui/dropdown-menu';
 import NavLink from './NavLink.vue';
 
-const navBarRef = ref(null);
-const navBarResizerRef = ref(null);
-
-const navBar = useNavBarStore();
-
+const navBarRef = useTemplateRef('navBarRef');
 const { dynamicNavItems } = useNavBarItems();
-
-/*const { pressed } = useMousePressed({ target: navBarResizerRef });
-
-watch(pressed, isPressed => {
-  if (isPressed && navBar.isOpen) {
-    addEventListener('mousemove', navBar.setWidth);
-  } else {
-    removeEventListener('mousemove', navBar.setWidth);
-  }
-});*/
 </script>
 
 <template>
   <div
     ref="navBarRef"
-    class="relative flex shrink-0 flex-col justify-between transition-all duration-300 ease-out"
-    :style="{ width: navBar.isFullClosed ? 0 : `${navBar.width}rem` }"
+    class="relative flex shrink-0 flex-col justify-between transition-all duration-300 ease-out w-[4.5rem]"
   >
-    <!--
-    <div
-      ref="navBarResizerRef"
-      class="absolute right-0 top-0 z-10 h-full"
-      :class="{
-        'bg-blue-600': pressed && navBar.isOpen,
-        'cursor-ew-resize hover:bg-blue-600': navBar.isOpen,
-      }"
-      style="width: 0.25rem"
-    ></div>
-    -->
-    <div
-      class="relative h-full overflow-y-hidden transition-opacity duration-200 ease-in-out"
-      :class="{
-        'opacity-0': navBar.isFullClosed,
-      }"
-    >
+    <div class="relative h-full overflow-y-hidden transition-opacity duration-200 ease-in-out">
       <div id="spacer" class="h-2"></div>
       <div class="flex h-full flex-col">
-        <ul class="space-y-4">
+        <ul class="space-y-4 overflow-hidden">
           <template v-for="item in dynamicNavItems" :key="item.path">
             <li v-if="item.path" class="nav-item">
               <NavLink
@@ -63,7 +31,7 @@ watch(pressed, isPressed => {
                 :to="item.path"
                 :icon="item.icon"
                 :label="item.label"
-                :label-visible="navBar.isOpen"
+                :label-visible="true"
               />
               <!-- children disabled -->
             </li>
@@ -102,7 +70,7 @@ watch(pressed, isPressed => {
                       :to="child.path"
                       :icon="child.icon"
                       :label="child.label"
-                      :label-visible="navBar.isOpen"
+                      :label-visible="true"
                     />
                   </DropdownMenuItem>
                 </DropdownMenuContent>

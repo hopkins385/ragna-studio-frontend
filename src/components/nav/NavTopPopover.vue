@@ -12,8 +12,10 @@ const setClose = () => (open.value = false);
 
 <template>
   <Popover v-model:open="open">
-    <PopoverTrigger class="h-full">
-      <Grip class="nav-icon stroke-1.5" />
+    <PopoverTrigger class="h-full group">
+      <Grip
+        class="nav-icon stroke-1.5 group-hover:stroke-2 group-hover:scale-105 transition-transform"
+      />
     </PopoverTrigger>
     <PopoverContent align="start" class="size-96 p-5">
       <div class="grid grid-cols-3 gap-5">

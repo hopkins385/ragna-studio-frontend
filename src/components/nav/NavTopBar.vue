@@ -19,7 +19,7 @@ const onExpandClick = () => {
 <template>
   <div class="flex h-14 items-center justify-between border-0">
     <div class="flex">
-      <div class="px-6 mt-1">
+      <div class="ml-[0.1rem] px-6 mt-1">
         <NavTopPopover />
       </div>
       <div class="pl-2 flex items-center space-x-2 text-sm">
