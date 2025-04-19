@@ -49,9 +49,7 @@ export const useAiChatSettingsStore = defineStore(
           'chat.settings.think.high',
         ][thinkLevel.value?.[0] || 0],
     );
-    const getTemperature = computed(
-      () => (temperature.value?.[0] ?? defaultSettings.temperature[0]) / 20,
-    );
+    const getTemperature = computed(() => temperature.value?.[0] ?? defaultSettings.temperature[0]);
     const getPresencePenalty = computed(
       () => presencePenalty.value?.[0] ?? defaultSettings.presencePenalty[0],
     );

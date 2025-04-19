@@ -107,7 +107,7 @@ function onEditAssistantClick() {
               :content="$t('chat.settings.temperature.description')"
             />
           </div>
-          <div>{{ settings.getTemperature }}</div>
+          <div>{{ settings.getTemperature }} %</div>
         </div>
         <Slider
           v-model="settings.temperature"

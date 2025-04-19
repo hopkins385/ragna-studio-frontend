@@ -557,11 +557,11 @@
       },
       "include_tool_call": {
         "title": "Tool Historie",
-        "description": "Wenn aktiviert, werden die bereits vorhandenen Ausgaben der Tools, die der Agent verwendet hat, erneut verarbeitet. Andernfalls werden die Tool-Ausgaben nicht nochmal verarbeitet. Dies ist insbesondere hilfreich, um Platz zu schaffen und den Verbrauch zu reduzieren, wenn viele Informationen verarbeitet werden oder der Chatverlauf sehr lang ist."
+        "description": "Wenn aktiviert, werden die bereits vorhandenen Ausgaben der Tools, die der Agent verwendet hat, erneut verarbeitet. Andernfalls werden die Tool-Ausgaben nicht nochmal verarbeitet. Dies ist insbesondere hilfreich, um Platz zu schaffen und den Token-Verbrauch zu reduzieren, wenn viele Informationen verarbeitet werden oder der Chatverlauf sehr lang ist."
       },
       "think": {
-        "title": "Denk-Intensität",
-        "description": "Bestimmt wie aufwending der Agent über seine Antworten nachdenkt – je höher die Einstellung, desto mehr Zeit nimmt sich der Agent für schrittweise Überlegungen und tiefere Analysen, ähnlich wie ein Mensch, der zwischen einer schnellen Antwort und einem durchdachten Lösungsweg wählen kann.",
+        "title": "Reasoning-Budget",
+        "description": "Bestimmt wie aufwending der Agent über seine Antworten nachdenken darf – je höher die Einstellung, desto mehr Zeit nimmt sich der Agent für schrittweise Überlegungen und tiefere Analysen, ähnlich wie ein Mensch, der zwischen einer schnellen Antwort und einem durchdachten Lösungsweg wählen kann.",
         "off": "Aus",
         "low": "Niedrig",
         "medium": "Mittel",
