@@ -4,8 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import AssistantSelectForm from '@/modules/assistant/components/AssistantSelectForm.vue';
-import { Trash2Icon } from 'lucide-vue-next';
 import type { AssistantsPaginatedResponse } from '@hopkins385/ragna-sdk';
+import { Trash2Icon } from 'lucide-vue-next';
 
 const props = defineProps<{
   workflowId: string;
@@ -66,6 +66,21 @@ function setFocus() {
     firstInput.focus();
   }
 }
+
+const runWorkflowStep = async (stepId: string) => {
+  if (!stepId) throw new Error('Step ID is required');
+  if (!props.workflowId) throw new Error('Workflow ID is required');
+  // close the step card
+  nextTick(() => emits('close'));
+  try {
+    await client.workflow.executeWorkflowStep({
+      workflowId: props.workflowId,
+      stepId,
+    });
+  } catch (error) {
+    console.error('Error executing workflow step:', error);
+  }
+};
 
 // watch selectedSteps
 watch(selectedSteps, newValue => {
@@ -156,8 +171,8 @@ onMounted(() => {
         </div>
         <hr class="-mx-4 mb-2 mt-3" />
         <button
-          class="w-full rounded-lg border bg-stone-50 px-4 py-2 font-semibold hover:cursor-not-allowed hover:bg-stone-100"
-          :disabled="true"
+          class="w-full rounded-lg border bg-stone-50 px-4 py-2 font-semibold cursor-pointer hover:bg-stone-100"
+          @click="() => runWorkflowStep(workflowStep.id)"
         >
           {{ $t('workflow.step.run') }}
         </button>
