@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { Checkbox } from '@/components/ui/checkbox';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useRagnaClient } from '@/composables/useRagnaClient';
+import { useToolIcons } from '@/modules/assistant-tool/composables/useToolIcons';
 import { createAssistantFormSchema } from '@/modules/assistant/schemas/assistant.form';
 import LlmSelectModal from '@/modules/llm/components/LlmSelectModal.vue';
 import PromptWizardDialog from '@/modules/prompt-wizard/components/PromptWizardDialog.vue';
@@ -44,6 +46,7 @@ const toast = useToast();
 const router = useRouter();
 const { t } = useI18n();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
+const { getToolIcon } = useToolIcons();
 
 // Computed
 const initialAssistantName = computed(() => t('assistant.genai.select'));
@@ -120,8 +123,8 @@ const siderBarTabs = [
   { id: 'title', icon: Settings, label: t('assistant.settings.label') },
   { id: 'systemPrompt', icon: CircleUserRound, label: t('assistant.behavior.label') },
   { id: 'llmId', icon: Stars, label: t('assistant.genai.label') },
-  { id: 'tab5', icon: BriefcaseBusiness, label: t('assistant.tools.label') },
-  { id: 'tab4', icon: Book, label: t('assistant.knowledge.label') },
+  { id: 'tools', icon: BriefcaseBusiness, label: t('assistant.tools.label') },
+  { id: 'tab5', icon: Book, label: t('assistant.knowledge.label') },
   { id: 'tab6', icon: ShieldCheck, label: t('assistant.privacy.label') },
 ];
 
@@ -212,33 +215,50 @@ onBeforeUnmount(() => {
       </FormField>
     </template>
     <!-- TAB 4-->
-    <template #tab4>
-      <div class="text-sm border rounded-lg p-4 mt-4">
-        {{ $t('assistant.alert.create_first') }}
-      </div>
-      <!--
-      <FormField v-slot="{ handleChange, value }" name="collectionId">
+    <template #tools>
+      <FormField name="tools">
         <FormItem>
-          <FormLabel>Knowledge Collections (optional)</FormLabel>
-          <FormDescription>
-            These are the knowledge collections that can be used by the assistant.
-          </FormDescription>
-          <FormControl>
-            <CollectionSelectModal
-              :id="value"
-              :initial-display-name="initialCollectionName"
-              @update:id="
-                (id: string) => {
-                  handleChange(id), updateCollection(id);
-                }
-              "
-              @reset="resetCollections"
-            />
-          </FormControl>
+          <div class="mb-4 space-y-2">
+            <FormLabel>{{ $t('assistant.tools.label') }}</FormLabel>
+            <FormDescription>
+              {{ $t('assistant.tools.description') }}
+            </FormDescription>
+          </div>
+
+          <FormField
+            v-for="tool in assistantTools"
+            v-slot="{ value, handleChange }"
+            :key="tool.id"
+            type="checkbox"
+            :value="tool.id"
+            :unchecked-value="false"
+            name="tools"
+          >
+            <FormItem
+              class="flex flex-row items-center space-x-3 border border-transparent space-y-4 w-fit"
+            >
+              <FormControl>
+                <Checkbox :checked="value?.includes(tool.id)" @update:checked="handleChange" />
+              </FormControl>
+              <FormLabel class="font-normal flex space-x-3">
+                <div class="size-8 flex justify-center">
+                  <component
+                    :is="getToolIcon(tool?.iconName)"
+                    class="size-5 stroke-1.5 text-gray-500 shrink-0"
+                  />
+                </div>
+                <div class="space-y-1">
+                  <h2 class="text-sm">{{ $t(`tool.${tool.name.toString()}.label`) }}</h2>
+                  <p class="opacity-75 text-xs">
+                    {{ $t(`tool.${tool.name.toString()}.description`) }}
+                  </p>
+                </div>
+              </FormLabel>
+            </FormItem>
+          </FormField>
           <FormMessage />
         </FormItem>
       </FormField>
-      -->
     </template>
     <!-- TAB 5-->
     <template #tab5>
