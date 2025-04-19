@@ -354,7 +354,7 @@
       "placeholder": "Agent auswählen"
     },
     "alert": {
-      "create_first": "Bitte erstellen Sie zunächst den Agenten, bevor Sie mit der Konfiguration dieser Funktion fortfahren.",
+      "create_first": "Bitte erstelle  zunächst den Agenten, bevor Du mit der Konfiguration dieser Funktion fortfährst.",
       "executing_tool": "Benutze Tool"
     },
     "settings": {
