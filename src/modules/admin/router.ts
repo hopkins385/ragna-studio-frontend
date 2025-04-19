@@ -40,6 +40,19 @@ const moduleRoute = {
       component: () => import('./views/user/AdminUserEditView.vue'),
       meta: defaultAdminMeta,
     },
+    {
+      path: 'team',
+      name: AdminRouteName.ADMIN_TEAM,
+      component: () => import('./views/team/AdminTeamIndexView.vue'),
+      meta: defaultAdminMeta,
+    },
+    {
+      path: 'team/:id/edit',
+      name: AdminRouteName.ADMIN_TEAM_EDIT,
+      beforeEnter: [hasValidRouteId],
+      component: () => import('./views/team/AdminTeamEditView.vue'),
+      meta: defaultAdminMeta,
+    },
   ],
 };
 

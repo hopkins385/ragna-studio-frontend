@@ -657,6 +657,18 @@
       "error": {
         "email_exists": "Die E-Mail-Adresse ist bereits vergeben"
       }
+    },
+    "team": {
+      "title": "Team",
+      "subtitle": "Hier kannst du dein Team verwalten",
+      "show": {
+        "title": "Team bearbeiten",
+        "subtitle": "Hier kannst du die Teamdetails bearbeiten"
+      },
+      "update": {
+        "success": "Team aktualisiert",
+        "failed": "Team konnte nicht aktualisiert werden"
+      }
     }
   },
   "editor": {

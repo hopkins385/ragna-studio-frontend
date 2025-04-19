@@ -29,11 +29,13 @@ import bgImgUrl from '@images/bg_workflow.png?q=100&format=webp&imagetools';
             <div class="h-20 w-60 rounded-lg border-0">Manage Teams</div>
           </BoxContainer>
         </router-link>
+        <!--
         <router-link to="/admin/project">
           <BoxContainer class="hover:shadow-md border">
             <div class="h-20 w-60 rounded-lg border-0">Manage Projects</div>
           </BoxContainer>
         </router-link>
+        -->
       </div>
     </div>
   </SectionContainer>
