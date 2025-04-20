@@ -19,7 +19,7 @@ import { History, SettingsIcon } from 'lucide-vue-next';
 const groupByOptions = ['day', 'month', 'year'] as const;
 type GroupByOption = (typeof groupByOptions)[number];
 
-const data = ref<ChatsPaginatedResponse | null>(null);
+const data = shallowRef<ChatsPaginatedResponse>();
 const selectedGroupBy = ref<GroupByOption>('month');
 const chats = computed(() => data.value?.chats || []);
 

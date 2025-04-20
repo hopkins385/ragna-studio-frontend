@@ -28,7 +28,7 @@ const emit = defineEmits<{
 }>();
 
 // Refs
-const data = shallowRef<ChatsPaginatedResponse | null>(null);
+const data = shallowRef<ChatsPaginatedResponse>();
 
 // Composables
 const client = useRagnaClient();
