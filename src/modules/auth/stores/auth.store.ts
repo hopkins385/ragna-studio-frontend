@@ -1,5 +1,6 @@
 import { getRagnaClient } from '@/common/http/ragna.client';
 import { defineAbilityFor } from '@/modules/ability/services/ability.service';
+import type { Team } from '@hopkins385/ragna-sdk';
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
@@ -7,11 +8,6 @@ import { computed, ref } from 'vue';
 const UserRoles = {
   ADMIN: 'admin',
 } as const;
-
-interface Team {
-  id: string;
-  name: string;
-}
 
 interface AuthUser {
   id: string;
@@ -87,7 +83,7 @@ export const useAuthStore = defineStore('auth-store', () => {
         email: data.email,
         onboardedAt: data.onboardedAt,
         teams: data.teams,
-        roles: data.roles,
+        roles: data.roles.map(role => role.name),
       };
       defineAbilityFor(user.value);
     } catch (error) {

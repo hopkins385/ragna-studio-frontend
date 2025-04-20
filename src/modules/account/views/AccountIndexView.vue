@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getRoleDisplayName } from '@/common/constants/get-roles-displayname';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
 import { usePromise } from '@/composables/usePromise';
@@ -11,9 +12,10 @@ import type { AccountData } from '@hopkins385/ragna-sdk';
 
 const client = useRagnaClient();
 
-const accountData = ref<AccountData>();
+const accountData = shallowRef<AccountData>();
 
 const teams = computed(() => accountData.value?.teams ?? null);
+const roles = computed(() => accountData.value?.roles ?? null);
 const organisation = computed(() => accountData.value?.organisation ?? null);
 
 const initAccountData = async () => {
@@ -63,6 +65,12 @@ onBeforeMount(async () => {
           <BoxContainer class="border border-stone-100 bg-stone-50">
             <h2 class="pb-5 font-semibold">Teams</h2>
             <p v-for="team in teams" :key="team.id" class="w-fit text-sm">{{ team.name }}</p>
+          </BoxContainer>
+          <BoxContainer class="border border-stone-100 bg-stone-50">
+            <h2 class="pb-5 font-semibold">Roles</h2>
+            <p v-for="role in roles" :key="role.id" class="w-fit text-sm">
+              {{ getRoleDisplayName({ name: role.name }) }}
+            </p>
           </BoxContainer>
           <BoxContainer class="border border-stone-100 bg-stone-50">
             <h2 class="pb-5 font-semibold">Organisation</h2>

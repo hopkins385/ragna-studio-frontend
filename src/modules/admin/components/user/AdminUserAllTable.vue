@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getRoleDisplayName } from '@/common/constants/get-roles-displayname';
 import ConfirmDialog from '@/components/confirm/ConfirmDialog.vue';
 import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import PaginateControls from '@/components/pagniate/PaginateControls.vue';
@@ -84,15 +85,6 @@ const onDelete = (userId: string) => {
     confirmButtonText: t('admin.user.delete.confirm.button'),
     onConfirm: () => handleDelete(userId),
   });
-};
-
-const roleDisplayNames = {
-  admin: 'Administrator',
-  user: 'User',
-};
-
-const getRoleDisplayName = (role: { name: string }) => {
-  return roleDisplayNames[role.name as keyof typeof roleDisplayNames] || '-';
 };
 
 const onUpdatePage = async (currentPage: number) => {
