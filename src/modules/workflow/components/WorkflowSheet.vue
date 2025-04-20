@@ -3,6 +3,7 @@ import { useWebSocketStore } from '@/common/stores/websocket.store';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useResizeSheet } from '@/modules/workflow/composables/useResizeSheet';
 import useToast from '@composables/useToast';
+import type { Workflow } from '@hopkins385/ragna-sdk';
 import { Button } from '@ui/button';
 import { Checkbox } from '@ui/checkbox';
 import { vOnClickOutside } from '@vueuse/components';
@@ -15,7 +16,6 @@ import {
   TriangleAlertIcon,
   WorkflowIcon,
 } from 'lucide-vue-next';
-import type { Workflow } from '@hopkins385/ragna-sdk';
 import StepManagementCard from './step/StepManagementCard.vue';
 import WorkflowCellCard from './WorkflowCellCard.vue';
 import WorkflowExportSidebar from './WorkflowExportSidebar.vue';
@@ -552,12 +552,12 @@ await initWorkflow();
 
   <Teleport v-if="hasSelectedRows" to="body">
     <div class="absolute bottom-5 left-1/2 -translate-x-1/2">
-      <div class="rounded-lg bg-neutral-50 px-3 py-0 text-xs shadow-md">
-        <span class="pl-2 font-semibold">{{ selectedRows.length }}</span>
+      <div class="rounded-lg bg-neutral-50 px-3 py-1 text-xs shadow-md flex items-center space-x-2">
+        <p class="pl-3 font-semibold">{{ selectedRows.length }}</p>
         <Button
           variant="ghost"
           size="icon"
-          class="bg-parent ml-3 hover:scale-110 hover:bg-transparent"
+          class="bg-parent hover:scale-110 hover:bg-transparent"
           @click="onDeleteSelectedRows"
         >
           <Trash2Icon class="size-3 stroke-2 text-destructive" />
