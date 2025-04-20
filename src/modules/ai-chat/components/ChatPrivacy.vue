@@ -48,19 +48,39 @@ const settings = useAiChatSettingsStore();
         </button>
       </div>
       <Separator class="my-3" />
-      <div class="flex flex-col">
-        <div>
-          {{ $t('chat.settings.privacy.label') }}
-          <QuestionToolTip
-            :title="$t('chat.settings.privacy.label')"
-            :content="$t('chat.settings.privacy.description')"
+      <div class="flex flex-col gap-2">
+        <!-- Privacy Switch -->
+        <div class="flex flex-col">
+          <div>
+            {{ $t('chat.settings.privacy.label') }}
+            <QuestionToolTip
+              :title="$t('chat.settings.privacy.label')"
+              :content="$t('chat.settings.privacy.description')"
+            />
+          </div>
+          <Switch
+            class="-ml-2 mt-1 scale-75"
+            :checked="settings.privacyNerActive"
+            @update:checked="val => (settings.privacyNerActive = val)"
           />
         </div>
-        <Switch
-          class="-ml-2 mt-1 scale-75"
-          :checked="settings.privacyNerActive"
-          @update:checked="val => (settings.privacyNerActive = val)"
-        />
+        <!-- Confirmation Switch -->
+        <!--
+        <div class="flex flex-col">
+          <div>
+            {{ $t('chat.settings.privacy_confirm.label') }}
+            <QuestionToolTip
+              :title="$t('chat.settings.privacy_confirm.label')"
+              :content="$t('chat.settings.privacy_confirm.description')"
+            />
+          </div>
+          <Switch
+            class="-ml-2 mt-1 scale-75"
+            :checked="settings.privacyNerActive"
+            @update:checked="val => (settings.privacyNerActive = val)"
+          />
+        </div>
+        -->
       </div>
     </PopoverContent>
   </Popover>
