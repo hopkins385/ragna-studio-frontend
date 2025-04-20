@@ -3,7 +3,6 @@ import { useWebSocketStore } from '@/common/stores/websocket.store';
 import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import { useAutoScroll } from '@/composables/useAutoScroll';
 import { useErrorAlert } from '@/composables/useErrorAlert';
-import { useRagnaClient } from '@/composables/useRagnaClient';
 import ChatSettings from '@/modules/ai-chat-settings/components/ChatSettings.vue';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import ChatAssistantDetails from '@/modules/ai-chat/components/ChatAssistantDetails.vue';
@@ -33,7 +32,6 @@ const socket = useWebSocketStore();
 const aiChatStore = useAiChatStore();
 const authStore = useAuthStore();
 const settings = useAiChatSettingsStore();
-const client = useRagnaClient();
 
 const { t } = useI18n();
 
