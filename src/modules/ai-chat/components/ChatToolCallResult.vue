@@ -121,7 +121,9 @@ const toggleDetails = (e: MouseEvent) => {
         <li class="flex" v-if="call.toolName === 'knowledge'">
           <div class="whitespace-nowrap min-w-14"><strong>Tool:</strong></div>
           <div>
-            References: /* please be patient, we are working on it to display the references here */
+            <p v-for="(result, index) in call.toolResults" :key="index">
+              ({{ index + 1 }}) {{ result?.metadata?.media?.name }}
+            </p>
           </div>
         </li>
       </ul>
