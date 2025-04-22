@@ -30,6 +30,8 @@ export function useNavBarItems() {
       case AdminRouteName.ADMIN_USER_CREATE:
       case AdminRouteName.ADMIN_USER_SHOW:
       case AdminRouteName.ADMIN_USER_EDIT:
+      case AdminRouteName.ADMIN_TEAM:
+      case AdminRouteName.ADMIN_TEAM_EDIT:
         items.push(...adminItems);
         break;
       case RouteName.KANBAN_INDEX:
