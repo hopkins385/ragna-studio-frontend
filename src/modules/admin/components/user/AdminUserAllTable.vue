@@ -40,7 +40,7 @@ const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
 // Computed
-const users = computed(() => usersData.value?.users || []);
+const users = computed(() => usersData.value?.users || undefined);
 const meta = computed(() => {
   return {
     totalCount: usersData.value?.meta?.totalCount || 0,
@@ -109,7 +109,7 @@ onBeforeMount(async () => {
   <div>
     <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
     <ConfirmDialog v-model="confirmDialog.open" v-bind="confirmDialog" />
-    <Table v-if="users.length" class="w-full">
+    <Table v-if="users" class="w-full">
       <TableCaption>
         Showing from
         {{ meta.totalCount > 10 ? meta.currentPage * 10 - 10 + 1 : 1 }}
