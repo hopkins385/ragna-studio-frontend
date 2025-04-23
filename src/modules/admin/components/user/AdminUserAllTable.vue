@@ -151,7 +151,7 @@ onBeforeMount(async () => {
             <ButtonLink :to="`/admin/user/${user.id}/edit`" variant="outline" size="icon">
               <SettingsIcon class="size-4 stroke-1.5 text-primary" />
             </ButtonLink>
-            <Button variant="outline" size="icon" @click="onDelete(user.id)">
+            <Button variant="outline" size="icon" @click="onDelete(user.id)" :disabled="true">
               <Trash2Icon class="size-4 stroke-1.5 text-destructive" />
             </Button>
           </TableCell>
