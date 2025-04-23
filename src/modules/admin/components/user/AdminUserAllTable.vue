@@ -137,7 +137,7 @@ onBeforeMount(async () => {
           </TableCell>
           <TableCell class="whitespace-nowrap">
             <p v-if="!user.roles.length">-</p>
-            <p v-for="role in user.roles" :key="role.id">
+            <p v-for="role in user.roles" :key="role.id" class="py-1">
               {{ getRoleDisplayName({ name: role.name }) }}
             </p>
           </TableCell>

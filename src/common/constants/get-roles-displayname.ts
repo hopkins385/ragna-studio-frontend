@@ -1,4 +1,5 @@
 const roleDisplayNames = {
+  platform_owner: 'Platform Owner',
   admin: 'Administrator',
   user: 'User',
 };
