@@ -38,6 +38,8 @@ async function onSubmit() {
     await authStore.refreshAuth();
     // navigate to home
     await router.push({ name: RouteName.HOME });
+    // do a full page reload
+    window.location.reload();
   } catch (error) {
     console.error('Error during onboarding:', error);
     isLoading.value = false;
