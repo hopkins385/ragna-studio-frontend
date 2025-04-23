@@ -6,6 +6,7 @@ const toolDisplayNames = {
   webscraper: 'tool.webscraper.label',
   knowledge: 'tool.knowledge.label',
   comment: 'tool.comment.label',
+  directions: 'tool.directions.label',
 };
 
 export const getToolDisplayName = ({ rawName }: { rawName: string }): string => {

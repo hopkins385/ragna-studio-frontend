@@ -707,6 +707,10 @@
     "comment": {
       "label": "(Editor) Kommentar hinzufügen",
       "description": "Kommentar zu einem Dokument hinzufügen"
+    },
+    "directions": {
+      "label": "Routenplanung",
+      "description": "Routenplanung und Navigation"
     }
   }
 }

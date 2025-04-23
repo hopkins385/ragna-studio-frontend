@@ -2,6 +2,7 @@ import {
   BookIcon,
   DatabaseIcon,
   Globe,
+  MapIcon,
   PanelsTopLeftIcon,
   PencilLineIcon,
   Search,
@@ -21,6 +22,7 @@ export function useToolIcons() {
       website: PanelsTopLeftIcon,
       pencil: TextIcon,
       brain: PencilLineIcon,
+      directions: MapIcon,
     }[iconName];
   };
 
