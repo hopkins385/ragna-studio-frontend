@@ -7,9 +7,10 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
+COPY .npmrc ./
 
 # Install dependencies
-RUN npm ci
+RUN --mount=type=secret,id=npmrc,target=/app/.npmrc npm ci
 
 # Copy source files
 COPY . .
