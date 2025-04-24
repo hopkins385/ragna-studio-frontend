@@ -1,12 +1,15 @@
 <script setup lang="ts">
 // Imports
+import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import Heading from '@/components/heading/Heading.vue';
 import HeadingTitle from '@/components/heading/HeadingTitle.vue';
+import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import MediaFileDropzone from '@/modules/media/components/MediaFileDropzone.vue';
 import MediaList from '@/modules/media/components/MediaList.vue';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import SectionContainer from '@components/section/SectionContainer.vue';
+import { ValidationError } from '@hopkins385/ragna-sdk';
 import bgImgUrl from '@images/bg_upload.png?q=100&format=webp&imagetools';
 import Button from '@ui/button/Button.vue';
 
@@ -28,6 +31,7 @@ const client = useRagnaClient();
 const router = useRouter();
 const route = useRoute();
 const { t } = useI18n();
+const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 
 // Functions
 function setRoutePage(value: number) {
@@ -37,15 +41,25 @@ function setRoutePage(value: number) {
 }
 
 const onSubmit = async (e: Event) => {
+  unsetErrorAlert();
   const files = dropzoneFiles.value;
   if (files.length === 0) {
     return;
   }
   dropzoneFiles.value = [];
   isLoading.value = true;
-  await client.media.uploadFiles(files);
-  onRefreshData();
-  isLoading.value = false;
+  try {
+    await client.media.uploadFiles(files);
+  } catch (error: unknown) {
+    let errMessage = t('media.uploads.error.generic');
+    if (error instanceof ValidationError) {
+      errMessage = t('media.uploads.error.validation');
+    }
+    setErrorAlert(errMessage);
+  } finally {
+    onRefreshData();
+    isLoading.value = false;
+  }
 };
 
 const onRefreshData = () => {
@@ -86,6 +100,9 @@ useHead({
       <template #bottom> </template>
     </Heading>
     <BoxContainer>
+      <!-- error alert -->
+      <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
+      <!-- dropzone -->
       <MediaFileDropzone
         v-model="dropzoneFiles"
         :max-files="10"
