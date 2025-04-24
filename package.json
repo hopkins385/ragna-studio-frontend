@@ -22,7 +22,7 @@
   "dependencies": {
     "@casl/ability": "^6.7.3",
     "@casl/vue": "^2.2.2",
-    "@hopkins385/ragna-sdk": "*",
+    "@hopkins385/ragna-sdk": "^0.63.1",
     "@tiptap/extension-bubble-menu": "^2.11.7",
     "@tiptap/extension-bullet-list": "^2.11.7",
     "@tiptap/extension-code": "^2.11.7",
@@ -45,7 +45,7 @@
     "@vscode/markdown-it-katex": "^1.1.1",
     "@vue-flow/background": "^1.3.2",
     "@vue-flow/controls": "^1.1.2",
-    "@vue-flow/core": "^1.42.5",
+    "@vue-flow/core": "^1.43.0",
     "@vue-flow/minimap": "^1.5.3",
     "@vue-flow/node-resizer": "^1.4.0",
     "@vue-flow/node-toolbar": "^1.1.1",
@@ -103,9 +103,9 @@
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.21",
-    "cypress": "^14.3.1",
+    "cypress": "^14.3.2",
     "eslint": "^9.21.0",
-    "eslint-plugin-cypress": "^4.2.1",
+    "eslint-plugin-cypress": "^4.3.0",
     "eslint-plugin-vue": "^9.32.0",
     "jsdom": "^26.1.0",
     "postcss": "^8.5.3",
@@ -116,12 +116,12 @@
     "unplugin-auto-import": "^19.1.2",
     "unplugin-icons": "^22.1.0",
     "unplugin-vue-components": "^28.5.0",
-    "vite": "^6.3.2",
+    "vite": "^6.3.3",
     "vite-imagetools": "^7.0.5",
     "vite-plugin-pwa": "^1.0.0",
     "vite-plugin-vue-devtools": "^7.7.5",
     "vite-svg-loader": "^5.1.0",
     "vitest": "^3.1.2",
-    "vue-tsc": "^2.2.8"
+    "vue-tsc": "^2.2.10"
   }
 }
