@@ -15,6 +15,9 @@ RUN --mount=type=secret,id=npmrc,target=/app/.npmrc npm ci
 # Copy source files
 COPY . .
 
+# Environment variables
+ENV NODE_ENV=production
+
 # Build the app
 RUN npm run build-prod
 
