@@ -140,8 +140,8 @@ onMounted(() => {
             "
           >
             <picture v-if="image.path">
-              <source v-if="image.thumb?.avif" :srcset="image.thumb.avif.path" type="image/avif" />
-              <source v-if="image.thumb?.webp" :srcset="image.thumb.webp.path" type="image/webp" />
+              <source v-if="image.thumb?.avif" :srcset="image.thumb.avif" type="image/avif" />
+              <source v-if="image.thumb?.webp" :srcset="image.thumb.webp" type="image/webp" />
               <img
                 :src="image.path"
                 alt="image"
