@@ -22,7 +22,7 @@
   "dependencies": {
     "@casl/ability": "^6.7.3",
     "@casl/vue": "^2.2.2",
-    "@hopkins385/ragna-sdk": "^0.63.1",
+    "@hopkins385/ragna-sdk": "*",
     "@tiptap/extension-bubble-menu": "^2.11.7",
     "@tiptap/extension-bullet-list": "^2.11.7",
     "@tiptap/extension-code": "^2.11.7",

@@ -398,7 +398,7 @@ onMounted(() => {});
             :textarea-class="{
               'min-h-28': showPresets,
             }"
-            @submit-form="onSubmitTextareaForm"
+            @submit-form="input => onSubmitTextareaForm(input)"
             @abort="() => abortChatRequest()"
           />
           <div class="w-10"></div>

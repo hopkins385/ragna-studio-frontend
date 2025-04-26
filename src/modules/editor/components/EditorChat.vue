@@ -66,8 +66,13 @@ async function submitForm(inputText: string) {
   // console.log('Transformed JSON content:', transformedJsonContent);
   // return;
 
+  const chatId = aiChatStore.chat?.id;
+  if (!chatId) {
+    throw new Error('Chat ID is not set');
+  }
+
   await aiChatStore.createAndStreamUserChatMessage({
-    chatId: aiChatStore.chat?.id,
+    chatId,
     type: 'text',
     content: [
       {
@@ -214,8 +219,8 @@ onBeforeUnmount(() => {
           textarea-size="sm"
           :show-abort-button="aiChatStore.isThinking || aiChatStore.isStreaming"
           :submit-locked="submitLocked"
-          @submit-form="onSubmitTextareaForm"
-          @abort="abortRequest"
+          @submit-form="input => onSubmitTextareaForm(input)"
+          @abort="() => abortRequest()"
         />
         <div class="absolute bottom-[0.3rem] z-10 right-8 flex items-center -space-x-3">
           <ChatAssistantTaskSelect :select-locked="aiChatStore.isLoading" />

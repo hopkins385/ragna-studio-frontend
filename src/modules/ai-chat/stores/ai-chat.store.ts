@@ -5,7 +5,7 @@ import {
   RequestAbortError,
   type Chat,
   type ChatMessage,
-  type CreateChatMessageStreamPayload,
+  type ChatMessageContent,
 } from '@hopkins385/ragna-sdk';
 import { defineStore } from 'pinia';
 
@@ -13,6 +13,14 @@ interface MaskTextResult {
   maskedText: string | undefined;
   entities: any[] | undefined;
   error: string | undefined;
+}
+
+interface CreateChatMessageStreamPayload {
+  chatId: string;
+  type: ChatMessage['type'];
+  content: ChatMessageContent[];
+  visionContent?: ChatMessage['visionContent'];
+  context?: string;
 }
 
 export const useAiChatStore = defineStore('ai-chat-store', () => {

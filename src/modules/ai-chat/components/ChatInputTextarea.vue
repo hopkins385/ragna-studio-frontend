@@ -5,6 +5,7 @@ import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/f
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
+import ChatAudioRecorder from '@/modules/ai-chat/components/ChatAudioRecorder.vue';
 import { chatInputFormSchema } from '@/modules/ai-chat/schemas/chat-input-text.schema';
 import { SendHorizontalIcon, SquareIcon } from 'lucide-vue-next';
 
@@ -34,7 +35,6 @@ const emit = defineEmits<{
 
 // Refs
 const chatInputFormRef = useTemplateRef('chat-input-form');
-const input = ref<string>('');
 
 // Stores
 const aiChatSettings = useAiChatSettingsStore();
@@ -44,6 +44,7 @@ const {
   handleSubmit,
   values: formValues,
   resetForm,
+  setFieldValue,
 } = useForm({
   validationSchema: chatInputFormSchema,
 });
@@ -112,7 +113,6 @@ const submitForm = handleSubmit(values => {
     emit('submitForm', values.input);
     resetForm();
     adjustTextareaHeight();
-    input.value = '';
   }
   focusTextarea();
 });
@@ -120,6 +120,13 @@ const submitForm = handleSubmit(values => {
 const abortRequest = () => {
   emit('abort');
   adjustTextareaHeight();
+};
+
+const onAudioRecorderInput = async (text: string) => {
+  setFieldValue('input', text);
+  await nextTick();
+  adjustTextareaHeight();
+  // submitForm();
 };
 
 let resizeObserver: ResizeObserver | null = null;
@@ -155,7 +162,6 @@ onUnmounted(() => {
             <Textarea
               resize="none"
               v-bind="componentField"
-              v-model="input"
               :placeholder="$t('chat.input.placeholder')"
               :class="textAreaClass"
               @keydown.enter="onKeyDownEnter"
@@ -165,43 +171,39 @@ onUnmounted(() => {
         </FormItem>
       </FormField>
     </div>
-
-    <Button
-      v-if="showAbortButton"
-      variant="outline"
-      size="icon"
-      class="group absolute bottom-[0.6rem] right-3 z-20 mr-1 rounded-full bg-stone-50 border-stone-400 shadow-sm hover:border-stone-500 hover:scale-110 transition-colors duration-200 ease-in-out"
-      :class="{
-        'size-6': textareaSize === 'default',
-        'size-5': textareaSize === 'sm',
-      }"
-      @click="abortRequest"
-    >
-      <SquareIcon
-        class="stroke-1.5 text-slate-500 group-hover:text-slate-900 group-hover:fill-stone-500 fill-stone-500"
+    <div class="absolute bottom-[0.6rem] right-3 z-20 flex items-center space-x-1">
+      <ChatAudioRecorder @transcription="text => onAudioRecorderInput(text)" />
+      <Button
+        v-if="showAbortButton"
+        type="submit"
+        variant="outline"
+        size="icon"
+        class="group rounded-full bg-stone-50 border-stone-400 shadow-sm hover:border-stone-500 hover:scale-110 transition-colors duration-200 ease-in-out"
         :class="{
-          '!size-3': textareaSize === 'default',
-          '!size-2': textareaSize === 'sm',
+          'size-6': textareaSize === 'default',
+          'size-5': textareaSize === 'sm',
         }"
-      />
-    </Button>
-    <Button
-      v-else
-      class="absolute z-10 bottom-1 right-2 size-8"
-      type="submit"
-      size="icon"
-      variant="ghost"
-      :disabled="!submitReleased"
-    >
-      <SendHorizontalIcon
-        class="stroke-1.5"
-        :class="{
-          '!size-5': textareaSize === 'default',
-          '!size-4': textareaSize === 'sm',
-          'opacity-100': submitReleased,
-          'opacity-85': !submitReleased,
-        }"
-      />
-    </Button>
+        @click="abortRequest"
+      >
+        <SquareIcon
+          class="stroke-1.5 text-slate-500 group-hover:text-slate-900 group-hover:fill-stone-500 fill-stone-500"
+          :class="{
+            '!size-3': textareaSize === 'default',
+            '!size-2': textareaSize === 'sm',
+          }"
+        />
+      </Button>
+      <Button v-else type="submit" size="icon" variant="ghost" :disabled="!submitReleased">
+        <SendHorizontalIcon
+          class="stroke-1.5"
+          :class="{
+            '!size-5': textareaSize === 'default',
+            '!size-4': textareaSize === 'sm',
+            'opacity-100': submitReleased,
+            'opacity-85': !submitReleased,
+          }"
+        />
+      </Button>
+    </div>
   </form>
 </template>
