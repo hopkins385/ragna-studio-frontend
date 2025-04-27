@@ -122,10 +122,10 @@ const abortRequest = () => {
   adjustTextareaHeight();
 };
 
-const onAudioRecorderInput = async (text: string) => {
-  setFieldValue('input', text);
+const onAudioRecorderResult = async (text: string) => {
   await nextTick();
-  adjustTextareaHeight();
+  setFieldValue('input', text);
+  // adjustTextareaHeight();
   // submitForm();
 };
 
@@ -172,38 +172,43 @@ onUnmounted(() => {
       </FormField>
     </div>
     <div class="absolute bottom-[0.6rem] right-3 z-20 flex items-center space-x-1">
-      <ChatAudioRecorder @transcription="text => onAudioRecorderInput(text)" />
-      <Button
-        v-if="showAbortButton"
-        type="submit"
-        variant="outline"
-        size="icon"
-        class="group rounded-full bg-stone-50 border-stone-400 shadow-sm hover:border-stone-500 hover:scale-110 transition-colors duration-200 ease-in-out"
-        :class="{
-          'size-6': textareaSize === 'default',
-          'size-5': textareaSize === 'sm',
-        }"
-        @click="abortRequest"
-      >
-        <SquareIcon
-          class="stroke-1.5 text-slate-500 group-hover:text-slate-900 group-hover:fill-stone-500 fill-stone-500"
+      <ChatAudioRecorder
+        v-if="textareaSize !== 'sm'"
+        @transcription="text => onAudioRecorderResult(text)"
+      />
+      <div>
+        <Button
+          v-if="showAbortButton"
+          type="submit"
+          variant="outline"
+          size="icon"
+          class="group rounded-full bg-stone-50 border-stone-400 shadow-sm hover:border-stone-500 hover:scale-110 transition-colors duration-200 ease-in-out"
           :class="{
-            '!size-3': textareaSize === 'default',
-            '!size-2': textareaSize === 'sm',
+            'size-6': textareaSize === 'default',
+            'size-5': textareaSize === 'sm',
           }"
-        />
-      </Button>
-      <Button v-else type="submit" size="icon" variant="ghost" :disabled="!submitReleased">
-        <SendHorizontalIcon
-          class="stroke-1.5"
-          :class="{
-            '!size-5': textareaSize === 'default',
-            '!size-4': textareaSize === 'sm',
-            'opacity-100': submitReleased,
-            'opacity-85': !submitReleased,
-          }"
-        />
-      </Button>
+          @click="abortRequest"
+        >
+          <SquareIcon
+            class="stroke-1.5 text-slate-500 group-hover:text-slate-900 group-hover:fill-stone-500 fill-stone-500"
+            :class="{
+              '!size-3': textareaSize === 'default',
+              '!size-2': textareaSize === 'sm',
+            }"
+          />
+        </Button>
+        <Button v-else type="submit" size="icon" variant="ghost" :disabled="!submitReleased">
+          <SendHorizontalIcon
+            class="stroke-1.5"
+            :class="{
+              '!size-5': textareaSize === 'default',
+              '!size-4': textareaSize === 'sm',
+              'opacity-100': submitReleased,
+              'opacity-85': !submitReleased,
+            }"
+          />
+        </Button>
+      </div>
     </div>
   </form>
 </template>

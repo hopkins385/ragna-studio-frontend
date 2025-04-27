@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useAudioRecorder } from '@/modules/speech-to-text/composables/useAudioRecoder';
-import { MicIcon } from 'lucide-vue-next';
+import { Loader2Icon, MicIcon } from 'lucide-vue-next';
 
 // Imports
 
@@ -14,6 +14,7 @@ const emit = defineEmits<{
 }>();
 
 // Refs
+const isLoading = ref(false);
 
 // Composables
 const client = useRagnaClient();
@@ -27,8 +28,9 @@ const onStartRecording = () => {
 };
 
 const onStopRecording = async () => {
+  isLoading.value = true;
   // delay to ensure audio is recorded
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise(resolve => setTimeout(resolve, 800));
   stopRecording();
   const audioBlob = new Blob(audioChunks.value, { type: outputFormat.value });
   if (!audioBlob) {
@@ -39,6 +41,7 @@ const onStopRecording = async () => {
   // await playAudio(audioBlob);
   const text = await transcribeAudio(audioBlob);
   emit('transcription', text);
+  isLoading.value = false;
 };
 
 const playAudio = async (audioBlob: Blob) => {
@@ -49,7 +52,6 @@ const playAudio = async (audioBlob: Blob) => {
 };
 
 const transcribeAudio = async (audioBlob: Blob) => {
-  // send to api
   const formData = new FormData();
   formData.append('audioFile', audioBlob, 'audio.webm');
 
@@ -80,10 +82,12 @@ const transcribeAudio = async (audioBlob: Blob) => {
       type="button"
     >
       <MicIcon
+        v-if="!isLoading"
         class="h-5 w-5 text-stone-500 opacity-50 group-hover:opacity-100"
         :class="{ 'animate-pulse': isRecording }"
         :style="{ color: isRecording ? 'red' : 'inherit' }"
       />
+      <Loader2Icon v-else class="animate-spin opacity-65" />
     </Button>
   </div>
 </template>
