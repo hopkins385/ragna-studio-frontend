@@ -48,7 +48,9 @@ const client = useRagnaClient();
 const myFavorites = ref<UserFavorite[]>();
 const favoriteAssistants = computed(() => {
   return (
-    myFavorites.value?.filter(fav => fav.favoriteType === 'assistant').map(fav => fav.detail) ?? []
+    myFavorites.value
+      ?.filter(fav => fav.favoriteType === 'assistant' && fav.detail?.id)
+      .map(fav => fav.detail) ?? []
   );
 });
 const hasFavoriteAssistants = computed(() => favoriteAssistants.value.length > 0);
@@ -104,8 +106,8 @@ onMounted(async () => {
           >
             <div class="py-1 flex flex-col justify-between w-52">
               <div class="space-y-1">
-                <p class="text-sm font-medium truncate">{{ fav?.title }}</p>
-                <p class="text-xs truncate">{{ fav?.description }}</p>
+                <p class="text-sm font-medium truncate">{{ fav.title }}</p>
+                <p class="text-xs truncate">{{ fav.description }}</p>
               </div>
               <div>
                 <button
