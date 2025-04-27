@@ -125,7 +125,6 @@ const abortRequest = () => {
 const onAudioRecorderResult = async (text: string) => {
   await nextTick();
   setFieldValue('input', text);
-  // adjustTextareaHeight();
   // submitForm();
 };
 
@@ -173,7 +172,7 @@ onUnmounted(() => {
     </div>
     <div class="absolute bottom-[0.6rem] right-3 z-20 flex items-center space-x-1">
       <ChatAudioRecorder
-        v-if="textareaSize !== 'sm'"
+        v-if="textareaSize !== 'sm' && !showAbortButton"
         @transcription="text => onAudioRecorderResult(text)"
       />
       <div>
