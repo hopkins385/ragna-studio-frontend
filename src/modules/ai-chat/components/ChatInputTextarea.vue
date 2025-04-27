@@ -152,7 +152,7 @@ onUnmounted(() => {
     id="chat-input-form"
     ref="chat-input-form"
     class="relative flex w-full items-center space-x-2"
-    @submit.prevent="submitForm"
+    @submit.prevent="e => submitForm(e)"
   >
     <div class="relative z-0 max-h-96 w-full">
       <FormField v-slot="{ componentField }" name="input">
@@ -187,7 +187,7 @@ onUnmounted(() => {
             'size-6': textareaSize === 'default',
             'size-5': textareaSize === 'sm',
           }"
-          @click="abortRequest"
+          @click.prevent="() => abortRequest()"
         >
           <SquareIcon
             class="stroke-1.5 text-slate-500 group-hover:text-slate-900 group-hover:fill-stone-500 fill-stone-500"

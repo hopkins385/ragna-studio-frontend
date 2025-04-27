@@ -23,17 +23,21 @@ const { isRecording, audioChunks, outputFormat, startRecording, stopRecording } 
 
 // Computed
 // Functions
-const onStartRecording = () => {
-  startRecording();
+const onStartRecording = async () => {
+  return startRecording();
 };
 
 const onStopRecording = async () => {
   isLoading.value = true;
-  // delay to ensure audio is recorded
-  await new Promise(resolve => setTimeout(resolve, 800));
-  stopRecording();
+
+  // Stop recording
+  await stopRecording();
+
+  // Delay to ensure all audio is processed
+  await new Promise(resolve => setTimeout(resolve, 500));
+
   const audioBlob = new Blob(audioChunks.value, { type: outputFormat.value });
-  if (!audioBlob) {
+  if (!audioBlob || audioBlob.size === 0) {
     console.log('No audio recorded');
     emit('abort');
     return;
@@ -54,12 +58,8 @@ const playAudio = async (audioBlob: Blob) => {
 const transcribeAudio = async (audioBlob: Blob) => {
   const formData = new FormData();
   formData.append('audioFile', audioBlob, 'audio.webm');
-
-  console.log('Transcribing audio...');
-  console.log('FormData', formData);
   try {
     const { text } = await client.speechToText.transcribeAudio(formData);
-    console.log('Transcribed text:', text);
     return text;
   } catch (error) {
     console.error('Error transcribing audio:', error);
@@ -74,7 +74,7 @@ const transcribeAudio = async (audioBlob: Blob) => {
 <template>
   <div>
     <Button
-      @mousedown.prevent="() => onStartRecording()"
+      @mousedown.prevent="async () => await onStartRecording()"
       @mouseup.prevent="async () => await onStopRecording()"
       size="icon"
       variant="ghost"

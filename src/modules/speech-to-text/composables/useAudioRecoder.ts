@@ -125,7 +125,7 @@ export function useAudioRecorder() {
 
       mediaRecorder.value.onstop = () => {
         // create a blob from the audio chunks
-        const audioBlob = new Blob(audioChunks.value, { type: finalMimeType });
+        // const audioBlob = new Blob(audioChunks.value, { type: finalMimeType });
         // Clean up microphone access
         cleanupStream();
         isRecording.value = false;
@@ -134,6 +134,9 @@ export function useAudioRecorder() {
 
       // Start the recorder with timeslice to get incremental data
       mediaRecorder.value.start(timeslice.value);
+      // add small delay to ensure the recorder is ready
+      await new Promise(resolve => setTimeout(resolve, 100));
+      // Set the recording state
       isRecording.value = true;
       startRecordingTimer();
     } catch (err) {
@@ -144,9 +147,10 @@ export function useAudioRecorder() {
     }
   };
 
-  const stopRecording = () => {
+  const stopRecording = async () => {
     if (mediaRecorder.value && isRecording.value) {
       try {
+        await new Promise(resolve => setTimeout(resolve, 500));
         mediaRecorder.value.stop();
         // isRecording will be set to false in the onstop handler
       } catch (err) {
