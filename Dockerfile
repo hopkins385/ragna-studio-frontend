@@ -9,8 +9,10 @@ WORKDIR /app
 COPY package*.json ./
 COPY .npmrc ./
 
-# Install dependencies
-RUN --mount=type=secret,id=npmrc,target=/app/.npmrc npm ci
+# Install dependencies and force latest ragna-sdk in one step
+RUN --mount=type=secret,id=npmrc,target=/app/.npmrc \
+    npm ci && \
+    npm install @hopkins385/ragna-sdk --save
 
 # Copy source files
 COPY . .
