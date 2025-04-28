@@ -35,6 +35,7 @@ services:
       - 'traefik.http.routers.studio-webapp.tls.certresolver=http'
     networks:
       traefik_net:
+        ipv4_address: 172.18.0.4
 
 networks:
   traefik_net:

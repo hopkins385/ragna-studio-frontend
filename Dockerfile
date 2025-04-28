@@ -77,6 +77,7 @@ COPY --from=build --chown=www-data:www-data app/dist /usr/share/nginx/html
 # Copy nginx config
 COPY --from=build --chown=root:root /app/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY --from=build --chown=root:root /app/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build --chown=root:root /app/nginx/real-ip.conf /etc/nginx/conf.d/real-ip.conf
 COPY --from=build --chown=root:root /app/nginx/security.conf /etc/nginx/security/security.conf
 
 # set user to www-data
