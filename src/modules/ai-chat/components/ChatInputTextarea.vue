@@ -176,6 +176,7 @@ onUnmounted(() => {
         @transcription="text => onAudioRecorderResult(text)"
       />
       <div>
+        <!-- Abort Button -->
         <Button
           v-if="showAbortButton"
           type="submit"
@@ -183,8 +184,8 @@ onUnmounted(() => {
           size="icon"
           class="group rounded-full bg-stone-50 border-stone-400 shadow-sm hover:border-stone-500 hover:scale-110 transition-colors duration-200 ease-in-out"
           :class="{
-            'size-6': textareaSize === 'default',
-            'size-5': textareaSize === 'sm',
+            '!size-6': textareaSize === 'default',
+            '!size-5': textareaSize === 'sm',
           }"
           @click.prevent="() => abortRequest()"
         >
@@ -196,12 +197,11 @@ onUnmounted(() => {
             }"
           />
         </Button>
+        <!-- Submit Button -->
         <Button v-else type="submit" size="icon" variant="ghost" :disabled="!submitReleased">
           <SendHorizontalIcon
             class="stroke-1.5"
             :class="{
-              '!size-5': textareaSize === 'default',
-              '!size-4': textareaSize === 'sm',
               'opacity-100': submitReleased,
               'opacity-85': !submitReleased,
             }"

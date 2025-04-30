@@ -14,7 +14,6 @@ import ChatMessageBox from '@/modules/ai-chat/components/ChatMessageBox.vue';
 import ChatMessageChunk from '@/modules/ai-chat/components/ChatMessageChunk.vue';
 import ChatPresets from '@/modules/ai-chat/components/ChatPresets.vue';
 import ChatPrivacy from '@/modules/ai-chat/components/ChatPrivacy.vue';
-import ChatThinkingBox from '@/modules/ai-chat/components/ChatThinkingBox.vue';
 import ChatToolCallMessage from '@/modules/ai-chat/components/ChatToolCallMessage.vue';
 import ChatToolCallResult from '@/modules/ai-chat/components/ChatToolCallResult.vue';
 import { useChatImages, type ChatImage } from '@/modules/ai-chat/composables/useChatImages';
@@ -190,7 +189,7 @@ const onToolStartEvent = (payload: ToolInfoData) => {
 };
 
 const onToolEndEvent = (toolName: string) => {
-  unsetActiveTool({ toolName }, { delay: 3000 });
+  unsetActiveTool({ toolName }, { delay: 5000 });
   /*aiChatStore.appendChatMessage({
     id: new Date().getTime().toString(),
     type: 'tool-result',
@@ -334,10 +333,12 @@ onMounted(() => {});
       </template>
 
       <!-- thinking message -->
-      <ChatThinkingBox v-if="aiChatStore.isThinking" :display-name="aiChatStore.assistant?.title" />
+      <!--
+      <ChatThinkingBox v-if="aiChatStore.isLoading" :display-name="aiChatStore.assistant?.title" />
+      -->
       <!-- streaming message -->
       <ChatMessageChunk
-        v-if="aiChatStore.joinedMessageTextChunks.length > 0"
+        v-if="aiChatStore.isLoading"
         id="chatMessage"
         :stream-text="aiChatStore.joinedMessageTextChunks"
         :assistant-name="aiChatStore.assistant?.title"

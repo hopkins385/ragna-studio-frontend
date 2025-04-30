@@ -27,7 +27,8 @@ const getToolResult = (toolResult: string | Record<string, any>) => {
     return toolResult;
   }
   if (typeof toolResult === 'object') {
-    return JSON.stringify(toolResult, null, 2);
+    const jsonString = JSON.stringify(toolResult, null, 2);
+    return jsonString;
   }
   return '';
 };
@@ -48,8 +49,10 @@ const getToolResult = (toolResult: string | Record<string, any>) => {
         <ChevronDownIcon class="size-4 stroke-1.5" :class="{ 'rotate-180': showDetails }" />
       </div>
     </div>
-    <div class="max-w-[40rem] max-h-96 overflow-hidden">
-      <p class="opacity-95 whitespace-pre-line">{{ getToolResult(props.toolResult) }}</p>
+    <div class="max-w-[40rem]">
+      <p class="opacity-95 whitespace-pre-line line-clamp-6 overflow-hidden">
+        {{ getToolResult(props.toolResult) }}
+      </p>
     </div>
   </div>
 </template>
