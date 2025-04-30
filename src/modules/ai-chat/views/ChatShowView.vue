@@ -189,14 +189,31 @@ const onToolStartEvent = (payload: ToolInfoData) => {
   });*/
 };
 
+const onToolEndEvent = (toolName: string) => {
+  unsetActiveTool({ toolName }, { delay: 3000 });
+  /*aiChatStore.appendChatMessage({
+    id: new Date().getTime().toString(),
+    type: 'tool-result',
+    role: 'assistant',
+    content: [
+      {
+        args: payload.toolInfo,
+        type: 'tool-result',
+        toolName: payload.toolName,
+        toolCallId: undefined,
+      },
+    ] as any,
+  });*/
+};
+
 const setupSocketListeners = (chatId: string) => {
   socket.on(`chat:${chatId}-tool-start-event`, onToolStartEvent);
-  socket.on(`chat:${chatId}-tool-end-event`, unsetActiveTool);
+  socket.on(`chat:${chatId}-tool-end-event`, onToolEndEvent);
 };
 
 const removeSocketListeners = (chatId: string) => {
   socket.off(`chat:${chatId}-tool-start-event`, onToolStartEvent);
-  socket.off(`chat:${chatId}-tool-end-event`, unsetActiveTool);
+  socket.off(`chat:${chatId}-tool-end-event`, onToolEndEvent);
 };
 
 const setupChat = async (chatId: string) => {
@@ -300,9 +317,9 @@ onMounted(() => {});
       <!-- chat messages -->
       <template v-for="message in aiChatStore.chatMessages" :key="message.id">
         <ChatToolCallResult
+          v-if="message.type === 'tool-result'"
           :display-name="aiChatStore.assistant?.title"
           :content="message.content"
-          v-if="message.type === 'tool-result'"
         />
         <ChatMessageBox
           v-if="message.type !== 'tool-call' && message.type !== 'tool-result'"

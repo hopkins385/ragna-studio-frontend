@@ -1,7 +1,12 @@
 export interface ToolInfoData {
   toolName: string;
-  toolInfo: any;
+  toolInfo: string;
 }
+
+const dummyTool = {
+  toolName: 'dummyTool',
+  toolInfo: 'This is a dummy tool for testing purposes.',
+};
 
 export function useChatTools() {
   const activeTools = ref<ToolInfoData[]>([]);
@@ -13,8 +18,14 @@ export function useChatTools() {
     });
   }
 
-  function unsetActiveTool(toolName: string) {
-    activeTools.value = activeTools.value.filter(data => data.toolName !== toolName);
+  function unsetActiveTool(payload: { toolName: string }, options?: { delay: number }) {
+    if (options?.delay) {
+      setTimeout(() => {
+        activeTools.value = activeTools.value.filter(tool => tool.toolName !== payload.toolName);
+      }, options.delay);
+    } else {
+      activeTools.value = activeTools.value.filter(tool => tool.toolName !== payload.toolName);
+    }
   }
 
   function clearActiveTools() {

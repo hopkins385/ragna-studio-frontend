@@ -1,14 +1,13 @@
 <script setup lang="ts">
+// src/modules/ai-chat/components/ChatToolCallResult.vue
 import ChatMessageBoxWrapper from '@/modules/ai-chat/components/ChatMessageBoxWrapper.vue';
-import { getToolDisplayName } from '@/modules/assistant-tool/helpers/tool-display-name.helper';
-import { ChevronDownIcon } from 'lucide-vue-next';
+import ChatToolCallHeader from '@/modules/ai-chat/components/ChatToolCallHeader.vue';
 
 // Props
-interface ChatToolCallProps {
+const props = defineProps<{
   displayName?: string;
   content: any;
-}
-const props = defineProps<ChatToolCallProps>();
+}>();
 
 // Emits
 // Refs
@@ -18,7 +17,7 @@ const showDetails = ref(false);
 
 // Computed
 const toolCallDisplayName = computed(() => {
-  return `Tool Call - ${props.displayName ?? 'Agent'}`;
+  return `${props.displayName ?? 'Agent'}`;
 });
 const toolCalls = computed(() => {
   return (
@@ -81,18 +80,15 @@ const toggleDetails = (e: MouseEvent) => {
   <ChatMessageBoxWrapper
     :display-name="toolCallDisplayName"
     role="assistant"
-    class="pb-0 overflow-x-scroll"
+    class="!pb-0 overflow-x-scroll"
   >
-    <div v-for="(call, index) in toolCalls" :key="index" class="">
-      <div
-        class="border border-sky-100 shadow-sm mb-2 p-2 rounded-lg px-4 flex items-center space-x-2 cursor-pointer bg-sky-100"
+    <div v-for="(call, index) in toolCalls" :key="index">
+      <ChatToolCallHeader
+        :tool-name="call.toolName"
+        :tool-result="call.toolArgs[0]"
+        v-model="showDetails"
         @click="toggleDetails"
-      >
-        <div>{{ $t(getToolDisplayName({ rawName: call.toolName })) }}</div>
-        <div>
-          <ChevronDownIcon class="size-4 stroke-1.5" :class="{ 'rotate-180': showDetails }" />
-        </div>
-      </div>
+      />
       <ul class="pr-14 !ml-5" v-if="showDetails">
         <li class="flex">
           <div class="whitespace-nowrap min-w-14"><strong>Agent:</strong></div>
