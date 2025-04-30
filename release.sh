@@ -41,7 +41,7 @@ read -p "Do you want to execute the build script (build.sh)? (y/n) " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "Executing build script..."
-  ./build.sh
+  ./build.sh -y
   echo "Build script executed."
 else
   echo "Skipping build script execution."
