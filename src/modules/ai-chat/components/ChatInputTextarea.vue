@@ -170,7 +170,7 @@ onUnmounted(() => {
         </FormItem>
       </FormField>
     </div>
-    <div class="absolute bottom-[0.6rem] right-3 z-20 flex items-center space-x-1">
+    <div class="absolute bottom-[0.25rem] right-2 z-20 flex items-center">
       <ChatAudioRecorder
         v-if="textareaSize !== 'sm' && !showAbortButton"
         @transcription="text => onAudioRecorderResult(text)"
