@@ -37,6 +37,11 @@ services:
       traefik_net:
         ipv4_address: 172.18.0.4
 
+    #TODO: create volume for nginx logs which can be used for crowdsec
+    # volumes:
+    #   - nginx_logs:/var/log/nginx
+    #   - nginx_cache:/var/cache/nginx
+
 networks:
   traefik_net:
     external: true
