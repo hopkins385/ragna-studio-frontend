@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useProviderIcons } from '@/composables/useProviderIcons';
+import type { LargeLangModelInfos } from '@hopkins385/ragna-sdk';
 import { Button } from '@ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 import { CheckCircle, Hammer, Image, MessageSquareText } from 'lucide-vue-next';
-import type { LargeLangModelInfos } from '@hopkins385/ragna-sdk';
 import CircleFlagEu from '~icons/circle-flags/eu?width=512px&height=512px';
 import CircleFlagUs from '~icons/circle-flags/us?width=512px&height=512px';
 import LlmRatingBar from './LlmRatingBar.vue';
@@ -28,7 +28,7 @@ const showDatacenter = false;
 
 <template>
   <div
-    class="p-4 border rounded-lg text-sm hover:shadow-md cursor-pointer relative group w-64"
+    class="p-6 border rounded-lg text-sm hover:shadow-md cursor-pointer relative group w-64 h-80"
     :class="{ 'border-green-500': selected }"
   >
     <div class="w-full relative">
@@ -38,10 +38,13 @@ const showDatacenter = false;
       >
         <CheckCircle class="stroke-2 size-4 text-green-700 group-hover:block" />
       </div>
-      <h2 class="font-semibold">
-        <component :is="getProviderIcon(providerName)" class="stroke-1.5 size-5 mb-1" />
-        {{ providerName }} /
-        {{ displayName }}
+      <h2 class="font-semibold flex items-center space-x-2">
+        <span>
+          <component :is="getProviderIcon(providerName)" class="stroke-1.5 size-5 mb-1" />
+        </span>
+        <span>
+          {{ displayName }}
+        </span>
       </h2>
     </div>
     <div class="space-y-2 py-4">

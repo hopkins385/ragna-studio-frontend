@@ -82,7 +82,7 @@ useHead({
       </template>
       <template #bottom> </template>
     </Heading>
-    <div class="px-10">
+    <div class="px-16">
       <AssistantEditForm
         v-if="assistant && assistantTools.length"
         :assistant="assistant"

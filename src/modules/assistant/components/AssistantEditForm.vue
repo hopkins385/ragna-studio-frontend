@@ -221,62 +221,63 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="w-full flex justify-end">
-    <div class="flex items-center space-x-4">
-      <Button @click="$router.back()" variant="secondary">
-        {{ $t('form.button.back') }}
-      </Button>
-      <ButtonLoading :loading="newChatIsLoading" @click="onStartChat" variant="outline">
-        {{ $t('assistant.button.new_chat') }}
-      </ButtonLoading>
-      <ButtonLoading :loading="updateIsLoading" @click="onSubmit" type="submit">
-        {{ $t('form.button.save') }}
-      </ButtonLoading>
-    </div>
-  </div>
-  <TabSidebar v-model="currentTab" :tabs="siderBarTabs" :error-tabs="tabsWithErrors">
-    <!-- TAB 1-->
-    <template #title>
-      <div class="space-y-8">
-        <FormField v-slot="{ componentField }" name="title">
-          <FormItem>
-            <FormLabel>{{ $t('assistant.form.name_label') }}</FormLabel>
-            <FormDescription>
-              {{ $t('assistant.form.name_description') }}
-            </FormDescription>
-            <FormControl>
-              <Input type="text" placeholder="" v-bind="componentField" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-
-        <FormField v-slot="{ componentField }" name="description">
-          <FormItem>
-            <FormLabel>{{ $t('assistant.form.description_label') }}</FormLabel>
-            <FormDescription>
-              {{ $t('assistant.form.description_description') }}
-            </FormDescription>
-            <FormControl>
-              <Textarea type="text" placeholder="" v-bind="componentField" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
+  <div>
+    <div class="w-full flex justify-end pb-2 -mt-3">
+      <div class="flex items-center space-x-4">
+        <Button @click="$router.back()" variant="secondary">
+          {{ $t('form.button.back') }}
+        </Button>
+        <ButtonLoading :loading="newChatIsLoading" @click="onStartChat" variant="outline">
+          {{ $t('assistant.button.new_chat') }}
+        </ButtonLoading>
+        <ButtonLoading :loading="updateIsLoading" @click="onSubmit" type="submit">
+          {{ $t('form.button.save') }}
+        </ButtonLoading>
       </div>
-    </template>
-    <!-- TAB 2-->
-    <template #llmId>
-      <FormField v-slot="{ handleChange }" name="llmId">
-        <FormItem>
-          <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
-          <FormControl>
-            <LlmSelectModal
-              :initial-display-name="initialAssistantName"
-              :current-llm-id="props.assistant?.llm.id"
-              @update:id="handleChange"
-            />
-            <!--
+    </div>
+    <TabSidebar v-model="currentTab" :tabs="siderBarTabs" :error-tabs="tabsWithErrors">
+      <!-- TAB 1-->
+      <template #title>
+        <div class="space-y-8">
+          <FormField v-slot="{ componentField }" name="title">
+            <FormItem>
+              <FormLabel>{{ $t('assistant.form.name_label') }}</FormLabel>
+              <FormDescription>
+                {{ $t('assistant.form.name_description') }}
+              </FormDescription>
+              <FormControl>
+                <Input type="text" placeholder="" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField v-slot="{ componentField }" name="description">
+            <FormItem>
+              <FormLabel>{{ $t('assistant.form.description_label') }}</FormLabel>
+              <FormDescription>
+                {{ $t('assistant.form.description_description') }}
+              </FormDescription>
+              <FormControl>
+                <Textarea type="text" placeholder="" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </template>
+      <!-- TAB 2-->
+      <template #llmId>
+        <FormField v-slot="{ handleChange }" name="llmId">
+          <FormItem>
+            <FormLabel>{{ $t('assistant.genai.label') }}</FormLabel>
+            <FormControl>
+              <LlmSelectModal
+                :initial-display-name="initialAssistantName"
+                :current-llm-id="props.assistant?.llm.id"
+                @update:id="handleChange"
+              />
+              <!--
             <div class="flex items-center space-x-3">
               <LlmProviderBox
                 v-for="provider in supportedProviders"
@@ -289,115 +290,116 @@ onBeforeUnmount(() => {
               />
             </div>
             -->
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-    </template>
-    <!-- TAB 3-->
-    <template #systemPrompt>
-      <div class="space-y-8">
-        <FormField v-slot="{ componentField, value, handleChange }" name="systemPrompt">
-          <div>
-            <PromptWizardDialog :input-prompt="value" @update-prompt="handleChange" />
-          </div>
-          <FormItem>
-            <FormLabel>{{ $t('assistant.behavior.label') }}</FormLabel>
-            <FormDescription>
-              {{ $t('assistant.behavior.description') }}
-            </FormDescription>
-            <FormControl>
-              <Textarea rows="10" v-bind="componentField" />
             </FormControl>
             <FormMessage />
           </FormItem>
         </FormField>
-      </div>
-    </template>
-    <!-- TAB 4 -->
-    <template #knowledge>
-      <FormField v-slot="{ handleChange }" name="knowledge">
-        <FormItem>
-          <FormLabel>{{ $t('assistant.knowledge.label') }}</FormLabel>
-          <FormDescription>
-            {{ $t('assistant.knowledge.description') }}
-          </FormDescription>
-          <FormControl>
-            <CollectionSelectModal
-              :id="firstCollection.id"
-              :initial-display-name="firstCollection.name"
-              @update:id="
-                (id: string) => {
-                  handleChange(id), updateCollection(id);
-                }
-              "
-              @reset="resetCollections"
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-    </template>
-    <!-- TAB 5 -->
-    <template #tools>
-      <FormField name="tools">
-        <FormItem>
-          <div class="mb-4 space-y-2">
-            <FormLabel>{{ $t('assistant.tools.label') }}</FormLabel>
-            <FormDescription>
-              {{ $t('assistant.tools.description') }}
-            </FormDescription>
-          </div>
-
-          <FormField
-            v-for="tool in assistantTools"
-            v-slot="{ value, handleChange }"
-            :key="tool.id"
-            type="checkbox"
-            :value="tool.id"
-            :unchecked-value="false"
-            name="tools"
-          >
-            <FormItem
-              class="flex flex-row items-center space-x-3 border border-transparent space-y-4 w-fit"
-            >
+      </template>
+      <!-- TAB 3-->
+      <template #systemPrompt>
+        <div class="space-y-8">
+          <FormField v-slot="{ componentField, value, handleChange }" name="systemPrompt">
+            <div>
+              <PromptWizardDialog :input-prompt="value" @update-prompt="handleChange" />
+            </div>
+            <FormItem>
+              <FormLabel>{{ $t('assistant.behavior.label') }}</FormLabel>
+              <FormDescription>
+                {{ $t('assistant.behavior.description') }}
+              </FormDescription>
               <FormControl>
-                <Checkbox :checked="value?.includes(tool.id)" @update:checked="handleChange" />
+                <Textarea rows="10" v-bind="componentField" />
               </FormControl>
-              <FormLabel class="font-normal flex space-x-3">
-                <div class="size-8 flex justify-center">
-                  <component
-                    :is="getToolIcon(tool?.iconName)"
-                    class="size-5 stroke-1.5 text-gray-500 shrink-0"
-                  />
-                </div>
-                <div class="space-y-1">
-                  <h2 class="text-sm">{{ $t(`tool.${tool.name.toString()}.label`) }}</h2>
-                  <p class="opacity-75 text-xs">
-                    {{ $t(`tool.${tool.name.toString()}.description`) }}
-                  </p>
-                </div>
-              </FormLabel>
+              <FormMessage />
             </FormItem>
           </FormField>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-    </template>
-    <!-- TAB 7 -->
-    <template #privacy>
-      <FormField name="privacy">
-        <FormItem>
-          <FormLabel>{{ $t('assistant.privacy.label') }}</FormLabel>
-          <FormDescription>
-            {{ $t('assistant.privacy.description') }}
-          </FormDescription>
-          <FormControl>
-            <div class="text-sm border px-5 py-3 w-fit">Under Construction</div>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-    </template>
-  </TabSidebar>
+        </div>
+      </template>
+      <!-- TAB 4 -->
+      <template #knowledge>
+        <FormField v-slot="{ handleChange }" name="knowledge">
+          <FormItem>
+            <FormLabel>{{ $t('assistant.knowledge.label') }}</FormLabel>
+            <FormDescription>
+              {{ $t('assistant.knowledge.description') }}
+            </FormDescription>
+            <FormControl>
+              <CollectionSelectModal
+                :id="firstCollection.id"
+                :initial-display-name="firstCollection.name"
+                @update:id="
+                  (id: string) => {
+                    handleChange(id), updateCollection(id);
+                  }
+                "
+                @reset="resetCollections"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </template>
+      <!-- TAB 5 -->
+      <template #tools>
+        <FormField name="tools">
+          <FormItem>
+            <div class="mb-4 space-y-2">
+              <FormLabel>{{ $t('assistant.tools.label') }}</FormLabel>
+              <FormDescription>
+                {{ $t('assistant.tools.description') }}
+              </FormDescription>
+            </div>
+
+            <FormField
+              v-for="tool in assistantTools"
+              v-slot="{ value, handleChange }"
+              :key="tool.id"
+              type="checkbox"
+              :value="tool.id"
+              :unchecked-value="false"
+              name="tools"
+            >
+              <FormItem
+                class="flex flex-row items-center space-x-3 border border-transparent space-y-4 w-fit"
+              >
+                <FormControl>
+                  <Checkbox :checked="value?.includes(tool.id)" @update:checked="handleChange" />
+                </FormControl>
+                <FormLabel class="font-normal flex space-x-3">
+                  <div class="size-8 flex justify-center">
+                    <component
+                      :is="getToolIcon(tool?.iconName)"
+                      class="size-5 stroke-1.5 text-gray-500 shrink-0"
+                    />
+                  </div>
+                  <div class="space-y-1">
+                    <h2 class="text-sm">{{ $t(`tool.${tool.name.toString()}.label`) }}</h2>
+                    <p class="opacity-75 text-xs">
+                      {{ $t(`tool.${tool.name.toString()}.description`) }}
+                    </p>
+                  </div>
+                </FormLabel>
+              </FormItem>
+            </FormField>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </template>
+      <!-- TAB 7 -->
+      <template #privacy>
+        <FormField name="privacy">
+          <FormItem>
+            <FormLabel>{{ $t('assistant.privacy.label') }}</FormLabel>
+            <FormDescription>
+              {{ $t('assistant.privacy.description') }}
+            </FormDescription>
+            <FormControl>
+              <div class="text-sm border px-5 py-3 w-fit">Under Construction</div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </template>
+    </TabSidebar>
+  </div>
 </template>

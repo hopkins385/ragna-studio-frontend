@@ -23,8 +23,9 @@ const activeTab = computed({
 </script>
 
 <template>
-  <div class="grid grid-cols-3 gap-40">
-    <div role="tablist" class="col-span-1">
+  <div class="grid grid-cols-12">
+    <!-- Tab list -->
+    <div role="tablist" class="col-span-3">
       <ul class="space-y-2">
         <li v-for="tab in tabs" :key="tab.id">
           <button
@@ -36,7 +37,7 @@ const activeTab = computed({
               'hover:bg-gray-100 border-transparent': activeTab !== tab.id,
               '!border-destructive': errorTabs?.includes(tab.id),
             }"
-            class="w-full px-4 py-2 text-left transition flex items-center space-x-2 rounded-sm border"
+            class="w-full px-4 py-2 text-left transition flex items-center space-x-2 rounded-md border"
             @click="activeTab = tab.id"
           >
             <component :is="tab.icon" class="size-4 stroke-1.5" />
@@ -45,8 +46,8 @@ const activeTab = computed({
         </li>
       </ul>
     </div>
-
-    <div class="col-span-2">
+    <!-- Tab panels -->
+    <div class="col-span-9 pl-32">
       <template v-for="tab in tabs" :key="tab.id">
         <div
           :id="`panel-${tab.id}`"
