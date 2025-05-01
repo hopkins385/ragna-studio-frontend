@@ -3,7 +3,7 @@ const toolDisplayNames = {
   searchWeb: 'tool.websearch.label',
   think: 'tool.think.label',
   texteditor: 'tool.texteditor.label',
-  webscraper: 'tool.webscraper.label',
+  website: 'tool.webscraper.label',
   knowledge: 'tool.knowledge.label',
   comment: 'tool.comment.label',
   directions: 'tool.directions.label',
