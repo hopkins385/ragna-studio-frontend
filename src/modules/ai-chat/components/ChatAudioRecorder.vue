@@ -4,8 +4,6 @@ import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useAudioRecorder } from '@/modules/speech-to-text/composables/useAudioRecoder';
 import { Loader2Icon, MicIcon } from 'lucide-vue-next';
 
-// Imports
-
 // Props
 // Emits
 const emit = defineEmits<{
@@ -15,23 +13,63 @@ const emit = defineEmits<{
 
 // Refs
 const isLoading = ref(false);
+const isWaitingForPermission = ref(false);
 
 // Composables
 const client = useRagnaClient();
-const { isRecording, audioChunks, outputFormat, startRecording, stopRecording } =
-  useAudioRecorder();
+const {
+  isRecording,
+  audioChunks,
+  outputFormat,
+  error,
+  startRecording,
+  stopRecording,
+  canAccessMicrophone,
+} = useAudioRecorder();
 
-// Computed
 // Functions
-const onStartRecording = async () => {
-  return startRecording();
+const onStartRecording = async (e: unknown) => {
+  if (isWaitingForPermission.value) {
+    // If we're waiting for permission, do nothing - user will press again after permission granted
+    return;
+  }
+
+  // If permission state is unknown or denied, we need to request it
+  if (!canAccessMicrophone.value) {
+    isWaitingForPermission.value = true;
+    await startRecording();
+
+    // Stop recording immediately after permission is granted
+    if (isRecording.value) {
+      await stopRecording({
+        stopImmediately: true,
+      });
+    }
+
+    // After permission is granted, we reset but don't continue recording
+    isWaitingForPermission.value = false;
+    return;
+  }
+
+  // Permission already granted, start normal recording flow
+  await startRecording();
 };
 
-const onStopRecording = async () => {
+const onStopRecording = async (e: unknown) => {
+  if (!isRecording.value || isWaitingForPermission.value) {
+    return;
+  }
+  //
   isLoading.value = true;
-
   // Stop recording
   await stopRecording();
+
+  if (error.value) {
+    isLoading.value = false;
+    console.error('Error recording audio:', error.value);
+    emit('abort');
+    return;
+  }
 
   // Delay to ensure all audio is processed
   await new Promise(resolve => setTimeout(resolve, 500));
@@ -44,6 +82,7 @@ const onStopRecording = async () => {
   }
   // await playAudio(audioBlob);
   const text = await transcribeAudio(audioBlob);
+  // const text = 'dummy text'; // await transcribeAudio(audioBlob);
   emit('transcription', text);
   isLoading.value = false;
 };
@@ -74,15 +113,15 @@ const transcribeAudio = async (audioBlob: Blob) => {
 <template>
   <div>
     <Button
-      @mousedown.prevent="async () => await onStartRecording()"
-      @mouseup.prevent="async () => await onStopRecording()"
+      @mousedown.prevent="onStartRecording"
+      @mouseup.prevent="onStopRecording"
       size="icon"
       variant="ghost"
       class="group"
       type="button"
     >
       <MicIcon
-        v-if="!isLoading"
+        v-if="!isLoading && !isWaitingForPermission"
         class="h-5 w-5 text-stone-500 opacity-50 group-hover:opacity-100"
         :class="{ 'animate-pulse': isRecording }"
         :style="{ color: isRecording ? 'red' : 'inherit' }"

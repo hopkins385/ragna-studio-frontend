@@ -1,5 +1,3 @@
-import { computed, onUnmounted, ref } from 'vue';
-
 type AudioQualityType = 'low' | 'medium' | 'high';
 
 // Define output format options
@@ -19,6 +17,7 @@ export function useAudioRecorder() {
   const audioChunks = ref<Blob[]>([]);
   const recordingDuration = ref(0);
   const recordingTimer = ref<number | null>(null);
+  const canAccessMicrophone = ref(false);
   const microphoneStream = ref<MediaStream | null>(null);
   const error = ref<Error | null>(null);
 
@@ -94,11 +93,43 @@ export function useAudioRecorder() {
       // Reset state
       audioChunks.value = [];
 
+      // Check if the browser supports MediaRecorder
+      if (!('MediaRecorder' in window)) {
+        error.value = new Error('MediaRecorder is not supported in this browser.');
+        console.error('MediaRecorder is not supported in this browser.');
+        return;
+      }
+
       // Get access to the microphone
-      microphoneStream.value = await navigator.mediaDevices.getUserMedia({
-        audio: audioConfig.value,
-        video: false,
-      });
+      try {
+        microphoneStream.value = await navigator.mediaDevices.getUserMedia({
+          audio: audioConfig.value,
+          video: false,
+        });
+        canAccessMicrophone.value = true;
+      } catch (err: unknown) {
+        // Handle specific permission errors
+        if (err instanceof DOMException) {
+          if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+            error.value = new Error(
+              'Microphone permission denied. Please allow microphone access to record audio.',
+            );
+          } else if (err.name === 'AbortError') {
+            error.value = new Error('Recording request was aborted. Please try again.');
+          } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+            error.value = new Error(
+              'No microphone found. Please connect a microphone and try again.',
+            );
+          } else {
+            error.value = new Error(`Microphone error: ${err.message}`);
+          }
+        } else {
+          error.value = err instanceof Error ? err : new Error(String(err));
+        }
+        console.error('Error accessing microphone:', error.value);
+        isRecording.value = false;
+        return; // Exit early since we can't continue without microphone access
+      }
 
       // Determine the most appropriate MIME type
       const finalMimeType = getSupportedMimeType();
@@ -124,8 +155,6 @@ export function useAudioRecorder() {
       };
 
       mediaRecorder.value.onstop = () => {
-        // create a blob from the audio chunks
-        // const audioBlob = new Blob(audioChunks.value, { type: finalMimeType });
         // Clean up microphone access
         cleanupStream();
         isRecording.value = false;
@@ -141,23 +170,36 @@ export function useAudioRecorder() {
       startRecordingTimer();
     } catch (err) {
       error.value = err instanceof Error ? err : new Error(String(err));
-      console.error('Error accessing microphone or starting recorder:', err);
+      console.error('Error starting recorder:', err);
       isRecording.value = false;
       cleanupStream();
     }
   };
 
-  const stopRecording = async () => {
-    if (mediaRecorder.value && isRecording.value) {
-      try {
+  // Clean up microphone stream
+  const cleanupStream = () => {
+    if (microphoneStream.value) {
+      microphoneStream.value.getTracks().forEach(track => track.stop());
+      microphoneStream.value = null;
+    }
+  };
+
+  const stopRecording = async (options?: { stopImmediately?: boolean }) => {
+    if (!mediaRecorder.value || !isRecording.value) {
+      error.value = new Error('Recorder is not active');
+      console.warn('Recorder is not active');
+      return;
+    }
+    try {
+      if (!options?.stopImmediately) {
         await new Promise(resolve => setTimeout(resolve, 500));
-        mediaRecorder.value.stop();
-        // isRecording will be set to false in the onstop handler
-      } catch (err) {
-        console.error('Error stopping recorder:', err);
-        isRecording.value = false;
-        cleanupStream();
       }
+      mediaRecorder.value.stop();
+      // isRecording will be set to false in the onstop handler
+    } catch (err) {
+      console.error('Error stopping recorder:', err);
+      isRecording.value = false;
+      cleanupStream();
     }
   };
 
@@ -176,25 +218,60 @@ export function useAudioRecorder() {
     outputFormat.value = format;
   };
 
-  // Clean up microphone stream
-  const cleanupStream = () => {
-    if (microphoneStream.value) {
-      microphoneStream.value.getTracks().forEach(track => track.stop());
-      microphoneStream.value = null;
+  // Check for microphone permissions using the Permissions API
+  const checkMicrophonePermission = async () => {
+    try {
+      // Check if browser supports the permissions API
+      if (navigator.permissions) {
+        const permissionStatus = await navigator.permissions.query({
+          name: 'microphone' as PermissionName,
+        });
+
+        if (permissionStatus.state === 'granted') {
+          canAccessMicrophone.value = true;
+        }
+
+        // Set up a listener for permission changes
+        permissionStatus.addEventListener('change', () => {
+          canAccessMicrophone.value = permissionStatus.state === 'granted';
+        });
+
+        // Return cleanup function to remove event listener
+        return () => {
+          permissionStatus.removeEventListener('change', () => {
+            // Remove the listener when no longer needed
+          });
+        };
+      }
+    } catch (err) {
+      console.warn('Unable to check microphone permissions:', err);
+      // Fall back to the existing detection mechanism
     }
+
+    // Return empty cleanup function if permissions API not available
+    return () => {};
   };
+
+  // Initialize permission check
+  let cleanupPermissionListener = () => {};
+
+  onMounted(async () => {
+    cleanupPermissionListener = (await checkMicrophonePermission()) || (() => {});
+  });
 
   // Ensure cleanup on component unmount
   onUnmounted(() => {
     stopRecording();
     stopRecordingTimer();
     cleanupStream();
+    cleanupPermissionListener();
   });
 
   return {
     isRecording,
     audioChunks,
     recordingDuration,
+    canAccessMicrophone,
     error,
     startRecording,
     stopRecording,
@@ -204,5 +281,6 @@ export function useAudioRecorder() {
     setAudioQuality,
     setOutputFormat,
     MIME_TYPES,
+    checkMicrophonePermission, // Expose the check function in case we need to call it manually
   };
 }
