@@ -46,7 +46,7 @@ useHead({
       </template>
       <template #bottom> </template>
     </Heading>
-    <div class="px-16">
+    <div class="px-14">
       <AssistantCreateForm />
     </div>
   </SectionContainer>
