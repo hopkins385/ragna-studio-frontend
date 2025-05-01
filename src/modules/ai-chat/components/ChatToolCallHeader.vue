@@ -38,11 +38,11 @@ const getToolResult = (toolResult: string | Record<string, any>) => {
 
 <template>
   <div
-    class="border border-sky-100 shadow-sm mb-2 p-6 rounded-lg space-y-3 cursor-pointer bg-sky-100 min-h-20 min-w-96"
+    class="border border-stone-200 shadow-sm mb-2 p-8 rounded-lg space-y-3 cursor-pointer bg-white min-h-20 min-w-96 hover:shadow-md"
   >
     <div class="flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <span><SparklesIcon class="size-4 stroke-2" /></span>
+      <div class="flex items-center space-x-2 pb-1">
+        <span><SparklesIcon class="size-4 stroke-2 text-purple-800" /></span>
         <span class="font-semibold">{{ $t(getToolDisplayName({ rawName: props.toolName })) }}</span>
       </div>
       <div v-if="props.hasMore">

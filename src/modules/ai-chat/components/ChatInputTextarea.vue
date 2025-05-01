@@ -35,6 +35,7 @@ const emit = defineEmits<{
 
 // Refs
 const chatInputFormRef = useTemplateRef('chat-input-form');
+const textAreaIsFocused = ref(false);
 
 // Stores
 const aiChatSettings = useAiChatSettingsStore();
@@ -56,6 +57,7 @@ const submitReleased = computed(() => {
 const textAreaClass = computed(() => {
   return cn(
     'no-scrollbar resize-none rounded-lg py-3 pr-14 focus:shadow-lg bg-stone-50 shadow-inner',
+    // textAreaIsFocused.value ? '' : 'min-h-12',
     textareaClass,
     aiChatSettings.getPrivacyNerActive ? 'focus-visible:ring-blue-600' : '',
   );
@@ -128,6 +130,18 @@ const onAudioRecorderResult = async (text: string) => {
   // submitForm();
 };
 
+const onTextareaUpdateModelValue = (payload: string | number) => {
+  adjustTextareaHeight();
+};
+
+const onTextareaFocus = (e: FocusEvent) => {
+  textAreaIsFocused.value = true;
+};
+
+const onTextareaBlur = (e: FocusEvent) => {
+  textAreaIsFocused.value = false;
+};
+
 let resizeObserver: ResizeObserver | null = null;
 // Hooks
 onMounted(() => {
@@ -164,7 +178,9 @@ onUnmounted(() => {
               :placeholder="$t('chat.input.placeholder')"
               :class="textAreaClass"
               @keydown.enter="onKeyDownEnter"
-              @update:model-value="adjustTextareaHeight"
+              @update:model-value="onTextareaUpdateModelValue"
+              @focus.prevent="onTextareaFocus"
+              @blur.prevent="onTextareaBlur"
             />
           </FormControl>
         </FormItem>
