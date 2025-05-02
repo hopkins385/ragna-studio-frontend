@@ -5,8 +5,9 @@ const MIME_TYPES = {
   WEBM_OPUS: 'audio/webm;codecs=opus',
   WEBM_PCM: 'audio/webm;codecs=pcm',
   MP4_AAC: 'audio/mp4;codecs=aac',
-  OGG_OPUS: 'audio/ogg;codecs=opus',
   WAV: 'audio/wav',
+  MP3: 'audio/mpeg',
+  MP4: 'audio/mp4', // Default as MP4 works on Safari and Chrome
 } as const;
 
 type OutputFormatType = (typeof MIME_TYPES)[keyof typeof MIME_TYPES];
@@ -17,12 +18,14 @@ export function useAudioRecorder() {
   const audioChunks = ref<Blob[]>([]);
   const recordingDuration = ref(0);
   const recordingTimer = ref<number | null>(null);
-  const canAccessMicrophone = ref(false);
   const microphoneStream = ref<MediaStream | null>(null);
   const error = ref<Error | null>(null);
 
+  // Permissions
+  const canAccessMicrophone = ref(false);
+
   // Configuration Refs
-  const outputFormat = ref<OutputFormatType>(MIME_TYPES.WEBM_OPUS); // Default MIME type
+  const outputFormat = ref<OutputFormatType>(MIME_TYPES.MP4); // Default MIME type
   const audioQuality = ref<AudioQualityType>('medium');
   const timeslice = ref(1000); // Collect data chunks every second
 
@@ -30,20 +33,21 @@ export function useAudioRecorder() {
   const audioConfig = ref({
     echoCancellation: true,
     noiseSuppression: true,
-    sampleRate: 16000, // 44100,
+    sampleRate: 16000, // 16kHz is a common sample rate for speech
+    channelCount: 1, // Mono audio
   });
 
   // Computed properties for derived values
   const audioBitrate = computed(() => {
     switch (audioQuality.value) {
       case 'low':
-        return 64000;
+        return 16000;
       case 'medium':
-        return 128000;
+        return 32000;
       case 'high':
-        return 256000;
-      default:
         return 128000;
+      default:
+        return 32000;
     }
   });
 
