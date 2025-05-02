@@ -11,21 +11,35 @@ echo "Starting release process ..."
 # Check for uncommitted changes
 if [[ -n $(git status -s) ]]; then
   echo "There are uncommitted changes in the repository."
-  read -p "Do you want to commit these changes before releasing? (y/n) " -n 1 -r
+  # Prompt user, default to Yes
+  read -p "Do you want to commit these changes before releasing? (Y/n) " REPLY
   echo
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
+  # If reply is empty (Enter) or starts with y/Y, commit changes
+  if [[ -z "$REPLY" || "$REPLY" =~ ^[Yy]$ ]]; then
     read -p "Enter commit message: " commit_message
     git add .
     git commit -m "$commit_message"
     echo "Changes committed."
-  else
+  # If reply starts with n/N, check if user wants to continue
+  elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
     echo "Please commit your changes before releasing or proceed with caution."
-    read -p "Continue with release anyway? (y/n) " -n 1 -r
+    # Prompt user, default to Yes
+    read -p "Continue with release anyway? (Y/n) " REPLY
     echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    # If reply starts with n/N, abort
+    if [[ "$REPLY" =~ ^[Nn]$ ]]; then
       echo "Release process aborted."
       exit 1
     fi
+  # Handle other inputs as needing confirmation to continue
+  else
+     echo "Please commit your changes before releasing or proceed with caution."
+     read -p "Continue with release anyway? (Y/n) " REPLY
+     echo
+     if [[ "$REPLY" =~ ^[Nn]$ ]]; then
+       echo "Release process aborted."
+       exit 1
+     fi
   fi
 fi
 
@@ -37,9 +51,11 @@ echo "Release process completed!"
 
 # Ask the use if he wants to execute the build script (build.sh)
 
-read -p "Do you want to execute the build script (build.sh)? (y/n) " -n 1 -r
+# Prompt user, default to Yes
+read -p "Do you want to execute the build script (build.sh)? (Y/n) " REPLY
 echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+# If reply is empty (Enter) or starts with y/Y, execute build script
+if [[ -z "$REPLY" || "$REPLY" =~ ^[Yy]$ ]]; then
   echo "Executing build script..."
   ./build.sh -y
   echo "Build script executed."
