@@ -23,6 +23,12 @@ ENV NODE_ENV=production
 # Build the app
 RUN npm run build-prod
 
+# Make script executable and run it
+COPY scripts/generate-version.sh ./scripts/
+RUN chmod +x ./scripts/generate-version.sh && \
+    cd /app && \
+    ./scripts/generate-version.sh
+
 #
 # 🚀 Production Server
 #
