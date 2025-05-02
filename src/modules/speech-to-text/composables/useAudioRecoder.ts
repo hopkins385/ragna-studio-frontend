@@ -52,7 +52,7 @@ export function useAudioRecorder() {
   });
 
   // Determine the best supported output format
-  const getSupportedMimeType = (): OutputFormatType => {
+  const getSupportedMimeType = (): OutputFormatType | null => {
     // Try the user's preferred format first
     if (MediaRecorder.isTypeSupported(outputFormat.value)) {
       return outputFormat.value;
@@ -66,9 +66,9 @@ export function useAudioRecorder() {
       }
     }
 
-    // If none are explicitly supported, return the default and hope for the best
-    console.warn('No explicitly supported MIME types found. Using default.');
-    return MIME_TYPES.WEBM_OPUS;
+    // If none are explicitly supported, return null
+    console.error('No supported MIME types found.');
+    return null;
   };
 
   const startRecordingTimer = () => {
@@ -138,6 +138,13 @@ export function useAudioRecorder() {
       // Determine the most appropriate MIME type
       const finalMimeType = getSupportedMimeType();
 
+      if (!finalMimeType) {
+        error.value = new Error('No supported audio recording formats found for this browser.');
+        console.error('No supported audio recording formats found.');
+        cleanupStream(); // Clean up stream if acquired before format check
+        return;
+      }
+
       // Configure MediaRecorder options
       const options: MediaRecorderOptions = {
         mimeType: finalMimeType,
@@ -201,14 +208,17 @@ export function useAudioRecorder() {
       mediaRecorder.value.stop();
       // isRecording will be set to false in the onstop handler
     } catch (err) {
-      console.error('Error stopping recorder:', err);
-      isRecording.value = false;
-      cleanupStream();
+      const stopError = err instanceof Error ? err : new Error(String(err));
+      console.error('Error stopping recorder:', stopError);
+      error.value = stopError; // Set the error ref
+      isRecording.value = false; // Ensure state is updated even if onstop fails
+      stopRecordingTimer(); // Ensure timer stops on error
+      cleanupStream(); // Ensure stream cleanup on error
     }
   };
 
-  const cancelRecording = () => {
-    stopRecording();
+  const cancelRecording = (options?: { stopImmediately?: boolean }) => {
+    stopRecording({ stopImmediately: options?.stopImmediately });
     audioChunks.value = [];
   };
 
@@ -231,27 +241,24 @@ export function useAudioRecorder() {
           name: 'microphone' as PermissionName,
         });
 
-        if (permissionStatus.state === 'granted') {
-          canAccessMicrophone.value = true;
-        }
+        const updatePermissionState = () => {
+          canAccessMicrophone.value = permissionStatus.state === 'granted';
+        };
+
+        updatePermissionState(); // Initial check
 
         // Set up a listener for permission changes
-        permissionStatus.addEventListener('change', () => {
-          canAccessMicrophone.value = permissionStatus.state === 'granted';
-        });
+        permissionStatus.addEventListener('change', updatePermissionState);
 
-        // Return cleanup function to remove event listener
+        // Return cleanup function to remove the specific event listener
         return () => {
-          permissionStatus.removeEventListener('change', () => {
-            // Remove the listener when no longer needed
-          });
+          permissionStatus.removeEventListener('change', updatePermissionState);
         };
       }
     } catch (err) {
       console.warn('Unable to check microphone permissions:', err);
       // Fall back to the existing detection mechanism
     }
-
     // Return empty cleanup function if permissions API not available
     return () => {};
   };
@@ -285,6 +292,6 @@ export function useAudioRecorder() {
     setAudioQuality,
     setOutputFormat,
     MIME_TYPES,
-    checkMicrophonePermission, // Expose the check function in case we need to call it manually
+    checkMicrophonePermission,
   };
 }
