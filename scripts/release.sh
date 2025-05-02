@@ -57,7 +57,7 @@ echo
 # If reply is empty (Enter) or starts with y/Y, execute build script
 if [[ -z "$REPLY" || "$REPLY" =~ ^[Yy]$ ]]; then
   echo "Executing build script..."
-  ./build.sh -y
+  build.sh -y
   echo "Build script executed."
 else
   echo "Skipping build script execution."
