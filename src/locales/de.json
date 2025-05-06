@@ -52,8 +52,10 @@
   },
   "alert": {
     "error": {
-      "title": "Ups, etwas ist schiefgelaufen",
-      "message": "Es ist ein Fehler aufgetreten",
+      "default": {
+        "title": "Ups, etwas ist schiefgelaufen",
+        "description": "Es ist ein Fehler aufgetreten"
+      },
       "all_form_fields": "Bitte fülle alle Formularfelder aus"
     }
   },

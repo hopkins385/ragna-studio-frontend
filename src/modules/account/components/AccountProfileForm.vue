@@ -23,7 +23,6 @@ const emits = defineEmits<{
 
 const client = useRagnaClient();
 const toast = useToast();
-const { t } = useI18n();
 
 const userFormSchema = toTypedSchema(
   z.object({
@@ -47,12 +46,12 @@ const onSubmit = handleSubmit(async ({ firstName, lastName }) => {
       lastName,
     });
     toast.success({
-      description: t('account.toast.name_updated'),
+      description: 'account.toast.name_updated',
     });
     emits('refresh');
   } catch (error) {
     toast.error({
-      description: t('account.toast.error'),
+      description: 'account.toast.error',
     });
   } finally {
     isLoading.value = false;

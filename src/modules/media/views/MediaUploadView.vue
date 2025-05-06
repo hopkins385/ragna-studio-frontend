@@ -101,7 +101,7 @@ useHead({
     </Heading>
     <BoxContainer>
       <!-- error alert -->
-      <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
+      <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
       <!-- dropzone -->
       <MediaFileDropzone
         v-model="dropzoneFiles"

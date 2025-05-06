@@ -42,8 +42,6 @@ const collectionSettingsSchema = z.object({
   description: z.string().optional().or(z.string().min(3).max(255)),
 });
 
-const { t } = useI18n();
-
 const { handleSubmit, resetForm } = useForm({
   validationSchema: toTypedSchema(collectionSettingsSchema),
   initialValues: {
@@ -62,10 +60,10 @@ const onSubmit = handleSubmit(async values => {
       name: values.name,
       description: values.description,
     });
-    toast.success({ description: t('collection.settings.toast.success') });
+    toast.success({ description: 'collection.settings.toast.success' });
   } catch (error) {
     console.error(error);
-    toast.error({ description: t('collection.settings.toast.error') });
+    toast.error({ description: 'collection.settings.toast.error' });
   } finally {
     emit('refresh');
   }

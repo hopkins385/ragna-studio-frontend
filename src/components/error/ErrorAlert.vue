@@ -2,11 +2,10 @@
 import { Alert, AlertDescription, AlertTitle } from '@ui/alert';
 import { AlertCircleIcon, XIcon } from 'lucide-vue-next';
 
-interface ErrorAlertProps {
-  message: string;
-}
-
-defineProps<ErrorAlertProps>();
+defineProps<{
+  title: string | null;
+  description: string | null;
+}>();
 
 const modelValue = defineModel<boolean>();
 </script>
@@ -21,9 +20,9 @@ const modelValue = defineModel<boolean>();
         <XIcon class="size-4" />
       </button>
       <AlertCircleIcon class="size-4" />
-      <AlertTitle>{{ $t('alert.error.title') }}</AlertTitle>
+      <AlertTitle>{{ title ? $t(title) : $t('alert.error.default.title') }}</AlertTitle>
       <AlertDescription>
-        {{ message }}
+        {{ description ? $t(description) : $t('alert.error.default.description') }}
       </AlertDescription>
     </Alert>
   </div>

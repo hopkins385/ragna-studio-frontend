@@ -86,10 +86,10 @@ const onSubmit = () => {
         },
       });
       // Show success notification
-      toast.success({ description: t('admin.user.update.success') });
+      toast.success({ description: 'admin.user.update.success' });
     } catch (error) {
       console.error(error);
-      setErrorAlert(t('admin.user.update.failed'));
+      setErrorAlert('admin.user.update.failed');
     } finally {
       isLoading.value = false;
     }

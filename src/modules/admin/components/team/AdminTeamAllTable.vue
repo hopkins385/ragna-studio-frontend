@@ -32,7 +32,6 @@ const client = useRagnaClient();
 const toast = useToast();
 const route = useRoute();
 const router = useRouter();
-const { t } = useI18n();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
@@ -64,7 +63,7 @@ const handleDelete = async (userId: string) => {
   try {
     // await client.admin.team.deleteTeam({ userId });
     await initAllTeams({ page: page.value });
-    toast.success({ description: t('admin.user.delete.success') });
+    toast.success({ description: 'admin.user.delete.success' });
   } catch (error: unknown) {
     console.error(error);
     return setErrorAlert(error);
@@ -75,9 +74,9 @@ const onDelete = (userId: string) => {
   throw new Error('Not implemented');
   unsetErrorAlert();
   setConfirmDialog({
-    title: t('admin.team.delete.confirm.title'),
-    description: t('admin.team.delete.confirm.description'),
-    confirmButtonText: t('admin.team.delete.confirm.button'),
+    title: 'admin.team.delete.confirm.title',
+    description: 'admin.team.delete.confirm.description',
+    confirmButtonText: 'admin.team.delete.confirm.button',
     onConfirm: () => handleDelete(userId),
   });
 };
@@ -102,7 +101,7 @@ onBeforeMount(async () => {
 
 <template>
   <div>
-    <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
+    <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
     <ConfirmDialog v-model="confirmDialog.open" v-bind="confirmDialog" />
     <Table v-if="teams.length" class="w-full">
       <TableCaption>

@@ -39,7 +39,6 @@ const isLoading = ref(false);
 const client = useRagnaClient();
 const router = useRouter();
 const toast = useToast();
-const { t } = useI18n();
 
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 
@@ -86,7 +85,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     }
 
     toast.success({
-      description: t('workflow.toast.created'),
+      description: 'workflow.toast.created',
     });
     await router.push({
       name: RouteName.WORKFLOW_SHOW,

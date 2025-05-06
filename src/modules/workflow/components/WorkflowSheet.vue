@@ -127,7 +127,7 @@ async function onAddWorkflowStep() {
 async function onAddWorkflowRow() {
   const rowCount = steps.value[0]?.document.documentItems.length || 0;
   if (rowCount >= MAX_ROW_COUNT) {
-    toast.info({ description: t('workflow.toast.error_max_rows') });
+    toast.info({ description: 'workflow.toast.error_max_rows' });
     return;
   }
   const items = workflow.value?.steps.map((step: any) => {

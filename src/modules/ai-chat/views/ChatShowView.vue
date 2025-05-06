@@ -26,7 +26,6 @@ import { Button } from '@ui/button';
 import { PaperclipIcon } from 'lucide-vue-next';
 
 const route = useRoute();
-const router = useRouter();
 const socket = useWebSocketStore();
 const aiChatStore = useAiChatStore();
 const authStore = useAuthStore();
@@ -303,7 +302,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <!-- chat error alert -->
-    <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
+    <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
     <!-- chat messages container -->
     <div
       id="chatMessagesContainer"

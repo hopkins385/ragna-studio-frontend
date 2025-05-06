@@ -55,6 +55,7 @@ const onSubmit = handleSubmit(async values => {
       name: values.name,
       email: values.email,
       roleName: 'user',
+      roles: [],
     });
     if (inviteToken) {
       const link = `${window.location.origin}/auth/reset-password/${inviteToken}`;

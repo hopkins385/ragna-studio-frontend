@@ -60,10 +60,10 @@ const onSubmit = () => {
         },
       });
       // Show success notification
-      toast.success({ description: t('admin.team.update.success') });
+      toast.success({ description: 'admin.team.update.success' });
     } catch (error) {
       console.error(error);
-      setErrorAlert(t('admin.team.update.failed'));
+      setErrorAlert('admin.team.update.failed');
     } finally {
       isLoading.value = false;
     }

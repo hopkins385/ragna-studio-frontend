@@ -37,7 +37,6 @@ const createCollectionSchema = toTypedSchema(
 );
 
 const client = useRagnaClient();
-const { t } = useI18n();
 
 const { handleSubmit } = useForm({
   validationSchema: createCollectionSchema,
@@ -50,7 +49,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
       description: values.description || '',
     });
     toast.success({
-      description: t('collection.create.toast.success'),
+      description: 'collection.create.toast.success',
     });
     resetForm();
     router.push({
@@ -59,11 +58,12 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     });
   } catch (error: any) {
     toast.error({
-      description: t('collection.create.toast.error'),
+      description: 'collection.create.toast.error',
     });
   }
 });
 
+const { t } = useI18n();
 useHead({
   title: t('collection.create.title'),
   meta: [

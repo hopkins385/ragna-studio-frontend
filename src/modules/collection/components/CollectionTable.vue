@@ -29,7 +29,6 @@ const allCollections = shallowRef<CollectionsPaginatedResponse | null>(null);
 
 // Composables
 const client = useRagnaClient();
-const { t } = useI18n();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
@@ -48,7 +47,7 @@ async function handleDelete(collectionId: string) {
   try {
     await client.collection.deleteCollection(collectionId);
     await initCollections();
-    toast.success({ description: t('collection.delete.success') });
+    toast.success({ description: 'collection.delete.success' });
   } catch (error: unknown) {
     return setErrorAlert(error);
   }
@@ -57,9 +56,9 @@ async function handleDelete(collectionId: string) {
 function onDelete(collectionId: string) {
   unsetErrorAlert();
   setConfirmDialog({
-    title: t('collection.delete.confirm.title'),
-    description: t('collection.delete.confirm.description'),
-    confirmButtonText: t('collection.delete.confirm.submit'),
+    title: 'collection.delete.confirm.title',
+    description: 'collection.delete.confirm.description',
+    confirmButtonText: 'collection.delete.confirm.submit',
     onConfirm: () => handleDelete(collectionId),
   });
 }
@@ -108,7 +107,7 @@ await initCollections();
             {{ collection.description }}
           </TableCell>
           <TableCell>
-            {{ collection?.records.length }}
+            {{ collection?.records?.length }}
           </TableCell>
           <TableCell class="space-x-2 text-right">
             <TooltipProvider>

@@ -13,7 +13,7 @@ export default function useToast() {
 
   const success = (payload: IToast) => {
     toast.success(t('toast.success.title'), {
-      description: payload.description,
+      description: t(payload.description),
       duration: config.successDuration,
     });
   };

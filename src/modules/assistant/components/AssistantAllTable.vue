@@ -35,7 +35,6 @@ const page = defineModel<number>('page');
 const client = useRagnaClient();
 const router = useRouter();
 const toast = useToast();
-const { t } = useI18n();
 const { getProviderIcon } = useProviderIcons();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
@@ -59,7 +58,7 @@ const handleDelete = async (assistantId: string) => {
   try {
     await client.assistant.deleteAssistant(assistantId);
     await initAllAssistants({ page: page.value ?? 1 });
-    toast.success({ description: t('assistant.delete.success') });
+    toast.success({ description: 'assistant.delete.success' });
   } catch (error: unknown) {
     return setErrorAlert(error);
   }
@@ -77,9 +76,9 @@ const onStart = async (assistantId: string) => {
 const onDelete = (assistantId: string) => {
   unsetErrorAlert();
   setConfirmDialog({
-    title: t('assistant.delete.confirm.title'),
-    description: t('assistant.delete.confirm.description'),
-    confirmButtonText: t('assistant.delete.confirm.submit'),
+    title: 'assistant.delete.confirm.title',
+    description: 'assistant.delete.confirm.description',
+    confirmButtonText: 'assistant.delete.confirm.submit',
     onConfirm: () => handleDelete(assistantId),
   });
 };
@@ -134,7 +133,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div v-if="assistants && assistants.length > 0">
-    <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
+    <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
     <ConfirmDialog v-model="confirmDialog.open" v-bind="confirmDialog" />
     <Table>
       <TableHeader>

@@ -15,6 +15,7 @@ interface ConfirmDialogState {
 type ConfirmDialogRef = ConfirmDialogState & ConfirmDialogOptions;
 
 export function useConfirmDialog() {
+  const { t } = useI18n();
   const confirmDialog = reactive<ConfirmDialogRef>({
     open: false,
     loading: false,
@@ -30,9 +31,9 @@ export function useConfirmDialog() {
     confirmButtonText,
     onConfirm,
   }: ConfirmDialogOptions) => {
-    confirmDialog.title = title;
-    confirmDialog.description = description;
-    confirmDialog.confirmButtonText = confirmButtonText;
+    confirmDialog.title = title ? t(title) : undefined;
+    confirmDialog.description = description ? t(description) : undefined;
+    confirmDialog.confirmButtonText = confirmButtonText ? t(confirmButtonText) : undefined;
     confirmDialog.onConfirm = onConfirm;
     confirmDialog.open = true;
     confirmDialog.loading = false;

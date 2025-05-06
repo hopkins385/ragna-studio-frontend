@@ -2,9 +2,9 @@
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { RouteName } from '@/router/enums/route-names.enum';
 import useToast from '@composables/useToast';
+import type { CreateAssistantFromTemplatePayload } from '@hopkins385/ragna-sdk';
 import ButtonLoading from '@ui/button/ButtonLoading.vue';
 import { Dialog, DialogContent } from '@ui/dialog';
-import type { CreateAssistantFromTemplatePayload } from '@hopkins385/ragna-sdk';
 
 interface Props {
   templateId: string;
@@ -21,7 +21,7 @@ const client = useRagnaClient();
 const router = useRouter();
 const toast = useToast();
 
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
 const isLoading = ref(false);
 
@@ -39,12 +39,12 @@ const createAssistant = async () => {
     // clone the template
     const { assistant } = await client.assistant.createAssistantFromTemplate(payload);
     // toast success
-    toast.success({ description: t('assistant.clone.success') });
+    toast.success({ description: 'assistant.clone.success' });
     // return the assistant
     return assistant;
   } catch (error) {
     console.error(error);
-    toast.error({ description: t('assistant.clone.error') });
+    toast.error({ description: 'assistant.clone.error' });
     throw error;
   }
 };

@@ -286,7 +286,7 @@ onBeforeUnmount(() => {
     <div class="overflow-y-auto bg-stone-50 h-[calc(100vh-7.5rem)] pb-5">
       <!-- Error Alert -->
       <div class="pt-5 -mb-10 max-w-4xl mx-auto" v-if="errorAlert.open">
-        <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
+        <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
       </div>
       <!-- Editor Wrapper -->
       <div

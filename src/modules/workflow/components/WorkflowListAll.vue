@@ -30,7 +30,6 @@ const data = shallowRef<WorkflowsPaginatedResponse | null>(null);
 // Composables
 const client = useRagnaClient();
 const toast = useToast();
-const { t } = useI18n();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
@@ -57,7 +56,7 @@ const handleDelete = async (workflowId: string) => {
   try {
     await client.workflow.deleteWorkflow(workflowId);
     await initWorkflows();
-    toast.success({ description: t('workflow.delete.success') });
+    toast.success({ description: 'workflow.delete.success' });
   } catch (error: unknown) {
     return setErrorAlert(error);
   }
@@ -66,9 +65,9 @@ const handleDelete = async (workflowId: string) => {
 const onDelete = (workflowId: string) => {
   unsetErrorAlert();
   setConfirmDialog({
-    title: t('workflow.delete.confirm.title'),
-    description: t('workflow.delete.confirm.description'),
-    confirmButtonText: t('workflow.delete.confirm.submit'),
+    title: 'workflow.delete.confirm.title',
+    description: 'workflow.delete.confirm.description',
+    confirmButtonText: 'workflow.delete.confirm.submit',
     onConfirm: () => handleDelete(workflowId),
   });
 };
@@ -105,7 +104,7 @@ onMounted(() => {
 
 <template>
   <div v-if="workflows && workflows.length > 0">
-    <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
+    <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
     <ConfirmDialog v-model="confirmDialog.open" v-bind="confirmDialog" />
     <Table>
       <TableHeader>

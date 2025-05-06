@@ -33,7 +33,6 @@ const data = shallowRef<ChatsPaginatedResponse>();
 // Composables
 const client = useRagnaClient();
 const toast = useToast();
-const { t } = useI18n();
 const { getDateTimeForHumans } = useDateTime();
 const { getProviderIcon } = useProviderIcons();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
@@ -63,7 +62,7 @@ const handleDelete = async (chatId: string) => {
   try {
     await client.aiChat.deleteChat({ chatId });
     await initChatHistory({ page: props.page });
-    toast.success({ description: t('chat.delete.success') });
+    toast.success({ description: 'chat.delete.success' });
   } catch (error) {
     return setErrorAlert(error);
   }
@@ -72,9 +71,9 @@ const handleDelete = async (chatId: string) => {
 function onDelete(chatId: string) {
   unsetErrorAlert();
   setConfirmDialog({
-    title: t('chat.delete.confirm.title'),
-    description: t('chat.delete.confirm.description'),
-    confirmButtonText: t('chat.delete.confirm.submit'),
+    title: 'chat.delete.confirm.title',
+    description: 'chat.delete.confirm.description',
+    confirmButtonText: 'chat.delete.confirm.submit',
     onConfirm: () => handleDelete(chatId),
   });
 }
@@ -97,7 +96,7 @@ await initChatHistory({ page: queryPage.value });
 
 <template>
   <div v-if="chats.length > 0">
-    <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
+    <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
     <ConfirmDialog v-model="confirmDialog.open" v-bind="confirmDialog" />
     <Table>
       <TableHeader>

@@ -60,7 +60,6 @@ const firstCollection = computed(
 );
 
 const client = useRagnaClient();
-const { t } = useI18n();
 const { getToolIcon } = useToolIcons();
 
 // form
@@ -113,13 +112,13 @@ const onSubmit = handleSubmit(async values => {
       // temperature: values.temperature[0],
     });
     toast.success({
-      description: t('assistant.edit.success'),
+      description: 'assistant.edit.success',
     });
     formMeta.value.dirty = false;
   } catch (error: any) {
     console.error(error);
     toast.error({
-      description: t('assistant.edit.error'),
+      description: 'assistant.edit.error',
     });
   } finally {
     updateIsLoading.value = false;
@@ -180,13 +179,14 @@ const onStartChat = async () => {
   } catch (error: any) {
     console.error(error);
     toast.error({
-      description: t('assistant.new_chat.error'),
+      description: 'assistant.new_chat.error',
     });
   } finally {
     newChatIsLoading.value = false;
   }
 };
 
+const { t } = useI18n();
 const siderBarTabs = [
   { id: 'title', icon: Settings, label: t('assistant.settings.label') },
   { id: 'systemPrompt', icon: CircleUserRound, label: t('assistant.behavior.label') },

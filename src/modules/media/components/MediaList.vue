@@ -34,8 +34,7 @@ const showAddToCollectionDialog = ref(false);
 const client = useRagnaClient();
 const toast = useToast();
 const authStore = useAuthStore();
-const { t } = useI18n();
-const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
+const { errorAlert, setErrorAlert } = useErrorAlert();
 const { confirmDialog, setConfirmDialog } = useConfirmDialog();
 
 // Computed
@@ -50,7 +49,14 @@ const meta = computed(() => {
 
 // Functions
 const initMedia = async (payload: { page: number }) => {
-  const model = { id: authStore.user?.activeTeamId, type: 'team' };
+  if (!authStore.user?.activeTeamId) {
+    setErrorAlert({
+      title: 'media.error.no_team',
+      description: 'media.error.no_team_description',
+    });
+    return;
+  }
+  const model = { id: authStore.user.activeTeamId, type: 'team' };
   console.log('model', model);
   const response = await client.media.fetchAllMediaFor(model, { page: payload.page });
   mediaData.value = response;
@@ -68,17 +74,17 @@ const handleDelete = async (mediaId: string) => {
   try {
     await client.media.deleteMedia(mediaId);
     await initMedia({ page: props.page });
-    toast.success({ description: t('media.delete.success') });
-  } catch (error) {
+    toast.success({ description: 'media.delete.success' });
+  } catch (error: unknown) {
     return setErrorAlert(error);
   }
 };
 
 function onDelete(mediaId: string) {
   setConfirmDialog({
-    title: t('media.delete.confirm.title'),
-    description: t('media.delete.confirm.description'),
-    confirmButtonText: t('media.delete.confirm.submit'),
+    title: 'media.delete.confirm.title',
+    description: 'media.delete.confirm.description',
+    confirmButtonText: 'media.delete.confirm.submit',
     onConfirm: () => handleDelete(mediaId),
   });
 }

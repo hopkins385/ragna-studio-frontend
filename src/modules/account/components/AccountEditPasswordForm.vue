@@ -32,7 +32,6 @@ const passwordFormSchema = toTypedSchema(
 
 const client = useRagnaClient();
 const toast = useToast();
-const { t } = useI18n();
 
 const { handleSubmit } = useForm({
   validationSchema: passwordFormSchema,
@@ -50,7 +49,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
 
     emit('closeModal');
     toast.success({
-      description: t('account.toast.password_updated'),
+      description: 'account.toast.password_updated',
     });
   } catch (err: any) {
     error.value = err?.message;
@@ -66,7 +65,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     <FormField v-slot="{ componentField }" name="password">
       <FormItem>
         <FormLabel>
-          {{ t('account.new_password.current') }}
+          {{ $t('account.new_password.current') }}
         </FormLabel>
         <FormControl>
           <Input type="password" autocomplete="current-password" v-bind="componentField" />
@@ -77,7 +76,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     <FormField v-slot="{ componentField }" name="newPassword">
       <FormItem>
         <FormLabel>
-          {{ t('account.new_password.new') }}
+          {{ $t('account.new_password.new') }}
         </FormLabel>
         <FormControl>
           <Input type="password" autocomplete="new-password" v-bind="componentField" />
@@ -88,7 +87,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     <FormField v-slot="{ componentField }" name="newPasswordConfirm">
       <FormItem>
         <FormLabel>
-          {{ t('account.new_password.confirm') }}
+          {{ $t('account.new_password.confirm') }}
         </FormLabel>
         <FormControl>
           <Input type="password" autocomplete="new-password" v-bind="componentField" />
@@ -104,11 +103,11 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         :disabled="isLoading"
         @click="emit('closeModal')"
       >
-        {{ t('account.form.cancel') }}
+        {{ $t('account.form.cancel') }}
       </Button>
       <Button class="whitespace-nowrap" variant="outline" :disabled="isLoading">
         <LoaderCircleIcon v-if="isLoading" class="mr-2 size-4 animate-spin opacity-80" />
-        {{ t('account.new_password.submit') }}
+        {{ $t('account.new_password.submit') }}
       </Button>
     </div>
   </form>

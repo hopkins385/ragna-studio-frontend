@@ -81,7 +81,7 @@ const onPresetClick = async (prompt: string) => {
 <template>
   <div class="relative flex size-full flex-col px-14 lg:px-32 pb-8 pt-16">
     <!-- chat error alert -->
-    <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
+    <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
     <!-- left quick controls -->
     <div class="absolute left-7 top-5 border-0 z-10">
       <div class="space-y-3 border-0 flex flex-col p-2 rounded-lg">

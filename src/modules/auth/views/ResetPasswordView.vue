@@ -87,7 +87,9 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
         <div>
           <!-- Error -->
           <div v-if="errorAlert.open" class="text-red-700 pb-6 rounded relative" role="alert">
-            <span class="block sm:inline text-sm font-semibold">{{ errorAlert.message }}</span>
+            <span class="block sm:inline text-sm font-semibold">
+              {{ $t(errorAlert.description ?? 'Unknown Error') }}
+            </span>
           </div>
         </div>
         <form v-if="!success" @submit.prevent="onSubmit" class="space-y-4">
