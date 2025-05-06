@@ -9,6 +9,9 @@ WORKDIR /app
 COPY package*.json ./
 COPY .npmrc ./
 
+# install newest npm
+RUN npm install -g npm@latest
+
 # Install dependencies and force latest ragna-sdk in one step
 RUN --mount=type=secret,id=npmrc,target=/app/.npmrc \
     npm ci && \
