@@ -582,6 +582,10 @@
     "empty": {
       "title": "Starte einen neuen KI Chat",
       "subtitle": "Wähle einen KI Agenten aus, um einen neuen Chat zu starten"
+    },
+    "error": {
+      "no_assistant_selected": "Bitte wähle einen Agenten aus, um den Chat zu starten",
+      "chat_creation_failed": "Der Chat konnte nicht erstellt werden"
     }
   },
   "template": {

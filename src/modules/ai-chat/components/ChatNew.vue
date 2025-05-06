@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ErrorAlert from '@/components/error/ErrorAlert.vue';
+import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import ChatAssistantSelect from '@/modules/ai-chat/components/ChatAssistantSelect.vue';
 import ChatHistoryDrawerButton from '@/modules/ai-chat/components/ChatHistoryDrawerButton.vue';
@@ -18,12 +20,20 @@ const showPresets = true;
 const router = useRouter();
 const aiChatStore = useAiChatStore();
 const aiChatSettings = useAiChatSettingsStore();
+const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 
 // Computed
 
 // Functions
 const createNewChatAndMessage = async ({ inputText }: { inputText: string }) => {
-  if (!aiChatSettings.selectedAssistantId || !inputText) return;
+  // reset error alert
+  unsetErrorAlert();
+
+  // check if assistant is selected
+  if (!aiChatSettings.selectedAssistantId) {
+    setErrorAlert('chat.error.no_assistant_selected');
+    return;
+  }
 
   try {
     // create new chat
@@ -31,7 +41,7 @@ const createNewChatAndMessage = async ({ inputText }: { inputText: string }) => 
       assistantId: aiChatSettings.selectedAssistantId,
     });
     if (!chat || !chat.id) {
-      console.error('Chat creation failed');
+      setErrorAlert('chat.error.chat_creation_failed');
       return;
     }
     // navigate to new chat
@@ -51,6 +61,7 @@ const createNewChatAndMessage = async ({ inputText }: { inputText: string }) => 
     });
   } catch (error) {
     console.error('Error creating new chat and message:', error);
+    setErrorAlert('chat.error.chat_creation_failed');
   }
 };
 
@@ -69,6 +80,8 @@ const onPresetClick = async (prompt: string) => {
 
 <template>
   <div class="relative flex size-full flex-col px-14 lg:px-32 pb-8 pt-16">
+    <!-- chat error alert -->
+    <ErrorAlert v-model="errorAlert.open" :message="errorAlert.message" />
     <!-- left quick controls -->
     <div class="absolute left-7 top-5 border-0 z-10">
       <div class="space-y-3 border-0 flex flex-col p-2 rounded-lg">
