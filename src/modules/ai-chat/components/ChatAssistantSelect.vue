@@ -2,8 +2,8 @@
 // Imports
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/select';
 import type { Assistant } from '@hopkins385/ragna-sdk';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@ui/select';
 
 // Props
 const { selectLocked = false } = defineProps<{
@@ -28,6 +28,10 @@ const selectDisabled = computed(() => {
 const initAllAssistants = async () => {
   const response = await client.assistant.fetchAllAssistants({ page: 1, limit: 100 });
   assistants.value = response.assistants;
+  // check if selectedAssistantId is in the list of assistants
+  if (!assistants.value.some(assistant => assistant.id === aiChatSettings.selectedAssistantId)) {
+    aiChatSettings.selectedAssistantId = undefined;
+  }
 };
 
 // Hooks

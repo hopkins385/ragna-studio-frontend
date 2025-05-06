@@ -170,7 +170,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
           _messageTextChunks.value.push(chunk.message);
         }
       }
-      //
+      // handle errors
     } catch (error: unknown) {
       // if abort error is thrown, we can ignore it
       if (error instanceof RequestAbortError) return;

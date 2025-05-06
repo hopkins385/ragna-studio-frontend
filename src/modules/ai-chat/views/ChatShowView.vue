@@ -108,9 +108,11 @@ const submitUserChatMessage = async (payload: { chatId: string; inputText: strin
       ],
       visionContent,
     });
-  } catch (e: any) {
-    setErrorAlert(e.message);
-    console.error('Failed to send message:', e);
+    // clear tool
+    clearActiveTools();
+    // handle errors
+  } catch (error: unknown) {
+    setErrorAlert(error);
   }
 };
 
