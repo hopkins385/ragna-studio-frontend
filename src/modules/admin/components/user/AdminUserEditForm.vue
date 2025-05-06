@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { useErrorAlert } from '@/composables/useErrorAlert';
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import useToast from '@/composables/useToast';
-import FormRoleSelector from '@/modules/admin/components/common/FormRoleSelector.vue';
 import { AdminRouteName } from '@/modules/admin/enums/admin-route-names.enum';
 import type { Role } from '@hopkins385/ragna-sdk';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -122,6 +121,7 @@ const onSubmit = () => {
         <FormMessage />
       </FormItem>
     </FormField>
+    <!--
     <FormField v-slot="{ value, handleChange }" name="roleName">
       <FormItem>
         <FormLabel> Role </FormLabel>
@@ -136,6 +136,7 @@ const onSubmit = () => {
         <FormMessage />
       </FormItem>
     </FormField>
+    -->
     <div class="w-full flex items-center justify-end">
       <ButtonLink to="/admin/user" class="mr-2" variant="secondary">
         {{ $t('form.button.cancel') }}

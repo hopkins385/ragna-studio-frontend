@@ -1,49 +1,49 @@
 import {
   BotIcon,
+  DatabaseIcon,
   FileTextIcon,
+  FolderIcon,
   ImageIcon,
-  KanbanSquareIcon,
-  ListTodoIcon,
   MessagesSquareIcon,
-  NetworkIcon,
+  PieChartIcon,
   WorkflowIcon,
 } from 'lucide-vue-next';
 import { defineStore } from 'pinia';
 import type { QuickAccessItem } from './../interfaces/quick-access.interface';
 
 const _quickAccessItems: QuickAccessItem[] = [
-  // Lean Kanban / Workitems
-  {
-    id: 1,
-    icon: KanbanSquareIcon,
-    class: 'bg-blue-200/50',
-    label: 'nav.kanban',
-    route: '/kanban',
-  },
-  // Software System Architecture
-  {
-    id: 2,
-    icon: NetworkIcon,
-    class: 'bg-emerald-200/50', // keep color
-    label: 'nav.architecture',
-    route: '/architecture',
-  },
+  // // Lean Kanban / Workitems
+  // {
+  //   id: 1,
+  //   icon: KanbanSquareIcon,
+  //   class: 'bg-blue-200/50',
+  //   label: 'nav.kanban',
+  //   route: '/kanban',
+  // },
+  // // Software System Architecture
+  // {
+  //   id: 2,
+  //   icon: NetworkIcon,
+  //   class: 'bg-emerald-200/50', // keep color
+  //   label: 'nav.architecture',
+  //   route: '/architecture',
+  // },
   // System Requirements
-  {
-    id: 3,
-    icon: FileTextIcon,
-    class: 'bg-amber-200/50', // keep color
-    label: 'nav.documents',
-    route: '/document',
-  },
+  // {
+  //   id: 3,
+  //   icon: FileTextIcon,
+  //   class: 'bg-amber-200/50', // keep color
+  //   label: 'nav.documents',
+  //   route: '/document',
+  // },
   // System Validation
-  {
-    id: 4,
-    icon: ListTodoIcon,
-    class: 'bg-orange-200/50',
-    label: 'nav.tests',
-    route: '/validation',
-  },
+  // {
+  //   id: 4,
+  //   icon: ListTodoIcon,
+  //   class: 'bg-orange-200/50',
+  //   label: 'nav.tests',
+  //   route: '/validation',
+  // },
   // AI Agent Chat
   {
     id: 5,
@@ -51,6 +51,14 @@ const _quickAccessItems: QuickAccessItem[] = [
     class: 'bg-indigo-200/50',
     label: 'nav.chat',
     route: '/chat',
+  },
+  // AI Documents
+  {
+    id: 3,
+    icon: FileTextIcon,
+    class: 'bg-amber-200/50', // keep color
+    label: 'nav.documents',
+    route: '/document',
   },
   // AI Agent Workflows
   {
@@ -76,34 +84,27 @@ const _quickAccessItems: QuickAccessItem[] = [
     label: 'nav.textToImage',
     route: '/text-to-image',
   },
-  // {
-  //   id: 9,
-  //   icon: FileTextIcon,
-  //   class: 'bg-yellow-200/50',
-  //   label: 'nav.documents',
-  //   route: '/document',
-  // },
-  // {
-  //   id: 10,
-  //   icon: DatabaseIcon,
-  //   class: 'bg-lime-200/50',
-  //   label: 'nav.collections',
-  //   route: '/collection',
-  // },
-  // {
-  //   id: 11,
-  //   icon: PieChartIcon,
-  //   class: 'bg-blue-200/50',
-  //   label: 'nav.analytics',
-  //   route: '/account/statistics',
-  // },
-  // {
-  //   id: 12,
-  //   icon: FolderIcon,
-  //   class: 'bg-slate-200/50',
-  //   label: 'nav.media',
-  //   route: '/media',
-  // },
+  {
+    id: 10,
+    icon: DatabaseIcon,
+    class: 'bg-lime-200/50',
+    label: 'nav.collections',
+    route: '/collection',
+  },
+  {
+    id: 11,
+    icon: PieChartIcon,
+    class: 'bg-blue-200/50',
+    label: 'nav.analytics',
+    route: '/account/statistics',
+  },
+  {
+    id: 12,
+    icon: FolderIcon,
+    class: 'bg-slate-200/50',
+    label: 'nav.media',
+    route: '/media',
+  },
 ];
 
 const _quickAccessItemsMap = new Map<number, QuickAccessItem>();
