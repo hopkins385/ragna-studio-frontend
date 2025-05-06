@@ -7,6 +7,7 @@ export const RouteName = {
   DOCUMENT_INDEX: 'document.index',
   DOCUMENT_SHOW: 'document.show',
   // Chat routes
+  CHAT_INDEX: 'chat.index',
   CHAT_RECENT: 'chat.recent',
   CHAT_CREATE: 'chat.create',
   CHAT_HISTORY: 'chat.history',

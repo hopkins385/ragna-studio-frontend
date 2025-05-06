@@ -74,7 +74,7 @@ const toggleGroupBy = () => {
 watch(
   () => router.currentRoute.value.name?.toString(),
   name => {
-    if (!name?.startsWith(RouteName.CHAT_SHOW)) {
+    if (!name?.startsWith(RouteName.CHAT_SHOW) && name !== RouteName.CHAT_INDEX) {
       drawer.hideLeftDrawer();
     }
   },

@@ -1,4 +1,5 @@
 import type { NavItem } from '@/common/interfaces/nav-item.interface';
+import { useAiChatStore } from '@/modules/ai-chat/stores';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import {
   BotIcon,
@@ -9,9 +10,9 @@ import {
   EllipsisIcon,
   FilePenIcon,
   FileTextIcon,
+  FolderClockIcon,
   FolderIcon,
   FolderKanbanIcon,
-  HistoryIcon,
   HomeIcon,
   ImageIcon,
   MessagesSquareIcon,
@@ -27,6 +28,7 @@ import {
 } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
+const chatStore = useAiChatStore();
 
 export const homeNavItem: NavItem = {
   icon: HomeIcon,
@@ -219,29 +221,29 @@ export const documentItems: NavItem[] = [
   },
 ];
 
-export const chatItems: NavItem[] = [
+export const chatItems = computed((): NavItem[] => [
   {
     icon: PlusCircleIcon,
-    path: '/assistant',
+    path: '/chat',
     label: 'nav.new',
     hidden: false,
     children: [],
   },
   {
     icon: MessagesSquareIcon,
-    path: '/chat',
+    path: chatStore.chatId ? '/chat/' + chatStore.chatId : '/chat/recent',
     label: 'nav.chat',
     hidden: false,
     children: [],
   },
   {
-    icon: HistoryIcon,
+    icon: FolderClockIcon,
     path: '/chat/history',
     label: 'nav.history',
     hidden: false,
     children: [],
   },
-];
+]);
 
 export const assistantItems: NavItem[] = [
   {

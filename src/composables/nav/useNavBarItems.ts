@@ -50,11 +50,12 @@ export function useNavBarItems() {
       case RouteName.WORKFLOW_SHOW:
         items.push(...workflowItems);
         break;
+      case RouteName.CHAT_INDEX:
       case RouteName.CHAT_RECENT:
       case RouteName.CHAT_CREATE:
       case RouteName.CHAT_HISTORY:
       case RouteName.CHAT_SHOW:
-        items.push(...chatItems);
+        items.push(...chatItems.value);
         break;
       case RouteName.ASSISTANT_INDEX:
       case RouteName.ASSISTANT_CREATE:

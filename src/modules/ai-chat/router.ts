@@ -10,14 +10,20 @@ const moduleRoute = {
   children: [
     {
       path: '',
-      name: RouteName.CHAT_RECENT,
-      component: () => import('./views/ChatRecentView.vue'),
+      name: RouteName.CHAT_INDEX,
+      component: () => import('./views/ChatIndexView.vue'),
       meta: defaultAppMeta,
     },
     {
       path: 'create',
       name: RouteName.CHAT_CREATE,
       component: () => import('./views/ChatCreateView.vue'),
+      meta: defaultAppMeta,
+    },
+    {
+      path: 'recent',
+      name: RouteName.CHAT_RECENT,
+      component: () => import('./views/ChatRecentView.vue'),
       meta: defaultAppMeta,
     },
     {

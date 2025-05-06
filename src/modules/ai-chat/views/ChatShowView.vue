@@ -6,7 +6,6 @@ import { useErrorAlert } from '@/composables/useErrorAlert';
 import ChatSettings from '@/modules/ai-chat-settings/components/ChatSettings.vue';
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
 import ChatAssistantDetails from '@/modules/ai-chat/components/ChatAssistantDetails.vue';
-import ChatButtonNewChat from '@/modules/ai-chat/components/ChatButtonNewChat.vue';
 import ChatHistoryDrawerButton from '@/modules/ai-chat/components/ChatHistoryDrawerButton.vue';
 import ChatImageInput from '@/modules/ai-chat/components/ChatImageInput.vue';
 import ChatInputTextarea from '@/modules/ai-chat/components/ChatInputTextarea.vue';
@@ -27,6 +26,7 @@ import { Button } from '@ui/button';
 import { PaperclipIcon } from 'lucide-vue-next';
 
 const route = useRoute();
+const router = useRouter();
 const socket = useWebSocketStore();
 const aiChatStore = useAiChatStore();
 const authStore = useAuthStore();
@@ -243,8 +243,8 @@ useAutoScroll(chatMessagesContainerRef);
 // watch route changes and setup chat onMount
 // onMounted setupChat is not required, because the watcher is immediate
 watch(
-  () => route.params.id.toString(),
-  async id => await setupChat(id),
+  () => route.params.id,
+  async id => await setupChat(id.toString()),
   { immediate: true },
 );
 
@@ -271,8 +271,6 @@ onBeforeUnmount(() => {
   removeSocketListeners(activeChatId.value);
   aiChatStore.resetStore();
 });
-
-onMounted(() => {});
 </script>
 
 <template>
@@ -285,7 +283,6 @@ onMounted(() => {});
     <!-- left quick controls -->
     <div class="absolute left-7 top-5 border-0 z-10">
       <div class="space-y-3 border-0 flex flex-col p-2 rounded-lg">
-        <ChatButtonNewChat />
         <ChatHistoryDrawerButton />
       </div>
     </div>

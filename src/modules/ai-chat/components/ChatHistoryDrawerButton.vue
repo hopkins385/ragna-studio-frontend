@@ -15,7 +15,7 @@ const drawer = useDrawerStore();
           variant="outline"
           size="icon"
           class="group"
-          @click="drawer.toggleLeftDrawer('chat-history')"
+          @click="() => drawer.toggleLeftDrawer('chat-history')"
         >
           <HistoryIcon class="size-4 stroke-1.5 group-hover:stroke-2" />
         </Button>
