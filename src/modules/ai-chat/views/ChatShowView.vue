@@ -13,7 +13,7 @@ import ChatMessageBox from '@/modules/ai-chat/components/ChatMessageBox.vue';
 import ChatMessageChunk from '@/modules/ai-chat/components/ChatMessageChunk.vue';
 import ChatPresets from '@/modules/ai-chat/components/ChatPresets.vue';
 import ChatPrivacy from '@/modules/ai-chat/components/ChatPrivacy.vue';
-import ChatToolCallMessage from '@/modules/ai-chat/components/ChatToolCallMessage.vue';
+import ChatToolCallPopup from '@/modules/ai-chat/components/ChatToolCallPopup.vue';
 import ChatToolCallResult from '@/modules/ai-chat/components/ChatToolCallResult.vue';
 import { useChatImages, type ChatImage } from '@/modules/ai-chat/composables/useChatImages';
 import { useChatTools, type ToolInfoData } from '@/modules/ai-chat/composables/useChatTools';
@@ -190,7 +190,7 @@ const onToolStartEvent = (payload: ToolInfoData) => {
 };
 
 const onToolEndEvent = (toolName: string) => {
-  unsetActiveTool({ toolName }, { delay: 5000 });
+  unsetActiveTool({ toolName }, { delay: 8000 });
   /*aiChatStore.appendChatMessage({
     id: new Date().getTime().toString(),
     type: 'tool-result',
@@ -285,13 +285,13 @@ onUnmounted(() => {
     class="relative flex size-full flex-col px-14 lg:px-32 pb-8 pt-16"
   >
     <!-- chat header -->
-    <!-- left quick controls -->
+    <!-- heder left controls -->
     <div class="absolute left-7 top-5 border-0 z-10">
       <div class="space-y-3 border-0 flex flex-col p-2 rounded-lg">
         <ChatHistoryDrawerButton />
       </div>
     </div>
-    <!-- right quick controls -->
+    <!-- header right controls -->
     <div class="absolute right-10 top-5 border-0 z-10">
       <div class="flex justify-center items-center shrink-0 space-x-5">
         <!-- chat title and assistant details -->
@@ -301,14 +301,20 @@ onUnmounted(() => {
           :llm-name="aiChatStore.assistant?.llm.displayName"
           :title="aiChatStore.assistant?.title"
         />
-        <!-- chat privacy -->
+        <!-- chat privacy and anonymisation menu -->
         <ChatPrivacy />
-        <!-- chat settings -->
+        <!-- chat settings menu -->
         <ChatSettings :assistant-id="aiChatStore.assistant?.id" @reset-chat="onResetChat" />
       </div>
     </div>
-    <!-- chat error alert -->
+    <!-- error alert -->
     <ErrorAlert v-model="errorAlert.open" v-bind="errorAlert" />
+    <!-- tool call popup -->
+    <ChatToolCallPopup
+      v-if="activeTools.length > 0"
+      :display-name="aiChatStore.assistant?.title ?? 'Assistant'"
+      :active-tools="activeTools"
+    />
     <!-- chat messages container -->
     <div
       id="chatMessagesContainer"
@@ -333,11 +339,6 @@ onUnmounted(() => {
           :role="message.role === 'user' ? ChatMessageRole.USER : ChatMessageRole.ASSISTANT"
         />
       </template>
-
-      <!-- thinking message -->
-      <!--
-      <ChatThinkingBox v-if="aiChatStore.isLoading" :display-name="aiChatStore.assistant?.title" />
-      -->
       <!-- streaming message -->
       <ChatMessageChunk
         v-if="aiChatStore.isLoading"
@@ -345,19 +346,6 @@ onUnmounted(() => {
         :stream-text="aiChatStore.joinedMessageTextChunks"
         :assistant-name="aiChatStore.assistant?.title"
       />
-      <!-- tool call message -->
-      <ChatToolCallMessage
-        v-if="activeTools.length > 0"
-        :display-name="aiChatStore.assistant?.title ?? 'Assistant'"
-        :active-tools="activeTools"
-      />
-      <!-- error message -->
-      <!--
-      <div v-if="hasError" class="px-20 text-sm text-destructive">
-        <p class="pb-2 font-semibold">{{ $t('alert.error.message') }}</p>
-        <p>{{ errorMessage }}</p>
-      </div>
-      -->
       <div class="h-10 border-0"></div>
       <!-- scroll to bottom button -->
       <!-- div

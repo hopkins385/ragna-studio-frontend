@@ -10,7 +10,9 @@ defineProps<{
 
 <template>
   <!-- tool -->
-  <div class="space-y-4 text-sm ml-24">
+  <div
+    class="space-y-4 text-sm fixed top-32 right-10 z-20 w-96 drop-shadow-md pb-2 overflow-hidden"
+  >
     <div v-for="(tool, index) in activeTools" :key="index" class="flex items-center space-x-2">
       <ChatToolCallHeader :tool-name="tool.toolName" :tool-result="tool.toolInfo" />
     </div>
