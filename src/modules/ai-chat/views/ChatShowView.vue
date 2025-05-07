@@ -268,13 +268,14 @@ useEventListener('keydown', e => {
   }
 });
 
-onBeforeUnmount(() => {
+onBeforeUnmount(async () => {
+  if (aiChatStore.isLoading) {
+    aiChatStore.abortChatRequest();
+    clearActiveTools();
+    await nextTick();
+  }
   removeSocketListeners(activeChatId.value);
   aiChatStore.resetStore();
-});
-
-onUnmounted(() => {
-  aiChatStore.abortChatRequest();
 });
 </script>
 
