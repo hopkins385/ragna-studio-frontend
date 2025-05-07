@@ -272,6 +272,10 @@ onBeforeUnmount(() => {
   removeSocketListeners(activeChatId.value);
   aiChatStore.resetStore();
 });
+
+onUnmounted(() => {
+  aiChatStore.abortChatRequest();
+});
 </script>
 
 <template>

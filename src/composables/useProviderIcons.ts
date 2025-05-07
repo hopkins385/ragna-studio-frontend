@@ -1,5 +1,5 @@
 import AnthropicIcon from '~icons/logos/anthropic-icon';
-import GoogleGemini from '~icons/logos/google-gemini';
+import GoogleIcon from '~icons/logos/google-icon';
 import MetaIcon from '~icons/logos/meta-icon';
 import MicrosoftAzure from '~icons/logos/microsoft-azure';
 import MistralAiIcon from '~icons/logos/mistral-ai-icon';
@@ -13,7 +13,7 @@ export function useProviderIcons() {
       openai: OpenaiIcon,
       mistral: MistralAiIcon,
       meta: MetaIcon,
-      google: GoogleGemini,
+      google: GoogleIcon,
       azure: MicrosoftAzure,
       groq: MetaIcon,
     }[provider];
