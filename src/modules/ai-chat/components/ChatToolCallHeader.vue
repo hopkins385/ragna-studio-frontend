@@ -38,7 +38,7 @@ const getToolResult = (toolResult: string | Record<string, any>) => {
 
 <template>
   <div
-    class="border border-stone-300/80 shadow-sm mb-2 p-8 rounded-lg space-y-3 cursor-pointer bg-white hover:shadow-md"
+    class="border border-stone-300/80 shadow-sm mb-2 p-8 rounded-lg space-y-3 cursor-pointer bg-white hover:shadow-md w-full"
   >
     <!--
   min-h-20 min-w-96
