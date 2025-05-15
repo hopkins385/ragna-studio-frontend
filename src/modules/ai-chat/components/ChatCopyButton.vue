@@ -18,12 +18,8 @@ const props = defineProps<{
 const { copy, copied } = useClipboard();
 // Computed
 // Functions
-
+const handleClick = () => copy(props.content.trim());
 // Hooks
-
-const handleClick = () => {
-  copy(props.content.trim());
-};
 </script>
 
 <template>
@@ -34,11 +30,6 @@ const handleClick = () => {
       size="icon"
       variant="ghost"
     >
-      <!--
-    <CheckIcon v-if="copied" class="size-4" />
-    <CopyIcon v-else class="size-4" />
-    {{  }}
-    -->
       <span class="opacity-60">
         <CopyIcon v-if="!copied" class="size-4" />
         <CheckIcon v-else class="size-4" />

@@ -15,6 +15,7 @@
 }
 
 .chatbox__text-box p {
+  @apply my-2 break-words;
 }
 
 .chatbox__text-box p.empty {
