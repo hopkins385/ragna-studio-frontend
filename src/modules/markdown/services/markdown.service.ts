@@ -42,7 +42,7 @@ const disable = ['reference', 'image', 'html_block', 'html_inline', 'autolink'];
 export class MarkdownService {
   private md: MarkdownIt;
 
-  constructor() {
+  constructor(options?: { renderEmptyParagraph?: boolean }) {
     // Create instance first so we can reference it in the highlight function
     this.md = new MarkdownIt({
       html: false,
@@ -51,33 +51,17 @@ export class MarkdownService {
       typographer: true,
     });
 
-    // Set highlight function with access to the instance
-    /*this.md.options.highlight = (str: string, lang: string) => {
-      if (lang && hljs.getLanguage(lang)) {
-        try {
-          return (
-            `<pre><code class="hljs language-${lang}">` +
-            hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
-            '</code></pre>'
-          );
-        } catch (__) {
-          // silently ignore
-        }
-      }
-
-      return '<pre><code class="hljs">' + this.md.utils.escapeHtml(str) + '</code></pre>';
-    };*/
-
     this.md.disable(disable);
     this.md.linkify.set(linkifyOptions);
     this.md.use(HighlightJS, hljsPluginOptions);
     this.md.use(mk, katexOptions);
-
-    this.setupParagraphRenderer();
     this.setupExternalLinks();
+    if (options?.renderEmptyParagraph) {
+      this.setupEmptyParagraphRenderer();
+    }
   }
 
-  private setupParagraphRenderer(): void {
+  private setupEmptyParagraphRenderer(): void {
     const defaultParagraphRenderer =
       this.md.renderer.rules.paragraph_open ||
       ((tokens, idx, options, env, self) => self.renderToken(tokens, idx, options));
