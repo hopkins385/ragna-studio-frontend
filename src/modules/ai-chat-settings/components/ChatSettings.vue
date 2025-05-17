@@ -3,6 +3,7 @@
  * Component: ChatSettings
  */
 import { useAiChatSettingsStore } from '@/modules/ai-chat-settings/stores/ai-chat-settings.store';
+import { useAiChatStore } from '@/modules/ai-chat/stores';
 import { RouteName } from '@/router/enums/route-names.enum';
 import QuestionToolTip from '@components/question/QuestionToolTip.vue';
 import { Button } from '@ui/button';
@@ -12,21 +13,18 @@ import { Slider } from '@ui/slider';
 import { Switch } from '@ui/switch';
 import { RotateCcwIcon, SlidersHorizontalIcon } from 'lucide-vue-next';
 
-interface ChatSettingsProps {
+const props = defineProps<{
   assistantId?: string | null;
-}
-
-interface ChatSettingsEmits {
+}>();
+const emit = defineEmits<{
   resetChat: [void];
-}
-
-const props = defineProps<ChatSettingsProps>();
-const emit = defineEmits<ChatSettingsEmits>();
+}>();
 
 const router = useRouter();
 
 const show = ref(false);
 const settings = useAiChatSettingsStore();
+const chatStore = useAiChatStore();
 
 const hasPresencePenaltySetting = false;
 const hasMaxTokensSetting = false;
@@ -145,6 +143,11 @@ function onEditAssistantClick() {
           :checked="settings.submitOnEnter"
           @update:checked="val => (settings.submitOnEnter = val)"
         />
+      </div>
+      <Separator class="my-3" />
+      <div class="flex flex-col space-y-2">
+        <span>{{ $t('chat.settings.token_count.title') }}</span>
+        <span class="">{{ chatStore.chatMessagesTokenCount }}</span>
       </div>
     </PopoverContent>
   </Popover>

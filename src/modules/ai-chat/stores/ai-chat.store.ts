@@ -44,6 +44,16 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   const chatTitle = computed(() => _chat.value?.title);
   const chatMessages = computed(() => _chatMessages.value);
 
+  const chatMessagesTokenCount = computed(() => {
+    // accumulate the token count of all messages
+    return _chatMessages.value.reduce((acc, message) => {
+      if (message.tokenCount) {
+        return acc + message.tokenCount;
+      }
+      return acc;
+    }, 0);
+  });
+
   const chatToolCalls = computed(() => _chatToolCalls.value);
 
   const assistant = computed(() => _chat.value?.assistant);
@@ -101,6 +111,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       role: 'user',
       content: payload.content,
       visionContent: payload.visionContent,
+      tokenCount: 0,
     };
 
     try {
@@ -115,6 +126,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
         role: data.role,
         content: data.content,
         visionContent: data.visionContent,
+        tokenCount: data.tokenCount,
       });
 
       return data;
@@ -211,6 +223,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
         role: message.role,
         content: message.content,
         visionContent: message.visionContent,
+        tokenCount: message.tokenCount,
       }));
 
     _chatToolCalls.value = messages.filter(
@@ -304,6 +317,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
           text: assistantContent,
         },
       ],
+      tokenCount: 0,
     });
   }
 
@@ -325,6 +339,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
     isLoading,
     chat,
     chatMessages,
+    chatMessagesTokenCount,
     chatToolCalls,
     chatId,
     chatTitle,
