@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import { useImgGenSettingsStore } from '@/modules/text-to-image/stores/image-gen-settings.store';
+import type { ImageRun } from '@hopkins385/ragna-sdk';
 import { useInfiniteScroll } from '@vueuse/core';
 import { Loader2Icon } from 'lucide-vue-next';
 import TextToImageOptionsBar from './TextToImageOptionsBar.vue';
@@ -16,11 +17,14 @@ defineEmits<{
   toggleHide: [runId: string];
 }>();
 
-const imgPreview = reactive({
+const imgPreview = reactive<{
+  show: boolean;
+  run: ImageRun | undefined;
+  selectedImageId?: string;
+}>({
   show: false,
-  url: '',
-  id: '',
-  prompt: '',
+  run: undefined,
+  selectedImageId: undefined,
 });
 
 const mainContainer = ref<HTMLElement | null>(null);
@@ -28,7 +32,7 @@ const mainContainer = ref<HTMLElement | null>(null);
 const isLoading = ref(false);
 const folderId = ref('');
 
-const runs = ref<any>([]);
+const runs = ref<ImageRun[]>([]);
 const meta = ref<any>(null);
 const hasRuns = computed(() => runs.value && runs.value.length > 0);
 
@@ -56,12 +60,21 @@ const fetchRuns = async (payload: { page: number }) => {
   isLoading.value = false;
 };
 
-function previewImage(payload: { url: string; id: string; prompt?: string }) {
-  imgPreview.url = payload.url;
-  imgPreview.id = payload.id;
-  imgPreview.prompt = payload.prompt || '';
+const previewImage = (payload: { runId: string; imageId: string }) => {
+  const selectedRun = runs.value.find(run => run.id === payload.runId);
+  if (!selectedRun) {
+    console.error('Run not found:', payload.runId);
+    return;
+  }
+  const selectedImage = selectedRun.images.find(img => img.id === payload.imageId);
+  if (!selectedImage) {
+    console.error('Image not found:', payload.imageId);
+    return;
+  }
+  imgPreview.run = selectedRun;
+  imgPreview.selectedImageId = selectedImage.id;
   imgPreview.show = true;
-}
+};
 
 const handleNextScroll = async () => {
   if (hasRuns.value !== true || !meta.value?.nextPage) return;
@@ -118,10 +131,11 @@ onMounted(() => {
 <template>
   <div>
     <TextToImagePreviewDialog
+      v-if="imgPreview.run"
       v-model:show="imgPreview.show"
-      :img-id="imgPreview.id"
-      :img-url="imgPreview.url"
-      :prompt="imgPreview.prompt"
+      :run="imgPreview.run"
+      :selected-image-id="imgPreview.selectedImageId"
+      :key="imgPreview.selectedImageId"
     />
     <div v-if="hasRuns" id="runContainer" class="">
       <div v-for="run in runs" :key="run.id" class="my-2 flex">
@@ -130,14 +144,7 @@ onMounted(() => {
             v-for="image in run.images"
             :key="image.id"
             class="mx-1 flex size-56 overflow-hidden rounded-lg border border-transparent hover:cursor-pointer hover:shadow-xl"
-            @click="
-              () =>
-                previewImage({
-                  url: image.path,
-                  id: image.id,
-                  prompt: run.prompt,
-                })
-            "
+            @click="() => previewImage({ runId: run.id, imageId: image.id })"
           >
             <picture v-if="image.path">
               <source v-if="image.thumb?.avif" :srcset="image.thumb.avif" type="image/avif" />
