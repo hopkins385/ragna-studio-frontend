@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ChevronLeftCircle, ChevronRightCircle } from 'lucide-vue-next';
 
-// Imports
-
 // Props
 // Emits
 const emit = defineEmits<{
