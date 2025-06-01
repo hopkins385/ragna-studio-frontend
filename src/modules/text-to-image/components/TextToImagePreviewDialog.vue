@@ -204,7 +204,7 @@ onBeforeUnmount(() => {
                 :src="image.thumb?.webp || image.thumb?.avif || image.path"
                 alt="Image preview"
                 class="h-16 w-16 rounded-md object-cover border border-transparent hover:cursor-pointer"
-                :class="{ 'border-blue-500': selectedImage.id === image.id }"
+                :class="{ 'border-blue-600': selectedImage.id === image.id }"
               />
             </li>
           </ul>
