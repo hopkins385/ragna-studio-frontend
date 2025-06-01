@@ -5,7 +5,7 @@ import { ChevronLeftCircle, ChevronRightCircle } from 'lucide-vue-next';
 
 // Props
 // Emits
-defineEmits<{
+const emit = defineEmits<{
   (e: 'navigate', direction: 'back' | 'center' | 'next'): void;
 }>();
 
@@ -15,6 +15,19 @@ defineEmits<{
 
 // Computed
 // Functions
+onKeyStroke(['ArrowLeft', 'ArrowRight'], e => {
+  e.preventDefault();
+  switch (e.key) {
+    case 'ArrowLeft':
+      emit('navigate', 'back');
+      break;
+    case 'ArrowRight':
+      emit('navigate', 'next');
+      break;
+    default:
+      return;
+  }
+});
 
 // Hooks
 </script>
