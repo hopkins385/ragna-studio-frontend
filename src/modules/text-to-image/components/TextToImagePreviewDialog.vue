@@ -157,7 +157,7 @@ onBeforeUnmount(() => {
       class="flex max-w-6xl flex-col bg-stone-100 max-h-screen overflow-hidden outline-none"
       @open-auto-focus="onOpenAutoFocus"
     >
-      <DialogHeader class="flex w-full flex-row items-center justify-between border-0">
+      <DialogHeader class="flex w-full flex-row items-center justify-between">
         <DialogTitle>{{ $t('Image') }}</DialogTitle>
       </DialogHeader>
       <div v-if="selectedImage.path" class="flex space-x-8">

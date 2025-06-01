@@ -20,9 +20,9 @@ defineEmits<{
 </script>
 
 <template>
-  <div class="border size-full flex">
+  <div class="size-full flex">
     <div
-      class="hover:bg-white/30 hover:backdrop-blur-lg w-10 flex items-center justify-center group cursor-pointer select-none"
+      class="hover:bg-white/30 w-10 flex items-center justify-center group cursor-pointer select-none"
       @click="$emit('navigate', 'back')"
     >
       <span class="group-hover:block hidden">
@@ -31,7 +31,7 @@ defineEmits<{
     </div>
     <div class="grow select-none" @click="$emit('navigate', 'center')"></div>
     <div
-      class="hover:bg-white/30 hover:backdrop-blur-lg w-10 flex items-center justify-center group cursor-pointer select-none"
+      class="hover:bg-white/30 w-10 flex items-center justify-center group cursor-pointer select-none"
       @click="$emit('navigate', 'next')"
     >
       <span class="group-hover:block hidden">
