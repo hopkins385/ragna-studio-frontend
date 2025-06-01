@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRagnaClient } from '@/composables/useRagnaClient';
+import TextToImagePreviewControls from '@/modules/text-to-image/components/TextToImagePreviewControls.vue';
 import type { ImageRun } from '@hopkins385/ragna-sdk';
 import { Button } from '@ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@ui/dialog';
@@ -99,6 +100,34 @@ const onThumbnailClick = (imageId: string) => {
   selectedImage.prompt = props.run?.prompt || '';
 };
 
+const navigatePreviewTo = ({
+  direction,
+  selectedImage,
+}: {
+  direction: 'back' | 'center' | 'next';
+  selectedImage: any;
+}) => {
+  if (direction === 'center') {
+    // openImage(selectedImage.path);
+    openImage(selectedImage.path);
+    return;
+  }
+  const currentIndex = props.run.images.findIndex(img => img.id === selectedImage.id);
+  if (currentIndex === -1) return;
+
+  let newIndex = currentIndex;
+  if (direction === 'back') {
+    newIndex = currentIndex > 0 ? currentIndex - 1 : props.run.images.length - 1;
+  } else if (direction === 'next') {
+    newIndex = currentIndex < props.run.images.length - 1 ? currentIndex + 1 : 0;
+  }
+
+  const newImage = props.run.images[newIndex];
+  selectedImage.id = newImage.id;
+  selectedImage.path = newImage.path;
+  selectedImage.prompt = props.run.prompt || '';
+};
+
 onMounted(() => {
   if (!props.run) {
     console.warn('No images found in run', props.run);
@@ -133,15 +162,16 @@ onBeforeUnmount(() => {
       </DialogHeader>
       <div v-if="selectedImage.path" class="flex space-x-8">
         <div class="flex-grow overflow-hidden shrink-0">
-          <div
-            class="relative flex items-center justify-center hover:cursor-pointer"
-            @click="() => openImage(selectedImage.path)"
-          >
+          <div class="relative flex items-center justify-center hover:cursor-pointer">
+            <div class="absolute inset-0 size-full">
+              <TextToImagePreviewControls
+                @navigate="direction => navigatePreviewTo({ direction, selectedImage })"
+              />
+            </div>
             <img
               :src="selectedImage.path"
               alt="Generated Image"
-              class="w-[700px] min-h-[400px] rounded-md object-contain"
-              :style="{ 'max-height': 'calc(100vh - 6rem)' }"
+              class="w-[700px] min-h-[400px] max-h-[calc(100vh-10rem)] rounded-md object-contain"
             />
           </div>
         </div>
@@ -204,7 +234,7 @@ onBeforeUnmount(() => {
                 :src="image.thumb?.webp || image.thumb?.avif || image.path"
                 alt="Image preview"
                 class="h-16 w-16 rounded-md object-cover border border-transparent hover:cursor-pointer"
-                :class="{ 'border-blue-600': selectedImage.id === image.id }"
+                :class="{ '!border-blue-500': selectedImage.id === image.id }"
               />
             </li>
           </ul>
