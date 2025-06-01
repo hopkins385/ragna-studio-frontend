@@ -133,22 +133,22 @@ onMounted(() => {
             class="opacity-50 hover:opacity-100"
           >
             <span>
-              <CheckIcon v-if="copied" class="!size-3" />
-              <CopyIcon v-else class="!size-3" />
+              <CheckIcon v-if="copied" class="!size-[0.9rem]" />
+              <CopyIcon v-else class="!size-[0.9rem]" />
             </span>
           </Button>
         </TooltipWrapper>
         <TooltipWrapper content="Like" :delay-duration="100">
           <Button variant="ghost" size="icon" class="opacity-50 hover:opacity-100">
             <span>
-              <ThumbsUpIcon class="!size-3" />
+              <ThumbsUpIcon class="!size-[0.9rem]" />
             </span>
           </Button>
         </TooltipWrapper>
         <TooltipWrapper content="Dislike" :delay-duration="100">
           <Button variant="ghost" size="icon" class="opacity-50 hover:opacity-100">
             <span>
-              <ThumbsDownIcon class="!size-3" />
+              <ThumbsDownIcon class="!size-[0.9rem]" />
             </span>
           </Button>
         </TooltipWrapper>

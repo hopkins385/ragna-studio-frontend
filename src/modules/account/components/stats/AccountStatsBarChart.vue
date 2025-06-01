@@ -11,13 +11,26 @@ import { useRagnaClient } from '@/composables/useRagnaClient';
 import getDaysInMonth from '@/utils/date';
 import type { TokenUsage } from '@hopkins385/ragna-sdk';
 import { BarChart, PieChart, type BarSeriesOption, type PieSeriesOption } from 'echarts/charts';
-import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
+import {
+  GridComponent,
+  LegendComponent,
+  TitleComponent,
+  TooltipComponent,
+} from 'echarts/components';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import Chart from 'vue-echarts';
 // import 'echarts';
 
-use([GridComponent, LegendComponent, TooltipComponent, BarChart, PieChart, CanvasRenderer]);
+use([
+  GridComponent,
+  LegendComponent,
+  TooltipComponent,
+  TitleComponent,
+  BarChart,
+  PieChart,
+  CanvasRenderer,
+]);
 
 const grid = {
   left: 80,
