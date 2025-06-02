@@ -2,6 +2,7 @@
 /**
  * Component: ImageGenSettings
  */
+import TextToImageAspectRatioSelector from '@/modules/text-to-image/components/TextToImageAspectRatioSelector.vue';
 import { useImgGenSettingsStore } from '@/modules/text-to-image/stores/image-gen-settings.store';
 import QuestionToolTip from '@components/question/QuestionToolTip.vue';
 import { Button } from '@ui/button';
@@ -11,7 +12,6 @@ import { Separator } from '@ui/separator';
 import { Slider } from '@ui/slider';
 import { Switch } from '@ui/switch';
 import { RotateCcwIcon, SlidersHorizontalIcon } from 'lucide-vue-next';
-import TextToImageDimensions from './TextToImageDimensions.vue';
 
 const show = ref(false);
 const settings = useImgGenSettingsStore();
@@ -47,14 +47,27 @@ const settings = useImgGenSettingsStore();
         />
       </div>
       <div class="mb-5 flex flex-col space-y-4">
-        <div class="flex w-full justify-between">
+        <div class="flex w-full items-center justify-between">
           <div>Aspect Ratio</div>
-          <div>{{ settings.getImageAspectRatio }}</div>
-        </div>
-        <div>
-          <TextToImageDimensions />
+          <div><TextToImageAspectRatioSelector /></div>
         </div>
       </div>
+      <div class="flex items-center justify-between w-full mb-5">
+        <div>Extension</div>
+        <div>
+          <!-- File Extension [jpeg, png]-->
+          <Select v-model="settings.imageExtension">
+            <SelectTrigger>
+              <SelectValue placeholder="Select an extension" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="jpeg"> JPEG </SelectItem>
+              <SelectItem value="png"> PNG </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <!--
       <div class="mb-5 flex flex-col space-y-4">
         <div class="flex w-full justify-between">
           <div>
@@ -75,20 +88,8 @@ const settings = useImgGenSettingsStore();
           class="slider"
         />
       </div>
-      <div class="flex flex-col pb-2">
-        <div>Extension</div>
-        <!-- File Extension [jpeg, png]-->
-        <Select v-model="settings.imageExtension">
-          <SelectTrigger>
-            <SelectValue placeholder="Select an extension" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="jpeg"> JPEG </SelectItem>
-            <SelectItem value="png"> PNG </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <div class="flex flex-col">
+      -->
+      <div class="flex flex-col mb-2">
         <div>
           On Enter Submit
           <QuestionToolTip
