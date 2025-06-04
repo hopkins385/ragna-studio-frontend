@@ -9,6 +9,7 @@ import NavBar from '@components/nav/NavBar.vue';
 import NavTopBar from '@components/nav/NavTopBar.vue';
 import { Toaster } from '@components/ui/sonner';
 import { twMerge } from 'tailwind-merge';
+import 'vue-sonner/style.css';
 
 const router = useRouter();
 const authStore = useAuthStore();
