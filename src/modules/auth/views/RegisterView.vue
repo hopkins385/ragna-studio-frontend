@@ -40,7 +40,8 @@ const registerFormSchema = z.object({
   password: z
     .string()
     .trim()
-    .min(6, t('auth.error.password_min_length', { length: 6 })),
+    .min(6, t('auth.error.password_min_length', { length: 6 }))
+    .max(64, t('auth.error.password_max_length', { length: 64 })),
   terms: z
     .boolean()
     .default(false)
@@ -114,7 +115,13 @@ const onSubmit = form.handleSubmit(async (values, { resetForm }) => {
             <FormItem>
               <FormLabel>{{ $t('auth.invitation_code') }}</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="" v-bind="componentField" :disabled="true" />
+                <Input
+                  v-bind="componentField"
+                  :disabled="true"
+                  type="text"
+                  placeholder=""
+                  autocomplete="off"
+                />
               </FormControl>
               <!--
               <FormLabel v-if="!routeCode" class="text-sm text-gray-500">
