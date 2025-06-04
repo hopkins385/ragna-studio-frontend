@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
+import { registerFormSchema } from '@/modules/auth/schemas/auth-schema';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { RouteName } from '@/router/enums/route-names.enum';
 import BrandHeader from '@components/brand/BrandHeader.vue';
@@ -9,7 +10,6 @@ import FormMessage from '@ui/form/FormMessage.vue';
 import { Input } from '@ui/input';
 import { isValidJWT, sanitizeToken } from '@utils/token';
 import { toTypedSchema } from '@vee-validate/zod';
-import { z } from 'zod';
 
 const isLoading = ref(false);
 
@@ -29,29 +29,6 @@ const routeCode = computed(() => {
 
   const sanitizedToken = sanitizeToken(queryToken);
   return isValidJWT(sanitizedToken) ? sanitizedToken : '';
-});
-
-const registerFormSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(4, t('auth.error.name_min_length', { length: 4 })),
-  email: z.string().trim().email(t('auth.error.invalid_email')),
-  password: z
-    .string()
-    .trim()
-    .min(6, t('auth.error.password_min_length', { length: 6 }))
-    .max(64, t('auth.error.password_max_length', { length: 64 })),
-  terms: z
-    .boolean()
-    .default(false)
-    .refine(value => value, t('auth.error.terms_required')),
-  // invitation code is a jwt token
-  invitationCode: z
-    .string()
-    .trim()
-    .min(1, t('auth.error.code_required'))
-    .refine(value => isValidJWT(value), t('auth.error.code_invalid')),
 });
 
 const form = useForm({
