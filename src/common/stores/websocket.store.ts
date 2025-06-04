@@ -1,11 +1,10 @@
-import useToast from '@/composables/useToast';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import { socketClient } from '@/socket';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useWebSocketStore = defineStore('websocket', () => {
-  const toast = useToast();
+  const auth = useAuthStore();
   const authStore = useAuthStore();
 
   const isConnected = ref(socketClient.connected);
@@ -20,6 +19,27 @@ export const useWebSocketStore = defineStore('websocket', () => {
     // if (!socketClient.connected) return;
     cleanupDefaultListeners();
     socketClient.disconnect();
+  }
+
+  function handleConnectEvent() {
+    joinUserRoom();
+    isConnected.value = true;
+    console.log('Socket connected:', socketClient.connected);
+  }
+
+  function handleDisconnectEvent() {
+    leaveUserRoom();
+    isConnected.value = false;
+    console.log('Socket disconnected:', socketClient.connected);
+    if (auth.isAuthenticated && !socketClient.connected) {
+      socketClient.connect();
+      console.log('Attempting to reconnect socket');
+      if (socketClient.connected) {
+        handleConnectEvent();
+      }
+    } else {
+      console.log('Socket disconnected, not reconnecting automatically');
+    }
   }
 
   function emit(event: string, data: any) {
@@ -56,24 +76,13 @@ export const useWebSocketStore = defineStore('websocket', () => {
   }
 
   function setupDefaultListeners() {
-    socketClient.on('connect', () => {
-      joinUserRoom();
-      isConnected.value = true;
-      console.log('Socket connected:', socketClient.connected);
-    });
+    socketClient.on('connect', handleConnectEvent);
 
     socketClient.onAny((event, ...args) => {
       console.log('Socket event:', event, args);
     });
 
-    socketClient.on('disconnect', () => {
-      leaveUserRoom();
-      isConnected.value = false;
-      toast.error({
-        description: 'Lost connection to the event server. Please refresh the page to reconnect.',
-      });
-      console.log('Socket disconnected');
-    });
+    socketClient.on('disconnect', handleDisconnectEvent);
 
     socketClient.on('connect_error', error => {
       console.error('Socket connection error:', error);
