@@ -6,12 +6,7 @@ import { z } from 'zod';
 
 interface FileDropzoneProps {
   maxFiles?: number;
-  modelValue: File[];
   openFileDialog?: boolean;
-}
-
-interface FileDropzoneEmits {
-  'update:modelValue': [value: File[]];
 }
 
 const ACCEPTED_TYPES = [
@@ -40,13 +35,14 @@ const MAX_FILE_SIZE = 15000000;
 const MAX_FILES = 10;
 
 const props = defineProps<FileDropzoneProps>();
-const emit = defineEmits<FileDropzoneEmits>();
+
+const modelValue = defineModel<File[]>();
 
 const dropZoneRef = ref<HTMLDivElement>();
 const fileListRef = ref<HTMLDivElement>();
 
 const errors = ref<string[] | null>(null);
-const files = ref<File[]>(props.modelValue || []);
+const files = ref<File[]>(modelValue.value || []);
 const { isOverDropZone } = useDropZone(dropZoneRef, onDrop);
 const { isOutside: mouseIsOutsideList } = useMouseInElement(fileListRef);
 
@@ -94,9 +90,7 @@ const isValidFile = (file: File) => {
   const result = zodSchema.safeParse({ file });
   if (!result.success) {
     const errorMessages = result.error.message;
-    errors.value = JSON.parse(errorMessages).map(
-      (error: ZodError) => error.message,
-    );
+    errors.value = JSON.parse(errorMessages).map((error: ZodError) => error.message);
     return false;
   }
   errors.value = null;
@@ -114,9 +108,7 @@ function onDrop(droppedfiles: File[] | null) {
   }
 
   // Check if adding files would exceed limit
-  const totalFiles = files.value
-    ? files.value.length + droppedfiles.length
-    : droppedfiles.length;
+  const totalFiles = files.value ? files.value.length + droppedfiles.length : droppedfiles.length;
   if (props.maxFiles && totalFiles > props.maxFiles) {
     errors.value = [`Maximum ${props.maxFiles} files at the same time allowed`];
     return;
@@ -162,9 +154,7 @@ const onClickDropzone = () => {
       const selectedFiles = Array.from(target.files);
 
       if (props.maxFiles && totalFiles > props.maxFiles) {
-        errors.value = [
-          `Maximum ${props.maxFiles} files at the same time allowed`,
-        ];
+        errors.value = [`Maximum ${props.maxFiles} files at the same time allowed`];
         return;
       }
 
@@ -186,16 +176,17 @@ const fileSizeToMB = (size: number) => {
 watch(
   () => files.value,
   files => {
-    emit('update:modelValue', files);
+    modelValue.value = files;
   },
 );
 
 watch(
-  () => props.modelValue,
+  () => modelValue.value,
   value => {
-    if (!value.length) {
+    if (!value || !value.length) {
       files.value = [];
       errors.value = null;
+      return;
     }
     files.value = value;
   },
@@ -217,10 +208,7 @@ watch(
     class="group relative flex min-h-[200px] w-full cursor-pointer flex-col items-center justify-center overflow-y-auto rounded-xl border p-5"
     @click="onClickDropzone"
   >
-    <div
-      v-if="sumSize > 0"
-      class="absolute right-4 top-2 text-xs text-slate-500"
-    >
+    <div v-if="sumSize > 0" class="absolute right-4 top-2 text-xs text-slate-500">
       Sum: {{ fileSizeToMB(sumSize) }}
     </div>
     <div v-if="showFileList" ref="fileListRef">
@@ -236,10 +224,7 @@ watch(
               {{ fileSizeToMB(file.size) }} - {{ file.name }}
             </span>
           </div>
-          <div
-            class="hover:text-danger ml-3 hover:cursor-pointer"
-            @click="files.splice(index, 1)"
-          >
+          <div class="hover:text-danger ml-3 hover:cursor-pointer" @click="files.splice(index, 1)">
             <XIcon class="size-5 stroke-1.5 hover:stroke-2" />
           </div>
         </li>

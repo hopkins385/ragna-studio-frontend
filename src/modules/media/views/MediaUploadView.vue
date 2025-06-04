@@ -33,6 +33,9 @@ const route = useRoute();
 const { t } = useI18n();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
 
+// Computed
+const hasFiles = computed(() => (dropzoneFiles.value ? dropzoneFiles.value.length > 0 : false));
+
 // Functions
 function setRoutePage(value: number) {
   page.value = value;
@@ -42,14 +45,13 @@ function setRoutePage(value: number) {
 
 const onSubmit = async (e: Event) => {
   unsetErrorAlert();
-  const files = dropzoneFiles.value;
-  if (files.length === 0) {
+  if (!dropzoneFiles.value) {
     return;
   }
-  dropzoneFiles.value = [];
   isLoading.value = true;
   try {
-    await client.media.uploadFiles(files);
+    await client.media.uploadFiles(dropzoneFiles.value);
+    dropzoneFiles.value = [];
   } catch (error: unknown) {
     let errMessage = t('media.uploads.error.generic');
     if (error instanceof ValidationError) {
@@ -117,7 +119,7 @@ useHead({
             <Button :disabled="isLoading" variant="outline" @click.prevent="onBrowseFiles">
               {{ t('media.uploads.button.browse') }}
             </Button>
-            <Button :disabled="isLoading || !dropzoneFiles.length" @click.prevent="onSubmit">
+            <Button :disabled="isLoading" @click.prevent="onSubmit">
               {{ t('media.uploads.button.upload') }}
             </Button>
           </div>

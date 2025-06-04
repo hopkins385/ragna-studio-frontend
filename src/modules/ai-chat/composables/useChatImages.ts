@@ -40,12 +40,12 @@ export function useChatImages() {
     }
     const isVisonEnabled = aiChat.assistantHasImageInput;
 
-    const uploadedImages = await client.media.uploadFiles([file], isVisonEnabled);
-    if (!uploadedImages || uploadedImages.length === 0) {
+    const { medias } = await client.media.uploadFiles([file], isVisonEnabled);
+    if (!medias || medias.length === 0) {
       updateInputImage(index, { src: imageSrc, status: 'error' });
       return;
     }
-    const uploadedImage = uploadedImages[0];
+    const uploadedImage = medias[0];
     updateInputImage(index, { src: uploadedImage.path, status: 'loaded' });
   }
 
