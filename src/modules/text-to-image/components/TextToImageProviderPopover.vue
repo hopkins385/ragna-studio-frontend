@@ -18,7 +18,7 @@ const settings = useImgGenSettingsStore();
         <span>{{ settings.getProvider }}</span>
       </div>
     </PopoverTrigger>
-    <PopoverContent class="w-40">
+    <PopoverContent class="min-w-40">
       <div class="my-0 flex flex-col space-y-4 text-xs">
         <div v-for="(provider, index) in SUPPORTED_IMAGE_GENERATION_PROVIDERS" :key="index">
           <Button

@@ -31,6 +31,8 @@ export const RouteName = {
   MEDIA_ONE_DRIVE: 'media.one-drive',
   // Text to image routes
   TEXT_TO_IMAGE_INDEX: 'text-to-image.index',
+  TEXT_TO_IMAGE_EDIT_INDEX: 'text-to-image.edit.index',
+  TEXT_TO_IMAGE_EDIT_RUN_IMAGE: 'text-to-image.edit.run.image',
   TEXT_TO_IMAGE_EXPLORE: 'text-to-image.explore',
   // Workflow routes
   WORKFLOW_INDEX: 'workflow.index',

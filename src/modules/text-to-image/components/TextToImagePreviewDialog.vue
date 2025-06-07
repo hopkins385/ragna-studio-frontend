@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { useRagnaClient } from '@/composables/useRagnaClient';
 import TextToImagePreviewControls from '@/modules/text-to-image/components/TextToImagePreviewControls.vue';
+import { RouteName } from '@/router/enums/route-names.enum';
 import type { ImageRun } from '@hopkins385/ragna-sdk';
 import { Button } from '@ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
-import { ClipboardCheckIcon, ClipboardIcon, DownloadIcon, Loader2Icon } from 'lucide-vue-next';
+import {
+  ClipboardCheckIcon,
+  ClipboardIcon,
+  DownloadIcon,
+  ImagePlusIcon,
+  Loader2Icon,
+} from 'lucide-vue-next';
 
 const props = defineProps<{
   show: boolean;
@@ -13,12 +20,13 @@ const props = defineProps<{
   selectedImageId?: string;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   'update:show': [value: boolean];
 }>();
 
 const isLoading = ref(false);
 
+const router = useRouter();
 const client = useRagnaClient();
 
 const selectedImage = reactive({
@@ -128,6 +136,22 @@ const navigatePreviewTo = ({
   selectedImage.prompt = props.run.prompt || '';
 };
 
+const onEditImageClick = () => {
+  // navigate to the edit view for the selected image with /:runId/:imageId
+  if (!selectedImage.id) {
+    console.warn('No image selected for editing');
+    return;
+  }
+  emit('update:show', false); // Close the dialog
+  router.push({
+    name: RouteName.TEXT_TO_IMAGE_EDIT_RUN_IMAGE,
+    params: {
+      runId: props.run.id,
+      imageId: selectedImage.id,
+    },
+  });
+};
+
 onMounted(() => {
   if (!props.run) {
     console.warn('No images found in run', props.run);
@@ -180,6 +204,23 @@ onBeforeUnmount(() => {
             <p class="text-sm opacity-75">{{ selectedImage.prompt }}</p>
           </div>
           <div class="pt-4 space-x-2">
+            <TooltipProvider :delayDuration="300">
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button
+                    id="edit-image"
+                    variant="default"
+                    size="icon"
+                    @click="() => onEditImageClick()"
+                  >
+                    <ImagePlusIcon class="size-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Edit Image</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <TooltipProvider :delayDuration="300">
               <Tooltip>
                 <TooltipTrigger>

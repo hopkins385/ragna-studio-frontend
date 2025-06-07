@@ -10,6 +10,14 @@ const idSchema = z.object({
   id: cuidSchema,
 });
 
+const runIdSchema = z.object({
+  runId: cuidSchema,
+});
+
+const imageIdSchema = z.object({
+  imageId: cuidSchema,
+});
+
 const querySchema = z.object({
   page: z.string().trim().regex(pageNumberRegex).optional(),
   limit: z.string().trim().regex(pageNumberRegex).optional(),
@@ -18,6 +26,22 @@ const querySchema = z.object({
 
 export function hasValidRouteId(to: RouteLocationNormalized) {
   const res = idSchema.safeParse(to.params);
+  if (!res.success) {
+    return { name: RouteName.NOT_FOUND };
+  }
+  return true;
+}
+
+export function hasValidRunId(to: RouteLocationNormalized) {
+  const res = runIdSchema.safeParse(to.params);
+  if (!res.success) {
+    return { name: RouteName.NOT_FOUND };
+  }
+  return true;
+}
+
+export function hasValidImageId(to: RouteLocationNormalized) {
+  const res = imageIdSchema.safeParse(to.params);
   if (!res.success) {
     return { name: RouteName.NOT_FOUND };
   }

@@ -14,6 +14,7 @@ defineProps<{
   prompt: string;
   runId: string;
   isHidden: boolean;
+  hideOptions?: boolean;
 }>();
 
 defineEmits<{
@@ -33,9 +34,7 @@ const {
 <template>
   <div ref="sidebar" class="group flex w-full grow flex-col border-0 px-5">
     <div class="rounded-lg p-1">
-      <p
-        class="line-clamp-4 max-h-40 min-h-5 break-words text-sm opacity-75 hover:opacity-100"
-      >
+      <p class="line-clamp-4 max-h-40 min-h-5 break-words text-sm opacity-75 hover:opacity-100">
         {{ prompt }}
       </p>
     </div>
@@ -45,6 +44,7 @@ const {
       </span>
     </div>
     <div
+      v-if="!hideOptions"
       class="relative flex items-center space-x-0 py-2 opacity-0 group-hover:opacity-100"
     >
       <!--group-hover:flex -->

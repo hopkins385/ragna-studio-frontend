@@ -1,5 +1,6 @@
 import { defaultAppMeta } from '@/router/defaults';
 import { RouteName } from '@/router/enums/route-names.enum';
+import { hasValidImageId, hasValidRunId } from '@/utils/route-validation.util';
 import type { Router } from 'vue-router';
 
 const moduleRoute = {
@@ -11,6 +12,19 @@ const moduleRoute = {
       path: '',
       name: RouteName.TEXT_TO_IMAGE_INDEX,
       component: () => import('./views/TextToImageIndexView.vue'),
+      meta: defaultAppMeta,
+    },
+    {
+      path: 'edit',
+      name: RouteName.TEXT_TO_IMAGE_EDIT_INDEX,
+      component: () => import('./views/TextToImageEditView.vue'),
+      meta: defaultAppMeta,
+    },
+    {
+      path: 'edit/:runId/:imageId',
+      name: RouteName.TEXT_TO_IMAGE_EDIT_RUN_IMAGE,
+      beforeEnter: [hasValidRunId, hasValidImageId],
+      component: () => import('./views/TextToImageEditView.vue'),
       meta: defaultAppMeta,
     },
     {

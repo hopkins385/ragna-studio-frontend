@@ -81,6 +81,8 @@ export function useNavBarItems() {
       //   items.push(...settingsItems);
       //   break;
       case RouteName.TEXT_TO_IMAGE_INDEX:
+      case RouteName.TEXT_TO_IMAGE_EDIT_INDEX:
+      case RouteName.TEXT_TO_IMAGE_EDIT_RUN_IMAGE:
       case RouteName.TEXT_TO_IMAGE_EXPLORE:
         items.push(...imageGenItems);
         break;

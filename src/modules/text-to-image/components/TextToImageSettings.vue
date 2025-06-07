@@ -67,28 +67,6 @@ const settings = useImgGenSettingsStore();
           </Select>
         </div>
       </div>
-      <!--
-      <div class="mb-5 flex flex-col space-y-4">
-        <div class="flex w-full justify-between">
-          <div>
-            Guidance
-            <QuestionToolTip
-              title="Guidance scale"
-              content="High guidance scale improves prompt adherence at the cost of reduced realism."
-            />
-          </div>
-          <div>{{ settings.getImageGuidance }}</div>
-        </div>
-        <Slider
-          v-model="settings.imageGuidance"
-          :default-value="[2.5]"
-          :min="1.5"
-          :max="5"
-          :step="0.5"
-          class="slider"
-        />
-      </div>
-      -->
       <div class="flex flex-col mb-2">
         <div>
           On Enter Submit

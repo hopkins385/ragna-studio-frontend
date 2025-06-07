@@ -27,7 +27,6 @@ const { dynamicNavItems } = useNavBarItems();
             <li v-if="item.path" class="nav-item">
               <NavLink
                 v-if="item.path"
-                :active="$route.path === item.path"
                 :to="item.path"
                 :icon="item.icon"
                 :label="item.label"
@@ -66,7 +65,6 @@ const { dynamicNavItems } = useNavBarItems();
                   >
                     <NavLink
                       v-if="child.path"
-                      :active="$route.path === child.path"
                       :to="child.path"
                       :icon="child.icon"
                       :label="child.label"

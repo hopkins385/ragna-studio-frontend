@@ -9,6 +9,7 @@ import TextToImagePreviewDialog from './TextToImagePreviewDialog.vue';
 
 const props = defineProps<{
   refreshData: boolean;
+  hideOptions?: boolean;
 }>();
 
 defineEmits<{
@@ -137,15 +138,16 @@ onMounted(() => {
       :selected-image-id="imgPreview.selectedImageId"
       :key="imgPreview.selectedImageId"
     />
-    <div v-if="hasRuns" id="runContainer" class="">
+    <div v-if="hasRuns" id="runContainer">
       <div v-for="run in runs" :key="run.id" class="my-2 flex">
         <div class="grid shrink-0 grid-cols-4">
           <div
             v-for="image in run.images"
             :key="image.id"
-            class="mx-1 flex size-56 overflow-hidden rounded-lg border border-transparent hover:cursor-pointer hover:shadow-xl"
+            class="mx-1 flex size-64 overflow-hidden rounded-lg border border-transparent hover:cursor-pointer hover:shadow-xl"
             @click="() => previewImage({ runId: run.id, imageId: image.id })"
           >
+            <!-- size-56 -->
             <picture v-if="image.path">
               <source v-if="image.thumb?.avif" :srcset="image.thumb.avif" type="image/avif" />
               <source v-if="image.thumb?.webp" :srcset="image.thumb.webp" type="image/webp" />
@@ -168,6 +170,7 @@ onMounted(() => {
           :prompt="run.prompt"
           :run-id="run.id"
           :is-hidden="run.deletedAt !== null"
+          :hide-options="props.hideOptions"
           @re-run="val => $emit('reRun', val)"
           @use-prompt="val => $emit('usePrompt', val)"
           @toggle-hide="val => $emit('toggleHide', val)"
