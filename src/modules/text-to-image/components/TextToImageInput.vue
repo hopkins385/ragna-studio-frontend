@@ -26,7 +26,7 @@ const emit = defineEmits<{
 const modelValue = defineModel<string>(); // prompt input model
 
 // Refs
-const promptFormRef = useTemplateRef('promptFormRef');
+const promptFormRef = useTemplateRef('prompt-form');
 
 // Composables
 const settings = useImgGenSettingsStore();
@@ -88,13 +88,22 @@ const handlePaste = (event: ClipboardEvent) => {
   }
 };
 
+const onPaste = (event: ClipboardEvent) => {
+  if (props.isLoading || props.disabled) {
+    return;
+  }
+  handlePaste(event);
+};
+
 const onSubmit = () => {
   if (!modelValue.value) return;
   // Emit the modelValue value to the parent component
   emit('submit', modelValue.value);
   // Clear the modelValue after submission
   modelValue.value = '';
-  adjustTextareaHeight();
+  nextTick(() => {
+    adjustTextareaHeight();
+  });
 };
 
 const onKeydownEnter = (event: KeyboardEvent) => {
@@ -134,17 +143,19 @@ onUnmounted(() => {
 
 <template>
   <div class="flex flex-col h-fit w-full space-x-4 rounded-b-lg bg-white/95 pb-1">
-    <form ref="promptFormRef" class="relative grow space-y-2" @submit.prevent="onSubmit">
+    <form ref="prompt-form" class="relative grow space-y-2" @submit.prevent="onSubmit">
       <Textarea
         v-model="modelValue"
         type="text"
-        :placeholder="$t(placeholder || 'textToImage.placeholder')"
         rows="1"
         resize="none"
         class="no-scrollbar min-h-[48px] resize-none rounded-2xl bg-white py-4 pl-4 pr-16 shadow-sm focus:shadow-lg"
+        :placeholder="$t(placeholder || 'textToImage.placeholder')"
         @keydown.enter="onKeydownEnter"
-        @input="adjustTextareaHeight"
-        @paste="handlePaste"
+        @input="() => adjustTextareaHeight()"
+        @focus="() => adjustTextareaHeight()"
+        @blur="() => adjustTextareaHeight()"
+        @paste="onPaste"
       />
       <div class="absolute bottom-1/2 translate-y-1/2 right-10 p-1">
         <Button

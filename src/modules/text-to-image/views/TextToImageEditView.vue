@@ -50,7 +50,7 @@ const firstSectionStyles = computed(() => {
   };
 });
 
-const submitIsReleased = computed(() => {
+const submitLocked = computed(() => {
   return !prompt.value || imageGenIsLoading.value || uploadImageIsLoading.value;
 });
 
@@ -124,6 +124,7 @@ const handleReferenceImageIdUpdate = async ({
     referenceImageIsUpload.value = false;
     referenceImageId.value = image.id;
     referenceImageUrl.value = image.path;
+    dropzoneFullHeight.value = true;
     // scroll window to top
     await nextTick();
     const mainContainer = document.getElementById('main');
@@ -151,7 +152,8 @@ const onResetClick = async (e: MouseEvent) => {
 };
 
 const onSubmit = async (inputPrompt: string) => {
-  if (!submitIsReleased.value) {
+  if (submitLocked.value) {
+    console.warn('Submit is not released yet');
     return;
   }
 
@@ -195,6 +197,7 @@ const onSubmit = async (inputPrompt: string) => {
       folderId: folderId.value,
       prompt: inputPrompt,
       imgCount: settings.getImageCount,
+      aspectRatio: settings.getImageAspectRatio,
       outputFormat: settings.getImageExtension,
       referenceImageId: referenceImageId.value,
       referenceImageIsUpload: referenceImageIsUpload.value,
