@@ -9,7 +9,6 @@ import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'vite';
 import { imagetools } from 'vite-imagetools';
 import { VitePWA } from 'vite-plugin-pwa';
-import svgLoader from 'vite-svg-loader';
 
 // https://vite.dev/config/
 export default defineConfig(() => {
@@ -25,8 +24,7 @@ export default defineConfig(() => {
         // locale messages resource pre-compile option
         include: resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/**'),
       }),
-      imagetools({}),
-      svgLoader(),
+      imagetools(),
       Icons({
         compiler: 'vue3',
         autoInstall: true,
