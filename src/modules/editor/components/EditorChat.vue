@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// Imports
-import Illustration from '@/assets/illustrations/undraw_saying.svg';
 import TooltipWrapper from '@/components/tooltip/TooltipWrapper.vue';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,6 +18,7 @@ import { useEditorStore } from '@/modules/editor/stores/editor.store';
 import { markdownService } from '@/modules/markdown/services/markdown.service';
 import { RouteName } from '@/router/enums/route-names.enum';
 import { EllipsisIcon, HistoryIcon, PlusIcon } from 'lucide-vue-next';
+import UndrawSaying from '~icons/illustrations/undraw_saying';
 import EditorSidePanel from './EditorSidePanel.vue';
 
 // Props
@@ -185,7 +184,7 @@ onBeforeUnmount(() => {
           <!-- Empty Chat Placeholder -->
           <div v-if="!aiChatStore.hasChatMessages" class="pt-20">
             <div class="w-32 mx-auto">
-              <Illustration />
+              <UndrawSaying class="size-32" />
             </div>
             <div class="px-14 pt-10 text-center text-sm space-y-4">
               <p class="opacity-75 font-bold">{{ $t('chat.empty.title') }}</p>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import IconRagna from '@assets/icons/ragna.svg?component';
+import BrandIcon from '@/components/brand/BrandIcon.vue';
 import { Button } from '@ui/button';
 import {
   DropdownMenu,
@@ -39,7 +39,7 @@ onBeforeUnmount(() => {
   <DropdownMenu @update:open="onUpdateOpen">
     <DropdownMenuTrigger as-child>
       <Button variant="ghost" size="icon">
-        <IconRagna class="!size-7 drop-shadow-md" />
+        <BrandIcon class="!size-7 drop-shadow-md" />
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent class="min-w-[16rem] p-3">

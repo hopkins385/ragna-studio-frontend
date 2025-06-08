@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { LoaderIcon } from 'lucide-vue-next';
-import SecureLogin from '@assets/illustrations/secure_login.svg?component';
-import ErrorAlert from '@/components/error/ErrorAlert.vue';
 import BrandHeader from '@/components/brand/BrandHeader.vue';
+import ErrorAlert from '@/components/error/ErrorAlert.vue';
+import { LoaderIcon } from 'lucide-vue-next';
+import SecureLogin from '~icons/illustrations/secure_login';
 
 const props = defineProps<{
   errorMessage?: string;
@@ -23,10 +23,7 @@ watch(
 <template>
   <div class="flex flex-col justify-center items-center h-screen">
     <div class="w-full max-w-xl">
-      <ErrorAlert
-        :model-value="showError"
-        :message="errorMessage ?? 'Unknown Error'"
-      />
+      <ErrorAlert :model-value="showError" :message="errorMessage ?? 'Unknown Error'" />
     </div>
     <BrandHeader />
     <div class="flex flex-col items-center">

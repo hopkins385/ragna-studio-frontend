@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import SocialPost from '@assets/illustrations/social_post.svg?component';
 import {
   Dialog,
   DialogContent,
@@ -8,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@ui/dialog';
+import SocialPost from '~icons/illustrations/social_post';
 import PromptWizardForm from './PromptWizardForm.vue';
 
 // External
@@ -35,7 +35,7 @@ const onUpdatePrompt = (prompt: string) => {
         <div class="p-6">
           <h2 class="text-sm font-semibold">Prompt Wizard</h2>
           <div class="p-8">
-            <SocialPost />
+            <SocialPost class="size-full" />
           </div>
         </div>
       </div>

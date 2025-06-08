@@ -1,7 +1,6 @@
 <script setup lang="ts">
-// Imports
-import Illustration from '@/assets/illustrations/empty-comments.svg';
 import { useEditorStore } from '@/modules/editor/stores/editor.store';
+import UndrawComments from '~icons/illustrations/empty-comments';
 import EditorCommentAddForm from './EditorCommentAddForm.vue';
 import EditorCommentMenu from './EditorCommentMenu.vue';
 import EditorSidePanel from './EditorSidePanel.vue';
@@ -41,7 +40,7 @@ const editorStore = useEditorStore();
     <!-- Empty Comments Placeholder -->
     <div v-if="!editorStore.hasComments" class="pt-20">
       <div class="w-40 mx-auto">
-        <Illustration />
+        <UndrawComments class="size-40" />
       </div>
       <div class="px-14 pt-10 text-center text-sm space-y-4">
         <p class="opacity-75 font-bold">{{ $t('comment.empty.title') }}</p>

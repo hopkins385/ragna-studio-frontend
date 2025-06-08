@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import BrandIcon from '@/components/brand/BrandIcon.vue';
 import { ChatMessageRole } from '@/modules/ai-chat/enums/chat-role.enum';
-import IconRagna from '@assets/icons/ragna.svg?component';
 import { UserRoundIcon } from 'lucide-vue-next';
 
 defineProps<{
@@ -34,7 +34,7 @@ defineProps<{
             <UserRoundIcon class="size-4 stroke-2 opacity-50" />
           </span>
           <span v-if="role === ChatMessageRole.ASSISTANT">
-            <IconRagna class="size-5 drop-shadow-sm" />
+            <BrandIcon class="size-5 drop-shadow-sm" />
           </span>
         </div>
         <!-- message content container -->

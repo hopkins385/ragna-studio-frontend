@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
 import AutoImport from 'unplugin-auto-import/vite';
+import { FileSystemIconLoader } from 'unplugin-icons/loaders';
 import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'vite';
 import { imagetools } from 'vite-imagetools';
@@ -28,6 +29,9 @@ export default defineConfig(() => {
       Icons({
         compiler: 'vue3',
         autoInstall: true,
+        customCollections: {
+          illustrations: FileSystemIconLoader('./src/assets/illustrations'),
+        },
       }),
       AutoImport({
         imports: [
