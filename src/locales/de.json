@@ -103,7 +103,7 @@
     "avatar": "Avatar",
     "assistant": "Agent",
     "records": "Einträge",
-    "ai_model": "Ki Modell",
+    "ai_model": "KI Modell",
     "created_at": "Erstellt am",
     "updated_at": "Aktualisiert am",
     "file": "Datei",
@@ -282,7 +282,7 @@
     },
     "step": {
       "agent": "Agent",
-      "ai_model": "Ki Modell",
+      "ai_model": "KI Modell",
       "inputs": "Eingaben",
       "system_prompt": "Agent Instruktionen",
       "run": "Schritt ausführen"
@@ -364,8 +364,8 @@
       "label": "Generell"
     },
     "genai": {
-      "label": "Ki Modell",
-      "select": "Ki Modell auswählen"
+      "label": "KI Modell",
+      "select": "KI Modell auswählen"
     },
     "behavior": {
       "label": "Verhalten",
@@ -577,7 +577,7 @@
       },
       "think": {
         "title": "Reasoning-Budget",
-        "description": "Bestimmt wie aufwending der Agent über seine Antworten nachdenken darf – je höher die Einstellung, desto mehr Zeit nimmt sich der Agent für schrittweise Überlegungen und tiefere Analysen, ähnlich wie ein Mensch, der zwischen einer schnellen Antwort und einem durchdachten Lösungsweg wählen kann.",
+        "description": "Bestimmt wie aufwending der Agent über seine Antworten nachdenken darf - je höher die Einstellung, desto mehr Zeit nimmt sich der Agent für schrittweise Überlegungen und tiefere Analysen, ähnlich wie ein Mensch, der zwischen einer schnellen Antwort und einem durchdachten Lösungsweg wählen kann.",
         "off": "Aus",
         "low": "Niedrig",
         "medium": "Mittel",
