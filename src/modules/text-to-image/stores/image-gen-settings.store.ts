@@ -8,10 +8,17 @@ export const SUPPORTED_IMAGE_GENERATION_PROVIDERS = [
   // 'fluxultra',
   'fluxkontextpro',
   // 'fluxkontextmax',
+  'googleimagegen',
 ] as const;
 
 export type ImageGenExtension = 'jpeg' | 'png';
-export type ImageGenProvider = 'fluxpro' | 'fluxultra' | 'fluxkontextpro' | 'fluxkontextmax';
+export type ImageGenProvider =
+  | 'fluxpro'
+  | 'fluxultra'
+  | 'fluxkontextpro'
+  | 'fluxkontextmax'
+  | 'googleimagegen';
+
 export type ImageAspectRatio = (typeof SUPPORTED_ASPECT_RATIOS)[number];
 
 function getProviderName(provider: ImageGenProvider) {
@@ -22,6 +29,8 @@ function getProviderName(provider: ImageGenProvider) {
       return 'FLUX Kontext Pro';
     case 'fluxkontextmax':
       return 'FLUX Kontext Max';
+    case 'googleimagegen':
+      return 'Google Image Gen';
     default:
       return 'FLUX Pro';
   }

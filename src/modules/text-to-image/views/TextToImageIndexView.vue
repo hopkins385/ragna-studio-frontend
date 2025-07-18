@@ -87,6 +87,19 @@ async function generateImage(submitPrompt: string) {
         }
         return fluxKontextMaxImageUrls;
 
+      case 'googleimagegen':
+        const { imageUrls: googleImageUrls } = await client.textToImage.generateGoogleImages({
+          folderId: folderResult.folders[0].id,
+          prompt: submitPrompt,
+          imgCount: settings.getImageCount,
+          outputFormat: 'png',
+          aspectRatio: settings.getImageAspectRatio,
+        });
+        if (!googleImageUrls.length) {
+          throw new Error('No image generated');
+        }
+        return googleImageUrls;
+
       default:
         throw new Error('Invalid provider');
     }
