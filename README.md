@@ -9,6 +9,8 @@
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 </div>
 
+![RAGNA Studio Home View](https://static.ragna.io/studio-images/home-view.png)
+
 ## 🌟 Overview
 
 RAGNA Studio is a comprehensive multi-agent AI platform that brings together conversational AI, content generation, and document management in one intuitive interface. Built with Vue 3 and TypeScript, it provides a modern workspace for orchestrating multiple AI agents, generating images from text, managing knowledge bases, and exploring the latest AI capabilities. Whether you're creating content, organizing documents, or building complex multi-agent workflows, RAGNA Studio offers a seamless and powerful experience.
@@ -17,7 +19,7 @@ RAGNA Studio is a comprehensive multi-agent AI platform that brings together con
 
 **This software is currently in development and is NOT intended for production use.**
 
-- Many features are incomplete or work-in-progress
+- Some features are incomplete or work-in-progress
 - The platform is designed for experimentation and development purposes
 - Expect breaking changes and instability
 - Use at your own risk for non-critical applications only
@@ -29,26 +31,24 @@ This is an open-source project shared for educational and collaborative purposes
 
 ### 🤖 AI-Powered Assistants
 
+![RAGNA Studio Home View](https://static.ragna.io/studio-images/agent-tools.png)
+
 - **Multi-Agent Orchestration**: Create and manage multiple AI agents working together
 - **Custom AI Assistants**: Configure specialized AI assistants with custom tools and knowledge bases
 - **Agent Collaboration**: Enable agents to communicate and collaborate on complex tasks
-- **Multi-Modal Chat**: Support for text, images, and file uploads in conversations
+- **Multi-Modal Chat**: Support for text, images, and voice inputs
 - **Template Library**: (Work in progress) Pre-built assistant templates for various use cases
 - **Tool Integration**: Extensible tool system for enhanced AI capabilities
 
 ### 📊 Workflow Management
 
 - **Multi-Agent Workflows**: Design workflows where multiple AI agents collaborate
-- **Visual Workflow Builder**: (Work in progress) Drag-and-drop interface using Vue Flow
 - **Process Automation**: Streamline content creation and data processing workflows
-- **Real-time Collaboration**: Multi-user workflow editing and execution
-- **Workflow Templates**: Ready-to-use automation patterns
 
 ### 📚 Document & Knowledge Management
 
 - **Smart Collections**: Organize documents with AI-powered categorization
 - **Document Processing**: Upload, analyze, and extract insights from various file formats
-- **Advanced Search**: Semantic search across all documents and conversations
 
 ### 🎨 Content Generation
 
@@ -57,7 +57,7 @@ This is an open-source project shared for educational and collaborative purposes
 - **Code Highlighting**: Syntax highlighting for multiple programming languages
 - **Mathematical Notation**: KaTeX support for mathematical expressions
 
-### 🏢 Enterprise Features
+### 🏢 Enterprise Features (Work in progress)
 
 - **Team Management**: Role-based access control and team collaboration
 - **Admin Dashboard**: Comprehensive user and system administration
@@ -94,28 +94,6 @@ The application will be available at `http://localhost:5173`
 
 ## 🛠️ Development
 
-### Available Scripts
-
-```bash
-# Development
-npm run dev              # Start development server
-npm run build           # Build for production
-npm run preview         # Preview production build
-
-# Testing
-npm run test:unit       # Run unit tests with Vitest
-npm run test:e2e        # Run end-to-end tests with Cypress
-npm run test:e2e:dev    # Run E2E tests in development
-
-# Code Quality
-npm run lint            # Lint and fix code
-npm run format          # Format code with Prettier
-npm run type-check      # Type checking with Vue TSC
-
-# Assets
-npm run generate-pwa-assets  # Generate PWA icons and assets
-```
-
 ### Project Structure
 
 ```
@@ -132,7 +110,7 @@ src/
 │   ├── collection/     # Document collections
 │   ├── text-to-image/  # Image generation
 │   └── ...
-├── composables/        # Vue composables
+├── composables/        # Core composables
 ├── layouts/           # Application layouts
 ├── router/            # Vue Router configuration
 ├── stores/            # Pinia state management
@@ -166,7 +144,7 @@ src/
 
 #### AI & Integration
 
-- **RAGNA SDK** - Custom AI platform SDK
+- **RAGNA SDK** - Backend API SDK
 - **Markdown-it** - Markdown parser
 - **KaTeX** - Mathematical notation
 - **Highlight.js** - Syntax highlighting
@@ -192,26 +170,6 @@ Each feature is organized into self-contained modules with:
 - **Event-Driven**: Real-time updates using WebSocket connections
 - **Reactive State**: Centralized state management with Pinia
 - **Type Safety**: Full TypeScript coverage for robust development
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development Guidelines
-
-1. **Code Style**: Follow the ESLint and Prettier configurations
-2. **Type Safety**: Maintain 100% TypeScript coverage
-3. **Testing**: Write tests for new features and bug fixes
-4. **Documentation**: Update documentation for any API changes
-5. **Accessibility**: Ensure all components meet WCAG guidelines
-
-### Submitting Changes
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## 📦 Building & Deployment
 
@@ -258,8 +216,7 @@ The application is configured as a PWA with:
 
 Multi-language support using Vue I18n:
 
-- English (default)
-- German
+- German (default)
 - Extensible for additional languages
 
 ## 📋 Requirements
@@ -268,17 +225,15 @@ Multi-language support using Vue I18n:
 
 - **Node.js**: 22.x or higher
 - **Memory**: 4GB RAM minimum
-- **Storage**: 10GB available space
+- **Storage**: 1GB available space
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## 🤝 Contributing
 
-- **Documentation**: tbd
-- **Issues**: [GitHub Issues](https://github.com/hopkins385/ragna-studio-frontend/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/hopkins385/ragna-studio-frontend/discussions)
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
 ## 🙏 Acknowledgments
 
