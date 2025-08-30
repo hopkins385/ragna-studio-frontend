@@ -68,7 +68,7 @@ This is an open-source project shared for educational and collaborative purposes
 
 ### Prerequisites
 
-- **Node.js** 20+
+- **Node.js** 22+
 - **npm** or **yarn**
 - **Modern Browser** (Chrome, Firefox, Safari, Edge)
 
@@ -91,16 +91,6 @@ npm run dev
 ```
 
 The application will be available at `http://localhost:5173`
-
-### Environment Configuration
-
-Create a `.env` file in the root directory:
-
-```env
-VITE_BACKEND_URL=https://api.ragna.studio
-VITE_APP_VERSION=0.45.1
-VITE_WEBSOCKET_URL=wss://api.ragna.studio
-```
 
 ## 🛠️ Development
 
@@ -276,16 +266,9 @@ Multi-language support using Vue I18n:
 
 ### System Requirements
 
-- **Node.js**: 20.x or higher
+- **Node.js**: 22.x or higher
 - **Memory**: 4GB RAM minimum
-- **Storage**: 1GB available space
-
-### Browser Support
-
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
+- **Storage**: 10GB available space
 
 ## 📄 License
 
@@ -293,7 +276,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-- **Documentation**: [docs.ragna.studio](https://docs.ragna.studio)
+- **Documentation**: tbd
 - **Issues**: [GitHub Issues](https://github.com/hopkins385/ragna-studio-frontend/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/hopkins385/ragna-studio-frontend/discussions)
 

@@ -3,8 +3,8 @@
   "version": "0.45.2",
   "description": "RAGNA Studio Frontend",
   "author": "Sven Stadhouders",
-  "private": true,
   "type": "module",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
