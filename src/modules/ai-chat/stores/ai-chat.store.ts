@@ -167,7 +167,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
         chatId: payload.chatId,
         chatMessages,
         reasoningEffort: chatSettingsStore.thinkLevel?.[0] || 0,
-        maxTokens: chatSettingsStore.maxTokens?.[0] || 4000,
+        maxTokens: chatSettingsStore.maxTokens?.[0] || 8192,
         temperature,
         context: payload.context,
       });

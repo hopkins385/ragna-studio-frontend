@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth-store', () => {
   const dateNow = ref(Date.now());
 
   // Getters
-  const isAuthenticated = computed(() => !!user.value && !!accessToken.value);
+  const isAuthenticated = computed(() => !!user.value); //  && !!accessToken.value
   const userHasAdminRole = computed(() => !!user.value?.roles?.includes(UserRoles.ADMIN));
   const userFirstName = computed(() => user.value?.firstName || 'Guest User');
   const onboardingIsComplete = computed(() => !!user.value?.onboardedAt);

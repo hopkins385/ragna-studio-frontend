@@ -15,7 +15,7 @@ const defaultSettings = {
   thinkLevel: [0],
   temperature: [80],
   presencePenalty: [0],
-  maxTokens: [4000],
+  maxTokens: [8192],
   submitOnEnter: true,
   includeToolCalls: true,
   privacyNerActive: false,
