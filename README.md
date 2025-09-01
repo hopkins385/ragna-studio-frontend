@@ -15,17 +15,22 @@
 
 RAGNA Studio is a comprehensive multi-agent AI platform that brings together conversational AI, content generation, and document management in one intuitive interface. Built with Vue 3 and TypeScript, it provides a modern workspace for orchestrating multiple AI agents, generating images from text, managing knowledge bases, and exploring the latest AI capabilities. Whether you're creating content, organizing documents, or building complex multi-agent workflows, RAGNA Studio offers a seamless and powerful experience.
 
-## ⚠️ Important Notice
+## ⚠️ Important Notes
 
-**This software is currently in development and is NOT intended for production use.**
+- **Not Production Ready**: This software is provided for educational and development purposes
+- **API Keys Required**: You'll need API keys from AI providers to use AI features
+- **Resource Intensive**: AI operations require significant computational resources
+- **Incomplete**: Some side-features are incomplete or work-in-progress
 
-- Some features are incomplete or work-in-progress
-- The platform is designed for experimentation and development purposes
-- Expect breaking changes and instability
-- Use at your own risk for non-critical applications only
-- No warranty or support guarantees are provided
+## 🏗️ RAGNA Studio Ecosystem
 
-This is an open-source project shared for educational and collaborative purposes. Contributions and feedback are welcome!
+This frontend is part of the complete RAGNA Studio platform:
+
+- **[RAGNA Studio Backend](https://github.com/hopkins385/ragna-studio-backend)** - AI-powered API backend
+- **[RAGNA Studio Frontend](https://github.com/hopkins385/ragna-studio-frontend)** (this repository) - Modern Vue3-based user interface
+- **[RAGNA SDK](https://github.com/hopkins385/ragna-sdk)** - TypeScript SDK for easy integration into your own software
+
+For the full experience, you'll want to set up both the backend and frontend repositories. The SDK provides a convenient way to integrate RAGNA Studio's AI capabilities into your own applications with type-safe API calls and built-in error handling.
 
 ## ✨ Key Features
 
@@ -227,25 +232,27 @@ Multi-language support using Vue I18n:
 - **Memory**: 4GB RAM minimum
 - **Storage**: 1GB available space
 
+## 🤝 Contributing
+
+We welcome contributions! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
 ## 🙏 Acknowledgments
 
 - **Vue.js Team** - For the amazing framework
 - **TailwindCSS** - For the utility-first CSS framework
 - **Radix Vue** - For accessible UI primitives
-- **All Contributors** - Thank you for your contributions!
+- **Tiptap** - For the rich and extensible text editor
+- **Lucide Icons** - For the beautiful icon set
+- **All Contributors** - For their valuable contributions
 
 ---
 
 <div align="center">
-  <p>Built with ❤️ and Apprechiation by Sven Stadhouders</p>
+  <p>Built with ❤️ and Appreciation by Sven Stadhouders</p>
   <p>
     <a href="https://ragna-engineering.de">Website</a> •
     <a href="https://docs.ragna.studio">Documentation (tbd)</a> •
