@@ -17,7 +17,8 @@ RAGNA Studio is a comprehensive multi-agent AI platform that brings together con
 
 ## ⚠️ Important Notes
 
-- **Not Production Ready**: This software is provided for educational and development purposes
+- **Not a Turnkey Solution**: This is a frontend application that requires the RAGNA Studio Backend to function
+- **Not Production Ready**: This software is provided for experimentation and development purposes
 - **API Keys Required**: You'll need API keys from AI providers to use AI features
 - **Resource Intensive**: AI operations require significant computational resources
 - **Incomplete**: Some side-features are incomplete or work-in-progress
@@ -26,11 +27,11 @@ RAGNA Studio is a comprehensive multi-agent AI platform that brings together con
 
 This frontend is part of the complete RAGNA Studio platform:
 
-- **[RAGNA Studio Backend](https://github.com/hopkins385/ragna-studio-backend)** - AI-powered API backend
+- **[RAGNA Studio Backend](https://github.com/hopkins385/ragna-studio-backend)** - NestJs API backend
 - **[RAGNA Studio Frontend](https://github.com/hopkins385/ragna-studio-frontend)** (this repository) - Modern Vue3-based user interface
 - **[RAGNA SDK](https://github.com/hopkins385/ragna-sdk)** - TypeScript SDK for easy integration into your own software
 
-For the full experience, you'll want to set up both the backend and frontend repositories. The SDK provides a convenient way to integrate RAGNA Studio's AI capabilities into your own applications with type-safe API calls and built-in error handling.
+For the full experience, you'll want to set up both the backend, with all its microservices, and the frontend. The SDK provides a convenient way to integrate RAGNA Studio's AI capabilities into your own applications with type-safe API calls and built-in error handling.
 
 ## ✨ Key Features
 
