@@ -102,7 +102,7 @@ export const defaultItems = computed((): NavItem[] => [
   },
   {
     icon: MessagesSquareIcon,
-    path: '/chat',
+    path: '/chat/recent',
     label: 'nav.chat',
     hidden: false,
     children: [],

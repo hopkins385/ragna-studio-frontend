@@ -50,7 +50,7 @@ const _quickAccessItems: QuickAccessItem[] = [
     icon: MessagesSquareIcon,
     class: 'bg-indigo-200/50',
     label: 'nav.chat',
-    route: '/chat',
+    route: '/chat/recent',
   },
   // AI Documents
   {
