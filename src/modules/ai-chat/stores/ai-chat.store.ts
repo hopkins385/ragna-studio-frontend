@@ -28,6 +28,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   const chatSettingsStore = useAiChatSettingsStore();
 
   // internal state
+  const _isHydrating = ref(false);
   const _isPending = ref(false);
   const _isStreaming = ref(false);
   const _isThinking = ref(false);
@@ -59,6 +60,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   const assistant = computed(() => _chat.value?.assistant);
   const assistantHasImageInput = computed(() => assistant.value?.llm.capabilities?.imageInput);
 
+  const isHydrating = computed(() => _isHydrating.value && !_chat.value);
   const isPending = computed<boolean>(() => _isPending.value);
   const isStreaming = computed<boolean>(() => _isStreaming.value);
   const isThinking = computed<boolean>(() => _isThinking.value);
@@ -205,13 +207,23 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
       throw new Error('Chat ID is required to hydrate chat');
     }
 
-    const { chat } = await client.aiChat.fetchChatById(chatId);
+    _chat.value = undefined;
+    _isHydrating.value = true;
 
-    if (!chat) {
-      throw new Error('Failed to hydrate chat');
+    try {
+      const { chat } = await client.aiChat.fetchChatById(chatId);
+
+      if (!chat) {
+        throw new Error('Failed to hydrate chat');
+      }
+
+      return hydrateChat(chat);
+    } catch (error: unknown) {
+      _isHydrating.value = false;
+      throw error;
+    } finally {
+      _isHydrating.value = false;
     }
-
-    return hydrateChat(chat);
   }
 
   function hydrateChatMessages(messages: ChatMessage[]) {
@@ -333,6 +345,7 @@ export const useAiChatStore = defineStore('ai-chat-store', () => {
   }
 
   return {
+    isHydrating,
     isPending,
     isStreaming,
     isThinking,

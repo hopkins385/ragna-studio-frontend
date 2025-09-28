@@ -23,7 +23,7 @@ import { useAiChatStore } from '@/modules/ai-chat/stores';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import { Button } from '@ui/button';
-import { PaperclipIcon } from 'lucide-vue-next';
+import { LoaderIcon, PaperclipIcon } from 'lucide-vue-next';
 
 const route = useRoute();
 const socket = useWebSocketStore();
@@ -245,7 +245,7 @@ useAutoScroll(chatMessagesContainerRef);
 // onMounted setupChat is not required, because the watcher is immediate
 watch(
   () => route.params.id,
-  async id => await setupChat(id.toString()),
+  async id => await setupChat(id!.toString()),
   { immediate: true },
 );
 
@@ -318,6 +318,18 @@ onBeforeUnmount(async () => {
     />
     <!-- chat messages container -->
     <div
+      v-if="aiChatStore.isHydrating"
+      class="no-scrollbar relative grow overflow-y-scroll rounded-lg w-full max-w-[70rem] mx-auto"
+    >
+      <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <!-- loading icon -->
+        <span class="flex justify-center items-center">
+          <LoaderIcon class="size-5 stroke-1.5 text-slate-500 animate-spin" />
+        </span>
+      </div>
+    </div>
+    <div
+      v-if="!aiChatStore.isHydrating"
       id="chatMessagesContainer"
       ref="chatMessagesContainerRef"
       class="no-scrollbar relative grow overflow-y-scroll rounded-lg w-full max-w-[70rem] mx-auto"
