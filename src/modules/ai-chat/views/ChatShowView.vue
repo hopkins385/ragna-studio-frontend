@@ -297,6 +297,7 @@ onBeforeUnmount(async () => {
       <div class="flex justify-center items-center shrink-0 space-x-5">
         <!-- chat title and assistant details -->
         <ChatAssistantDetails
+          v-if="!aiChatStore.isHydrating && aiChatStore.assistant"
           :chat-title="aiChatStore.chatTitle"
           :llm-provider="aiChatStore.assistant?.llm.provider"
           :llm-name="aiChatStore.assistant?.llm.displayName"
@@ -324,7 +325,7 @@ onBeforeUnmount(async () => {
       <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <!-- loading icon -->
         <span class="flex justify-center items-center">
-          <LoaderIcon class="size-5 stroke-1.5 text-slate-500 animate-spin" />
+          <LoaderIcon class="size-4 stroke-1.5 text-slate-600 animate-spin" />
         </span>
       </div>
     </div>
