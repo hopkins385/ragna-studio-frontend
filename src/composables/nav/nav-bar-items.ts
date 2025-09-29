@@ -244,6 +244,13 @@ export const chatItems = computed((): NavItem[] => [
     hidden: false,
     children: [],
   },
+  {
+    icon: BotIcon,
+    path: '/assistant',
+    label: 'nav.agents',
+    hidden: false,
+    children: [],
+  },
 ]);
 
 export const assistantItems: NavItem[] = [

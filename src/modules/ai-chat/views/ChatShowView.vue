@@ -23,7 +23,7 @@ import { useAiChatStore } from '@/modules/ai-chat/stores';
 import { useAuthStore } from '@/modules/auth/stores/auth.store';
 import BoxContainer from '@components/box/BoxContainer.vue';
 import { Button } from '@ui/button';
-import { LoaderIcon, PaperclipIcon } from 'lucide-vue-next';
+import { PaperclipIcon } from 'lucide-vue-next';
 
 const route = useRoute();
 const socket = useWebSocketStore();
@@ -35,6 +35,11 @@ const { t } = useI18n();
 
 const { setActiveTool, unsetActiveTool, clearActiveTools, activeTools } = useChatTools();
 const { errorAlert, setErrorAlert, unsetErrorAlert } = useErrorAlert();
+
+const uiChatMessages = computed(() =>
+  aiChatStore.chatMessages.length > 0 ? aiChatStore.chatMessages : [],
+);
+const hasMessages = computed(() => aiChatStore.chatMessages.length > 0);
 
 const activeChatId = ref('');
 
@@ -110,6 +115,10 @@ const submitUserChatMessage = async (payload: { chatId: string; inputText: strin
     });
     // clear tool
     clearActiveTools();
+    // refetch chat messages
+    await aiChatStore.hydrateChatById({ chatId: payload.chatId });
+    // scroll to bottom
+    scrollToBottom({ instant: true });
     // handle errors
   } catch (error: unknown) {
     setErrorAlert(error);
@@ -160,7 +169,7 @@ const onResetChat = async () => {
   abortChatRequest();
   clearActiveTools();
   clearVisionContent();
-  await aiChatStore.resetChatById({ chatId: activeChatId.value });
+  await aiChatStore.refetchChatById({ chatId: activeChatId.value });
 };
 
 const onToolStartEvent = (payload: ToolInfoData) => {
@@ -220,7 +229,7 @@ const setupChat = async (chatId: string) => {
   setupChatIsCompleted.value = false;
   activeChatId.value = chatId;
   settings.resetSettings();
-  await aiChatStore.hydrateChatById(chatId);
+  await aiChatStore.hydrateChatById({ chatId, options: { resetChat: true } });
   removeSocketListeners(chatId);
   setupSocketListeners(chatId);
   scrollToBottom({ instant: true });
@@ -319,24 +328,12 @@ onBeforeUnmount(async () => {
     />
     <!-- chat messages container -->
     <div
-      v-if="aiChatStore.isHydrating"
-      class="no-scrollbar relative grow overflow-y-scroll rounded-lg w-full max-w-[70rem] mx-auto"
-    >
-      <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <!-- loading icon -->
-        <span class="flex justify-center items-center">
-          <LoaderIcon class="size-4 stroke-1.5 text-slate-600 animate-spin" />
-        </span>
-      </div>
-    </div>
-    <div
-      v-if="!aiChatStore.isHydrating"
       id="chatMessagesContainer"
       ref="chatMessagesContainerRef"
       class="no-scrollbar relative grow overflow-y-scroll rounded-lg w-full max-w-[70rem] mx-auto"
     >
       <!-- chat messages -->
-      <template v-for="message in aiChatStore.chatMessages" :key="message.id">
+      <template v-for="message in uiChatMessages" :key="message.id">
         <ChatToolCallResult
           v-if="message.type === 'tool-result'"
           :display-name="aiChatStore.assistant?.title"
