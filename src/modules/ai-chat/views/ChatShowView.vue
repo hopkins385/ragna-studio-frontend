@@ -116,9 +116,10 @@ const submitUserChatMessage = async (payload: { chatId: string; inputText: strin
     // clear tool
     clearActiveTools();
     // refetch chat messages
-    await aiChatStore.hydrateChatById({ chatId: payload.chatId });
+    // await nextTick();
+    // await aiChatStore.hydrateChatById({ chatId: payload.chatId });
     // scroll to bottom
-    scrollToBottom({ instant: true });
+    // scrollToBottom({ instant: true });
     // handle errors
   } catch (error: unknown) {
     setErrorAlert(error);
