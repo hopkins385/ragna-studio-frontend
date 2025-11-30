@@ -4,7 +4,7 @@
   "description": "RAGNA Studio Frontend",
   "author": "Sven Stadhouders",
   "type": "module",
-  "license": "MIT",
+  "license": "AGPL-3.0",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",

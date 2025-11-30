@@ -6,7 +6,7 @@
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
   [![Vite](https://img.shields.io/badge/Vite-7.1.3-646CFF?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
   [![TailwindCSS](https://img.shields.io/badge/Tailwind-3.4.16-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-  [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+  [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 </div>
 
 ![RAGNA Studio Home View](https://static.ragna.io/studio-images/home-view.png)
@@ -239,7 +239,7 @@ We welcome contributions! Please feel free to submit a Pull Request. For major c
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
